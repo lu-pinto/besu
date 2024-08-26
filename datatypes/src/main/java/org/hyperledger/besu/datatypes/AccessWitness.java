@@ -32,7 +32,7 @@ public interface AccessWitness {
 
   long touchTxExistingAndComputeGas(Address target, boolean sendsValue);
 
-  long touchAndChargeContractCreateInit(Address address, boolean createSendsValue);
+  long touchAndChargeContractCreateInit(Address address);
 
   long touchAndChargeContractCreateCompleted(final Address address);
 

@@ -67,7 +67,7 @@ public class NoopAccessWitness implements AccessWitness {
 
   @Override
   public long touchAndChargeContractCreateInit(
-      final Address address, final boolean createSendsValue) {
+      final Address address) {
     return 0;
   }
 

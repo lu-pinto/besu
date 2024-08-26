@@ -14,8 +14,6 @@
  */
 package org.hyperledger.besu.evm.gascalculator.stateless;
 
-import java.util.function.Supplier;
-
 public final class AccessEvents {
 
   public static final short NONE = 0;

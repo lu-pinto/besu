@@ -42,8 +42,6 @@ public class Eip4762AccessWitness implements AccessWitness {
   private static final long WITNESS_CHUNK_FILL_COST = 6200;
 
   private static final UInt256 zeroTreeIndex = UInt256.ZERO;
-  private static final byte AccessWitnessReadFlag = 1;
-  private static final byte AccessWitnessWriteFlag = 2;
   private final Map<BranchAccessKey, Byte> branches;
   private final Map<ChunkAccessKey, Byte> chunks;
 
@@ -68,8 +66,7 @@ public class Eip4762AccessWitness implements AccessWitness {
   public long touchAndChargeProofOfAbsence(final Address address) {
     long gas = 0;
     gas =
-        clampedAdd(
-            gas, touchAddressOnReadAndComputeGas(address, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
+        clampedAdd(gas, touchAddressOnReadAndComputeGas(address, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
     gas =
         clampedAdd(
             gas, touchAddressOnReadAndComputeGas(address, zeroTreeIndex, CODE_HASH_LEAF_KEY));
@@ -87,31 +84,17 @@ public class Eip4762AccessWitness implements AccessWitness {
     long gas = 0;
 
     gas =
-        clampedAdd(
-            gas, touchAddressOnWriteAndComputeGas(caller, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
+        clampedAdd(gas, touchAddressOnWriteAndComputeGas(caller, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
     gas =
-        clampedAdd(
-            gas, touchAddressOnWriteAndComputeGas(target, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
+        clampedAdd(gas, touchAddressOnWriteAndComputeGas(target, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
 
     return gas;
   }
 
   @Override
   public long touchAndChargeContractCreateInit(
-      final Address address, final boolean createSendsValue) {
-
-    long gas = 0;
-
-    gas =
-        clampedAdd(
-            gas, touchAddressOnWriteAndComputeGas(address, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
-
-    if (createSendsValue) {
-      gas =
-          clampedAdd(
-              gas, touchAddressOnWriteAndComputeGas(address, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
-    }
-    return gas;
+      final Address address) {
+    return touchAddressOnWriteAndComputeGas(address, zeroTreeIndex, BASIC_DATA_LEAF_KEY);
   }
 
   @Override
@@ -120,8 +103,7 @@ public class Eip4762AccessWitness implements AccessWitness {
     long gas = 0;
 
     gas =
-        clampedAdd(
-            gas, touchAddressOnWriteAndComputeGas(address, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
+        clampedAdd(gas, touchAddressOnWriteAndComputeGas(address, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
     gas =
         clampedAdd(
             gas, touchAddressOnWriteAndComputeGas(address, zeroTreeIndex, CODE_HASH_LEAF_KEY));
@@ -135,14 +117,9 @@ public class Eip4762AccessWitness implements AccessWitness {
 
     long gas = 0;
 
-    gas =
-        clampedAdd(
-            gas, touchAddressOnReadAndComputeGas(origin, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
-    gas =
-        clampedAdd(
-            gas, touchAddressOnWriteAndComputeGas(origin, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
-    gas =
-        clampedAdd(gas, touchAddressOnReadAndComputeGas(origin, zeroTreeIndex, CODE_HASH_LEAF_KEY));
+    gas = clampedAdd(gas, touchAddressOnReadAndComputeGas(origin, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
+    gas = clampedAdd(gas, touchAddressOnWriteAndComputeGas(origin, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
+    gas = clampedAdd(gas, touchAddressOnReadAndComputeGas(origin, zeroTreeIndex, CODE_HASH_LEAF_KEY));
 
     // modifying this after update on EIP-4762 to not charge simple transfers
 
@@ -155,11 +132,8 @@ public class Eip4762AccessWitness implements AccessWitness {
 
     long gas = 0;
 
-    gas =
-        clampedAdd(
-            gas, touchAddressOnReadAndComputeGas(target, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
-    gas =
-        clampedAdd(gas, touchAddressOnReadAndComputeGas(target, zeroTreeIndex, CODE_HASH_LEAF_KEY));
+    gas = clampedAdd(gas, touchAddressOnReadAndComputeGas(target, zeroTreeIndex, BASIC_DATA_LEAF_KEY));
+    gas = clampedAdd(gas, touchAddressOnReadAndComputeGas(target, zeroTreeIndex, CODE_HASH_LEAF_KEY));
 
     if (sendsValue) {
       gas =
@@ -215,23 +189,22 @@ public class Eip4762AccessWitness implements AccessWitness {
   @Override
   public long touchAddressOnWriteAndComputeGas(
       final Address address, final UInt256 treeIndex, final UInt256 subIndex) {
-
-    return touchAddressAndChargeGas(address, treeIndex, subIndex, true);
+    return touchAddressAndChargeGas(address, treeIndex, subIndex, AccessMode.WRITE_SET);
   }
 
   @Override
   public long touchAddressOnReadAndComputeGas(
       final Address address, final UInt256 treeIndex, final UInt256 subIndex) {
-    return touchAddressAndChargeGas(address, treeIndex, subIndex, false);
+    return touchAddressAndChargeGas(address, treeIndex, subIndex, AccessMode.READ);
   }
 
   public long touchAddressAndChargeGas(
       final Address address,
       final UInt256 treeIndex,
       final UInt256 subIndex,
-      final boolean isWrite) {
+      final byte accessMode) {
 
-    final short accessEvents = touchAddress(address, treeIndex, subIndex, isWrite);
+    final short accessEvents = touchAddress(address, treeIndex, subIndex, accessMode);
     boolean logEnabled = false;
     long gas = 0;
     if (AccessEvents.isBranchRead(accessEvents)) {
@@ -245,7 +218,7 @@ public class Eip4762AccessWitness implements AccessWitness {
                 + " "
                 + subIndex
                 + " "
-                + isWrite
+                + AccessMode.toString(accessMode)
                 + " "
                 + gas);
       }
@@ -261,7 +234,7 @@ public class Eip4762AccessWitness implements AccessWitness {
                 + " "
                 + subIndex
                 + " "
-                + isWrite
+                + AccessMode.toString(accessMode)
                 + " "
                 + gas);
       }
@@ -277,7 +250,7 @@ public class Eip4762AccessWitness implements AccessWitness {
                 + " "
                 + subIndex
                 + " "
-                + isWrite
+                + AccessMode.toString(accessMode)
                 + " "
                 + gas);
       }
@@ -293,7 +266,7 @@ public class Eip4762AccessWitness implements AccessWitness {
                 + " "
                 + subIndex
                 + " "
-                + isWrite
+                + AccessMode.toString(accessMode)
                 + " "
                 + gas);
       }
@@ -309,7 +282,7 @@ public class Eip4762AccessWitness implements AccessWitness {
                 + " "
                 + subIndex
                 + " "
-                + isWrite
+                + AccessMode.toString(accessMode)
                 + " "
                 + gas);
       }
@@ -319,39 +292,36 @@ public class Eip4762AccessWitness implements AccessWitness {
   }
 
   public short touchAddress(
-      final Address addr, final UInt256 treeIndex, final UInt256 subIndex, final boolean isWrite) {
+      final Address addr, final UInt256 treeIndex, final UInt256 subIndex, final byte accessMode) {
     short accessEvents = AccessEvents.NONE;
     BranchAccessKey branchKey = new BranchAccessKey(addr, treeIndex);
+    ChunkAccessKey chunkKey = new ChunkAccessKey(branchKey, subIndex);
 
-    ChunkAccessKey chunkKey = new ChunkAccessKey(addr, treeIndex, subIndex);
-
-    // Read access.
+    // A write is always a read
     if (!this.branches.containsKey(branchKey)) {
       accessEvents |= AccessEvents.BRANCH_READ;
-      this.branches.put(branchKey, AccessWitnessReadFlag);
+      this.branches.put(branchKey, AccessMode.READ);
     }
-    if (!this.chunks.containsKey(chunkKey)) {
-      accessEvents |= AccessEvents.CHUNK_READ ;
-      this.chunks.put(chunkKey, AccessWitnessReadFlag);
+    if (subIndex != null && !this.chunks.containsKey(chunkKey)) {
+      accessEvents |= AccessEvents.CHUNK_READ;
+      this.chunks.put(chunkKey, AccessMode.READ);
     }
 
-    // TODO VERKLE: for now testnet doesn't charge
-    //  chunk filling costs if the leaf was previously empty in the state
-    //    boolean chunkFill = false;
-
-    if (isWrite) {
-
-      if ((this.branches.get(branchKey) & AccessWitnessWriteFlag) == 0) {
+    if (AccessMode.isWrite(accessMode)) {
+      byte previousAccessMode =
+          !this.branches.containsKey(branchKey) ? 0 : this.branches.get(branchKey);
+      if (!this.branches.containsKey(branchKey) || !AccessMode.isWrite(previousAccessMode)) {
         accessEvents |= AccessEvents.BRANCH_WRITE;
-        this.branches.put(
-            branchKey, (byte) (this.branches.get(branchKey) | AccessWitnessWriteFlag));
+        this.branches.put(branchKey, (byte) (previousAccessMode | accessMode));
       }
-
-      byte chunkValue = this.chunks.get(chunkKey);
-
-      if ((chunkValue & AccessWitnessWriteFlag) == 0) {
+      previousAccessMode = !this.chunks.containsKey(chunkKey) ? 0 : this.chunks.get(chunkKey);
+      if (subIndex != null
+          && (!this.chunks.containsKey(chunkKey) || !AccessMode.isWrite(previousAccessMode))) {
         accessEvents |= AccessEvents.CHUNK_WRITE;
-        this.chunks.put(chunkKey, (byte) (this.chunks.get(chunkKey) | AccessWitnessWriteFlag));
+        this.chunks.put(chunkKey, (byte) (previousAccessMode | accessMode));
+        if (AccessMode.isWriteSet(accessMode)) {
+          accessEvents |= AccessEvents.CHUNK_FILL;
+        }
       }
     }
 
@@ -385,14 +355,8 @@ public class Eip4762AccessWitness implements AccessWitness {
   }
 
   public record BranchAccessKey(Address address, UInt256 treeIndex) {}
-  ;
 
-  public record ChunkAccessKey(BranchAccessKey branchAccessKey, UInt256 chunkIndex) {
-    public ChunkAccessKey(
-        final Address address, final UInt256 treeIndex, final UInt256 chunkIndex) {
-      this(new BranchAccessKey(address, treeIndex), chunkIndex);
-    }
-  }
+  public record ChunkAccessKey(BranchAccessKey branchAccessKey, UInt256 chunkIndex) {}
 
   @Override
   public List<UInt256> getStorageSlotTreeIndexes(final UInt256 storageKey) {
