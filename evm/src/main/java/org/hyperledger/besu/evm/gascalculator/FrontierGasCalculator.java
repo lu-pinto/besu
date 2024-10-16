@@ -474,7 +474,7 @@ public class FrontierGasCalculator implements GasCalculator {
   }
 
   @Override
-  public long getExtCodeSizeOperationGasCost(
+  public long extCodeSizeOperationGasCost(
       final MessageFrame frame, final boolean accountIsWarm, final Optional<Address> maybeAddress) {
     return extCodeBaseGasCost();
   }

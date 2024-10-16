@@ -379,22 +379,15 @@ public class MainnetTransactionProcessor {
       if (warmCoinbase) {
         warmAddressList.add(miningBeneficiary);
       }
-      final AccessWitness accessWitness = gasCalculator.newAccessWitness();
       final long intrinsicGas =
           gasCalculator.transactionIntrinsicGasCost(
               transaction.getPayload(), transaction.isContractCreation());
       final long accessListGas =
           gasCalculator.accessListGasCost(accessListEntries.size(), accessListStorageCount);
-      final long accessEventCost =
-          gasCalculator.computeBaseAccessEventsCost(accessWitness, transaction, sender);
       final long codeDelegationGas =
           gasCalculator.delegateCodeGasCost(transaction.codeDelegationListSize());
       final long gasAvailable =
-          transaction.getGasLimit()
-              - intrinsicGas
-              - accessListGas
-              - codeDelegationGas
-              - accessEventCost;
+          transaction.getGasLimit() - intrinsicGas - accessListGas - codeDelegationGas;
       LOG.trace(
           "Gas available for execution {} = {} - {} - {} - {} (limit - intrinsic - accessList - codeDelegation)",
           gasAvailable,
@@ -402,6 +395,10 @@ public class MainnetTransactionProcessor {
           intrinsicGas,
           accessListGas,
           codeDelegationGas);
+
+      final AccessWitness accessWitness = gasCalculator.newAccessWitness();
+      accessWitness.touchBaseTx(
+          transaction.getSender(), transaction.getTo(), transaction.getValue());
 
       final WorldUpdater worldUpdater = evmWorldUpdater.updater();
       final ImmutableMap.Builder<String, Object> contextVariablesBuilder =
