@@ -55,4 +55,9 @@ public class StopOperation extends AbstractFixedCostOperation {
     frame.setOutputData(Bytes.EMPTY);
     return stopSuccess;
   }
+
+  @Override
+  public boolean isVirtualOperation() {
+    return true;
+  }
 }

@@ -63,7 +63,6 @@ import org.hyperledger.besu.evm.operation.SignExtendOperation;
 import org.hyperledger.besu.evm.operation.StopOperation;
 import org.hyperledger.besu.evm.operation.SubOperation;
 import org.hyperledger.besu.evm.operation.SwapOperation;
-import org.hyperledger.besu.evm.operation.VirtualOperation;
 import org.hyperledger.besu.evm.operation.XorOperation;
 import org.hyperledger.besu.evm.tracing.OperationTracer;
 
@@ -87,7 +86,6 @@ public class EVM {
 
   private final OperationRegistry operations;
   private final GasCalculator gasCalculator;
-  private final Operation endOfScriptStop;
   private final CodeFactory codeFactory;
   private final CodeCache codeCache;
   private final EvmConfiguration evmConfiguration;
@@ -111,7 +109,6 @@ public class EVM {
       final EvmSpecVersion evmSpecVersion) {
     this.operations = operations;
     this.gasCalculator = gasCalculator;
-    this.endOfScriptStop = new VirtualOperation(new StopOperation(gasCalculator));
     this.evmConfiguration = evmConfiguration;
     this.codeCache = new CodeCache(evmConfiguration);
     this.evmSpecVersion = evmSpecVersion;
@@ -207,20 +204,19 @@ public class EVM {
     evmSpecVersion.maybeWarnVersion();
 
     var operationTracer = tracing == OperationTracer.NO_TRACING ? null : tracing;
+
     byte[] code = frame.getCode().getBytes().toArrayUnsafe();
+    int maxCodeSize = code.length;
+    final byte[] codeToExecute = new byte[maxCodeSize + 1];
+    System.arraycopy(code, 0, codeToExecute, 0, maxCodeSize);
+
     Operation[] operationArray = operations.getOperations();
     while (frame.getState() == MessageFrame.State.CODE_EXECUTING) {
-      Operation currentOperation;
-      int opcode;
-      int pc = frame.getPC();
-      try {
-        opcode = code[pc] & 0xff;
-        currentOperation = operationArray[opcode];
-      } catch (ArrayIndexOutOfBoundsException aiiobe) {
-        opcode = 0;
-        currentOperation = endOfScriptStop;
-      }
+      int pc = Math.min(frame.getPC(), maxCodeSize);
+      final int opcode = codeToExecute[pc] & 0xff;
+      Operation currentOperation = operationArray[opcode];
       frame.setCurrentOperation(currentOperation);
+
       if (operationTracer != null) {
         operationTracer.tracePreExecution(frame);
       }
@@ -292,7 +288,7 @@ public class EVM {
                       0x7d,
                       0x7e,
                       0x7f ->
-                  PushOperation.staticOperation(frame, code, pc, opcode - PUSH_BASE);
+                  PushOperation.staticOperation(frame, codeToExecute, pc, opcode - PUSH_BASE);
               case 0x80, // DUP1-16
                       0x81,
                       0x82,
