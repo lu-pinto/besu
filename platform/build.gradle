@@ -19,6 +19,7 @@ plugins {
 
 repositories {
   mavenCentral()
+  mavenLocal()
 }
 
 javaPlatform {
@@ -107,20 +108,20 @@ dependencies {
 
     api 'io.pkts:pkts-core:3.0.10'
 
-    api 'io.tmio:tuweni-bytes:2.4.2'
-    api 'io.tmio:tuweni-config:2.4.2'
-    api 'io.tmio:tuweni-concurrent:2.4.2'
-    api 'io.tmio:tuweni-crypto:2.4.2'
-    api 'io.tmio:tuweni-io:2.4.2'
-    api 'io.tmio:tuweni-net:2.4.2'
-    api 'io.tmio:tuweni-rlp:2.4.2'
-    api 'io.tmio:tuweni-toml:2.4.2'
-    api 'io.tmio:tuweni-units:2.4.2'
+    api 'io.consensys.tuweni:tuweni-bytes:2.7.1-SNAPSHOT-SNAPSHOT'
+    api 'io.consensys.tuweni:tuweni-config:2.7.1-SNAPSHOT-SNAPSHOT'
+    api 'io.consensys.tuweni:tuweni-concurrent:2.7.1-SNAPSHOT-SNAPSHOT'
+    api 'io.consensys.tuweni:tuweni-crypto:2.7.1-SNAPSHOT-SNAPSHOT'
+    api 'io.consensys.tuweni:tuweni-io:2.7.1-SNAPSHOT-SNAPSHOT'
+    api 'io.consensys.tuweni:tuweni-net:2.7.1-SNAPSHOT-SNAPSHOT'
+    api 'io.consensys.tuweni:tuweni-rlp:2.7.1-SNAPSHOT-SNAPSHOT'
+    api 'io.consensys.tuweni:tuweni-toml:2.7.1-SNAPSHOT-SNAPSHOT'
+    api 'io.consensys.tuweni:tuweni-units:2.7.1-SNAPSHOT-SNAPSHOT'
 
     api 'net.java.dev.jna:jna:5.16.0'
 
-    api 'org.antlr:antlr4:4.11.1'
-    api 'org.antlr:antlr4-runtime:4.11.1'
+    api 'org.antlr:antlr4:4.13.0'
+    api 'org.antlr:antlr4-runtime:4.13.0'
 
     api 'org.apache.commons:commons-collections4:4.4'
     api 'org.apache.commons:commons-compress:1.27.1'
