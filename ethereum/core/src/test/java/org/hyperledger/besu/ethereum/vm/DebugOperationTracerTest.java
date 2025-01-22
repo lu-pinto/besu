@@ -21,7 +21,6 @@ import static org.mockito.Mockito.when;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.core.BlockHeader;
 import org.hyperledger.besu.ethereum.core.BlockHeaderTestFixture;
-import org.hyperledger.besu.ethereum.core.ExecutionContextTestFixture;
 import org.hyperledger.besu.ethereum.core.MessageFrameTestFixture;
 import org.hyperledger.besu.ethereum.debug.TraceFrame;
 import org.hyperledger.besu.ethereum.debug.TraceOptions;
@@ -241,7 +240,6 @@ class DebugOperationTracerTest {
     return new MessageFrameTestFixture()
         .initialGas(INITIAL_GAS)
         .worldUpdater(worldUpdater)
-        .executionContextTestFixture(ExecutionContextTestFixture.create())
         .gasPrice(Wei.of(25))
         .blockHeader(blockHeader)
         .blockchain(blockchain);

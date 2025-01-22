@@ -19,9 +19,8 @@ import static org.hyperledger.besu.datatypes.Hash.ZERO;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.ethereum.chain.Blockchain;
 import org.hyperledger.besu.ethereum.core.ProcessableBlockHeader;
-import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
-import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.operation.BlockHashOperation;
+import org.hyperledger.besu.evm.operation.BlockHashOperation.BlockHashLookup;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,32 +33,21 @@ import java.util.Map;
  * <p>A new BlockHashCache must be created for each block being processed but should be reused for
  * all transactions within that block.
  */
-public class BlockchainBasedBlockHashLookup implements BlockHashLookup {
-  private static final int MAX_RELATIVE_BLOCK = 256;
+public class CachingBlockHashLookup implements BlockHashLookup {
 
-  private final long currentBlockNumber;
   private ProcessableBlockHeader searchStartHeader;
   private final Blockchain blockchain;
   private final Map<Long, Hash> hashByNumber = new HashMap<>();
 
-  public BlockchainBasedBlockHashLookup(
+  public CachingBlockHashLookup(
       final ProcessableBlockHeader currentBlock, final Blockchain blockchain) {
-    this.currentBlockNumber = currentBlock.getNumber();
     this.searchStartHeader = currentBlock;
     this.blockchain = blockchain;
     hashByNumber.put(currentBlock.getNumber() - 1, currentBlock.getParentHash());
   }
 
   @Override
-  public Hash apply(final MessageFrame frame, final Long blockNumber) {
-    // If the current block is the genesis block or the sought block is
-    // not within the last 256 completed blocks, zero is returned.
-    if (currentBlockNumber == 0
-        || blockNumber >= currentBlockNumber
-        || blockNumber < (currentBlockNumber - MAX_RELATIVE_BLOCK)) {
-      return ZERO;
-    }
-
+  public Hash apply(final Long blockNumber) {
     final Hash cachedHash = hashByNumber.get(blockNumber);
     if (cachedHash != null) {
       return cachedHash;

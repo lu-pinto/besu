@@ -33,6 +33,7 @@ import org.hyperledger.besu.evm.code.CodeInvalid;
 import org.hyperledger.besu.evm.frame.BlockValues;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.internal.EvmConfiguration;
+import org.hyperledger.besu.evm.internal.Words;
 import org.hyperledger.besu.evm.log.Log;
 import org.hyperledger.besu.evm.precompile.MainnetPrecompiledContracts;
 import org.hyperledger.besu.evm.processor.ContractCreationProcessor;
@@ -146,7 +147,7 @@ class EofCreateOperationTest {
         .code(code)
         .completer(__ -> {})
         .address(Address.fromHexString(SENDER))
-        .blockHashLookup((__, ___) -> Hash.ZERO)
+        .blockHashLookup(n -> Hash.hash(Words.longBytes(n)))
         .blockValues(mock(BlockValues.class))
         .gasPrice(Wei.ZERO)
         .miningBeneficiary(Address.ZERO)

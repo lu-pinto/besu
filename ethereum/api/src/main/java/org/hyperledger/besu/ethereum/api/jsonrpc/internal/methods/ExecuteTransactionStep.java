@@ -26,8 +26,9 @@ import org.hyperledger.besu.ethereum.debug.TraceFrame;
 import org.hyperledger.besu.ethereum.mainnet.MainnetTransactionProcessor;
 import org.hyperledger.besu.ethereum.mainnet.ProtocolSpec;
 import org.hyperledger.besu.ethereum.processing.TransactionProcessingResult;
+import org.hyperledger.besu.ethereum.vm.CachingBlockHashLookup;
 import org.hyperledger.besu.ethereum.vm.DebugOperationTracer;
-import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
+import org.hyperledger.besu.evm.operation.BlockHashOperation.BlockHashLookup;
 
 import java.util.List;
 import java.util.Optional;
@@ -94,8 +95,7 @@ public class ExecuteTransactionStep implements Function<TransactionTrace, Transa
                   maybeParentHeader
                       .map(parent -> calculateExcessBlobGasForParent(protocolSpec, parent))
                       .orElse(BlobGas.ZERO));
-      final BlockHashLookup blockHashLookup =
-          protocolSpec.getBlockHashProcessor().createBlockHashLookup(blockchain, header);
+      final BlockHashLookup blockHashLookup = new CachingBlockHashLookup(header, blockchain);
       result =
           transactionProcessor.processTransaction(
               chainUpdater.getNextUpdater(),

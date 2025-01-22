@@ -89,10 +89,6 @@ public class PrivateBlockReplay {
     return action.perform(body, header, blockchain, transactionProcessor, protocolSpec);
   }
 
-  public ProtocolSpec getProtocolSpec(final BlockHeader header) {
-    return protocolSchedule.getByBlockHeader(header);
-  }
-
   @FunctionalInterface
   public interface BlockAction<T> {
     Optional<T> perform(

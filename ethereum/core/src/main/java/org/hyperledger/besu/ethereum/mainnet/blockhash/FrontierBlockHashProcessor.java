@@ -16,31 +16,14 @@ package org.hyperledger.besu.ethereum.mainnet.blockhash;
 
 import org.hyperledger.besu.ethereum.chain.Blockchain;
 import org.hyperledger.besu.ethereum.core.MutableWorldState;
-import org.hyperledger.besu.ethereum.core.ProcessableBlockHeader;
-import org.hyperledger.besu.ethereum.vm.BlockchainBasedBlockHashLookup;
-import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
-import org.hyperledger.besu.evm.operation.BlockHashOperation;
+import org.hyperledger.besu.plugin.data.ProcessableBlockHeader;
 
 public class FrontierBlockHashProcessor implements BlockHashProcessor {
-
   @Override
   public void processBlockHashes(
-      final MutableWorldState mutableWorldState, final ProcessableBlockHeader currentBlockHeader) {
+      final Blockchain blockchain,
+      final MutableWorldState mutableWorldState,
+      final ProcessableBlockHeader currentBlockHeader) {
     // do nothing
-  }
-
-  /**
-   * Creates a new BlockHashLookup function that calculates and caches block hashes by number
-   * following the chain for a specific branch. This is used by {@link BlockHashOperation} and
-   * ensures that the correct block hash is returned even when the block being imported is on a
-   * fork.
-   *
-   * <p>A new BlockHashCache must be created for each block being processed but should be reused for
-   * all transactions within that block.
-   */
-  @Override
-  public BlockHashLookup createBlockHashLookup(
-      final Blockchain blockchain, final ProcessableBlockHeader blockHeader) {
-    return new BlockchainBasedBlockHashLookup(blockHeader, blockchain);
   }
 }
