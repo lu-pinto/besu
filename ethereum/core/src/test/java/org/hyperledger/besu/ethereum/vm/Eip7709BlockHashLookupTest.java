@@ -15,7 +15,6 @@
 package org.hyperledger.besu.ethereum.vm;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.mock;
@@ -25,7 +24,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.hyperledger.besu.datatypes.AccessWitness;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
@@ -37,7 +35,6 @@ import org.hyperledger.besu.evm.fluent.SimpleAccount;
 import org.hyperledger.besu.evm.fluent.SimpleWorld;
 import org.hyperledger.besu.evm.frame.BlockValues;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.stateless.NoopAccessWitness;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
 
 import java.util.ArrayList;
@@ -57,13 +54,11 @@ public class Eip7709BlockHashLookupTest {
   private List<BlockHeader> headers;
   private BlockHashLookup lookup;
   private MessageFrame frame;
-  private WorldUpdater worldUpdater;
 
   @BeforeEach
   void setUp() {
     headers = new ArrayList<>();
-    worldUpdater = createWorldUpdater(0, CURRENT_BLOCK_NUMBER);
-    frame = createMessageFrame(CURRENT_BLOCK_NUMBER, worldUpdater, Long.MAX_VALUE);
+    frame = createMessageFrame(CURRENT_BLOCK_NUMBER, createWorldUpdater(0, CURRENT_BLOCK_NUMBER));
     lookup =
         new Eip7709BlockHashLookup(STORAGE_ADDRESS, HISTORY_SERVE_WINDOW, BLOCKHASH_SERVE_WINDOW);
   }
@@ -84,14 +79,12 @@ public class Eip7709BlockHashLookupTest {
   }
 
   private MessageFrame createMessageFrame(
-      final long currentBlockNumber, final WorldUpdater worldUpdater, final long remainingGas) {
+      final long currentBlockNumber, final WorldUpdater worldUpdater) {
     final MessageFrame messageFrame = mock(MessageFrame.class);
     final BlockValues blockValues = mock(BlockValues.class);
     when(blockValues.getNumber()).thenReturn(currentBlockNumber);
     when(messageFrame.getBlockValues()).thenReturn(blockValues);
     when(messageFrame.getWorldUpdater()).thenReturn(worldUpdater);
-    when(messageFrame.getRemainingGas()).thenReturn(remainingGas);
-    when(messageFrame.getAccessWitness()).thenReturn(NoopAccessWitness.get());
     return messageFrame;
   }
 
@@ -106,43 +99,23 @@ public class Eip7709BlockHashLookupTest {
   }
 
   @Test
-  void shouldReturnZeroHashWhenSystemContractNotExists() {
-    worldUpdater = new SimpleWorld();
-    frame = createMessageFrame(CURRENT_BLOCK_NUMBER, worldUpdater, Long.MAX_VALUE);
+  void shouldReturnEmptyHashWhenRequestedBlockHigherThanHead() {
+    assertThat(lookup.apply(frame, CURRENT_BLOCK_NUMBER + 20L)).isEqualTo(Hash.ZERO);
+  }
+
+  @Test
+  void shouldReturnEmptyHashWhenSystemContractNotExists() {
+    final WorldUpdater worldUpdater = new SimpleWorld();
+    when(frame.getWorldUpdater()).thenReturn(worldUpdater);
     assertThat(lookup.apply(frame, CURRENT_BLOCK_NUMBER - 1L)).isEqualTo(Hash.ZERO);
   }
 
   @Test
-  @SuppressWarnings("ReturnValueIgnored")
-  void shouldDecrementRemainingGasFromFrame() {
-    AccessWitness accessWitness = mock(AccessWitness.class);
-    when(accessWitness.touchAndChargeStorageLoad(any(), any())).thenReturn(100L);
-    frame = createMessageFrame(CURRENT_BLOCK_NUMBER, worldUpdater, 200L);
-    when(frame.getAccessWitness()).thenReturn(accessWitness);
-    lookup.apply(frame, CURRENT_BLOCK_NUMBER - 1L);
-    verify(frame).decrementRemainingGas(eq(100L));
-    verify(frame).getBlockValues();
-    verify(frame).getAccessWitness();
-    verify(frame).getRemainingGas();
-    verify(frame).getWorldUpdater();
-    verifyNoMoreInteractions(frame);
-  }
-
-  @Test
-  void insufficientGasReturnsNullBlockHash() {
-    worldUpdater = new SimpleWorld();
-    AccessWitness accessWitness = mock(AccessWitness.class);
-    when(accessWitness.touchAndChargeStorageLoad(any(), any())).thenReturn(100L);
-    frame = createMessageFrame(CURRENT_BLOCK_NUMBER, worldUpdater, 1L);
-    when(frame.getAccessWitness()).thenReturn(accessWitness);
-    final Hash blockHash = lookup.apply(frame, CURRENT_BLOCK_NUMBER - 1L);
-    assertThat(blockHash).isNull();
-  }
-
-  @Test
-  void shouldReturnZeroHashWhenParentBlockNotInContract() {
-    worldUpdater = createWorldUpdater(CURRENT_BLOCK_NUMBER - 10, CURRENT_BLOCK_NUMBER);
-    frame = createMessageFrame(CURRENT_BLOCK_NUMBER, worldUpdater, Long.MAX_VALUE);
+  void shouldReturnEmptyHashWhenParentBlockNotInContract() {
+    frame =
+        createMessageFrame(
+            CURRENT_BLOCK_NUMBER,
+            createWorldUpdater(CURRENT_BLOCK_NUMBER - 10, CURRENT_BLOCK_NUMBER));
     lookup =
         new Eip7709BlockHashLookup(STORAGE_ADDRESS, HISTORY_SERVE_WINDOW, BLOCKHASH_SERVE_WINDOW);
     assertHashForBlockNumber(CURRENT_BLOCK_NUMBER - 20, Hash.ZERO);
@@ -150,8 +123,8 @@ public class Eip7709BlockHashLookupTest {
 
   @Test
   void shouldCacheBlockHashes() {
-    worldUpdater = createWorldUpdater(0, CURRENT_BLOCK_NUMBER);
-    frame = createMessageFrame(CURRENT_BLOCK_NUMBER, worldUpdater, Long.MAX_VALUE);
+    final WorldUpdater worldUpdater = createWorldUpdater(0, CURRENT_BLOCK_NUMBER);
+    when(frame.getWorldUpdater()).thenReturn(worldUpdater);
     final Account account = worldUpdater.get(STORAGE_ADDRESS);
     clearInvocations(account);
 
@@ -176,8 +149,7 @@ public class Eip7709BlockHashLookupTest {
 
   @Test
   void shouldGetHashWhenParentIsGenesis() {
-    worldUpdater = createWorldUpdater(0, 1);
-    frame = createMessageFrame(1, worldUpdater, Long.MAX_VALUE);
+    frame = createMessageFrame(1, createWorldUpdater(0, 1));
     lookup =
         new Eip7709BlockHashLookup(STORAGE_ADDRESS, HISTORY_SERVE_WINDOW, BLOCKHASH_SERVE_WINDOW);
     assertHashForBlockNumber(0);
@@ -191,14 +163,13 @@ public class Eip7709BlockHashLookupTest {
   @Test
   void shouldReturnZeroWhenRequestedBlockAheadOfCurrent() {
     assertHashForBlockNumber(CURRENT_BLOCK_NUMBER + 1, Hash.ZERO);
-    assertHashForBlockNumber(CURRENT_BLOCK_NUMBER + 20, Hash.ZERO);
   }
 
   @Test
   void shouldReturnZeroWhenRequestedBlockTooFarBehindCurrent() {
     assertHashForBlockNumber(
         Math.toIntExact(CURRENT_BLOCK_NUMBER - BLOCKHASH_SERVE_WINDOW - 1), Hash.ZERO);
-    assertHashForBlockNumber(2, Hash.ZERO);
+    assertHashForBlockNumber(10, Hash.ZERO);
   }
 
   private void assertHashForBlockNumber(final int blockNumber) {
