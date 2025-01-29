@@ -96,6 +96,9 @@ public final class BodyValidation {
    * @return the requests hash
    */
   public static Hash requestsHash(final List<Request> requests) {
+    if (requests.isEmpty()) {
+      return null;
+    }
     List<Bytes> requestHashes = new ArrayList<>();
     requests.forEach(
         request -> {

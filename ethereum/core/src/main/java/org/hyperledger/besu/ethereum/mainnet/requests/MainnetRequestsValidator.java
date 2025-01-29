@@ -17,7 +17,6 @@ package org.hyperledger.besu.ethereum.mainnet.requests;
 import org.hyperledger.besu.ethereum.core.Request;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.google.common.collect.Ordering;
 import org.slf4j.Logger;
@@ -36,17 +35,17 @@ public class MainnetRequestsValidator implements RequestsValidator {
    * Validates a block's requests by ensuring they are correctly ordered, have a valid hash, and
    * pass their respective type-specific validations.
    *
-   * @param maybeRequests The list of requests to be validated.
+   * @param requests The list of requests to be validated.
    * @return true if all validations pass; false otherwise.
    */
   @Override
-  public boolean validate(final Optional<List<Request>> maybeRequests) {
-    if (maybeRequests.isEmpty()) {
+  public boolean validate(final List<Request> requests) {
+    if (requests.isEmpty()) {
       LOG.warn("Must contain requests (even if empty list)");
       return false;
     }
 
-    if (!isRequestOrderValid(maybeRequests.get())) {
+    if (!isRequestOrderValid(requests)) {
       LOG.warn("Ordering across requests must be ascending by type");
       return false;
     }

@@ -199,9 +199,9 @@ public abstract class AbstractEngineNewPayload extends ExecutionEngineJsonRpcMet
       return new JsonRpcErrorResponse(reqId, RpcErrorType.INVALID_WITHDRAWALS_PARAMS);
     }
 
-    final Optional<List<Request>> maybeRequests;
+    final List<Request> requests;
     try {
-      maybeRequests = extractRequests(maybeRequestsParam);
+      requests = extractRequests(maybeRequestsParam);
     } catch (RuntimeException ex) {
       return respondWithInvalid(
           reqId,
@@ -213,7 +213,7 @@ public abstract class AbstractEngineNewPayload extends ExecutionEngineJsonRpcMet
 
     if (!getRequestsValidator(
             protocolSchedule.get(), blockParam.getTimestamp(), blockParam.getBlockNumber())
-        .validate(maybeRequests)) {
+        .validate(requests)) {
       return new JsonRpcErrorResponse(reqId, RpcErrorType.INVALID_EXECUTION_REQUESTS_PARAMS);
     }
 
@@ -272,7 +272,7 @@ public abstract class AbstractEngineNewPayload extends ExecutionEngineJsonRpcMet
                 ? null
                 : BlobGas.fromHexString(blockParam.getExcessBlobGas()),
             maybeParentBeaconBlockRoot.orElse(null),
-            maybeRequests.map(BodyValidation::requestsHash).orElse(null),
+            BodyValidation.requestsHash(requests),
             headerFunctions);
 
     // ensure the block hash matches the blockParam hash
@@ -587,20 +587,19 @@ public abstract class AbstractEngineNewPayload extends ExecutionEngineJsonRpcMet
                 .collect(Collectors.toList()));
   }
 
-  private Optional<List<Request>> extractRequests(final Optional<List<String>> maybeRequestsParam) {
+  private List<Request> extractRequests(final Optional<List<String>> maybeRequestsParam) {
     if (maybeRequestsParam.isEmpty()) {
-      return Optional.empty();
+      return Collections.emptyList();
     }
 
-    return maybeRequestsParam.map(
-        requests ->
-            requests.stream()
-                .map(
-                    s -> {
-                      final Bytes request = Bytes.fromHexString(s);
-                      return new Request(RequestType.of(request.get(0)), request.slice(1));
-                    })
-                .collect(Collectors.toList()));
+    return maybeRequestsParam.get().stream()
+        .map(
+            requestString -> {
+              final Bytes request = Bytes.fromHexString(requestString);
+              return new Request(RequestType.of(request.get(0)), request.slice(1));
+            })
+        .filter(request -> !request.getData().isEmpty())
+        .collect(Collectors.toList());
   }
 
   private void logImportedBlockInfo(

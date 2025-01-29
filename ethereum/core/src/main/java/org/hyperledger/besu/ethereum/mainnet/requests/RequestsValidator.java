@@ -17,8 +17,7 @@ package org.hyperledger.besu.ethereum.mainnet.requests;
 import org.hyperledger.besu.ethereum.core.Request;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface RequestsValidator {
-  boolean validate(Optional<List<Request>> maybeRequests);
+  boolean validate(List<Request> maybeRequests);
 }
