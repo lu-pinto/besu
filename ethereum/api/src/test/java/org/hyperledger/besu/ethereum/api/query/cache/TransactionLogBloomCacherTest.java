@@ -109,7 +109,6 @@ public class TransactionLogBloomCacherTest {
             null,
             null,
             null,
-            null,
             new MainnetBlockHeaderFunctions());
     testHash = fakeHeader.getHash();
     when(blockchain.getBlockHeader(anyLong())).thenReturn(Optional.of(fakeHeader));
@@ -280,7 +279,6 @@ public class TransactionLogBloomCacherTest {
             null,
             Hash.EMPTY,
             0,
-            null,
             null,
             null,
             null,

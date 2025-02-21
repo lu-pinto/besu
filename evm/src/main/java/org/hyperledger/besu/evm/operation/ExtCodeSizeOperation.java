@@ -79,15 +79,6 @@ public class ExtCodeSizeOperation extends AbstractOperation {
     } else {
       final Account account = frame.getWorldUpdater().get(address);
 
-      if (account != null) {
-        final DelegatedCodeGasCostHelper.Result result =
-            deductDelegatedCodeGasCost(frame, gasCalculator(), account);
-        if (result.status() != DelegatedCodeGasCostHelper.Status.SUCCESS) {
-          return new Operation.OperationResult(
-              result.gasCost(), ExceptionalHaltReason.INSUFFICIENT_GAS);
-        }
-      }
-
       Bytes codeSize;
       if (account == null) {
         codeSize = Bytes.EMPTY;
