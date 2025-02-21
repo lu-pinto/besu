@@ -94,6 +94,7 @@ public class BlockHeader extends SealableBlockHeader
         parentBeaconBlockRoot,
         requestsHash,
         blockHeaderFunctions,
+        executionWitness,
         Optional.empty());
   }
 
@@ -120,6 +121,7 @@ public class BlockHeader extends SealableBlockHeader
       final Bytes32 parentBeaconBlockRoot,
       final Hash requestsHash,
       final BlockHeaderFunctions blockHeaderFunctions,
+      final ExecutionWitness executionWitness,
       final Optional<Bytes> rawRlp) {
     super(
         parentHash,
@@ -310,8 +312,8 @@ public class BlockHeader extends SealableBlockHeader
         excessBlobGas,
         parentBeaconBlockRoot,
         requestsHash,
-        executionWitness,
         blockHeaderFunctions,
+        executionWitness,
         Optional.of(headerRlp.raw()));
   }
 

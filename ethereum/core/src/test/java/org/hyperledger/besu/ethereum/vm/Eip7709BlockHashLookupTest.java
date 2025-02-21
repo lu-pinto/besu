@@ -16,6 +16,7 @@ package org.hyperledger.besu.ethereum.vm;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -123,7 +124,6 @@ class Eip7709BlockHashLookupTest {
     when(frame.getAccessWitness()).thenReturn(accessWitness);
     lookup.apply(frame, CURRENT_BLOCK_NUMBER - 1L);
     verify(frame).decrementRemainingGas(eq(100L));
-    verify(frame).getBlockValues();
     verify(frame).getAccessWitness();
     verify(frame).getRemainingGas();
     verify(frame).getWorldUpdater();

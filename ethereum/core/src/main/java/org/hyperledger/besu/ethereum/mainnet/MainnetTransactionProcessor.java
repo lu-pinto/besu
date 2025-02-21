@@ -696,7 +696,7 @@ public class MainnetTransactionProcessor {
     private TransactionValidatorFactory transactionValidatorFactory;
     private ContractCreationProcessor contractCreationProcessor;
     private MessageCallProcessor messageCallProcessor;
-    private boolean clearEmptyAccounts;
+    private ClearEmptyAccountStrategy clearEmptyAccountStrategy;
     private boolean warmCoinbase;
     private int maxStackSize;
     private FeeMarket feeMarket;
@@ -725,8 +725,8 @@ public class MainnetTransactionProcessor {
       return this;
     }
 
-    public Builder clearEmptyAccounts(final boolean clearEmptyAccounts) {
-      this.clearEmptyAccounts = clearEmptyAccounts;
+    public Builder clearEmptyAccountStrategy(final ClearEmptyAccountStrategy clearEmptyAccountStrategy) {
+      this.clearEmptyAccountStrategy = clearEmptyAccountStrategy;
       return this;
     }
 
@@ -762,7 +762,7 @@ public class MainnetTransactionProcessor {
       this.transactionValidatorFactory = processor.transactionValidatorFactory;
       this.contractCreationProcessor = processor.contractCreationProcessor;
       this.messageCallProcessor = processor.messageCallProcessor;
-      this.clearEmptyAccounts = processor.clearEmptyAccounts;
+      this.clearEmptyAccountStrategy = processor.clearEmptyAccountStrategy;
       this.warmCoinbase = processor.warmCoinbase;
       this.maxStackSize = processor.maxStackSize;
       this.feeMarket = processor.feeMarket;
@@ -777,7 +777,7 @@ public class MainnetTransactionProcessor {
           transactionValidatorFactory,
           contractCreationProcessor,
           messageCallProcessor,
-          clearEmptyAccounts,
+          clearEmptyAccountStrategy,
           warmCoinbase,
           maxStackSize,
           feeMarket,

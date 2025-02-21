@@ -995,7 +995,7 @@ public abstract class MainnetProtocolSpecs {
       final MetricsSystem metricsSystem) {
     final ClearEmptyAccountStrategy clearEmptyAccountStrategy =
         new ClearEmptyAccountStrategy.ClearEmptyAccountWithException(
-            List.of(PragueBlockHashProcessor.HISTORY_STORAGE_ADDRESS));
+            List.of(Eip7709BlockHashProcessor.EIP_7709_HISTORY_STORAGE_ADDRESS));
     return shanghaiDefinition(
             chainId,
             enableRevertReason,
@@ -1015,16 +1015,17 @@ public abstract class MainnetProtocolSpecs {
                 transactionValidatorFactory,
                 contractCreationProcessor,
                 messageCallProcessor) ->
-                new MainnetTransactionProcessor(
-                    gasCalculator,
-                    transactionValidatorFactory,
-                    contractCreationProcessor,
-                    messageCallProcessor,
-                    clearEmptyAccountStrategy,
-                    true,
-                    evmConfiguration.evmStackSize(),
-                    feeMarket,
-                    CoinbaseFeePriceCalculator.eip1559()))
+              MainnetTransactionProcessor.builder()
+                .gasCalculator(gasCalculator)
+                .transactionValidatorFactory(transactionValidatorFactory)
+                .contractCreationProcessor(contractCreationProcessor)
+                .messageCallProcessor(messageCallProcessor)
+                .clearEmptyAccountStrategy(clearEmptyAccountStrategy)
+                .warmCoinbase(true)
+                .maxStackSize(evmConfiguration.evmStackSize())
+                .feeMarket(feeMarket)
+                .coinbaseFeePriceCalculator(CoinbaseFeePriceCalculator.eip1559())
+                .build())
         .withdrawalsProcessor(new WithdrawalsProcessor(clearEmptyAccountStrategy))
         .executionWitnessValidator(new ExecutionWitnessValidator.AllowedExecutionWitness())
         .blockHashProcessor(new Eip7709BlockHashProcessor())

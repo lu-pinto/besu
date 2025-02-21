@@ -13,6 +13,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+configurations {
+  referenceTestAnnotationProcessor.extendsFrom testAnnotationProcessor
+  // we need this because referenceTestImplementation defaults to 'canBeResolved=false'.
+  executionRefTestImplementation.extendsFrom referenceTestImplementation {
+    canBeResolved = true
+    canBeConsumed = false
+  }
+  verkleRefTestImplemention.extendsFrom referenceTestImplementation {
+    canBeResolved = true
+    canBeConsumed = false
+  }
+}
+
 def blockchainReferenceTests = tasks.register("blockchainReferenceTests")  {
   final referenceTestsPath = 'src/reference-test/external-resources/BlockchainTests'
   final generatedTestsPath = "$buildDir/generated/sources/reference-test/$name/java"
@@ -225,8 +238,6 @@ dependencies {
   referenceTestImplementation project(path: ':plugin-api')
   referenceTestImplementation project(path: ':testutil')
   referenceTestImplementation project(path: ':util')
-  // the following will be resolved via custom ivy repository declared in root build.gradle
-  referenceTestImplementation 'ethereum:execution-spec-tests:4.0.0:fixtures_develop@tar.gz'
   referenceTestImplementation 'com.fasterxml.jackson.core:jackson-databind'
   referenceTestImplementation 'com.google.guava:guava'
   referenceTestImplementation 'io.tmio:tuweni-bytes'
@@ -238,7 +249,7 @@ dependencies {
   // the following will be resolved via custom ivy repository declared in root build.gradle
   executionRefTestImplementation dependencies.create('ethereum:execution-spec-tests') {
     version {
-      strictly 'v3.0.0'
+      strictly 'v4.0.0'
     }
     artifact {
       name = 'fixtures'
@@ -343,19 +354,5 @@ def generateTestFiles(
       .replaceAll("%%TESTS_NAME%%", namePrefix + "_" + idx)
       .replaceAll("%%PACKAGE_NAME%%", packageString)
     testFile.newWriter().withWriter { w -> w << testFileContents }
-  }
-}
-
-configurations {
-  referenceTestAnnotationProcessor.extendsFrom testAnnotationProcessor
-  // we need this because referenceTestImplementation defaults to 'canBeResolved=false'.
-  tarConfig.extendsFrom referenceTestImplementation
-  tarConfig {
-    canBeResolved = true
-    canBeConsumed = false
-  }
-  verkleRefTestImplemention.extendsFrom referenceTestImplementation {
-    canBeResolved = true
-    canBeConsumed = false
   }
 }

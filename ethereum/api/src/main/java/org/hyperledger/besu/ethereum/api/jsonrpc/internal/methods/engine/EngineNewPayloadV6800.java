@@ -31,17 +31,19 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertx.core.Vertx;
+import org.hyperledger.besu.plugin.services.MetricsSystem;
 
 public class EngineNewPayloadV6800 extends AbstractEngineNewPayload {
 
   public EngineNewPayloadV6800(
-      final Vertx vertx,
-      final ProtocolSchedule protocolSchedule,
-      final ProtocolContext protocolContext,
-      final MergeMiningCoordinator mergeCoordinator,
-      final EthPeers ethPeers,
-      final EngineCallListener engineCallListener) {
-    super(vertx, protocolSchedule, protocolContext, mergeCoordinator, ethPeers, engineCallListener);
+    final Vertx vertx,
+    final ProtocolSchedule protocolSchedule,
+    final ProtocolContext protocolContext,
+    final MergeMiningCoordinator mergeCoordinator,
+    final EthPeers ethPeers,
+    final EngineCallListener engineCallListener,
+    final MetricsSystem metricsSystem) {
+    super(vertx, protocolSchedule, protocolContext, mergeCoordinator, ethPeers, engineCallListener, metricsSystem);
   }
 
   @Override

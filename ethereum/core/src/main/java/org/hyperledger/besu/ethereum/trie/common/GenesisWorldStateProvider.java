@@ -101,7 +101,7 @@ public class GenesisWorldStateProvider {
         new VerkleNoOpCachedWorldStorageManager(verkleWorldStateKeyValueStorage),
         new NoOpTrieLogManager(),
         EvmConfiguration.DEFAULT,
-        new DiffBasedWorldStateConfig());
+        createStatefulConfigWithTrie());
   }
 
   /**

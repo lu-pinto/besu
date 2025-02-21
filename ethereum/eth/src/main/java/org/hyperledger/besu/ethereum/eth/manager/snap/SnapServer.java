@@ -36,7 +36,7 @@ import org.hyperledger.besu.ethereum.trie.CompactEncoding;
 import org.hyperledger.besu.ethereum.trie.MerkleTrie;
 import org.hyperledger.besu.ethereum.trie.diffbased.bonsai.BonsaiWorldStateProvider;
 import org.hyperledger.besu.ethereum.trie.diffbased.bonsai.storage.BonsaiWorldStateKeyValueStorage;
-import org.hyperledger.besu.ethereum.trie.diffbased.common.DiffBasedWorldStateProvider;
+import org.hyperledger.besu.ethereum.trie.diffbased.common.provider.DiffBasedWorldStateProvider;
 import org.hyperledger.besu.ethereum.worldstate.FlatDbMode;
 import org.hyperledger.besu.ethereum.worldstate.WorldStateStorageCoordinator;
 import org.hyperledger.besu.plugin.services.BesuEvents;

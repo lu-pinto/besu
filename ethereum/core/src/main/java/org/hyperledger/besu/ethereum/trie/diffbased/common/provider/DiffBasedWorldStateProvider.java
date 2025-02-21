@@ -394,10 +394,6 @@ public abstract class DiffBasedWorldStateProvider implements WorldStateArchive {
     }
   }
 
-  protected DiffBasedWorldStateConfig cloneBonsaiWorldStateConfig() {
-    return new DiffBasedWorldStateConfig(defaultWorldStateConfig);
-  }
-
   @Override
   public void heal(final Optional<Address> maybeAccountToRepair, final Bytes location) {
     // by default no heal mechanism

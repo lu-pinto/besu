@@ -66,7 +66,7 @@ public class VerkleReferenceTestCaseSpec implements BlockchainReferenceTestCase 
       final BlockHeader genesis) {
     final WorldStateArchive worldStateArchive = createVerkleInMemoryWorldStateArchive(blockchain);
 
-    final MutableWorldState worldState = worldStateArchive.getMutable();
+    final MutableWorldState worldState = worldStateArchive.getWorldState();
     final WorldUpdater updater = worldState.updater();
 
     for (final Map.Entry<String, ReferenceTestWorldState.AccountMock> entry : accounts.entrySet()) {
@@ -190,7 +190,6 @@ public class VerkleReferenceTestCaseSpec implements BlockchainReferenceTestCase 
           Bytes.fromHexStringLenient(nonce).toLong(),
           withdrawalsRoot != null ? Hash.fromHexString(withdrawalsRoot) : null,
           0L,
-          null,
           null,
           null,
           null,

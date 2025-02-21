@@ -91,8 +91,8 @@ public class BlockchainReferenceTestTools {
       // EOF tests don't have Prague stuff like deposits right now
       .ignore("/stEOF/")
 
-    // These are for the older reference tests but EIP-2537 is covered by eip2537_bls_12_381_precompiles in the execution-spec-tests
-    params.ignore("/stEIP2537/");
+      // These are for the older reference tests but EIP-2537 is covered by eip2537_bls_12_381_precompiles in the execution-spec-tests
+      .ignore("/stEIP2537/");
 
     if (NETWORKS_TO_RUN.isEmpty()) {
       params.ignoreAll();
