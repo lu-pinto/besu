@@ -79,7 +79,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 
 import io.vertx.core.Vertx;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt64;
 import org.ethereum.beacon.discovery.schema.NodeRecord;
 import org.ethereum.beacon.discovery.schema.NodeRecordFactory;

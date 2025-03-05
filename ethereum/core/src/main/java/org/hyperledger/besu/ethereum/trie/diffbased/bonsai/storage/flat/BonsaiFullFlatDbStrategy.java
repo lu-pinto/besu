@@ -29,7 +29,7 @@ import org.hyperledger.besu.plugin.services.storage.SegmentedKeyValueStorage;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class BonsaiFullFlatDbStrategy extends BonsaiFlatDbStrategy {
 

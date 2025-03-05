@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.p2p.rlpx.wire;
 
-import static org.apache.tuweni.bytes.Bytes.wrap;
+import static org.apache.tuweni.bytes.v2.Bytes.wrap;
 
 import org.hyperledger.besu.ethereum.rlp.RLPInput;
 import org.hyperledger.besu.ethereum.rlp.RLPOutput;

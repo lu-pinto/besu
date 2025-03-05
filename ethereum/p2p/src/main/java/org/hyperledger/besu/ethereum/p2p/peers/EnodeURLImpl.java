@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 
 import com.google.common.net.InetAddresses;
 import com.google.common.primitives.Ints;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class EnodeURLImpl implements EnodeURL {
 

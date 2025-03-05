@@ -27,8 +27,8 @@ import org.hyperledger.besu.ethereum.rlp.RLPInput;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 public final class InitiatorHandshakeMessageV4 implements InitiatorHandshakeMessage {
 

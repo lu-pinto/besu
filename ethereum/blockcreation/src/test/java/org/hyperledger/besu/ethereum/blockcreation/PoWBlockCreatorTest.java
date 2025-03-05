@@ -66,7 +66,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import com.google.common.collect.Lists;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.Test;
 
 class PoWBlockCreatorTest extends AbstractBlockCreatorTest {

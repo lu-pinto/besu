@@ -41,7 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class EthProtocolManagerTestBuilder {
   private static final BigInteger DEFAULT_NETWORK_ID = BigInteger.ONE;

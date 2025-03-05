@@ -34,7 +34,7 @@ import java.util.Queue;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nullable;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * The EOF layout.

@@ -22,9 +22,9 @@ import org.hyperledger.besu.ethereum.rlp.RLPInput;
 
 import java.util.Collection;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.DelegatingBytes;
-import org.apache.tuweni.bytes.MutableBytes;
+import org.apache.tuweni.bytes.v2.DelegatingBytes;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 
 /**
  * Bloom filter implementation for storing persistent logs, describes a 2048-bit representation of

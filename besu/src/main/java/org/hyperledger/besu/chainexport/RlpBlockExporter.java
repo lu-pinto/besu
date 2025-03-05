@@ -21,7 +21,7 @@ import org.hyperledger.besu.ethereum.rlp.RLP;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Rlp block exporter. */
 public class RlpBlockExporter extends BlockExporter {

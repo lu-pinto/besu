@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.api.graphql.internal.pojoadapter;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * Represents the result of a call execution. This class is used to encapsulate the status, gas

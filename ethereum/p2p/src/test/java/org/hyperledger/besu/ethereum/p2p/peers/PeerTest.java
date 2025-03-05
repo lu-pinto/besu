@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.p2p.peers;
 
-import static org.apache.tuweni.bytes.Bytes.fromHexString;
+import static org.apache.tuweni.bytes.v2.Bytes.fromHexString;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,7 +23,7 @@ import org.hyperledger.besu.ethereum.p2p.discovery.DiscoveryPeer;
 import org.hyperledger.besu.ethereum.p2p.discovery.PeerDiscoveryStatus;
 
 import com.google.common.net.InetAddresses;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.Test;
 
 public class PeerTest {

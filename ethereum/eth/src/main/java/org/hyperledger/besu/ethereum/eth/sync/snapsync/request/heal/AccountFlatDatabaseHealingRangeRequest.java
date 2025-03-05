@@ -47,8 +47,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import kotlin.collections.ArrayDeque;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /**
  * The AccountFlatDatabaseHealingRangeRequest class represents a request to heal a range of account

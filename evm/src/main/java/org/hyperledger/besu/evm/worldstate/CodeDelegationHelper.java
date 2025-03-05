@@ -16,7 +16,7 @@ package org.hyperledger.besu.evm.worldstate;
 
 import org.hyperledger.besu.datatypes.Address;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** Helper class for 7702 delegated code interactions */
 public class CodeDelegationHelper {

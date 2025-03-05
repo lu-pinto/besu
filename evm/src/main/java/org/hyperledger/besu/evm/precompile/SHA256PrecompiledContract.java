@@ -20,7 +20,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import javax.annotation.Nonnull;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Sha256 precompiled contract. */
 public class SHA256PrecompiledContract extends AbstractPrecompiledContract {

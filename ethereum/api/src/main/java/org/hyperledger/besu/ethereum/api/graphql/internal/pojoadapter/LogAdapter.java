@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 import graphql.schema.DataFetchingEnvironment;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * This class is an adapter for the LogWithMetadata class.

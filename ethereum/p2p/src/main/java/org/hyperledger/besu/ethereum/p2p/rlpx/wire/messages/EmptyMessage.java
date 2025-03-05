@@ -18,7 +18,7 @@ import static org.hyperledger.besu.ethereum.rlp.RLP.EMPTY_LIST;
 
 import org.hyperledger.besu.ethereum.p2p.rlpx.wire.MessageData;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** A message without a body. */
 abstract class EmptyMessage implements MessageData {

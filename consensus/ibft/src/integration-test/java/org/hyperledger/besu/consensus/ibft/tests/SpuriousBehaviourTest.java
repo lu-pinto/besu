@@ -40,7 +40,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

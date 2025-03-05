@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Json Bft config options. */
 public class JsonBftConfigOptions implements BftConfigOptions {

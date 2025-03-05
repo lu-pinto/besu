@@ -18,7 +18,7 @@ import org.hyperledger.besu.datatypes.Hash;
 
 import java.util.Objects;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class PoWSolution {
   private final long nonce;

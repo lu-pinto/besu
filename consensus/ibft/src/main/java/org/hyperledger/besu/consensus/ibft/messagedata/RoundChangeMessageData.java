@@ -18,7 +18,7 @@ import org.hyperledger.besu.consensus.common.bft.messagedata.AbstractBftMessageD
 import org.hyperledger.besu.consensus.ibft.messagewrappers.RoundChange;
 import org.hyperledger.besu.ethereum.p2p.rlpx.wire.MessageData;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Round change message data. */
 public class RoundChangeMessageData extends AbstractBftMessageData {

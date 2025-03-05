@@ -37,8 +37,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import kotlin.collections.ArrayDeque;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 
 public class GetBytecodeFromPeerTask extends AbstractPeerRequestTask<Map<Bytes32, Bytes>> {

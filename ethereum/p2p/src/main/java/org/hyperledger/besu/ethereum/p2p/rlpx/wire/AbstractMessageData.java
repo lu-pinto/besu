@@ -16,7 +16,7 @@ package org.hyperledger.besu.ethereum.p2p.rlpx.wire;
 
 import java.util.Objects;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public abstract class AbstractMessageData implements MessageData {
 

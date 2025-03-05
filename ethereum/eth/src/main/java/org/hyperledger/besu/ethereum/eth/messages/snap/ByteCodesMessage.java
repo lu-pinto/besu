@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import kotlin.collections.ArrayDeque;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.immutables.value.Value;
 
 public final class ByteCodesMessage extends AbstractSnapMessageData {

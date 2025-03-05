@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.evm.internal;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Operand stack. */
 public class OperandStack extends FlexStack<Bytes> {

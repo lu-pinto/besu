@@ -20,7 +20,7 @@ import static org.hyperledger.besu.ethereum.core.encoding.TransactionEncoder.wri
 import org.hyperledger.besu.ethereum.core.Transaction;
 import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class EIP1559TransactionEncoder {
 

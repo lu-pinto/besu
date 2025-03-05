@@ -43,7 +43,7 @@ import org.hyperledger.besu.evm.processor.AbstractMessageProcessor;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /**

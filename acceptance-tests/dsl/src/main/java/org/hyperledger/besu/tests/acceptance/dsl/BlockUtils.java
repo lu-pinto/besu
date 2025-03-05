@@ -25,7 +25,7 @@ import org.hyperledger.besu.evm.log.LogsBloomFilter;
 
 import java.math.BigInteger;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.web3j.protocol.core.methods.response.EthBlock.Block;
 
 public class BlockUtils {

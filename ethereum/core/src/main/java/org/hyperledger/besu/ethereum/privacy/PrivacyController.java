@@ -25,7 +25,7 @@ import org.hyperledger.besu.ethereum.transaction.TransactionInvalidReason;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public interface PrivacyController {
 

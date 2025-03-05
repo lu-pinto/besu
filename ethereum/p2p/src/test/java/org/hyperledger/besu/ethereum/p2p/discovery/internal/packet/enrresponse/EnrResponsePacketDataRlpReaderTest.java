@@ -18,7 +18,7 @@ import org.hyperledger.besu.ethereum.rlp.BytesValueRLPInput;
 
 import java.util.Map;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt64;
 import org.ethereum.beacon.discovery.schema.IdentitySchemaInterpreter;
 import org.ethereum.beacon.discovery.schema.NodeRecord;

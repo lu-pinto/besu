@@ -19,7 +19,7 @@ import org.hyperledger.besu.plugin.data.EnodeURL;
 
 import java.util.Arrays;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class PeerTestHelper {
 

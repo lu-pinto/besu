@@ -29,7 +29,7 @@ import org.hyperledger.besu.ethereum.p2p.peers.Peer;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.Test;
 
 public class PeerDiscoveryBootstrappingTest {

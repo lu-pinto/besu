@@ -17,7 +17,7 @@ package org.hyperledger.besu.crypto;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
 

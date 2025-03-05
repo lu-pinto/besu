@@ -19,7 +19,7 @@ import org.hyperledger.besu.plugin.data.PrivateTransaction;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * Allows you to register a provider that will dictate how the payload of a privacy marker

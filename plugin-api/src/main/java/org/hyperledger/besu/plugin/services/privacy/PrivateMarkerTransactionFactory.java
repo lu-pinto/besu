@@ -18,7 +18,7 @@ import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.plugin.data.PrivateTransaction;
 import org.hyperledger.besu.plugin.data.UnsignedPrivateMarkerTransaction;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** Implement an instance of this for signing and serializing privacy marker transactions. */
 public interface PrivateMarkerTransactionFactory {

@@ -17,7 +17,7 @@ package org.hyperledger.besu.ethereum.trie;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class StorageEntriesCollector<V> implements TrieIterator.LeafHandler<V> {
 

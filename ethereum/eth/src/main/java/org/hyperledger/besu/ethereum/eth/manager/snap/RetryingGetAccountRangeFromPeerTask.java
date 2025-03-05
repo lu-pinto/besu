@@ -24,7 +24,7 @@ import org.hyperledger.besu.plugin.services.MetricsSystem;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class RetryingGetAccountRangeFromPeerTask
     extends AbstractRetryingSwitchingPeerTask<AccountRangeMessage.AccountRangeData> {

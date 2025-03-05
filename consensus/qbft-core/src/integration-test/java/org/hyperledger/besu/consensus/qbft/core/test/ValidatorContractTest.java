@@ -47,7 +47,7 @@ import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.common.io.Resources;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

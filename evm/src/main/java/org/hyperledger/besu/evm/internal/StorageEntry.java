@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.evm.internal;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /** The Storage entry. */

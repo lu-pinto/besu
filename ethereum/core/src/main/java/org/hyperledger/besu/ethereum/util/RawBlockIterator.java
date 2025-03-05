@@ -30,7 +30,7 @@ import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public final class RawBlockIterator implements Iterator<Block>, Closeable {
   private static final int DEFAULT_INIT_BUFFER_CAPACITY = 1 << 16;

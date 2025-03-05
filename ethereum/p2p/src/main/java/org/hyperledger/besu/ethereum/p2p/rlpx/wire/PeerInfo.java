@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.p2p.rlpx.wire;
 
-import static org.apache.tuweni.bytes.Bytes.wrap;
+import static org.apache.tuweni.bytes.v2.Bytes.wrap;
 
 import org.hyperledger.besu.crypto.SECPPublicKey;
 import org.hyperledger.besu.crypto.SignatureAlgorithmFactory;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.owasp.encoder.Encode;
 
 /**

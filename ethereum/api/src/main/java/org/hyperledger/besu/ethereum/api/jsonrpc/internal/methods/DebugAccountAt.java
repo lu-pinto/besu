@@ -42,7 +42,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class DebugAccountAt extends AbstractBlockParameterOrBlockHashMethod {
   private final Supplier<BlockTracer> blockTracerSupplier;

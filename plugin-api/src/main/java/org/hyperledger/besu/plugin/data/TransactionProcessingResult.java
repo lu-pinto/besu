@@ -19,7 +19,7 @@ import org.hyperledger.besu.evm.log.Log;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * This interface represents the result of processing a transaction. It provides methods to access

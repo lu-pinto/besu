@@ -16,7 +16,7 @@ package org.hyperledger.besu.ethereum.eth.sync.state.cache;
 
 import org.hyperledger.besu.ethereum.core.Block;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.immutables.value.Value;
 
 @Value.Immutable

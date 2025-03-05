@@ -19,7 +19,7 @@ import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 
 import java.util.Objects;
 
-import org.apache.tuweni.bytes.Bytes48;
+import org.apache.tuweni.bytes.v2.Bytes48;
 
 /** This class contains the data for a KZG commitment. */
 public class KZGCommitment {

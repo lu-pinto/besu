@@ -23,7 +23,7 @@ import org.hyperledger.besu.tests.acceptance.dsl.transaction.Transaction;
 
 import java.io.IOException;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.web3j.protocol.core.methods.response.EthGetCode;
 
 public class EthGetCodeTransaction implements Transaction<Bytes> {

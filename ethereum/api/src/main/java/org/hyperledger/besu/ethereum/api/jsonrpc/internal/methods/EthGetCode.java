@@ -26,7 +26,7 @@ import org.hyperledger.besu.ethereum.api.query.BlockchainQueries;
 
 import java.util.function.Supplier;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class EthGetCode extends AbstractBlockParameterOrBlockHashMethod {
 

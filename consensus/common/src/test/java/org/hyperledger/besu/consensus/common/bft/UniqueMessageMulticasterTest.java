@@ -30,7 +30,7 @@ import org.hyperledger.besu.ethereum.p2p.rlpx.wire.RawMessage;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

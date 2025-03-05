@@ -32,7 +32,7 @@ import org.hyperledger.besu.services.tasks.Task;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

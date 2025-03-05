@@ -24,7 +24,7 @@ import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public final class DisconnectMessage extends AbstractMessageData {
 

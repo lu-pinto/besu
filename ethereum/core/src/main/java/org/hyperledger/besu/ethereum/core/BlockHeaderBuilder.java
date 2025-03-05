@@ -32,8 +32,8 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.OptionalLong;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** A utility class for building block headers. */
 public class BlockHeaderBuilder {

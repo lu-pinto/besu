@@ -31,7 +31,7 @@ import org.hyperledger.besu.ethereum.mainnet.ProtocolSchedule;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** Supports contract based voters and validators in extra data */
 public class QbftBlockCreatorFactory extends BftBlockCreatorFactory<QbftConfigOptions> {

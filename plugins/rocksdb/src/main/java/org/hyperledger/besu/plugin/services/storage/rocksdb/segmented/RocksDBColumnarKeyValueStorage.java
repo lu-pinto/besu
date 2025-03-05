@@ -43,7 +43,7 @@ import java.util.stream.Stream;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Streams;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.rocksdb.AbstractRocksIterator;
 import org.rocksdb.BlockBasedTableConfig;
 import org.rocksdb.BloomFilter;

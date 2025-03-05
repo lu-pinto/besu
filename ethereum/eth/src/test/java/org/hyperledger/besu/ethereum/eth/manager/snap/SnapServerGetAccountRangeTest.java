@@ -34,8 +34,8 @@ import org.hyperledger.besu.plugin.services.storage.DataStorageFormat;
 import java.math.BigInteger;
 import java.util.NavigableMap;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

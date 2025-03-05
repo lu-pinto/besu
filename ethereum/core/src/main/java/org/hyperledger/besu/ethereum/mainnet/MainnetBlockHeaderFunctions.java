@@ -20,7 +20,7 @@ import org.hyperledger.besu.ethereum.core.BlockHeaderFunctions;
 import org.hyperledger.besu.ethereum.core.ParsedExtraData;
 import org.hyperledger.besu.ethereum.rlp.RLP;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** Implements the block hashing algorithm for MainNet as per the yellow paper. */
 public class MainnetBlockHeaderFunctions implements BlockHeaderFunctions {

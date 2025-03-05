@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.crypto.SECP256K1;
 import org.apache.tuweni.io.Base32;
 import org.apache.tuweni.io.Base64URLSafe;

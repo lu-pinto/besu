@@ -20,9 +20,9 @@ import static org.hyperledger.besu.crypto.Hash.sha256;
 import org.hyperledger.besu.ethereum.rlp.RLP;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.bytes.DelegatingBytes32;
+import org.apache.tuweni.bytes.v2.DelegatingBytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** A 32-bytes hash value as used in Ethereum blocks, usually the result of the KEC algorithm. */
 public class Hash extends DelegatingBytes32 {

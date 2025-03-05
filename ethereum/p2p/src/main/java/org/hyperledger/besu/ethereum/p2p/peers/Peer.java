@@ -20,7 +20,7 @@ import org.hyperledger.besu.plugin.data.EnodeURL;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.ethereum.beacon.discovery.schema.NodeRecord;
 
 public interface Peer extends PeerId {

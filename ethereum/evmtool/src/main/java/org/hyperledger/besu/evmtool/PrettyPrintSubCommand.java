@@ -27,7 +27,7 @@ import org.hyperledger.besu.util.LogConfigurator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import picocli.CommandLine;
 
 /**

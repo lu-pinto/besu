@@ -17,7 +17,7 @@ package org.hyperledger.besu.plugin.data;
 import org.hyperledger.besu.datatypes.RequestType;
 import org.hyperledger.besu.plugin.Unstable;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** A request is an operation sent to the Beacon Node */
 @Unstable

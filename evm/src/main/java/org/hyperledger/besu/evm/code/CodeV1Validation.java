@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Queue;
 import javax.annotation.Nullable;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** Code V1 Validation */
 public class CodeV1Validation implements EOFValidator {

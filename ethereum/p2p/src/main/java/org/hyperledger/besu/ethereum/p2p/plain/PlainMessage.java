@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.p2p.plain;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class PlainMessage {
 

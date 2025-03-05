@@ -22,7 +22,7 @@ import java.math.BigInteger;
 import java.util.AbstractMap;
 import java.util.Map;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** A P2P Network Message's Data. */
 public interface MessageData {

@@ -18,7 +18,7 @@ import org.hyperledger.besu.datatypes.Transaction;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * TransactionSimulationResult

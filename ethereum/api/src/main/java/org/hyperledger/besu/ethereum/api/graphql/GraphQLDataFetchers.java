@@ -58,8 +58,8 @@ import java.util.stream.Collectors;
 import com.google.common.base.Preconditions;
 import graphql.GraphQLContext;
 import graphql.schema.DataFetcher;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /**
  * This class contains data fetchers for GraphQL queries.

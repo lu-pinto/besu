@@ -24,7 +24,7 @@ import org.hyperledger.besu.plugin.services.privacy.PrivateMarkerTransactionFact
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class RandomSigningPrivateMarkerTransactionFactory
     extends SigningPrivateMarkerTransactionFactory implements PrivateMarkerTransactionFactory {

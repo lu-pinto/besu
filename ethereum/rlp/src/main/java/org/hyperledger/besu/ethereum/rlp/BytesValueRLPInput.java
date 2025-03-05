@@ -16,9 +16,9 @@ package org.hyperledger.besu.ethereum.rlp;
 
 import java.math.BigInteger;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.bytes.Bytes48;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes48;
 
 /** An {@link RLPInput} that reads RLP encoded data from a {@link Bytes}. */
 public class BytesValueRLPInput extends AbstractRLPInput {

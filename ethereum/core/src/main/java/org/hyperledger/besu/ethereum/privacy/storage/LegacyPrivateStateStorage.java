@@ -20,8 +20,8 @@ import org.hyperledger.besu.evm.log.Log;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** This interface contains the methods used to access the private state until version 1.3 */
 @Deprecated

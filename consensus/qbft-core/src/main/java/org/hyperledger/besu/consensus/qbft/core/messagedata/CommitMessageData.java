@@ -18,7 +18,7 @@ import org.hyperledger.besu.consensus.common.bft.messagedata.AbstractBftMessageD
 import org.hyperledger.besu.consensus.qbft.core.messagewrappers.Commit;
 import org.hyperledger.besu.ethereum.p2p.rlpx.wire.MessageData;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Commit message data. */
 public class CommitMessageData extends AbstractBftMessageData {

@@ -23,7 +23,7 @@ import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 
 import java.util.List;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class CodeDelegationTransactionEncoder {
 

@@ -20,7 +20,7 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The interface Contract validation rule. */
 @FunctionalInterface

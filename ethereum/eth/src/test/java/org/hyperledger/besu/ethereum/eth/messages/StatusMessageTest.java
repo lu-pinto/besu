@@ -25,8 +25,8 @@ import org.hyperledger.besu.ethereum.p2p.rlpx.wire.MessageData;
 import java.math.BigInteger;
 import java.util.Random;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.Test;
 
 public class StatusMessageTest {

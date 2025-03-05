@@ -23,7 +23,7 @@ import org.hyperledger.besu.datatypes.GWei;
 
 import java.util.List;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.Test;
 
 public class EnginePayloadAttributesParameterTest {

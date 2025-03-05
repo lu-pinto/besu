@@ -19,8 +19,8 @@ import org.hyperledger.besu.evm.frame.BlockValues;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** A concrete BlockValues object that takes all the defaults */
 public class SimpleBlockValues implements BlockValues {

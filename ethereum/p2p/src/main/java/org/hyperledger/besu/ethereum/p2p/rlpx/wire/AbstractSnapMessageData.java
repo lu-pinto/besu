@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public abstract class AbstractSnapMessageData extends AbstractMessageData {
 

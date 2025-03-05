@@ -98,7 +98,7 @@ import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 
 import com.google.common.collect.Lists;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.awaitility.Awaitility;
 import org.awaitility.core.ConditionFactory;
 import org.awaitility.core.ConditionTimeoutException;

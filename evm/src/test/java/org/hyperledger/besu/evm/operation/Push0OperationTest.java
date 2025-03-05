@@ -29,7 +29,7 @@ import org.hyperledger.besu.evm.testutils.FakeBlockValues;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

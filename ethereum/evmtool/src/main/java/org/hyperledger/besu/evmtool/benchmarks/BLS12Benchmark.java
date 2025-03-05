@@ -28,7 +28,7 @@ import java.io.PrintStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** Benchmark BLS12-381 G1 and G2 MSM */
 public class BLS12Benchmark extends BenchmarkExecutor {

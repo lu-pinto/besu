@@ -28,7 +28,7 @@ import org.hyperledger.besu.ethereum.api.query.BlockWithMetadata;
 import java.util.Optional;
 
 import graphql.schema.DataFetcher;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

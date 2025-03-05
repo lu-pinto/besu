@@ -16,7 +16,7 @@ package org.hyperledger.besu.plugin.data;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The enum Restriction. */
 public enum Restriction {

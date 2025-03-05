@@ -94,8 +94,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

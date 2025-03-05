@@ -25,7 +25,7 @@ import org.hyperledger.besu.plugin.services.permissioning.NodeConnectionPermissi
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public abstract class AbstractNodeSmartContractPermissioningController
     implements NodeConnectionPermissioningProvider {

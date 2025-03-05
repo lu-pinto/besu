@@ -21,7 +21,7 @@ import org.hyperledger.besu.testutil.JsonTestParameters;
 
 import java.util.stream.Stream;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

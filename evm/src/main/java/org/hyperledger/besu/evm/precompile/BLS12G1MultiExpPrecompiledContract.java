@@ -16,7 +16,7 @@ package org.hyperledger.besu.evm.precompile;
 
 import org.hyperledger.besu.nativelib.gnark.LibGnarkEIP2537;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The type BLS12_G1 MultiExp precompiled contract. */
 public class BLS12G1MultiExpPrecompiledContract extends AbstractBLS12PrecompiledContract {

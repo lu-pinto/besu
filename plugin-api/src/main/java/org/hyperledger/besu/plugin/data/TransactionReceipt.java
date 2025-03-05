@@ -17,7 +17,7 @@ package org.hyperledger.besu.plugin.data;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** A transaction receipt, containing information pertaining to a transaction execution. */
 public interface TransactionReceipt {

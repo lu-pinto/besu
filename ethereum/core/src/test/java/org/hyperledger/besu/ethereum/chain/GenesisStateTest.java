@@ -29,7 +29,7 @@ import org.hyperledger.besu.evm.account.Account;
 
 import java.util.stream.Stream;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;

@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.services.kvstore;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * This class is a comparator that allows comparing two byte arrays from left to right.

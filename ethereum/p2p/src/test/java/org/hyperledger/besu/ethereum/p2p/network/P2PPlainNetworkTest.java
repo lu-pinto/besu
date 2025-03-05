@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import io.vertx.core.Vertx;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

@@ -19,7 +19,7 @@ import org.hyperledger.besu.evm.code.CodeSection;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** Represents EVM code associated with an account. */
 public interface Code {

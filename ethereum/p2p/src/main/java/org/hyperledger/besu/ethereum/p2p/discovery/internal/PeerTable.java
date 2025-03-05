@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.hash.BloomFilter;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * Implements a Kademlia routing table based on k-buckets with a keccak-256 XOR-based distance

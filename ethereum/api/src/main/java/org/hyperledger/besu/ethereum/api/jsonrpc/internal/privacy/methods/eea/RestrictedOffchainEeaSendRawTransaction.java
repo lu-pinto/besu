@@ -33,7 +33,7 @@ import org.hyperledger.besu.plugin.services.privacy.PrivateMarkerTransactionFact
 import java.util.Optional;
 
 import io.vertx.ext.auth.User;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 @Deprecated(since = "24.12.0")
 public class RestrictedOffchainEeaSendRawTransaction extends AbstractEeaSendRawTransaction {

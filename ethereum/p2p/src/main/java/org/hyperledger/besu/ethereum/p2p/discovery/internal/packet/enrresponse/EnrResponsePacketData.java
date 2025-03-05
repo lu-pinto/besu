@@ -16,7 +16,7 @@ package org.hyperledger.besu.ethereum.p2p.discovery.internal.packet.enrresponse;
 
 import org.hyperledger.besu.ethereum.p2p.discovery.internal.packet.PacketData;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.ethereum.beacon.discovery.schema.NodeRecord;
 
 public class EnrResponsePacketData implements PacketData {

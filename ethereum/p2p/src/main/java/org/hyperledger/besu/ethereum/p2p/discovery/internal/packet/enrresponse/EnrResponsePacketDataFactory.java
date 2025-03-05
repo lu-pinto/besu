@@ -20,7 +20,7 @@ import org.hyperledger.besu.ethereum.p2p.discovery.internal.packet.validation.Re
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.ethereum.beacon.discovery.schema.NodeRecord;
 
 @Singleton

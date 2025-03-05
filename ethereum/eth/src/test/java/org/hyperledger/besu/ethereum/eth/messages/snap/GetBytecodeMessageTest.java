@@ -21,7 +21,7 @@ import org.hyperledger.besu.ethereum.p2p.rlpx.wire.RawMessage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

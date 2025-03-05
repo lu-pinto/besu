@@ -16,7 +16,7 @@ package org.hyperledger.besu.ethereum.worldstate;
 
 import java.util.stream.Stream;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * The FlatDbMode enum represents the different modes of the flat database. It has two modes:

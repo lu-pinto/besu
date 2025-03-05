@@ -47,7 +47,7 @@ import java.util.stream.Stream;
 
 import com.google.common.collect.Streams;
 import com.google.common.util.concurrent.Atomics;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class FlatTraceGenerator {
 

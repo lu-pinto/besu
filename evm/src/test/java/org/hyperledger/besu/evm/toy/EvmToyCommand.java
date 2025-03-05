@@ -36,7 +36,7 @@ import java.util.Deque;
 import java.util.List;
 
 import com.google.common.base.Stopwatch;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import picocli.CommandLine;
 import picocli.CommandLine.ScopeType;
 

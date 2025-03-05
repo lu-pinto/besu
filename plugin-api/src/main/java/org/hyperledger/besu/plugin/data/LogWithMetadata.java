@@ -19,8 +19,8 @@ import org.hyperledger.besu.datatypes.Hash;
 
 import java.util.List;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** A Log entry from a transaction execution. */
 public interface LogWithMetadata {

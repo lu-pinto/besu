@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.io.Resources;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public final class ValidationTestUtils {
 

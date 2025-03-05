@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.security.spec.ECPoint;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

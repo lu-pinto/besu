@@ -18,7 +18,7 @@ import org.hyperledger.besu.datatypes.Wei;
 
 import java.util.Map;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /** A mutable world state account. */

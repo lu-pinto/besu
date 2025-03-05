@@ -21,7 +21,7 @@ import org.hyperledger.besu.plugin.services.BesuEvents;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * Naive implementation of Synchronizer used by retesteth. Because retesteth is not implemented in

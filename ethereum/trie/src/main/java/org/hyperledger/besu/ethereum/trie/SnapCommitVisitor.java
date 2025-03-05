@@ -21,9 +21,9 @@ import org.hyperledger.besu.ethereum.trie.patricia.ExtensionNode;
 
 import java.util.Arrays;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.bytes.MutableBytes;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 
 /**
  * Implements a visitor for persisting changes to nodes during a snap synchronization process,

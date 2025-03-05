@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.evm;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class EOFTestConstants {
 

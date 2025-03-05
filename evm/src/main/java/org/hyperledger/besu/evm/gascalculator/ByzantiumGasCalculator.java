@@ -22,7 +22,7 @@ import org.hyperledger.besu.evm.precompile.BigIntegerModularExponentiationPrecom
 
 import java.math.BigInteger;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Byzantium gas calculator. */
 public class ByzantiumGasCalculator extends SpuriousDragonGasCalculator {

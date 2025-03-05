@@ -28,7 +28,7 @@ import org.hyperledger.besu.plugin.services.query.BftQueryService;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** The Bft query service. */
 public class BftQueryServiceImpl extends PoaQueryServiceImpl implements BftQueryService {

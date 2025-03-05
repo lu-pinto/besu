@@ -24,7 +24,7 @@ import org.hyperledger.besu.plugin.data.EnodeURL;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.ethereum.beacon.discovery.schema.NodeRecord;
 
 /**

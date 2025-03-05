@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.services.tasks;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class InMemoryTaskQueueTest extends AbstractTaskQueueTest<InMemoryTaskQueue<Bytes>> {
 

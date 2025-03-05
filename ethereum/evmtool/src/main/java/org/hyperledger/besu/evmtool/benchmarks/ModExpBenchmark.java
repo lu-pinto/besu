@@ -20,7 +20,7 @@ import java.io.PrintStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** Benchmark Modular Exponentiation */
 public class ModExpBenchmark extends BenchmarkExecutor {

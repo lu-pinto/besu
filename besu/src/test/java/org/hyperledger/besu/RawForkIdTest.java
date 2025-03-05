@@ -20,7 +20,7 @@ import org.hyperledger.besu.ethereum.forkid.ForkId;
 
 import java.util.List;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.Test;
 
 public class RawForkIdTest {

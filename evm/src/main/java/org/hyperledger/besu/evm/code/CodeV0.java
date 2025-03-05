@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Suppliers;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The CodeV0. */
 public class CodeV0 implements Code {

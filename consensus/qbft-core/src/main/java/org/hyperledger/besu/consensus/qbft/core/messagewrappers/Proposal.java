@@ -27,7 +27,7 @@ import org.hyperledger.besu.ethereum.rlp.RLPInput;
 
 import java.util.List;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Proposal. */
 public class Proposal extends BftMessage<ProposalPayload> {

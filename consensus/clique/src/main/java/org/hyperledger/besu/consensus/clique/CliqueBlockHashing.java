@@ -23,7 +23,7 @@ import org.hyperledger.besu.ethereum.rlp.BytesValueRLPOutput;
 
 import java.util.function.Supplier;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Clique block hashing. */
 public class CliqueBlockHashing {

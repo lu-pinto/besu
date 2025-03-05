@@ -14,8 +14,8 @@
  */
 package org.hyperledger.besu.ethereum.rlp;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.MutableBytes;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 
 /** An {@link RLPOutput} that writes RLP encoded data to a {@link Bytes}. */
 public class BytesValueRLPOutput extends AbstractRLPOutput {

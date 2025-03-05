@@ -21,7 +21,7 @@ import org.hyperledger.besu.evm.worldstate.WorldUpdater;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 abstract class AbstractCodeDelegationAccount implements Account {
   private final WorldUpdater worldUpdater;

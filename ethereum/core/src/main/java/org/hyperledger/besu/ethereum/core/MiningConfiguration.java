@@ -32,7 +32,7 @@ import java.util.OptionalLong;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.immutables.value.Value;
 
 @Value.Immutable

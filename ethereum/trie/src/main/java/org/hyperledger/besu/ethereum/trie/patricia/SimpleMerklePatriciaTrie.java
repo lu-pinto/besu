@@ -20,7 +20,7 @@ import org.hyperledger.besu.ethereum.trie.SimpleMerkleTrie;
 
 import java.util.function.Function;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * An in-memory {@link MerkleTrie}.

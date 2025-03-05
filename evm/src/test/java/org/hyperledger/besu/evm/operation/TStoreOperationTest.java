@@ -35,7 +35,7 @@ import org.hyperledger.besu.evm.worldstate.WorldUpdater;
 
 import java.util.stream.Stream;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

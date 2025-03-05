@@ -24,7 +24,7 @@ import org.hyperledger.besu.evm.tracing.StandardJsonTracer;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.Test;
 
 class StandardJsonTracerTest {

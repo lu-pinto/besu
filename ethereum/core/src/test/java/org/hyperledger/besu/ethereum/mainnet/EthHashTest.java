@@ -24,7 +24,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import com.google.common.io.Resources;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
 

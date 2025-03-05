@@ -24,7 +24,7 @@ import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 
 import java.util.Objects;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** Represents the raw values associated with an account in the world state patricia merkle trie. */
 public class PmtStateTrieAccountValue extends AbstractStateTrieAccountValue

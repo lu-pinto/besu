@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ethereum.ckzg4844.CKZG4844JNI;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.bytes.Bytes48;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes48;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 
 public class BlobTestFixture {

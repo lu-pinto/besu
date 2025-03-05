@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.net.util.SubnetUtils;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public record P2PDiscoveryConfiguration(
     Boolean p2pEnabled,

@@ -19,7 +19,7 @@ import org.hyperledger.besu.ethereum.p2p.discovery.internal.packet.PacketData;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt64;
 
 public class PongPacketData implements PacketData {

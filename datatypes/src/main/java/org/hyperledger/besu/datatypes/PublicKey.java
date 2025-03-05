@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.datatypes;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** An interface for {@link Bytes} that also represents a public key */
 public interface PublicKey extends Bytes {}

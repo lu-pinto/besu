@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.consensus.common;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Consensus helpers. */
 public class ConsensusHelpers {

@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class RetryingGetNodeDataFromPeerTask extends AbstractRetryingPeerTask<Map<Hash, Bytes>> {
 

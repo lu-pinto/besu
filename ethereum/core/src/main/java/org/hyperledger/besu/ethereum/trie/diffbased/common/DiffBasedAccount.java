@@ -26,7 +26,7 @@ import org.hyperledger.besu.evm.account.MutableAccount;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 public abstract class DiffBasedAccount implements MutableAccount, AccountValue {

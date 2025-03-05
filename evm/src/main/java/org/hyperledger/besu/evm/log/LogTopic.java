@@ -17,8 +17,8 @@ package org.hyperledger.besu.evm.log;
 import org.hyperledger.besu.ethereum.rlp.RLPInput;
 import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.DelegatingBytes32;
+import org.apache.tuweni.bytes.v2.DelegatingBytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Log topic. */
 public class LogTopic extends DelegatingBytes32 {

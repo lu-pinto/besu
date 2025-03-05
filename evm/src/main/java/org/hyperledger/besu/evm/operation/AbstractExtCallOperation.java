@@ -29,7 +29,7 @@ import org.hyperledger.besu.evm.worldstate.CodeDelegationGasCostHelper;
 
 import javax.annotation.Nonnull;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * A skeleton class for implementing call operations.

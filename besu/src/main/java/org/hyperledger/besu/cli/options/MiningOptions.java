@@ -43,7 +43,7 @@ import org.hyperledger.besu.util.number.PositiveNumber;
 
 import java.util.List;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.slf4j.Logger;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;

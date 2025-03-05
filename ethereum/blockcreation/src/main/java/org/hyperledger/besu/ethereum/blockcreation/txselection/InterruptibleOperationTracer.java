@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class InterruptibleOperationTracer implements BlockAwareOperationTracer {
   private final BlockAwareOperationTracer delegate;

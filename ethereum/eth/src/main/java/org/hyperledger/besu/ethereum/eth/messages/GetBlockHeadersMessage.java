@@ -27,7 +27,7 @@ import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 import java.util.Optional;
 import java.util.OptionalLong;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** PV62 GetBlockHeaders Message. */
 public final class GetBlockHeadersMessage extends AbstractMessageData {

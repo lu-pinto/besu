@@ -17,7 +17,7 @@ package org.hyperledger.besu.datatypes;
 import java.math.BigInteger;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.BaseUInt64Value;
 import org.apache.tuweni.units.bigints.UInt64;
 

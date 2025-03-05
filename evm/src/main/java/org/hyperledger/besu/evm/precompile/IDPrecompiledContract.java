@@ -19,7 +19,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import javax.annotation.Nonnull;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The ID precompiled contract. */
 public class IDPrecompiledContract extends AbstractPrecompiledContract {

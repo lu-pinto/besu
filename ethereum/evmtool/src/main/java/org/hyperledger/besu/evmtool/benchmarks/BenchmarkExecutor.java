@@ -41,7 +41,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Stopwatch;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** Abstract class to support benchmarking of various client algorithms */
 public abstract class BenchmarkExecutor {

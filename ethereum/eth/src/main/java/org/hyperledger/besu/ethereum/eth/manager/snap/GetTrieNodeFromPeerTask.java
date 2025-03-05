@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import kotlin.collections.ArrayDeque;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.slf4j.Logger;
 
 public class GetTrieNodeFromPeerTask extends AbstractPeerRequestTask<Map<Bytes, Bytes>> {

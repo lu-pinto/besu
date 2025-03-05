@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.base.MoreObjects;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class LogWithMetadata extends Log
     implements org.hyperledger.besu.plugin.data.LogWithMetadata {

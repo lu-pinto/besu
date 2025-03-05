@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Function;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * The Bft message.

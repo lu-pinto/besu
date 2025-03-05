@@ -22,7 +22,7 @@ import org.hyperledger.besu.plugin.services.BesuEvents.InitialSyncCompletionList
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** Provides an interface to block synchronization processes. */
 public interface Synchronizer {

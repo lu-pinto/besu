@@ -63,7 +63,7 @@ import java.util.zip.GZIPInputStream;
 
 import com.google.common.base.Splitter;
 import kotlin.ranges.LongRange;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

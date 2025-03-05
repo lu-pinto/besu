@@ -21,7 +21,7 @@ import org.hyperledger.besu.datatypes.Hash;
 import java.util.Collection;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public interface VariablesStorage {
   enum Keys {

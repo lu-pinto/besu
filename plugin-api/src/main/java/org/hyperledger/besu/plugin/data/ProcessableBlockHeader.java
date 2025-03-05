@@ -21,7 +21,7 @@ import org.hyperledger.besu.plugin.Unstable;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /**
  * The minimum set of data for a BlockHeader, as defined in the <a href=

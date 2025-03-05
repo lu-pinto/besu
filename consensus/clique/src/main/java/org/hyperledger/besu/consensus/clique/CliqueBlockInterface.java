@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import com.google.common.collect.ImmutableBiMap;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Clique block interface. */
 public class CliqueBlockInterface implements BlockInterface {

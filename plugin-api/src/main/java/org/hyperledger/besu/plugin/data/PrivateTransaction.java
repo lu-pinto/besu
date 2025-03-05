@@ -21,7 +21,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The interface Private transaction. */
 public interface PrivateTransaction {

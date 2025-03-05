@@ -17,7 +17,7 @@ package org.hyperledger.besu.ethereum.trie;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class Proof<V> {
 

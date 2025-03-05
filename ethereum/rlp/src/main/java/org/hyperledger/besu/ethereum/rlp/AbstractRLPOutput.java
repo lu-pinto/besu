@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.MutableBytes;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 
 abstract class AbstractRLPOutput implements RLPOutput {
   /*

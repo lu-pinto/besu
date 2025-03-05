@@ -18,7 +18,7 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * Adapted from the pc_ecc (Apache 2 License) implementation:

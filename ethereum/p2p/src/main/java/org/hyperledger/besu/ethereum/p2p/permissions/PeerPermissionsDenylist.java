@@ -25,7 +25,7 @@ import java.util.OptionalInt;
 import java.util.Set;
 
 import io.vertx.core.impl.ConcurrentHashSet;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class PeerPermissionsDenylist extends PeerPermissions {
   private static final int DEFAULT_INITIAL_CAPACITY = 20;

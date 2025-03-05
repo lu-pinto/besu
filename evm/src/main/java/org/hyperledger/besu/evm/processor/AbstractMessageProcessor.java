@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * A skeletal class for instantiating message processors.

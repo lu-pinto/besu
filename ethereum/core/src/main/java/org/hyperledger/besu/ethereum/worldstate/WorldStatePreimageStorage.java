@@ -18,7 +18,7 @@ import org.hyperledger.besu.datatypes.Address;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 public interface WorldStatePreimageStorage {

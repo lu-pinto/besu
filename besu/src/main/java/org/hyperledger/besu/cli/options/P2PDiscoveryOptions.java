@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.net.InetAddresses;
 import org.apache.commons.net.util.SubnetUtils;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import picocli.CommandLine;
 
 /** Command line options for configuring P2P discovery on the node. */

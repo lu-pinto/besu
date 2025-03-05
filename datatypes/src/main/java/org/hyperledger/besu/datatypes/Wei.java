@@ -18,7 +18,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Locale;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.BaseUInt256Value;
 import org.apache.tuweni.units.bigints.UInt256;
 

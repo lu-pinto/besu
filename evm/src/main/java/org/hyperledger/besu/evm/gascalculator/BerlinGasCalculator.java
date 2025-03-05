@@ -29,7 +29,7 @@ import org.hyperledger.besu.evm.precompile.BigIntegerModularExponentiationPrecom
 import java.math.BigInteger;
 import java.util.function.Supplier;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /** The Berlin gas calculator. */

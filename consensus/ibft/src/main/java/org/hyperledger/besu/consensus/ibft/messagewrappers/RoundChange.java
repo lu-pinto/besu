@@ -29,7 +29,7 @@ import org.hyperledger.besu.ethereum.rlp.RLPInput;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Round change. */
 public class RoundChange extends BftMessage<RoundChangePayload> {

@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.OptionalLong;
 
 import com.google.common.base.MoreObjects;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 public class TraceFrame {

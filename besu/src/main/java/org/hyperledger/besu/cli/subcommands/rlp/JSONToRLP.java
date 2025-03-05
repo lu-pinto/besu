@@ -18,7 +18,7 @@ import org.hyperledger.besu.consensus.common.bft.BftExtraData;
 
 import java.io.IOException;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** Behaviour of objects that can be encoded from JSON to RLP */
 interface JSONToRLP {

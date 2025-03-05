@@ -16,7 +16,7 @@ package org.hyperledger.besu.ethereum.eth.sync.backwardsync;
 
 import org.hyperledger.besu.datatypes.Hash;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class HashConvertor implements ValueConvertor<Hash> {
   @Override

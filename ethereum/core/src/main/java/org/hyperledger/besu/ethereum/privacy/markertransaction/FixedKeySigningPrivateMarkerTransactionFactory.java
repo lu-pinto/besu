@@ -21,7 +21,7 @@ import org.hyperledger.besu.plugin.data.PrivateTransaction;
 import org.hyperledger.besu.plugin.data.UnsignedPrivateMarkerTransaction;
 import org.hyperledger.besu.plugin.services.privacy.PrivateMarkerTransactionFactory;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class FixedKeySigningPrivateMarkerTransactionFactory
     extends SigningPrivateMarkerTransactionFactory implements PrivateMarkerTransactionFactory {

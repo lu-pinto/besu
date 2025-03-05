@@ -20,7 +20,7 @@ import org.hyperledger.besu.ethereum.eth.manager.EthPeer;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.immutables.value.Value;
 
 @JsonPropertyOrder({"difficulty", "head", "version"})

@@ -28,7 +28,7 @@ import java.net.InetAddress;
 import java.util.Optional;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * Controller that can read from a smart contract that exposes the permissioning call

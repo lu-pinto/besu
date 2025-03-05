@@ -26,7 +26,7 @@ import org.hyperledger.besu.ethereum.rlp.BytesValueRLPOutput;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public final class BlockHeadersMessage extends AbstractMessageData {
 

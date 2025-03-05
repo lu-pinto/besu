@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class NewPooledTransactionHashesMessage extends AbstractMessageData {
   private static final int MESSAGE_CODE = EthPV65.NEW_POOLED_TRANSACTION_HASHES;

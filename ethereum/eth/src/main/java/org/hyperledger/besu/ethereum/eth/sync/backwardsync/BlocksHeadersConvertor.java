@@ -19,7 +19,7 @@ import org.hyperledger.besu.ethereum.core.BlockHeaderFunctions;
 import org.hyperledger.besu.ethereum.rlp.BytesValueRLPOutput;
 import org.hyperledger.besu.ethereum.rlp.RLP;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class BlocksHeadersConvertor implements ValueConvertor<BlockHeader> {
   private final BlockHeaderFunctions blockHeaderFunctions;

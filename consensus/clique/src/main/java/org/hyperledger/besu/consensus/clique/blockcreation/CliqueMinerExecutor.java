@@ -42,7 +42,7 @@ import java.util.function.Function;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Clique miner executor. */
 public class CliqueMinerExecutor extends AbstractMinerExecutor<CliqueBlockMiner> {

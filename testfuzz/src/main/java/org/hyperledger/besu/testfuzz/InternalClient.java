@@ -23,7 +23,7 @@ import org.hyperledger.besu.evm.code.EOFLayout;
 import org.hyperledger.besu.evm.code.EOFLayout.EOFContainerMode;
 import org.hyperledger.besu.evm.internal.EvmConfiguration;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 class InternalClient implements FuzzingClient {
   String name;

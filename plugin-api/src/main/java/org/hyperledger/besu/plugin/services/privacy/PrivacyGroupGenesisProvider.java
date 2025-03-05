@@ -16,7 +16,7 @@ package org.hyperledger.besu.plugin.services.privacy;
 
 import org.hyperledger.besu.plugin.data.PrivacyGenesis;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** A way to initiate private state with a genesis */
 @FunctionalInterface

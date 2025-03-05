@@ -23,7 +23,7 @@ import org.hyperledger.besu.ethereum.core.ParsedExtraData;
 import java.util.Collection;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Bft extra data. */
 public class BftExtraData implements ParsedExtraData {

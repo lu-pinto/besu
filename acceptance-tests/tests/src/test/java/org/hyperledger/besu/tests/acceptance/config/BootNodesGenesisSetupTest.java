@@ -25,7 +25,7 @@ import org.hyperledger.besu.tests.acceptance.dsl.node.configuration.BesuNodeConf
 import java.net.ServerSocket;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.params.ECDomainParameters;

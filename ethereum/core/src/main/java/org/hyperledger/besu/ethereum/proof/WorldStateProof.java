@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.SortedMap;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 public class WorldStateProof {

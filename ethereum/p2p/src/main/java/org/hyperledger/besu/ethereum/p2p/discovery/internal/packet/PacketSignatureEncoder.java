@@ -19,8 +19,8 @@ import org.hyperledger.besu.crypto.SECPSignature;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.MutableBytes;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 @Singleton

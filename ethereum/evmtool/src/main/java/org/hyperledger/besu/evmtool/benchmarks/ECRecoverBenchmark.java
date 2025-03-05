@@ -21,7 +21,7 @@ import java.io.PrintStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** Benchmark ECRecover precompile (ECDSA key extraction + keccak hash) */
 public class ECRecoverBenchmark extends BenchmarkExecutor {

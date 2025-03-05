@@ -16,7 +16,7 @@ package org.hyperledger.besu.evm.operation;
 
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * All {@link Operation} implementations should inherit from this class to get the setting of some

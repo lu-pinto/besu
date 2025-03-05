@@ -64,7 +64,7 @@ import com.google.common.io.Resources;
 import dagger.Component;
 import dagger.Module;
 import dagger.Provides;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

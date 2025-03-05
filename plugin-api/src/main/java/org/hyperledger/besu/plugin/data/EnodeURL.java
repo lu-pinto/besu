@@ -18,7 +18,7 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The interface Enode url. */
 public interface EnodeURL {

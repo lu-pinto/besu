@@ -20,7 +20,7 @@ import org.hyperledger.besu.ethereum.processing.TransactionProcessingResult;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public record TransactionSimulatorResult(
     Transaction transaction, TransactionProcessingResult result) {

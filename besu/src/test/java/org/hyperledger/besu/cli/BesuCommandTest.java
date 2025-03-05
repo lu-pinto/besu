@@ -91,7 +91,7 @@ import java.util.stream.Stream;
 
 import com.google.common.io.Resources;
 import io.vertx.core.json.JsonObject;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.toml.Toml;
 import org.apache.tuweni.toml.TomlParseResult;
 import org.junit.jupiter.api.AfterEach;

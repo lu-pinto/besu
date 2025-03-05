@@ -18,7 +18,7 @@ import org.hyperledger.besu.ethereum.trie.MerkleTrie;
 
 import java.nio.charset.Charset;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class SimpleMerklePatriciaTrieTest extends AbstractMerklePatriciaTrieTest {
   @Override

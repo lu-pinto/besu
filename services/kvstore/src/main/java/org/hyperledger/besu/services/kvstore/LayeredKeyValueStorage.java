@@ -40,7 +40,7 @@ import java.util.stream.StreamSupport;
 
 import com.google.common.collect.Streams;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

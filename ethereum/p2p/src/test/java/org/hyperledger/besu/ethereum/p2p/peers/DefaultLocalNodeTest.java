@@ -24,7 +24,7 @@ import org.hyperledger.besu.plugin.data.EnodeURL;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

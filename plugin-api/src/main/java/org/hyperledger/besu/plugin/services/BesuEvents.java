@@ -26,7 +26,7 @@ import org.hyperledger.besu.plugin.data.SyncStatus;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /**
  * This service allows plugins to attach to various events during the normal operation of Besu.

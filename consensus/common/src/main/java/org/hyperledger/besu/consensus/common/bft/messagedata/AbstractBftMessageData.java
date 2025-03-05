@@ -19,7 +19,7 @@ import org.hyperledger.besu.ethereum.p2p.rlpx.wire.MessageData;
 
 import java.util.function.Function;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Abstract bft message data. */
 public abstract class AbstractBftMessageData extends AbstractMessageData {

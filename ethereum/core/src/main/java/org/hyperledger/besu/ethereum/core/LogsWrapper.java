@@ -19,8 +19,8 @@ import org.hyperledger.besu.evm.log.Log;
 
 import java.util.List;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class LogsWrapper implements org.hyperledger.besu.plugin.data.Log {
 

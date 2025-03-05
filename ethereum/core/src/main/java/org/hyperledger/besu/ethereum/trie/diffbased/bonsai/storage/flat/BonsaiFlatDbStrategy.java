@@ -33,8 +33,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import kotlin.Pair;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /**
  * This class represents a FlatDbReaderStrategy, which is responsible for reading and writing data

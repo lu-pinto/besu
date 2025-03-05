@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class GetNodeDataFromPeerTaskTest extends PeerMessageTaskTest<Map<Hash, Bytes>> {
 

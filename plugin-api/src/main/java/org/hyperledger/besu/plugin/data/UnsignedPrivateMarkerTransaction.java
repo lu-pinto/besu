@@ -20,7 +20,7 @@ import org.hyperledger.besu.datatypes.TransactionType;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The interface Unsigned private marker transaction. */
 public interface UnsignedPrivateMarkerTransaction {

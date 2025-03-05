@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** Adapter to convert a typed JSON of addresses to a QBFT RLP extra data encoding */
 public class QbftExtraDataCLIAdapter implements JSONToRLP {

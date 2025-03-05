@@ -26,7 +26,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /**
  * Transaction Values used by various EVM Opcodes. These are the values that either do not change or

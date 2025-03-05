@@ -22,7 +22,7 @@ import java.time.Clock;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 @Singleton
 public class FindNeighborsPacketDataFactory {

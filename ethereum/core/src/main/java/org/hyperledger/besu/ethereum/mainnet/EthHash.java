@@ -28,8 +28,8 @@ import java.util.function.BiConsumer;
 
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.bouncycastle.jcajce.provider.digest.Keccak;
 
 /** Implementation of EthHash. */

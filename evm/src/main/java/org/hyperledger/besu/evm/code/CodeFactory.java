@@ -19,7 +19,7 @@ import org.hyperledger.besu.evm.code.EOFLayout.EOFContainerMode;
 
 import javax.annotation.Nonnull;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Code factory. */
 public class CodeFactory {

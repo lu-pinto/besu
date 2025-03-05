@@ -138,8 +138,8 @@ import org.hyperledger.besu.evm.operation.XorOperation;
 
 import java.math.BigInteger;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** Provides EVMs supporting the appropriate operations for mainnet hard forks. */
 public class MainnetEVMs {

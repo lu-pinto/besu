@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Objects;
 
 import com.google.common.collect.Iterators;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public final class NewBlockHashesMessage extends AbstractMessageData {
 

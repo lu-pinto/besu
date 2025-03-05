@@ -39,8 +39,8 @@ import java.util.List;
 import java.util.TreeMap;
 
 import kotlin.collections.ArrayDeque;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class TaskGenerator {
 

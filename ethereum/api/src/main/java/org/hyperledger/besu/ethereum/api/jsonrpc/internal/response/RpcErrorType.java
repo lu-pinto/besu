@@ -19,7 +19,7 @@ import org.hyperledger.besu.plugin.services.rpc.RpcMethodError;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public enum RpcErrorType implements RpcMethodError {
   // Standard errors

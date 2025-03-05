@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.ImmutableBiMap;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * Represents the data structure stored in the extraData field of the BlockHeader used when

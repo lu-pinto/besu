@@ -20,7 +20,7 @@ import org.hyperledger.besu.ethereum.p2p.discovery.internal.PacketType;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class Packet {
   public static final int PACKET_TYPE_INDEX = 97;

@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.privacy.group;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class FlexibleGroupManagement {
   public static final Bytes PROXY_RUNTIME_BYTECODE =

@@ -28,7 +28,7 @@ import org.hyperledger.besu.ethereum.rlp.BytesValueRLPOutput;
 import java.math.BigInteger;
 import java.util.List;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

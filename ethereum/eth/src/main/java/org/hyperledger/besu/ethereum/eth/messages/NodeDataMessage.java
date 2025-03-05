@@ -23,7 +23,7 @@ import org.hyperledger.besu.ethereum.rlp.RLPInput;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public final class NodeDataMessage extends AbstractMessageData {
 

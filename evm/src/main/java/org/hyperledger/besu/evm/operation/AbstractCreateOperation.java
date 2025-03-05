@@ -31,7 +31,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Abstract create operation. */
 public abstract class AbstractCreateOperation extends AbstractOperation {

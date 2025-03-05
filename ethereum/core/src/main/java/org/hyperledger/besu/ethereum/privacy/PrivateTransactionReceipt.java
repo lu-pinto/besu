@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.google.common.base.MoreObjects;
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * A transaction receipt for a private transaction, containing information pertaining a transaction

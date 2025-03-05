@@ -18,7 +18,7 @@ import org.hyperledger.besu.datatypes.Quantity;
 
 import java.math.BigInteger;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.BaseUInt256Value;
 import org.apache.tuweni.units.bigints.UInt256;
 

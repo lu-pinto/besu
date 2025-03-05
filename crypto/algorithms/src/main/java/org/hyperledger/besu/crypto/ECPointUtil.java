@@ -17,8 +17,8 @@ package org.hyperledger.besu.crypto;
 import java.math.BigInteger;
 import java.security.spec.ECPoint;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.bouncycastle.math.ec.ECFieldElement;
 import org.bouncycastle.util.BigIntegers;
 

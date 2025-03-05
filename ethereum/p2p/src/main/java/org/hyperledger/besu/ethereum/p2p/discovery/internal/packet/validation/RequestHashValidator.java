@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 @Singleton
 public class RequestHashValidator {

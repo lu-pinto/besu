@@ -36,7 +36,7 @@ import org.hyperledger.besu.plugin.services.BesuEvents;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /** A concrete implementation of BesuEvents used in Besu plugin framework. */

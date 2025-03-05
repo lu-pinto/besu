@@ -23,7 +23,7 @@ import org.hyperledger.besu.plugin.data.BlockHeader;
 import org.hyperledger.besu.plugin.data.TransactionReceipt;
 import org.hyperledger.besu.plugin.services.rlp.RlpConverterService;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** RLP Serialization/Deserialization service. */
 public class RlpConverterServiceImpl implements RlpConverterService {

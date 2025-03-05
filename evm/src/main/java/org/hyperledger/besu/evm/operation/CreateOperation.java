@@ -27,7 +27,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import java.util.function.Supplier;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Create operation. */
 public class CreateOperation extends AbstractCreateOperation {

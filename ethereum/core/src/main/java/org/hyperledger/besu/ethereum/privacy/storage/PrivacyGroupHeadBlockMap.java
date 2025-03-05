@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class PrivacyGroupHeadBlockMap implements Map<Bytes32, Hash> {
   private final HashMap<Bytes32, Hash> map;

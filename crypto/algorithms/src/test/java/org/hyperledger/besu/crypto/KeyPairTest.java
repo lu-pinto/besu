@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.crypto;
 
-import static org.apache.tuweni.bytes.Bytes.fromHexString;
+import static org.apache.tuweni.bytes.v2.Bytes.fromHexString;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -22,8 +22,8 @@ import java.math.BigInteger;
 import java.security.KeyPairGenerator;
 import java.security.Security;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.params.ECDomainParameters;

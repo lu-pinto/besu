@@ -32,8 +32,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.vertx.core.buffer.Buffer;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.MutableBytes;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 
 @Singleton
 public class PacketSerializer {

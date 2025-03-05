@@ -26,8 +26,8 @@ import java.util.Arrays;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.MutableBytes;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 
 /** The AltBN128Add precompiled contract. */
 public class AltBN128AddPrecompiledContract extends AbstractAltBnPrecompiledContract {

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Table;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** The Access List Operation Tracer. */
 public class AccessListOperationTracer extends EstimateGasOperationTracer {

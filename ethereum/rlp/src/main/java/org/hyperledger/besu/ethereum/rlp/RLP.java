@@ -18,8 +18,8 @@ import static java.lang.String.format;
 
 import java.util.function.Consumer;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.MutableBytes;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 
 /** Static methods to work with RLP encoding/decoding. */
 public abstract class RLP {

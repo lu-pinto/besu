@@ -14,8 +14,8 @@
  */
 package org.hyperledger.besu.datatypes;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** A Sha256Hash is a Hash that has been generated using the SHA-256 algorithm. */
 public class Sha256Hash extends Hash {

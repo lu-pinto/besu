@@ -14,8 +14,8 @@
  */
 package org.hyperledger.besu.ethereum.rlp;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.MutableBytes;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 
 /**
  * Helper static methods to facilitate RLP encoding <b>within this package</b>. Neither this class

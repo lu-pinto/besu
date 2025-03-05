@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The AltBN128Pairing precompiled contract. */
 public class AltBN128PairingPrecompiledContract extends AbstractAltBnPrecompiledContract {

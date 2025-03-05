@@ -21,8 +21,8 @@ import org.hyperledger.besu.plugin.data.BlockHeader;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class NonBesuBlockHeader implements BlockHeader {
 

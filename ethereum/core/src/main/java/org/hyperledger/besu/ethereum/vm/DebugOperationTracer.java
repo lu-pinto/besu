@@ -34,7 +34,7 @@ import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.TreeMap;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 public class DebugOperationTracer implements OperationTracer {

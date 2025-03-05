@@ -32,8 +32,8 @@ import java.util.TreeMap;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import kotlin.collections.ArrayDeque;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.immutables.value.Value;
 
 public final class AccountRangeMessage extends AbstractSnapMessageData {

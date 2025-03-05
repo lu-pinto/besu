@@ -29,9 +29,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.bytes.DelegatingBytes;
+import org.apache.tuweni.bytes.v2.DelegatingBytes;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** A 160-bits account address. */
 public class Address extends DelegatingBytes {

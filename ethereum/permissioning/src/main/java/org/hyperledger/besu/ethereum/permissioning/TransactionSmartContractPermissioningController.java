@@ -30,8 +30,8 @@ import org.hyperledger.besu.plugin.services.metrics.Counter;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.BaseUInt256Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
