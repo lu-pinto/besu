@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
-import org.apache.tuweni.bytes.v2.Bytes48;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.apache.tuweni.units.bigints.UInt64;
 
@@ -309,7 +307,7 @@ public interface RLPInput {
    *     list (and {@link #leaveList()} hasn't been called) or the next element is not exactly 32
    *     bytes.
    */
-  Bytes32 readBytes32();
+  Bytes readBytes32();
 
   /**
    * Reads the next item of this input (assuming it is not a list) that must be exact 48 bytes.
@@ -319,7 +317,7 @@ public interface RLPInput {
    *     list (and {@link #leaveList()} hasn't been called) or the next element is not exactly 48
    *     bytes.
    */
-  Bytes48 readBytes48();
+  Bytes readBytes48();
 
   /**
    * Reads the next item of this input (assuming it is not a list) and transforms it with the

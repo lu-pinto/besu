@@ -239,15 +239,15 @@ public class Scalars {
         }
       };
 
-  private static final Coercing<Bytes32, String> BYTES32_COERCING =
-      new Coercing<Bytes32, String>() {
+  private static final Coercing<Bytes, String> BYTES32_COERCING =
+      new Coercing<Bytes, String>() {
 
-        Bytes32 convertImpl(final Object input) {
-          if (input instanceof Bytes32 bytes32) {
+        Bytes convertImpl(final Object input) {
+          if (input instanceof Bytes bytes32) {
             return bytes32;
           } else if (input instanceof Bytes bytes) {
             if (bytes.size() <= 32) {
-              return Bytes32.leftPad((Bytes) input);
+              return bytes.mutableCopy().leftPad(32);
             } else {
               return null;
             }
@@ -284,7 +284,7 @@ public class Scalars {
         }
 
         @Override
-        public Bytes32 parseValue(
+        public Bytes parseValue(
             final Object input, final GraphQLContext graphQLContext, final Locale locale)
             throws CoercingParseValueException {
           var result = convertImpl(input);
@@ -297,7 +297,7 @@ public class Scalars {
         }
 
         @Override
-        public Bytes32 parseLiteral(
+        public Bytes parseLiteral(
             final Value<?> input,
             final CoercedVariables variables,
             final GraphQLContext graphQLContext,

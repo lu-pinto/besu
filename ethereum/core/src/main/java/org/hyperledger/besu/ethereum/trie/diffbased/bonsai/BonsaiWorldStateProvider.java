@@ -126,7 +126,7 @@ public class BonsaiWorldStateProvider extends DiffBasedWorldStateProvider {
                               getBonsaiWorldStateKeyValueStorage()
                                   .getAccountStorageTrieNode(accountHash, l, h);
                           if (node.isPresent()) {
-                            keysToDelete.add(Bytes.concatenate(accountHash, l));
+                            keysToDelete.add(Bytes.wrap(accountHash, l));
                           }
                           return node;
                         },

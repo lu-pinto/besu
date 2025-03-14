@@ -24,7 +24,7 @@ import org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.EngineGetPaylo
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -58,7 +58,7 @@ public class EngineGetPayloadV1Test extends AbstractEngineGetPayloadTest {
               final EngineGetPayloadResultV1 res = (EngineGetPayloadResultV1) r.getResult();
               assertThat(res.getHash()).isEqualTo(mockHeader.getHash().toString());
               assertThat(res.getPrevRandao())
-                  .isEqualTo(mockHeader.getPrevRandao().map(Bytes32::toString).orElse(""));
+                  .isEqualTo(mockHeader.getPrevRandao().map(Bytes::toString).orElse(""));
             });
     verify(engineCallListener, times(1)).executionEngineCalled();
   }

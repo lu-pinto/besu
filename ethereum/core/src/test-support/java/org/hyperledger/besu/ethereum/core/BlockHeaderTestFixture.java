@@ -24,7 +24,6 @@ import org.hyperledger.besu.evm.log.LogsBloomFilter;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class BlockHeaderTestFixture {
 
@@ -42,7 +41,7 @@ public class BlockHeaderTestFixture {
 
   private long gasLimit = 0;
   private Optional<Wei> baseFee = Optional.empty();
-  private Optional<Bytes32> prevRandao = Optional.empty();
+  private Optional<Bytes> prevRandao = Optional.empty();
   private long gasUsed = 0;
   private long timestamp = 0;
   private Bytes extraData = Bytes.EMPTY;
@@ -54,7 +53,7 @@ public class BlockHeaderTestFixture {
   private BlockHeaderFunctions blockHeaderFunctions = new MainnetBlockHeaderFunctions();
   private Optional<BlobGas> excessBlobGas = Optional.empty();
   private Optional<Long> blobGasUsed = Optional.empty();
-  private Optional<Bytes32> parentBeaconBlockRoot = Optional.empty();
+  private Optional<Bytes> parentBeaconBlockRoot = Optional.empty();
 
   public BlockHeader buildHeader() {
     final BlockHeaderBuilder builder = BlockHeaderBuilder.create();
@@ -145,7 +144,7 @@ public class BlockHeaderTestFixture {
     return this;
   }
 
-  public BlockHeaderTestFixture prevRandao(final Bytes32 prevRandao) {
+  public BlockHeaderTestFixture prevRandao(final Bytes prevRandao) {
     this.prevRandao = Optional.ofNullable(prevRandao);
     return this;
   }
@@ -196,8 +195,7 @@ public class BlockHeaderTestFixture {
     return this;
   }
 
-  public BlockHeaderTestFixture parentBeaconBlockRoot(
-      final Optional<Bytes32> parentBeaconBlockRoot) {
+  public BlockHeaderTestFixture parentBeaconBlockRoot(final Optional<Bytes> parentBeaconBlockRoot) {
     this.parentBeaconBlockRoot = parentBeaconBlockRoot;
     return this;
   }

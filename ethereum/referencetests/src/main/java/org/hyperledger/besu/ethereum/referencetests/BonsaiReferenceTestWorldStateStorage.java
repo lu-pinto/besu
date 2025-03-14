@@ -32,7 +32,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.rlp.RLP;
 import org.apache.tuweni.units.bigints.UInt256;
 
@@ -46,8 +46,8 @@ public class BonsaiReferenceTestWorldStateStorage extends BonsaiWorldStateLayerS
   }
 
   @Override
-  public NavigableMap<Bytes32, AccountStorageEntry> storageEntriesFrom(
-      final Hash addressHash, final Bytes32 startKeyHash, final int limit) {
+  public NavigableMap<Bytes, AccountStorageEntry> storageEntriesFrom(
+      final Hash addressHash, final Bytes startKeyHash, final int limit) {
     return streamFlatStorages(addressHash, startKeyHash, UInt256.MAX_VALUE, limit)
         .entrySet()
         // map back to slot keys using preImage provider:
@@ -65,7 +65,7 @@ public class BonsaiReferenceTestWorldStateStorage extends BonsaiWorldStateLayerS
   }
 
   public Stream<WorldState.StreamableAccount> streamAccounts(
-      final DiffBasedWorldView context, final Bytes32 startKeyHash, final int limit) {
+      final DiffBasedWorldView context, final Bytes startKeyHash, final int limit) {
     return streamFlatAccounts(startKeyHash, UInt256.MAX_VALUE, limit)
         .entrySet()
         // map back to addresses using preImage provider:

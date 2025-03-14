@@ -22,7 +22,6 @@ import org.hyperledger.besu.evm.frame.BlockValues;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** A block header capable of being processed. */
 public class ProcessableBlockHeader
@@ -43,9 +42,9 @@ public class ProcessableBlockHeader
   // base fee is included for post EIP-1559 blocks
   protected final Wei baseFee;
   // prevRandao is included for post-merge blocks
-  protected final Bytes32 mixHashOrPrevRandao;
+  protected final Bytes mixHashOrPrevRandao;
   // parentBeaconBlockRoot is included for Cancun
-  protected final Bytes32 parentBeaconBlockRoot;
+  protected final Bytes parentBeaconBlockRoot;
 
   protected ProcessableBlockHeader(
       final Hash parentHash,
@@ -55,8 +54,8 @@ public class ProcessableBlockHeader
       final long gasLimit,
       final long timestamp,
       final Wei baseFee,
-      final Bytes32 mixHashOrPrevRandao,
-      final Bytes32 parentBeaconBlockRoot) {
+      final Bytes mixHashOrPrevRandao,
+      final Bytes parentBeaconBlockRoot) {
     this.parentHash = parentHash;
     this.coinbase = coinbase;
     this.difficulty = difficulty;
@@ -105,7 +104,7 @@ public class ProcessableBlockHeader
    */
   @Override
   public Bytes getDifficultyBytes() {
-    return difficulty.getAsBytes32();
+    return difficulty;
   }
 
   /**
@@ -154,7 +153,7 @@ public class ProcessableBlockHeader
    * @return the mixHash before merge, and the prevRandao value after
    */
   @Override
-  public Bytes32 getMixHashOrPrevRandao() {
+  public Bytes getMixHashOrPrevRandao() {
     return mixHashOrPrevRandao;
   }
 
@@ -164,7 +163,7 @@ public class ProcessableBlockHeader
    * @return the raw bytes of the prevRandao field
    */
   @Override
-  public Optional<Bytes32> getPrevRandao() {
+  public Optional<Bytes> getPrevRandao() {
     return Optional.ofNullable(mixHashOrPrevRandao);
   }
 
@@ -174,7 +173,7 @@ public class ProcessableBlockHeader
    * @return the parent beacon block root.
    */
   @Override
-  public Optional<Bytes32> getParentBeaconBlockRoot() {
+  public Optional<Bytes> getParentBeaconBlockRoot() {
     return Optional.ofNullable(parentBeaconBlockRoot);
   }
 

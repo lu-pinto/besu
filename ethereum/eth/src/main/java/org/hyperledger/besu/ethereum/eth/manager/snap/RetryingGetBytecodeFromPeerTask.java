@@ -26,21 +26,20 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class RetryingGetBytecodeFromPeerTask
-    extends AbstractRetryingSwitchingPeerTask<Map<Bytes32, Bytes>> {
+    extends AbstractRetryingSwitchingPeerTask<Map<Bytes, Bytes>> {
 
   public static final int MAX_RETRIES = 4;
 
   private final EthContext ethContext;
-  private final List<Bytes32> codeHashes;
+  private final List<Bytes> codeHashes;
   private final BlockHeader blockHeader;
   private final MetricsSystem metricsSystem;
 
   private RetryingGetBytecodeFromPeerTask(
       final EthContext ethContext,
-      final List<Bytes32> codeHashes,
+      final List<Bytes> codeHashes,
       final BlockHeader blockHeader,
       final MetricsSystem metricsSystem) {
     super(ethContext, metricsSystem, Map::isEmpty, MAX_RETRIES);
@@ -50,16 +49,16 @@ public class RetryingGetBytecodeFromPeerTask
     this.metricsSystem = metricsSystem;
   }
 
-  public static EthTask<Map<Bytes32, Bytes>> forByteCode(
+  public static EthTask<Map<Bytes, Bytes>> forByteCode(
       final EthContext ethContext,
-      final List<Bytes32> codeHashes,
+      final List<Bytes> codeHashes,
       final BlockHeader blockHeader,
       final MetricsSystem metricsSystem) {
     return new RetryingGetBytecodeFromPeerTask(ethContext, codeHashes, blockHeader, metricsSystem);
   }
 
   @Override
-  protected CompletableFuture<Map<Bytes32, Bytes>> executeTaskOnCurrentPeer(final EthPeer peer) {
+  protected CompletableFuture<Map<Bytes, Bytes>> executeTaskOnCurrentPeer(final EthPeer peer) {
     final GetBytecodeFromPeerTask task =
         GetBytecodeFromPeerTask.forBytecode(ethContext, codeHashes, blockHeader, metricsSystem);
     task.assignPeer(peer);

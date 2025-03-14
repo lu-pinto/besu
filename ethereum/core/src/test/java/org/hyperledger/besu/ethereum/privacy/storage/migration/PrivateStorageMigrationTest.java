@@ -81,8 +81,7 @@ import org.mockito.quality.Strictness;
 public class PrivateStorageMigrationTest {
 
   private static final String PRIVACY_GROUP_ID = "tJw12cPM6EZRF5zfHv2zLePL0cqlaDjLn0x1T/V0yzE=";
-  public static final Bytes32 PRIVACY_GROUP_BYTES =
-      Bytes32.wrap(Bytes.fromBase64String(PRIVACY_GROUP_ID));
+  public static final Bytes PRIVACY_GROUP_BYTES = Bytes.fromBase64String(PRIVACY_GROUP_ID);
   private static final Address PRIVACY_ADDRESS = DEFAULT_PRIVACY;
 
   @Mock private Blockchain blockchain;
@@ -236,7 +235,7 @@ public class PrivateStorageMigrationTest {
   }
 
   private PrivacyGroupHeadBlockMap createPrivacyGroupHeadBlockInitialMapAndMetadata(
-      final Bytes32 privacyGroupBytes, final Hash rootHash) {
+      final Bytes privacyGroupBytes, final Hash rootHash) {
     final PrivacyGroupHeadBlockMap existingPgHeadMap =
         new PrivacyGroupHeadBlockMap(Map.of(privacyGroupBytes, Hash.ZERO));
     final PrivateStateStorage.Updater updater = privateStateStorage.updater();

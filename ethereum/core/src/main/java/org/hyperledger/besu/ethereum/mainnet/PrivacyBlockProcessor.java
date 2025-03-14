@@ -124,21 +124,21 @@ public class PrivacyBlockProcessor implements BlockProcessor {
         .filter(this::onchainAddToGroupPrivateMarkerTransactions)
         .forEach(
             pmt -> {
-              final Bytes32 privateTransactionsLookupId =
-                  Bytes32.wrap(pmt.getPayload().slice(32, 32));
+              final Bytes privateTransactionsLookupId = pmt.getPayload().slice(32, 32);
               try {
                 final ReceiveResponse receiveResponse =
                     enclave.receive(privateTransactionsLookupId.toBase64String());
                 final List<PrivateTransactionWithMetadata> privateTransactionWithMetadataList =
                     PrivateTransactionWithMetadata.readListFromPayload(
                         Bytes.wrap(Base64.getDecoder().decode(receiveResponse.getPayload())));
-                final Bytes32 privacyGroupId =
-                    Bytes32.wrap(
+                final Bytes privacyGroupId =
+                    Bytes32.fromBytes(
                         privateTransactionWithMetadataList
                             .get(0)
                             .getPrivateTransaction()
                             .getPrivacyGroupId()
-                            .get());
+                            .get(),
+                        0);
 
                 final List<PrivateTransactionWithMetadata> actualListToRehydrate =
                     transactionsInGroupThatNeedToBeApplied(
@@ -180,7 +180,7 @@ public class PrivacyBlockProcessor implements BlockProcessor {
   private List<PrivateTransactionWithMetadata> transactionsInGroupThatNeedToBeApplied(
       final BlockHeader blockHeader,
       final List<PrivateTransactionWithMetadata> privateTransactionWithMetadataList,
-      final Bytes32 privacyGroupId) {
+      final Bytes privacyGroupId) {
     // if we are the member adding another member we do not have to rehydrate
     // if we have been removed from the group at some point we only need to rehydrate from where we
     // were removed

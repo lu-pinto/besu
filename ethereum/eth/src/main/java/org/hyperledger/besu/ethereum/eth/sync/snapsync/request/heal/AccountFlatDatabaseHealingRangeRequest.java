@@ -48,7 +48,6 @@ import java.util.stream.Stream;
 
 import kotlin.collections.ArrayDeque;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /**
  * The AccountFlatDatabaseHealingRangeRequest class represents a request to heal a range of account
@@ -57,15 +56,15 @@ import org.apache.tuweni.bytes.v2.Bytes32;
  */
 public class AccountFlatDatabaseHealingRangeRequest extends SnapDataRequest {
 
-  private final Bytes32 startKeyHash;
-  private final Bytes32 endKeyHash;
-  private NavigableMap<Bytes32, Bytes> existingAccounts;
+  private final Bytes startKeyHash;
+  private final Bytes endKeyHash;
+  private NavigableMap<Bytes, Bytes> existingAccounts;
 
-  private NavigableMap<Bytes32, Bytes> flatDbAccounts;
+  private NavigableMap<Bytes, Bytes> flatDbAccounts;
   private boolean isProofValid;
 
   public AccountFlatDatabaseHealingRangeRequest(
-      final Hash originalRootHash, final Bytes32 startKeyHash, final Bytes32 endKeyHash) {
+      final Hash originalRootHash, final Bytes startKeyHash, final Bytes endKeyHash) {
     super(RequestType.ACCOUNT_RANGE, originalRootHash);
     this.startKeyHash = startKeyHash;
     this.endKeyHash = endKeyHash;
@@ -118,11 +117,11 @@ public class AccountFlatDatabaseHealingRangeRequest extends SnapDataRequest {
     return childRequests.stream();
   }
 
-  public Bytes32 getStartKeyHash() {
+  public Bytes getStartKeyHash() {
     return startKeyHash;
   }
 
-  public Bytes32 getEndKeyHash() {
+  public Bytes getEndKeyHash() {
     return endKeyHash;
   }
 
@@ -133,7 +132,7 @@ public class AccountFlatDatabaseHealingRangeRequest extends SnapDataRequest {
 
   public void addLocalData(
       final WorldStateProofProvider worldStateProofProvider,
-      final NavigableMap<Bytes32, Bytes> accounts,
+      final NavigableMap<Bytes, Bytes> accounts,
       final ArrayDeque<Bytes> proofs) {
     if (!accounts.isEmpty() && !proofs.isEmpty()) {
       // very proof in order to check if the local flat database is valid or not
@@ -180,7 +179,7 @@ public class AccountFlatDatabaseHealingRangeRequest extends SnapDataRequest {
 
       final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
       existingAccounts =
-          (TreeMap<Bytes32, Bytes>)
+          (TreeMap<Bytes, Bytes>)
               accountTrie.entriesFrom(
                   root ->
                       RangeStorageEntriesCollector.collectEntries(

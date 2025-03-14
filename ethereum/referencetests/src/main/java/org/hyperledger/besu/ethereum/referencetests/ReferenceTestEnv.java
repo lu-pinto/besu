@@ -81,7 +81,7 @@ public class ReferenceTestEnv extends BlockHeader {
 
   private final String parentBlobGasUsed;
 
-  private final Bytes32 beaconRoot;
+  private final Bytes beaconRoot;
 
   private final boolean isStateTest;
 

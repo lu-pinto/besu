@@ -87,10 +87,10 @@ public class WorldStateProofProvider {
       final Hash accountHash,
       final PmtStateTrieAccountValue account,
       final List<UInt256> accountStorageKeys) {
-    final MerkleTrie<Bytes32, Bytes> storageTrie =
+    final MerkleTrie<Bytes, Bytes> storageTrie =
         newAccountStorageTrie(accountHash, account.getStorageRoot());
     final NavigableMap<UInt256, Proof<Bytes>> storageProofs =
-        new TreeMap<>(Comparator.comparing(Bytes32::toHexString));
+        new TreeMap<>(Comparator.comparing(Bytes::toHexString));
     accountStorageKeys.forEach(
         key -> storageProofs.put(key, storageTrie.getValueWithProof(Hash.hash(key))));
     return storageProofs;
@@ -104,7 +104,7 @@ public class WorldStateProofProvider {
    * @return A list of proof-related nodes for the account.
    */
   public List<Bytes> getAccountProofRelatedNodes(
-      final Hash worldStateRoot, final Bytes32 accountHash) {
+      final Hash worldStateRoot, final Bytes accountHash) {
     final Proof<Bytes> accountProof =
         newAccountStateTrie(worldStateRoot).getValueWithProof(accountHash);
     return accountProof.getProofRelatedNodes();
@@ -119,19 +119,19 @@ public class WorldStateProofProvider {
    * @return A list of proof-related nodes for the storage slot.
    */
   public List<Bytes> getStorageProofRelatedNodes(
-      final Bytes32 storageRoot, final Bytes32 accountHash, final Bytes32 slotHash) {
+      final Bytes storageRoot, final Bytes accountHash, final Bytes slotHash) {
     final Proof<Bytes> storageProof =
         newAccountStorageTrie(Hash.wrap(accountHash), storageRoot).getValueWithProof(slotHash);
     return storageProof.getProofRelatedNodes();
   }
 
-  private MerkleTrie<Bytes, Bytes> newAccountStateTrie(final Bytes32 rootHash) {
+  private MerkleTrie<Bytes, Bytes> newAccountStateTrie(final Bytes rootHash) {
     return new StoredMerklePatriciaTrie<>(
         worldStateStorageCoordinator::getAccountStateTrieNode, rootHash, b -> b, b -> b);
   }
 
-  private MerkleTrie<Bytes32, Bytes> newAccountStorageTrie(
-      final Hash accountHash, final Bytes32 rootHash) {
+  private MerkleTrie<Bytes, Bytes> newAccountStorageTrie(
+      final Hash accountHash, final Bytes rootHash) {
     return new StoredMerklePatriciaTrie<>(
         (location, hash) ->
             worldStateStorageCoordinator.getAccountStorageTrieNode(accountHash, location, hash),
@@ -151,11 +151,11 @@ public class WorldStateProofProvider {
    * @return {@code true} if the range proof is valid, {@code false} otherwise.
    */
   public boolean isValidRangeProof(
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash,
-      final Bytes32 rootHash,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash,
+      final Bytes rootHash,
       final List<Bytes> proofs,
-      final SortedMap<Bytes32, Bytes> keys) {
+      final SortedMap<Bytes, Bytes> keys) {
 
     // check if it's monotonic increasing
     if (keys.size() > 1 && !Ordering.natural().isOrdered(keys.keySet())) {
@@ -168,7 +168,7 @@ public class WorldStateProofProvider {
       if (startKeyHash.equals(Bytes32.ZERO)) {
         final MerkleTrie<Bytes, Bytes> trie = new SimpleMerklePatriciaTrie<>(Function.identity());
         // add the received keys in the trie
-        for (Map.Entry<Bytes32, Bytes> key : keys.entrySet()) {
+        for (Map.Entry<Bytes, Bytes> key : keys.entrySet()) {
           trie.put(key.getKey(), key.getValue());
         }
         return rootHash.equals(trie.getRootHash());
@@ -181,7 +181,7 @@ public class WorldStateProofProvider {
     }
 
     // reconstruct a part of the trie with the proof
-    final Map<Bytes32, Bytes> proofsEntries = new HashMap<>();
+    final Map<Bytes, Bytes> proofsEntries = new HashMap<>();
     for (Bytes proof : proofs) {
       proofsEntries.put(Hash.hash(proof), proof);
     }
@@ -224,11 +224,11 @@ public class WorldStateProofProvider {
     final List<InnerNode> innerNodes = snapStoredNodeFactory.getInnerNodes();
     for (InnerNode innerNode : innerNodes) {
       trie.removePath(
-          Bytes.concatenate(innerNode.location(), innerNode.path()), new RemoveVisitor<>(false));
+          Bytes.wrap(innerNode.location(), innerNode.path()), new RemoveVisitor<>(false));
     }
 
     // add the received keys in the trie to reconstruct the trie
-    for (Map.Entry<Bytes32, Bytes> account : keys.entrySet()) {
+    for (Map.Entry<Bytes, Bytes> account : keys.entrySet()) {
       trie.put(account.getKey(), account.getValue());
     }
 

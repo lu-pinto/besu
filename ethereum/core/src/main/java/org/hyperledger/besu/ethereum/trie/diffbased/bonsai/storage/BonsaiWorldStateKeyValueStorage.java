@@ -46,7 +46,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class BonsaiWorldStateKeyValueStorage extends DiffBasedWorldStateKeyValueStorage
     implements WorldStateKeyValueStorage {
@@ -101,7 +100,7 @@ public class BonsaiWorldStateKeyValueStorage extends DiffBasedWorldStateKeyValue
             composedWorldStateStorage);
   }
 
-  public Optional<Bytes> getAccountStateTrieNode(final Bytes location, final Bytes32 nodeHash) {
+  public Optional<Bytes> getAccountStateTrieNode(final Bytes location, final Bytes nodeHash) {
     if (nodeHash.equals(MerkleTrie.EMPTY_TRIE_NODE_HASH)) {
       return Optional.of(MerkleTrie.EMPTY_TRIE_NODE);
     } else {
@@ -113,12 +112,12 @@ public class BonsaiWorldStateKeyValueStorage extends DiffBasedWorldStateKeyValue
   }
 
   public Optional<Bytes> getAccountStorageTrieNode(
-      final Hash accountHash, final Bytes location, final Bytes32 nodeHash) {
+      final Hash accountHash, final Bytes location, final Bytes nodeHash) {
     if (nodeHash.equals(MerkleTrie.EMPTY_TRIE_NODE_HASH)) {
       return Optional.of(MerkleTrie.EMPTY_TRIE_NODE);
     } else {
       return composedWorldStateStorage
-          .get(TRIE_BRANCH_STORAGE, Bytes.concatenate(accountHash, location).toArrayUnsafe())
+          .get(TRIE_BRANCH_STORAGE, Bytes.wrap(accountHash, location).toArrayUnsafe())
           .map(Bytes::wrap)
           .filter(b -> Hash.hash(b).equals(nodeHash));
     }
@@ -156,8 +155,8 @@ public class BonsaiWorldStateKeyValueStorage extends DiffBasedWorldStateKeyValue
             composedWorldStateStorage);
   }
 
-  public NavigableMap<Bytes32, AccountStorageEntry> storageEntriesFrom(
-      final Hash addressHash, final Bytes32 startKeyHash, final int limit) {
+  public NavigableMap<Bytes, AccountStorageEntry> storageEntriesFrom(
+      final Hash addressHash, final Bytes startKeyHash, final int limit) {
     throw new RuntimeException("Bonsai Tries does not currently support enumerating storage");
   }
 
@@ -241,7 +240,7 @@ public class BonsaiWorldStateKeyValueStorage extends DiffBasedWorldStateKeyValue
     }
 
     @Override
-    public Updater saveWorldState(final Bytes blockHash, final Bytes32 nodeHash, final Bytes node) {
+    public Updater saveWorldState(final Bytes blockHash, final Bytes nodeHash, final Bytes node) {
       composedWorldStateTransaction.put(
           TRIE_BRANCH_STORAGE, Bytes.EMPTY.toArrayUnsafe(), node.toArrayUnsafe());
       composedWorldStateTransaction.put(
@@ -252,7 +251,7 @@ public class BonsaiWorldStateKeyValueStorage extends DiffBasedWorldStateKeyValue
     }
 
     public Updater putAccountStateTrieNode(
-        final Bytes location, final Bytes32 nodeHash, final Bytes node) {
+        final Bytes location, final Bytes nodeHash, final Bytes node) {
       if (nodeHash.equals(MerkleTrie.EMPTY_TRIE_NODE_HASH)) {
         // Don't save empty nodes
         return this;
@@ -268,14 +267,14 @@ public class BonsaiWorldStateKeyValueStorage extends DiffBasedWorldStateKeyValue
     }
 
     public synchronized Updater putAccountStorageTrieNode(
-        final Hash accountHash, final Bytes location, final Bytes32 nodeHash, final Bytes node) {
+        final Hash accountHash, final Bytes location, final Bytes nodeHash, final Bytes node) {
       if (nodeHash.equals(MerkleTrie.EMPTY_TRIE_NODE_HASH)) {
         // Don't save empty nodes
         return this;
       }
       composedWorldStateTransaction.put(
           TRIE_BRANCH_STORAGE,
-          Bytes.concatenate(accountHash, location).toArrayUnsafe(),
+          Bytes.wrap(accountHash, location).toArrayUnsafe(),
           node.toArrayUnsafe());
       return this;
     }

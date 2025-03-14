@@ -188,7 +188,7 @@ public class RestoreState implements Runnable {
         if (length != 3) {
           throw new RuntimeException("Unexpected account length " + length);
         }
-        final Bytes32 trieKey = accountInput.readBytes32();
+        final Bytes trieKey = accountInput.readBytes32();
         final Bytes accountRlp = accountInput.readBytes();
         final Bytes code = accountInput.readBytes();
 
@@ -221,7 +221,7 @@ public class RestoreState implements Runnable {
           if (len != 2) {
             throw new RuntimeException("Unexpected storage trie entry length " + len);
           }
-          final Bytes32 storageTrieKey = Bytes32.wrap(trieInput.readBytes());
+          final Bytes storageTrieKey = Bytes32.fromBytes(trieInput.readBytes(), 0);
           final Bytes storageTrieValue = Bytes.wrap(trieInput.readBytes());
           final RestoreVisitor<Bytes> storageTrieWriteVisitor =
               new RestoreVisitor<>(t -> t, storageTrieValue, storagePersistVisitor);
@@ -269,14 +269,14 @@ public class RestoreState implements Runnable {
     updater.putCode(code);
   }
 
-  private void updateAccountState(final Bytes32 key, final Bytes value) {
+  private void updateAccountState(final Bytes key, final Bytes value) {
     maybeCommitUpdater();
     // restore by path not supported
     updater.putAccountStateTrieNode(key, value);
     trieNodeCount++;
   }
 
-  private void updateAccountStorage(final Bytes32 key, final Bytes value) {
+  private void updateAccountStorage(final Bytes key, final Bytes value) {
     maybeCommitUpdater();
     // restore by path not supported
     updater.putAccountStorageTrieNode(key, value);

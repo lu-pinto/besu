@@ -19,7 +19,7 @@ import org.hyperledger.besu.datatypes.Hash;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /** The Account storage entry. */
@@ -27,10 +27,10 @@ public class AccountStorageEntry {
 
   private final UInt256 value;
   private final Optional<UInt256> key;
-  private final Bytes32 keyHash;
+  private final Bytes keyHash;
 
   private AccountStorageEntry(
-      final UInt256 value, final Bytes32 keyHash, final Optional<UInt256> key) {
+      final UInt256 value, final Bytes keyHash, final Optional<UInt256> key) {
     this.key = key;
     this.keyHash = keyHash;
     this.value = value;
@@ -45,7 +45,7 @@ public class AccountStorageEntry {
    * @return the account storage entry
    */
   public static AccountStorageEntry create(
-      final UInt256 value, final Bytes32 keyHash, final UInt256 key) {
+      final UInt256 value, final Bytes keyHash, final UInt256 key) {
     return create(value, keyHash, Optional.ofNullable(key));
   }
 
@@ -58,7 +58,7 @@ public class AccountStorageEntry {
    * @return the account storage entry
    */
   public static AccountStorageEntry create(
-      final UInt256 value, final Bytes32 keyHash, final Optional<UInt256> key) {
+      final UInt256 value, final Bytes keyHash, final Optional<UInt256> key) {
     return new AccountStorageEntry(value, keyHash, key);
   }
 
@@ -91,7 +91,7 @@ public class AccountStorageEntry {
    *
    * @return The hash of the storage key.
    */
-  public Bytes32 getKeyHash() {
+  public Bytes getKeyHash() {
     return keyHash;
   }
 

@@ -62,7 +62,7 @@ public abstract class StoredMerkleTrie<K extends Bytes, V> implements MerkleTrie
    * @param rootLocation The initial root location for the trie
    */
   public StoredMerkleTrie(
-      final NodeFactory<V> nodeFactory, final Bytes32 rootHash, final Bytes rootLocation) {
+      final NodeFactory<V> nodeFactory, final Bytes rootHash, final Bytes rootLocation) {
     this.nodeFactory = nodeFactory;
     this.root =
         rootHash.equals(EMPTY_TRIE_NODE_HASH)
@@ -77,7 +77,7 @@ public abstract class StoredMerkleTrie<K extends Bytes, V> implements MerkleTrie
    * @param rootHash The initial root hash for the trie, which should be already present in {@code
    *     storage}.
    */
-  public StoredMerkleTrie(final NodeFactory<V> nodeFactory, final Bytes32 rootHash) {
+  public StoredMerkleTrie(final NodeFactory<V> nodeFactory, final Bytes rootHash) {
     this.nodeFactory = nodeFactory;
     this.root =
         rootHash.equals(EMPTY_TRIE_NODE_HASH)
@@ -152,7 +152,7 @@ public abstract class StoredMerkleTrie<K extends Bytes, V> implements MerkleTrie
       nodeUpdater.store(Bytes.EMPTY, root.getHash(), root.getEncodedBytesRef());
     }
     // Reset root so dirty nodes can be garbage collected
-    final Bytes32 rootHash = root.getHash();
+    final Bytes rootHash = root.getHash();
     this.root =
         rootHash.equals(EMPTY_TRIE_NODE_HASH)
             ? NullNode.instance()
@@ -160,12 +160,12 @@ public abstract class StoredMerkleTrie<K extends Bytes, V> implements MerkleTrie
   }
 
   @Override
-  public Map<Bytes32, V> entriesFrom(final Bytes32 startKeyHash, final int limit) {
+  public Map<Bytes, V> entriesFrom(final Bytes startKeyHash, final int limit) {
     return StorageEntriesCollector.collectEntries(root, startKeyHash, limit);
   }
 
   @Override
-  public Map<Bytes32, V> entriesFrom(final Function<Node<V>, Map<Bytes32, V>> handler) {
+  public Map<Bytes, V> entriesFrom(final Function<Node<V>, Map<Bytes, V>> handler) {
     return handler.apply(root);
   }
 
@@ -198,7 +198,7 @@ public abstract class StoredMerkleTrie<K extends Bytes, V> implements MerkleTrie
   }
 
   @Override
-  public Bytes32 getRootHash() {
+  public Bytes getRootHash() {
     return root.getHash();
   }
 

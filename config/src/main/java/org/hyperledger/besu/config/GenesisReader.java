@@ -88,7 +88,9 @@ interface GenesisReader {
                         .orElse(Wei.ZERO),
                     JsonUtil.getBytes(on, "code", null),
                     ParserUtils.getStorageMap(on, "storage"),
-                    JsonUtil.getBytes(on, "privatekey").map(Bytes32::wrap).orElse(null));
+                    JsonUtil.getBytes(on, "privatekey")
+                        .map(x -> Bytes32.fromBytes(x, 0))
+                        .orElse(null));
               });
     }
   }
@@ -164,7 +166,7 @@ interface GenesisReader {
           Wei balance = Wei.ZERO;
           Bytes code = null;
           Map<UInt256, UInt256> storage = Map.of();
-          Bytes32 privateKey = null;
+          Bytes privateKey = null;
           parser.nextToken(); // consume start object
           while (parser.nextToken() != JsonToken.END_OBJECT) {
             switch (normalizeKey(parser.currentName())) {

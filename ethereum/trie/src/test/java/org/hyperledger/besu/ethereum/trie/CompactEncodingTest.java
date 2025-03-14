@@ -21,7 +21,6 @@ import org.hyperledger.besu.crypto.Hash;
 import java.util.Random;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +36,7 @@ public class CompactEncodingTest {
   public void shouldRoundTripFromBytesToPathAndBack() {
     final Random random = new Random(282943948928429484L);
     for (int i = 0; i < 1000; i++) {
-      final Bytes32 bytes = Hash.keccak256(UInt256.valueOf(random.nextInt(Integer.MAX_VALUE)));
+      final Bytes bytes = Hash.keccak256(UInt256.valueOf(random.nextInt(Integer.MAX_VALUE)));
       final Bytes path = CompactEncoding.bytesToPath(bytes);
       assertThat(CompactEncoding.pathToBytes(path)).isEqualTo(bytes);
     }

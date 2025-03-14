@@ -52,7 +52,8 @@ public class TestPrivacyPluginPayloadProvider implements PrivacyPluginPayloadPro
     if (transaction.getPayload().slice(0, prefixBytes.size()).equals(prefixBytes)) {
       LOG.info("processing payload for " + prefix);
       final BytesValueRLPInput bytesValueRLPInput =
-          new BytesValueRLPInput(transaction.getPayload().slice(prefixBytes.size()).copy(), false);
+          new BytesValueRLPInput(
+              transaction.getPayload().slice(prefixBytes.size()).mutableCopy(), false);
       return Optional.of(readFrom(bytesValueRLPInput));
     } else {
       LOG.info("Can not process payload for " + prefix);

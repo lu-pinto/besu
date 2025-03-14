@@ -126,19 +126,18 @@ public class SECPSignature {
 
   private Bytes _encodedBytes() {
     final MutableBytes bytes = MutableBytes.create(BYTES_REQUIRED);
-    UInt256.valueOf(r).copyTo(bytes, 0);
-    UInt256.valueOf(s).copyTo(bytes, 32);
+    bytes.set(0, UInt256.valueOf(r));
+    bytes.set(32, UInt256.valueOf(s));
     bytes.set(64, recId);
     return bytes;
   }
 
   @Override
   public boolean equals(final Object other) {
-    if (!(other instanceof SECPSignature)) {
+    if (!(other instanceof SECPSignature that)) {
       return false;
     }
 
-    final SECPSignature that = (SECPSignature) other;
     return this.r.equals(that.r) && this.s.equals(that.s) && this.recId == that.recId;
   }
 

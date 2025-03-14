@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.bouncycastle.crypto.digests.KeccakDigest;
 
 /**
@@ -45,8 +44,8 @@ public class HandshakeSecrets {
   private final byte[] aesSecret;
   private final byte[] macSecret;
   private final byte[] token;
-  private final KeccakDigest egressMac = new KeccakDigest(Bytes32.SIZE * 8);
-  private final KeccakDigest ingressMac = new KeccakDigest(Bytes32.SIZE * 8);
+  private final KeccakDigest egressMac = new KeccakDigest(32 * 8);
+  private final KeccakDigest ingressMac = new KeccakDigest(32 * 8);
 
   /**
    * Creates an instance with empty MACs.
@@ -56,9 +55,9 @@ public class HandshakeSecrets {
    * @param token The session token.
    */
   public HandshakeSecrets(final byte[] aesSecret, final byte[] macSecret, final byte[] token) {
-    checkArgument(aesSecret.length == Bytes32.SIZE, "aes secret must be exactly 32 bytes long");
-    checkArgument(macSecret.length == Bytes32.SIZE, "mac secret must be exactly 32 bytes long");
-    checkArgument(token.length == Bytes32.SIZE, "token must be exactly 32 bytes long");
+    checkArgument(aesSecret.length == 32, "aes secret must be exactly 32 bytes long");
+    checkArgument(macSecret.length == 32, "mac secret must be exactly 32 bytes long");
+    checkArgument(token.length == 32, "token must be exactly 32 bytes long");
 
     this.aesSecret = aesSecret;
     this.macSecret = macSecret;
@@ -153,7 +152,7 @@ public class HandshakeSecrets {
   }
 
   private static byte[] snapshot(final KeccakDigest digest) {
-    final byte[] out = new byte[Bytes32.SIZE];
+    final byte[] out = new byte[32];
     new KeccakDigest(digest).doFinal(out, 0);
     return out;
   }

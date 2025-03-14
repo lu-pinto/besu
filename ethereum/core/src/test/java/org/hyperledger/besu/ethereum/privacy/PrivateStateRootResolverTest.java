@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,10 +45,10 @@ public class PrivateStateRootResolverTest {
       Hash.fromHexString("0x37659019840d6e04e740614d1ad93d62f0d9d7cc423b2178189f391db602a6a6");
   private static final Hash pmt2StateHash =
       Hash.fromHexString("0x12d390c87b405e91523b5829002bf90095005366eb9aa168ff8a18540902e410");
-  private static final Bytes32 privacyGroupId =
-      Bytes32.wrap(Bytes.fromBase64String("A1aVtMxLCUHmBVHXoZzzBgPbW/wj5axDpW9X8l91SGo="));
-  private static final Bytes32 failingPrivacyGroupId =
-      Bytes32.wrap(Bytes.fromBase64String("Ko2bVqD+nNlNYL5EE7y3IdOnviftjiizpjRt+HTuFBs="));
+  private static final Bytes privacyGroupId =
+      Bytes.fromBase64String("A1aVtMxLCUHmBVHXoZzzBgPbW/wj5axDpW9X8l91SGo=");
+  private static final Bytes failingPrivacyGroupId =
+      Bytes.fromBase64String("Ko2bVqD+nNlNYL5EE7y3IdOnviftjiizpjRt+HTuFBs=");
 
   private PrivateStateStorage privateStateStorage;
 
@@ -103,7 +102,7 @@ public class PrivateStateRootResolverTest {
     final PrivateStateStorage.Updater updater = privateStateStorage.updater();
     updater.putPrivateBlockMetadata(
         BLOCKCHAIN.getBlockByNumber(16).get().getHash(),
-        Bytes32.wrap(privacyGroupId),
+        privacyGroupId,
         new PrivateBlockMetadata(
             Collections.singletonList(
                 new PrivateTransactionMetadata(
@@ -112,7 +111,7 @@ public class PrivateStateRootResolverTest {
         BLOCKCHAIN.getChainHeadHash(),
         new PrivacyGroupHeadBlockMap(
             Collections.singletonMap(
-                Bytes32.wrap(privacyGroupId), BLOCKCHAIN.getBlockByNumber(16).get().getHash())));
+                privacyGroupId, BLOCKCHAIN.getBlockByNumber(16).get().getHash())));
     updater.commit();
     final PrivateStateRootResolver privateStateRootResolver =
         new PrivateStateRootResolver(privateStateStorage);
@@ -127,14 +126,14 @@ public class PrivateStateRootResolverTest {
     final PrivateStateStorage.Updater updater = privateStateStorage.updater();
     updater.putPrivateBlockMetadata(
         BLOCKCHAIN.getBlockByNumber(16).get().getHash(),
-        Bytes32.wrap(privacyGroupId),
+        privacyGroupId,
         new PrivateBlockMetadata(
             Collections.singletonList(
                 new PrivateTransactionMetadata(
                     BLOCK_GENERATOR.transaction().getHash(), pmt1StateHash))));
     updater.putPrivateBlockMetadata(
         BLOCKCHAIN.getBlockByNumber(16).get().getHash(),
-        Bytes32.wrap(failingPrivacyGroupId),
+        failingPrivacyGroupId,
         new PrivateBlockMetadata(
             Collections.singletonList(
                 new PrivateTransactionMetadata(
@@ -143,7 +142,7 @@ public class PrivateStateRootResolverTest {
         BLOCKCHAIN.getChainHeadHash(),
         new PrivacyGroupHeadBlockMap(
             Collections.singletonMap(
-                Bytes32.wrap(privacyGroupId), BLOCKCHAIN.getBlockByNumber(16).get().getHash())));
+                privacyGroupId, BLOCKCHAIN.getBlockByNumber(16).get().getHash())));
     updater.commit();
     final PrivateStateRootResolver privateStateRootResolver =
         new PrivateStateRootResolver(privateStateStorage);
@@ -158,7 +157,7 @@ public class PrivateStateRootResolverTest {
     final PrivateStateStorage.Updater updater = privateStateStorage.updater();
     updater.putPrivateBlockMetadata(
         BLOCKCHAIN.getBlockByNumber(16).get().getHash(),
-        Bytes32.wrap(privacyGroupId),
+        privacyGroupId,
         new PrivateBlockMetadata(
             Arrays.asList(
                 new PrivateTransactionMetadata(
@@ -169,7 +168,7 @@ public class PrivateStateRootResolverTest {
         BLOCKCHAIN.getChainHeadHash(),
         new PrivacyGroupHeadBlockMap(
             Collections.singletonMap(
-                Bytes32.wrap(privacyGroupId), BLOCKCHAIN.getBlockByNumber(16).get().getHash())));
+                privacyGroupId, BLOCKCHAIN.getBlockByNumber(16).get().getHash())));
     updater.commit();
     final PrivateStateRootResolver privateStateRootResolver =
         new PrivateStateRootResolver(privateStateStorage);

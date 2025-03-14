@@ -19,11 +19,10 @@ import org.hyperledger.besu.datatypes.Address;
 import java.math.BigInteger;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.bytes.v2.MutableBytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
-/** Static utility methods to work with VM words (that is, {@link Bytes32} values). */
+/** Static utility methods to work with VM words (that is, {@link Bytes} values of size 32). */
 public interface Words {
   /**
    * Creates a new word containing the provided address.
@@ -33,7 +32,7 @@ public interface Words {
    *     (Appendix H. of the Yellow paper)).
    */
   static UInt256 fromAddress(final Address address) {
-    return UInt256.fromBytes(Bytes32.leftPad(address));
+    return UInt256.fromBytes(address);
   }
 
   /**
@@ -47,10 +46,10 @@ public interface Words {
     final int size = bytes.size();
     if (size < 20) {
       final MutableBytes result = MutableBytes.create(20);
-      bytes.copyTo(result, 20 - size);
+      result.set(20 - size, bytes);
       // Addresses get hashed alot in calls, and mutable bytes don't cache the `hashCode`
       // so always return an immutable copy
-      return Address.wrap(result.copy());
+      return Address.wrap(result);
     } else if (size == 20) {
       return Address.wrap(bytes);
     } else {
@@ -68,7 +67,7 @@ public interface Words {
    */
   static int numWords(final Bytes input) {
     // m/n round up == (m + n - 1)/n: http://www.cs.nott.ac.uk/~psarb2/G51MPC/slides/NumberLogic.pdf
-    return (input.size() + Bytes32.SIZE - 1) / Bytes32.SIZE;
+    return (input.size() + 32 - 1) / 32;
   }
 
   /**
@@ -81,7 +80,7 @@ public interface Words {
    */
   static int numWords(final int length) {
     // m/n round up == (m + n - 1)/n: http://www.cs.nott.ac.uk/~psarb2/G51MPC/slides/NumberLogic.pdf
-    return (length + Bytes32.SIZE - 1) / Bytes32.SIZE;
+    return (length + 32 - 1) / 32;
   }
 
   /**

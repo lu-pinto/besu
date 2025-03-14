@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,7 +126,7 @@ public class PrivGetEeaTransactionCount implements JsonRpcMethod {
     final List<Bytes> toAddresses =
         Arrays.stream(privateFor).map(Bytes::fromBase64String).collect(Collectors.toList());
 
-    final Bytes32 privacyGroupId = PrivacyGroupUtil.calculateEeaPrivacyGroupId(from, toAddresses);
+    final Bytes privacyGroupId = PrivacyGroupUtil.calculateEeaPrivacyGroupId(from, toAddresses);
     return privacyController.determineNonce(
         address, privacyGroupId.toBase64String(), privacyUserId);
   }

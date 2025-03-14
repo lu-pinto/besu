@@ -31,7 +31,6 @@ import java.util.zip.CRC32;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class ForkIdManager {
 
@@ -169,7 +168,7 @@ public class ForkIdManager {
    * @param peerGenesisHash Hash to be validated.
    * @return boolean
    */
-  public boolean peerCheck(final Bytes32 peerGenesisHash) {
+  public boolean peerCheck(final Bytes peerGenesisHash) {
     return !peerGenesisHash.equals(genesisHash);
   }
 
@@ -199,7 +198,7 @@ public class ForkIdManager {
 
   private long createForkIds() {
     final CRC32 crc = new CRC32();
-    crc.update(genesisHash.toArray());
+    crc.update(genesisHash.toArrayUnsafe());
     genesisHashCrc = getCurrentCrcHash(crc);
     final List<Bytes> forkHashes = new ArrayList<>(List.of(genesisHashCrc));
     blockNumberForks.forEach(

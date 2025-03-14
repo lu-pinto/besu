@@ -157,7 +157,7 @@ public class CodeDelegation implements org.hyperledger.besu.datatypes.CodeDelega
     BytesValueRLPOutput rlpOutput = new BytesValueRLPOutput();
     CodeDelegationTransactionEncoder.encodeSingleCodeDelegationWithoutSignature(this, rlpOutput);
 
-    final Hash hash = Hash.hash(Bytes.concatenate(MAGIC, rlpOutput.encoded()));
+    final Hash hash = Hash.hash(Bytes.wrap(MAGIC, rlpOutput.encoded()));
 
     Optional<Address> authorityAddress;
     try {
@@ -251,9 +251,7 @@ public class CodeDelegation implements org.hyperledger.besu.datatypes.CodeDelega
       output.endList();
 
       signature(
-          SIGNATURE_ALGORITHM
-              .get()
-              .sign(Hash.hash(Bytes.concatenate(MAGIC, output.encoded())), keyPair));
+          SIGNATURE_ALGORITHM.get().sign(Hash.hash(Bytes.wrap(MAGIC, output.encoded())), keyPair));
       return build();
     }
 

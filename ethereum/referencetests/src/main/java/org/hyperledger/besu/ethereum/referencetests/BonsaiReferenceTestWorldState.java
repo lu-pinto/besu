@@ -48,7 +48,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -261,7 +260,7 @@ public class BonsaiReferenceTestWorldState extends BonsaiWorldState
   }
 
   @Override
-  public Stream<StreamableAccount> streamAccounts(final Bytes32 startKeyHash, final int limit) {
+  public Stream<StreamableAccount> streamAccounts(final Bytes startKeyHash, final int limit) {
     return this.refTestStorage.streamAccounts(this, startKeyHash, limit);
   }
 

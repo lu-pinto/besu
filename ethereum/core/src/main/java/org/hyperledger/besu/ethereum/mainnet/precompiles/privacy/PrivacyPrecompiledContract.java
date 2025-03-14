@@ -144,8 +144,8 @@ public class PrivacyPrecompiledContract extends AbstractPrecompiledContract {
       return NO_RESULT;
     }
 
-    final Bytes32 privacyGroupId =
-        Bytes32.wrap(Bytes.fromBase64String(receiveResponse.getPrivacyGroupId()));
+    final Bytes privacyGroupId =
+        Bytes32.fromBytes(Bytes.fromBase64String(receiveResponse.getPrivacyGroupId()), 0);
 
     try {
       if (privateTransaction.getPrivateFor().isEmpty()
@@ -228,7 +228,7 @@ public class PrivacyPrecompiledContract extends AbstractPrecompiledContract {
       final Hash lastRootHash,
       final MutableWorldState disposablePrivateState,
       final WorldUpdater privateWorldStateUpdater,
-      final Bytes32 privacyGroupId,
+      final Bytes privacyGroupId,
       final long blockNumber) {
     if (lastRootHash.equals(EMPTY_ROOT_HASH)) {
       this.privateStateGenesisAllocator.applyGenesisToPrivateWorldState(
@@ -238,7 +238,7 @@ public class PrivacyPrecompiledContract extends AbstractPrecompiledContract {
 
   void storePrivateMetadata(
       final Hash commitmentHash,
-      final Bytes32 privacyGroupId,
+      final Bytes privacyGroupId,
       final MutableWorldState disposablePrivateState,
       final PrivateMetadataUpdater privateMetadataUpdater,
       final TransactionProcessingResult result) {
@@ -260,7 +260,7 @@ public class PrivacyPrecompiledContract extends AbstractPrecompiledContract {
   TransactionProcessingResult processPrivateTransaction(
       final MessageFrame messageFrame,
       final PrivateTransaction privateTransaction,
-      final Bytes32 privacyGroupId,
+      final Bytes privacyGroupId,
       final WorldUpdater privateWorldStateUpdater) {
 
     return privateTransactionProcessor.processTransaction(

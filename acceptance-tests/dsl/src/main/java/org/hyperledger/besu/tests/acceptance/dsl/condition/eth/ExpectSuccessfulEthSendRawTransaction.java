@@ -21,6 +21,7 @@ import org.hyperledger.besu.tests.acceptance.dsl.condition.Condition;
 import org.hyperledger.besu.tests.acceptance.dsl.node.Node;
 import org.hyperledger.besu.tests.acceptance.dsl.transaction.eth.EthSendRawTransactionTransaction;
 
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class ExpectSuccessfulEthSendRawTransaction implements Condition {
@@ -36,7 +37,7 @@ public class ExpectSuccessfulEthSendRawTransaction implements Condition {
     WaitUtils.waitFor(
         5,
         () -> {
-          final Bytes32 txHash = Bytes32.fromHexString(node.execute(transaction));
+          final Bytes txHash = Bytes32.fromHexString(node.execute(transaction));
           assertThat(txHash).isNotNull();
         });
   }

@@ -30,7 +30,7 @@ import org.hyperledger.besu.plugin.services.MetricsSystem;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,16 +39,16 @@ public class GetStorageRangeFromPeerTask
 
   private static final Logger LOG = LoggerFactory.getLogger(GetStorageRangeFromPeerTask.class);
 
-  private final List<Bytes32> accountHashes;
-  private final Bytes32 startKeyHash;
-  private final Bytes32 endKeyHash;
+  private final List<Bytes> accountHashes;
+  private final Bytes startKeyHash;
+  private final Bytes endKeyHash;
   private final BlockHeader blockHeader;
 
   private GetStorageRangeFromPeerTask(
       final EthContext ethContext,
-      final List<Bytes32> accountHashes,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash,
+      final List<Bytes> accountHashes,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash,
       final BlockHeader blockHeader,
       final MetricsSystem metricsSystem) {
     super(ethContext, SnapV1.STORAGE_RANGE, metricsSystem);
@@ -60,9 +60,9 @@ public class GetStorageRangeFromPeerTask
 
   public static GetStorageRangeFromPeerTask forStorageRange(
       final EthContext ethContext,
-      final List<Bytes32> accountHashes,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash,
+      final List<Bytes> accountHashes,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash,
       final BlockHeader blockHeader,
       final MetricsSystem metricsSystem) {
     return new GetStorageRangeFromPeerTask(

@@ -108,8 +108,8 @@ public class AltBN128MulPrecompiledContract extends AbstractAltBnPrecompiledCont
     final Bytes xResult = product.getX().toBytes();
     final Bytes yResult = product.getY().toBytes();
     final MutableBytes result = MutableBytes.create(64);
-    xResult.copyTo(result, 32 - xResult.size());
-    yResult.copyTo(result, 64 - yResult.size());
+    result.set(32 - xResult.size(), xResult);
+    result.set(64 - yResult.size(), yResult);
 
     return PrecompileContractResult.success(result);
   }

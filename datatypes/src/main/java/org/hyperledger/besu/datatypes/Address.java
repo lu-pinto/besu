@@ -29,8 +29,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import org.apache.tuweni.bytes.v2.DelegatingBytes;
 import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.DelegatingBytes;
 
 /** A 160-bits account address. */
 public class Address extends DelegatingBytes {
@@ -110,7 +110,7 @@ public class Address extends DelegatingBytes {
    * @param bytes the bytes
    */
   protected Address(final Bytes bytes) {
-    super(bytes);
+    super(bytes, 20);
   }
 
   /**
@@ -128,7 +128,7 @@ public class Address extends DelegatingBytes {
     if (value instanceof Address address) {
       return address;
     } else if (value instanceof DelegatingBytes delegatingBytes) {
-      return new Address(delegatingBytes.copy());
+      return new Address(delegatingBytes.getImpl());
     } else {
       return new Address(value);
     }
@@ -157,7 +157,7 @@ public class Address extends DelegatingBytes {
    *     Yellow Paper.
    * @return The ethereum address from the provided hash.
    */
-  public static Address extract(final Bytes32 hash) {
+  public static Address extract(final Bytes hash) {
     return wrap(hash.slice(12, 20));
   }
 
@@ -291,10 +291,9 @@ public class Address extends DelegatingBytes {
     if (obj == this) {
       return true;
     }
-    if (!(obj instanceof Address)) {
+    if (!(obj instanceof Address other)) {
       return false;
     }
-    Address other = (Address) obj;
     return Arrays.equals(this.toArrayUnsafe(), other.toArrayUnsafe());
   }
 }

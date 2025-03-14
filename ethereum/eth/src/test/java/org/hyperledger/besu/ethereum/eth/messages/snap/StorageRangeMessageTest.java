@@ -25,7 +25,6 @@ import java.util.TreeMap;
 
 import kotlin.collections.ArrayDeque;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -34,13 +33,13 @@ public final class StorageRangeMessageTest {
   @Test
   public void roundTripTest() {
 
-    final ArrayDeque<NavigableMap<Bytes32, Bytes>> keys = new ArrayDeque<>();
-    final TreeMap<Bytes32, Bytes> storage = new TreeMap<>();
-    storage.put(Hash.wrap(Bytes32.leftPad(Bytes.of(1))), Bytes32.random());
+    final ArrayDeque<NavigableMap<Bytes, Bytes>> keys = new ArrayDeque<>();
+    final TreeMap<Bytes, Bytes> storage = new TreeMap<>();
+    storage.put(Hash.wrap(Bytes.of(1).mutableCopy().leftPad(32)), Bytes.random(32));
     keys.add(storage);
 
     final List<Bytes> proofs = new ArrayList<>();
-    proofs.add(Bytes32.random());
+    proofs.add(Bytes.random(32));
 
     // Perform round-trip transformation
     final MessageData initialMessage = StorageRangeMessage.create(keys, proofs);

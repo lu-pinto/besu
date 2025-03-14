@@ -46,7 +46,7 @@ import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
 import io.vertx.core.Vertx;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -88,12 +88,12 @@ public abstract class AbstractEngineGetPayloadTest extends AbstractScheduledApiT
       PayloadIdentifier.forPayloadParams(
           Hash.ZERO,
           1337L,
-          Bytes32.random(),
+          Bytes.random(32),
           Address.fromHexString("0x42"),
           Optional.empty(),
           Optional.empty());
   protected static final BlockHeader mockHeader =
-      new BlockHeaderTestFixture().prevRandao(Bytes32.random()).buildHeader();
+      new BlockHeaderTestFixture().prevRandao(Bytes.random(32)).buildHeader();
   private static final Block mockBlock =
       new Block(mockHeader, new BlockBody(Collections.emptyList(), Collections.emptyList()));
   protected static final BlockWithReceipts mockBlockWithReceipts =
@@ -156,7 +156,7 @@ public abstract class AbstractEngineGetPayloadTest extends AbstractScheduledApiT
             PayloadIdentifier.forPayloadParams(
                 Hash.ZERO,
                 0L,
-                Bytes32.random(),
+                Bytes.random(32),
                 Address.fromHexString("0x42"),
                 Optional.empty(),
                 Optional.empty()));

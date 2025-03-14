@@ -284,7 +284,7 @@ public class TrieLogHelper {
       byte[] key = keys.get(i);
       byte[] value = trieLogsToRetain.get(key);
       updater.getTrieLogStorageTransaction().put(key, value);
-      LOG.info("Key({}): {}", i, Bytes32.wrap(key).toShortHexString());
+      LOG.info("Key({}): {}", i, Bytes32.fromArray(key).toShortHexString());
     }
 
     updater.getTrieLogStorageTransaction().commit();
@@ -421,7 +421,7 @@ public class TrieLogHelper {
     final AtomicInteger orphanCount = new AtomicInteger();
     rootWorldStateStorage
         .streamTrieLogKeys(limit)
-        .map(Bytes32::wrap)
+        .map(Bytes32::fromArray)
         .map(Hash::wrap)
         .forEach(
             hash -> {

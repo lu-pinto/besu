@@ -29,8 +29,8 @@ public class PeerDistanceCalculator {
    */
   static int distance(final Bytes v1, final Bytes v2) {
     assert (v1.size() == v2.size());
-    final byte[] v1b = v1.toArray();
-    final byte[] v2b = v2.toArray();
+    final byte[] v1b = v1.toArrayUnsafe();
+    final byte[] v2b = v2.toArrayUnsafe();
     if (Arrays.equals(v1b, v2b)) {
       return 0;
     }

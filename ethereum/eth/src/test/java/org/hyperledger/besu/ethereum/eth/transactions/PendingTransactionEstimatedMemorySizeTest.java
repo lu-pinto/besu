@@ -65,7 +65,6 @@ import javax.management.MBeanServer;
 import com.google.common.collect.Sets;
 import com.sun.management.HotSpotDiagnosticMXBean;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -142,7 +141,7 @@ public class PendingTransactionEstimatedMemorySizeTest extends BaseTransactionPo
     TransactionTestFixture preparedTx =
         prepareTransaction(TransactionType.ACCESS_LIST, 10, Wei.of(500), Wei.ZERO, 10, 0, null);
     Transaction txTo =
-        preparedTx.to(Optional.of(Address.extract(Bytes32.random()))).createTransaction(KEYS1);
+        preparedTx.to(Optional.of(Address.extract(Bytes.random(32)))).createTransaction(KEYS1);
     BytesValueRLPOutput rlpOut = new BytesValueRLPOutput();
     txTo.writeTo(rlpOut);
 
@@ -364,7 +363,7 @@ public class PendingTransactionEstimatedMemorySizeTest extends BaseTransactionPo
     System.setProperty("jol.magicFieldOffset", "true");
 
     final AccessListEntry ale1 =
-        new AccessListEntry(Address.extract(Bytes32.random()), List.of(Bytes32.random()));
+        new AccessListEntry(Address.extract(Bytes.random(32)), List.of(Bytes.random(32)));
 
     final List<AccessListEntry> ales = List.of(ale1);
 
@@ -403,7 +402,7 @@ public class PendingTransactionEstimatedMemorySizeTest extends BaseTransactionPo
 
     assertThat(aleSize).isEqualTo(ACCESS_LIST_ENTRY_SHALLOW_SIZE);
 
-    final Bytes32 storageKey = ale.storageKeys().get(0);
+    final Bytes storageKey = ale.storageKeys().get(0);
     final ClassLayout cl4 = ClassLayout.parseInstance(storageKey);
     System.out.println(cl4.toPrintable());
     System.out.println("Single storage key size: " + cl4.instanceSize());

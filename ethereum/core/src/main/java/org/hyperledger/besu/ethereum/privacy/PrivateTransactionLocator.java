@@ -35,7 +35,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,17 +161,17 @@ public class PrivateTransactionLocator {
   }
 
   private Optional<TransactionFromEnclave> tryFetchingTransactionFromAddBlob(
-      final Bytes32 blockHash, final Hash expectedPmtHash, final String enclaveKey) {
+      final Bytes blockHash, final Hash expectedPmtHash, final String enclaveKey) {
     LOG.trace("Fetching transaction information from add blob");
 
     final Optional<PrivacyGroupHeadBlockMap> privacyGroupHeadBlockMapOptional =
         privateStateStorage.getPrivacyGroupHeadBlockMap(blockHash);
 
     if (privacyGroupHeadBlockMapOptional.isPresent()) {
-      final Set<Bytes32> mappedPrivacyGroupIds = privacyGroupHeadBlockMapOptional.get().keySet();
+      final Set<Bytes> mappedPrivacyGroupIds = privacyGroupHeadBlockMapOptional.get().keySet();
 
-      for (final Bytes32 privacyGroupId : mappedPrivacyGroupIds) {
-        final Optional<Bytes32> addDataKey = privateStateStorage.getAddDataKey(privacyGroupId);
+      for (final Bytes privacyGroupId : mappedPrivacyGroupIds) {
+        final Optional<Bytes> addDataKey = privateStateStorage.getAddDataKey(privacyGroupId);
 
         if (addDataKey.isPresent()) {
           final String payloadKey = addDataKey.get().toBase64String();

@@ -19,18 +19,18 @@ import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 
 import java.util.Objects;
 
-import org.apache.tuweni.bytes.v2.Bytes48;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** This class contains the data for a KZG proof for a KZG commitment. */
 public class KZGProof {
-  final Bytes48 data;
+  final Bytes data;
 
   /**
    * Constructor for a KZG proof.
    *
    * @param data The data for the KZG proof.
    */
-  public KZGProof(final Bytes48 data) {
+  public KZGProof(final Bytes data) {
     this.data = data;
   }
 
@@ -41,7 +41,7 @@ public class KZGProof {
    * @return The KZG proof.
    */
   public static KZGProof readFrom(final RLPInput input) {
-    final Bytes48 bytes = input.readBytes48();
+    final Bytes bytes = input.readBytes48();
     return new KZGProof(bytes);
   }
 
@@ -59,7 +59,7 @@ public class KZGProof {
    *
    * @return The data for the KZG proof.
    */
-  public Bytes48 getData() {
+  public Bytes getData() {
     return data;
   }
 

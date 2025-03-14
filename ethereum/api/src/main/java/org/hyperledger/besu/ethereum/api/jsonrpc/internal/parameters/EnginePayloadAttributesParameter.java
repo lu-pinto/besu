@@ -22,15 +22,16 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.vertx.core.json.JsonObject;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class EnginePayloadAttributesParameter {
 
   final Long timestamp;
-  final Bytes32 prevRandao;
+  final Bytes prevRandao;
   final Address suggestedFeeRecipient;
   final List<WithdrawalParameter> withdrawals;
-  private final Bytes32 parentBeaconBlockRoot;
+  private final Bytes parentBeaconBlockRoot;
 
   @JsonCreator
   public EnginePayloadAttributesParameter(
@@ -51,7 +52,7 @@ public class EnginePayloadAttributesParameter {
     return timestamp;
   }
 
-  public Bytes32 getPrevRandao() {
+  public Bytes getPrevRandao() {
     return prevRandao;
   }
 
@@ -59,7 +60,7 @@ public class EnginePayloadAttributesParameter {
     return suggestedFeeRecipient;
   }
 
-  public Bytes32 getParentBeaconBlockRoot() {
+  public Bytes getParentBeaconBlockRoot() {
     return parentBeaconBlockRoot;
   }
 

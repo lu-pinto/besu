@@ -109,7 +109,7 @@ public class CodeDelegationTransactionAcceptanceTest extends AcceptanceTestBase 
             .gasLimit(1000000)
             .to(Address.fromHexStringStrict(authorizer.getAddress()))
             .value(Wei.ZERO)
-            .payload(Bytes32.leftPad(Bytes.fromHexString(transactionSponsor.getAddress())))
+            .payload(Bytes32.fromHexString(transactionSponsor.getAddress()))
             .accessList(List.of())
             .codeDelegations(List.of(codeDelegation))
             .signAndBuild(
@@ -167,7 +167,7 @@ public class CodeDelegationTransactionAcceptanceTest extends AcceptanceTestBase 
             .gasLimit(GAS_LIMIT)
             .to(Address.fromHexStringStrict(authorizer.getAddress()))
             .value(Wei.ZERO)
-            .payload(Bytes32.leftPad(Bytes.fromHexString(otherAccount.getAddress())))
+            .payload(Bytes32.fromHexString(otherAccount.getAddress()))
             .accessList(List.of())
             .codeDelegations(List.of(codeDelegation))
             .signAndBuild(
@@ -291,7 +291,7 @@ public class CodeDelegationTransactionAcceptanceTest extends AcceptanceTestBase 
     // check the authorizer has the code delegation after the transaction even though it has
     // reverted
     final Bytes expectedCode =
-        Bytes.concatenate(Bytes.fromHexString("ef0100"), SEND_ALL_ETH_CONTRACT_ADDRESS);
+        Bytes.wrap(Bytes.fromHexString("ef0100"), SEND_ALL_ETH_CONTRACT_ADDRESS);
     final Bytes authorizerCode = besuNode.execute(ethTransactions.getCode(authorizer));
     assertThat(authorizerCode).isEqualTo(expectedCode);
   }
@@ -351,7 +351,7 @@ public class CodeDelegationTransactionAcceptanceTest extends AcceptanceTestBase 
     // check the authorizer has the code delegation after the transaction even though it has
     // reverted
     final Bytes expectedCode =
-        Bytes.concatenate(Bytes.fromHexString("ef0100"), SEND_ALL_ETH_CONTRACT_ADDRESS);
+        Bytes.wrap(Bytes.fromHexString("ef0100"), SEND_ALL_ETH_CONTRACT_ADDRESS);
     final Bytes authorizerCode = besuNode.execute(ethTransactions.getCode(authorizer));
     assertThat(authorizerCode).isEqualTo(expectedCode);
   }

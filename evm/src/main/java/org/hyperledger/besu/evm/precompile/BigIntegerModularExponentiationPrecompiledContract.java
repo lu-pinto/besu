@@ -139,8 +139,7 @@ public class BigIntegerModularExponentiationPrecompiledContract
       // the padding was not there.
       modExp = Bytes.wrap(base.modPow(exp, mod).toByteArray()).trimLeadingZeros();
     }
-
-    modExp.copyTo(result, result.size() - modExp.size());
+    result.set(result.size() - modExp.size(), modExp);
     return PrecompileContractResult.success(result);
   }
 
@@ -202,12 +201,9 @@ public class BigIntegerModularExponentiationPrecompiledContract
     if (offset >= input.size() || length == 0) {
       return BigInteger.ZERO;
     } else if (offset + length < input.size()) {
-      return new BigInteger(1, input.slice(offset, length).toArray());
+      return input.slice(offset, length).toUnsignedBigInteger();
     } else {
-      byte[] raw = new byte[length];
-      Bytes partial = input.slice(offset);
-      System.arraycopy(partial.toArray(), 0, raw, 0, partial.size());
-      return new BigInteger(1, raw);
+      return input.slice(offset).toUnsignedBigInteger();
     }
   }
 
@@ -231,7 +227,7 @@ public class BigIntegerModularExponentiationPrecompiledContract
       // what we write.  If we are asked for a range that is outside the written memory create a
       // result of the correct size (defaults to zeros) and copy the memory we do have into there.
       MutableBytes mut = MutableBytes.create(length);
-      input.slice(offset).copyTo(mut, 0);
+      mut.set(0, input.slice(offset));
       num = mut.trimLeadingZeros();
     }
     return clampedToLong(num);

@@ -19,7 +19,6 @@ import org.hyperledger.besu.datatypes.Address;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /**
  * This exception is thrown when there is an issue retrieving or decoding values from {@link
@@ -28,14 +27,14 @@ import org.apache.tuweni.bytes.v2.Bytes32;
 public class MerkleTrieException extends RuntimeException {
 
   private Optional<Address> maybeAddress;
-  private Bytes32 hash;
+  private Bytes hash;
   private Bytes location;
 
   public MerkleTrieException(final String message) {
     super(message);
   }
 
-  public MerkleTrieException(final String message, final Bytes32 hash, final Bytes location) {
+  public MerkleTrieException(final String message, final Bytes hash, final Bytes location) {
     super(message);
     this.hash = hash;
     this.location = location;
@@ -49,7 +48,7 @@ public class MerkleTrieException extends RuntimeException {
   public MerkleTrieException(
       final String message,
       final Optional<Address> maybeAddress,
-      final Bytes32 hash,
+      final Bytes hash,
       final Bytes location) {
     super(message);
     this.hash = hash;
@@ -61,7 +60,7 @@ public class MerkleTrieException extends RuntimeException {
     return maybeAddress;
   }
 
-  public Bytes32 getHash() {
+  public Bytes getHash() {
     return hash;
   }
 

@@ -33,7 +33,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class LeafNode<V> implements Node<V> {
   private final Optional<Bytes> location;
@@ -42,7 +41,7 @@ public class LeafNode<V> implements Node<V> {
   private final NodeFactory<V> nodeFactory;
   protected final Function<V, Bytes> valueSerializer;
   protected WeakReference<Bytes> encodedBytes;
-  private SoftReference<Bytes32> hash;
+  private SoftReference<Bytes> hash;
   private boolean dirty = false;
 
   public LeafNode(
@@ -134,14 +133,14 @@ public class LeafNode<V> implements Node<V> {
   }
 
   @Override
-  public Bytes32 getHash() {
+  public Bytes getHash() {
     if (hash != null) {
-      final Bytes32 hashed = hash.get();
+      final Bytes hashed = hash.get();
       if (hashed != null) {
         return hashed;
       }
     }
-    final Bytes32 hashed = keccak256(getEncodedBytes());
+    final Bytes hashed = keccak256(getEncodedBytes());
     hash = new SoftReference<>(hashed);
     return hashed;
   }

@@ -25,6 +25,7 @@ import org.hyperledger.besu.datatypes.BlobsWithCommitments;
 import org.hyperledger.besu.datatypes.CodeDelegation;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.KZGCommitment;
+import org.hyperledger.besu.datatypes.KZGProof;
 import org.hyperledger.besu.datatypes.TransactionType;
 import org.hyperledger.besu.datatypes.VersionedHash;
 import org.hyperledger.besu.datatypes.Wei;
@@ -445,15 +446,12 @@ public class MainnetTransactionValidator implements TransactionValidator {
     final byte[] kzgCommitments =
         Bytes.wrap(
                 blobsWithCommitments.getKzgCommitments().stream()
-                    .map(kc -> (Bytes) kc.getData())
+                    .map(KZGCommitment::getData)
                     .toList())
             .toArrayUnsafe();
 
     final byte[] kzgProofs =
-        Bytes.wrap(
-                blobsWithCommitments.getKzgProofs().stream()
-                    .map(kp -> (Bytes) kp.getData())
-                    .toList())
+        Bytes.wrap(blobsWithCommitments.getKzgProofs().stream().map(KZGProof::getData).toList())
             .toArrayUnsafe();
 
     final boolean kzgVerification =
@@ -478,6 +476,6 @@ public class MainnetTransactionValidator implements TransactionValidator {
     digest.doFinal(dig, 0);
 
     dig[0] = VersionedHash.SHA256_VERSION_ID;
-    return new VersionedHash(Bytes32.wrap(dig));
+    return new VersionedHash(Bytes32.fromArray(dig));
   }
 }

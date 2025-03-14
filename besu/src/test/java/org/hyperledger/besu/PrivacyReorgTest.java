@@ -117,9 +117,9 @@ public class PrivacyReorgTest {
       "0xc8267b3f9ed36df3ff8adb51a6d030716f23eeb50270e7fce8d9822ffa7f0461";
   private static final String STATE_ROOT_AFTER_TRANSACTION_APPENDED_TO_EMPTY_STATE =
       "0x2121b68f1333e93bae8cd717a3ca68c9d7e7003f6b288c36dfc59b0f87be9590";
-  private static final Bytes32 PRIVACY_GROUP_BYTES32 =
+  private static final Bytes PRIVACY_GROUP_BYTES32 =
       Bytes32.fromHexString("0xf250d523ae9164722b06ca25cfa2a7f3c45df96b09e215236f886c876f715bfa");
-  private static final Bytes32 PRIVACY_TRANSACTION_PAYLOAD =
+  private static final Bytes PRIVACY_TRANSACTION_PAYLOAD =
       Bytes32.fromHexString("0xa250d523ae9164722b06ca25cfa2a7f3c45df96b09e215236f886c876f715bfa");
 
   // EventEmitter contract binary
@@ -257,7 +257,7 @@ public class PrivacyReorgTest {
         gen.block(
             getBlockOptionsNoTransactionWithDifficulty(
                 blockchain.getGenesisBlock(),
-                blockchain.getChainHeadHeader().getDifficulty().plus(10L),
+                blockchain.getChainHeadHeader().getDifficulty().add(Difficulty.of(10L)),
                 FIRST_BLOCK_WITH_NO_TRANSACTIONS_STATE_ROOT));
 
     appendBlock(besuController, blockchain, protocolContext, forkBlock);
@@ -300,7 +300,7 @@ public class PrivacyReorgTest {
             .get()
             .getHeader()
             .getDifficulty()
-            .plus(blockchain.getBlockByNumber(2).get().getHeader().getDifficulty());
+            .add(blockchain.getBlockByNumber(2).get().getHeader().getDifficulty());
 
     final String forkBlockStateRoot =
         "0x5c0adcdde38d38b4365c238c4ba05bf9ebfdf506f749b884b67003f375e43e4b";
@@ -308,7 +308,7 @@ public class PrivacyReorgTest {
         gen.block(
             getBlockOptionsNoTransactionWithDifficulty(
                 blockchain.getGenesisBlock(),
-                remainingDifficultyToOutpace.plus(10L),
+                remainingDifficultyToOutpace.add(Difficulty.of(10L)),
                 forkBlockStateRoot));
 
     appendBlock(besuController, blockchain, protocolContext, forkBlock);
@@ -345,7 +345,7 @@ public class PrivacyReorgTest {
         gen.block(
             getBlockOptionsNoTransactionWithDifficulty(
                 blockchain.getGenesisBlock(),
-                firstBlock.getHeader().getDifficulty().plus(10L),
+                firstBlock.getHeader().getDifficulty().add(Difficulty.of(10L)),
                 FIRST_BLOCK_WITH_NO_TRANSACTIONS_STATE_ROOT));
 
     // Check that the private state root did not change
@@ -358,7 +358,7 @@ public class PrivacyReorgTest {
         gen.block(
             getBlockOptionsNoTransactionWithDifficulty(
                 forkBlock,
-                forkBlock.getHeader().getDifficulty().plus(10L),
+                forkBlock.getHeader().getDifficulty().add(Difficulty.of(10L)),
                 secondForkBlockStateRoot));
 
     appendBlock(besuController, blockchain, protocolContext, forkBlock);
@@ -377,7 +377,7 @@ public class PrivacyReorgTest {
             getBlockOptionsWithTransactionAndDifficulty(
                 secondForkBlock,
                 privacyMarkerTransaction,
-                secondForkBlock.getHeader().getDifficulty().plus(10L),
+                secondForkBlock.getHeader().getDifficulty().add(Difficulty.of(10L)),
                 thirdForkBlockStateRoot));
 
     appendBlock(besuController, blockchain, protocolContext, thirdForkBlock);
@@ -417,8 +417,7 @@ public class PrivacyReorgTest {
       final Hash expected) {
     assertThat(
             privateStateRootResolver.resolveLastStateRoot(
-                Bytes32.wrap(
-                    Bytes.fromBase64String("8lDVI66RZHIrBsolz6Kn88Rd+WsJ4hUjb4hsh29xW/o=")),
+                Bytes.fromBase64String("8lDVI66RZHIrBsolz6Kn88Rd+WsJ4hUjb4hsh29xW/o="),
                 blockchain.getChainHeadHash()))
         .isEqualTo(expected);
   }

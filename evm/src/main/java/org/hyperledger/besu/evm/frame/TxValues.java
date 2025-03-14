@@ -26,7 +26,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * Transaction Values used by various EVM Opcodes. These are the values that either do not change or
@@ -53,7 +53,7 @@ public record TxValues(
     BlockHashLookup blockHashLookup,
     int maxStackSize,
     UndoSet<Address> warmedUpAddresses,
-    UndoTable<Address, Bytes32, Boolean> warmedUpStorage,
+    UndoTable<Address, Bytes, Boolean> warmedUpStorage,
     Address originator,
     Wei gasPrice,
     Wei blobGasPrice,
@@ -61,7 +61,7 @@ public record TxValues(
     Deque<MessageFrame> messageFrameStack,
     Address miningBeneficiary,
     Optional<List<VersionedHash>> versionedHashes,
-    UndoTable<Address, Bytes32, Bytes32> transientStorage,
+    UndoTable<Address, Bytes, Bytes> transientStorage,
     UndoSet<Address> creates,
     UndoSet<Address> selfDestructs,
     UndoScalar<Long> gasRefunds) {

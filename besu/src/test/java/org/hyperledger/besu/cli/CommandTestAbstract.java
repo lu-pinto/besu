@@ -357,7 +357,7 @@ public abstract class CommandTestAbstract {
 
     final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithmFactory.getInstance();
 
-    final Bytes32 keyPairPrvKey =
+    final Bytes keyPairPrvKey =
         Bytes32.fromHexString("0xf7a58d5e755d51fa2f6206e91dd574597c73248aaf946ec1964b8c6268d6207b");
     keyPair = signatureAlgorithm.createKeyPair(signatureAlgorithm.createPrivateKey(keyPairPrvKey));
 

@@ -24,6 +24,7 @@ import org.hyperledger.besu.ethereum.rlp.BytesValueRLPOutput;
 import java.util.function.Supplier;
 
 import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.units.bigints.UInt256;
 
 /** The Clique block hashing. */
 public class CliqueBlockHashing {
@@ -96,7 +97,7 @@ public class CliqueBlockHashing {
     out.writeBytes(extraDataSerializer.get());
     out.writeBytes(header.getMixHash());
     out.writeLong(header.getNonce());
-    header.getBaseFee().ifPresent(out::writeUInt256Scalar);
+    header.getBaseFee().map(UInt256::fromBytes).ifPresent(out::writeUInt256Scalar);
     out.endList();
     return out.encoded();
   }

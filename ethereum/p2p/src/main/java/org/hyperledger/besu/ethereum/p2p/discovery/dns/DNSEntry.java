@@ -133,7 +133,7 @@ public interface DNSEntry {
               .map(
                   sigBytes ->
                       SECP256K1.Signature.fromBytes(
-                          Bytes.concatenate(
+                          Bytes.wrap(
                               sigBytes, Bytes.wrap(new byte[Math.max(0, 65 - sigBytes.size())]))))
               .orElseThrow(() -> new IllegalArgumentException("Missing attribute sig"));
       enrRoot =

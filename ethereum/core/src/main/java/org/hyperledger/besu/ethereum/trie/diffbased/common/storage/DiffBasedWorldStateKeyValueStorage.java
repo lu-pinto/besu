@@ -43,7 +43,6 @@ import java.util.stream.Stream;
 
 import kotlin.Pair;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,41 +117,41 @@ public abstract class DiffBasedWorldStateKeyValueStorage
   public Optional<Hash> getWorldStateBlockHash() {
     return composedWorldStateStorage
         .get(TRIE_BRANCH_STORAGE, WORLD_BLOCK_HASH_KEY)
-        .map(Bytes32::wrap)
+        .map(Bytes::wrap)
         .map(Hash::wrap);
   }
 
-  public NavigableMap<Bytes32, Bytes> streamFlatAccounts(
-      final Bytes startKeyHash, final Bytes32 endKeyHash, final long max) {
+  public NavigableMap<Bytes, Bytes> streamFlatAccounts(
+      final Bytes startKeyHash, final Bytes endKeyHash, final long max) {
     return getFlatDbStrategy()
         .streamAccountFlatDatabase(composedWorldStateStorage, startKeyHash, endKeyHash, max);
   }
 
-  public NavigableMap<Bytes32, Bytes> streamFlatAccounts(
-      final Bytes startKeyHash, final Predicate<Pair<Bytes32, Bytes>> takeWhile) {
+  public NavigableMap<Bytes, Bytes> streamFlatAccounts(
+      final Bytes startKeyHash, final Predicate<Pair<Bytes, Bytes>> takeWhile) {
     return getFlatDbStrategy()
         .streamAccountFlatDatabase(composedWorldStateStorage, startKeyHash, takeWhile);
   }
 
-  public NavigableMap<Bytes32, Bytes> streamFlatStorages(
-      final Hash accountHash, final Bytes startKeyHash, final Bytes32 endKeyHash, final long max) {
+  public NavigableMap<Bytes, Bytes> streamFlatStorages(
+      final Hash accountHash, final Bytes startKeyHash, final Bytes endKeyHash, final long max) {
     return getFlatDbStrategy()
         .streamStorageFlatDatabase(
             composedWorldStateStorage, accountHash, startKeyHash, endKeyHash, max);
   }
 
-  public NavigableMap<Bytes32, Bytes> streamFlatStorages(
+  public NavigableMap<Bytes, Bytes> streamFlatStorages(
       final Hash accountHash,
       final Bytes startKeyHash,
-      final Predicate<Pair<Bytes32, Bytes>> takeWhile) {
+      final Predicate<Pair<Bytes, Bytes>> takeWhile) {
     return getFlatDbStrategy()
         .streamStorageFlatDatabase(composedWorldStateStorage, accountHash, startKeyHash, takeWhile);
   }
 
-  public boolean isWorldStateAvailable(final Bytes32 rootHash, final Hash blockHash) {
+  public boolean isWorldStateAvailable(final Bytes rootHash, final Hash blockHash) {
     return composedWorldStateStorage
         .get(TRIE_BRANCH_STORAGE, WORLD_ROOT_HASH_KEY)
-        .map(Bytes32::wrap)
+        .map(Bytes::wrap)
         .map(hash -> hash.equals(rootHash) || trieLogStorage.containsKey(blockHash.toArrayUnsafe()))
         .orElse(false);
   }
@@ -241,7 +240,7 @@ public abstract class DiffBasedWorldStateKeyValueStorage
   public interface Updater extends WorldStateKeyValueStorage.Updater {
 
     DiffBasedWorldStateKeyValueStorage.Updater saveWorldState(
-        final Bytes blockHash, final Bytes32 nodeHash, final Bytes node);
+        final Bytes blockHash, final Bytes nodeHash, final Bytes node);
 
     SegmentedKeyValueStorageTransaction getWorldStateTransaction();
 

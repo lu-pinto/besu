@@ -64,8 +64,8 @@ public final class InitiatorHandshakeMessageV1 implements InitiatorHandshakeMess
   private final SECPPublicKey pubKey;
   private final SECPSignature signature;
   private final SECPPublicKey ephPubKey;
-  private final Bytes32 ephPubKeyHash;
-  private final Bytes32 nonce;
+  private final Bytes ephPubKeyHash;
+  private final Bytes nonce;
   private final boolean token;
 
   private static final Supplier<SignatureAlgorithm> SIGNATURE_ALGORITHM =
@@ -75,8 +75,8 @@ public final class InitiatorHandshakeMessageV1 implements InitiatorHandshakeMess
       final SECPPublicKey pubKey,
       final SECPSignature signature,
       final SECPPublicKey ephPubKey,
-      final Bytes32 ephPubKeyHash,
-      final Bytes32 nonce,
+      final Bytes ephPubKeyHash,
+      final Bytes nonce,
       final boolean token) {
     this.pubKey = pubKey;
     this.signature = signature;
@@ -89,14 +89,14 @@ public final class InitiatorHandshakeMessageV1 implements InitiatorHandshakeMess
   public static InitiatorHandshakeMessageV1 create(
       final SECPPublicKey ourPubKey,
       final KeyPair ephKeyPair,
-      final Bytes32 staticSharedSecret,
-      final Bytes32 nonce,
+      final Bytes staticSharedSecret,
+      final Bytes nonce,
       final boolean token) {
-    final Bytes32 ephPubKeyHash = Hash.keccak256(ephKeyPair.getPublicKey().getEncodedBytes());
+    final Bytes ephPubKeyHash = Hash.keccak256(ephKeyPair.getPublicKey().getEncodedBytes());
 
     // XOR of the static shared secret and the generated nonce.
     final SECPSignature signature =
-        SIGNATURE_ALGORITHM.get().sign(staticSharedSecret.xor(nonce), ephKeyPair);
+        SIGNATURE_ALGORITHM.get().sign(staticSharedSecret.mutableCopy().xor(nonce), ephKeyPair);
     return new InitiatorHandshakeMessageV1(
         ourPubKey, signature, ephKeyPair.getPublicKey(), ephPubKeyHash, nonce, token);
   }
@@ -116,8 +116,8 @@ public final class InitiatorHandshakeMessageV1 implements InitiatorHandshakeMess
         SIGNATURE_ALGORITHM
             .get()
             .decodeSignature(bytes.slice(offset, ECIESHandshaker.SIGNATURE_LENGTH));
-    final Bytes32 ephPubKeyHash =
-        Bytes32.wrap(
+    final Bytes ephPubKeyHash =
+        Bytes32.fromBytes(
             bytes.slice(
                 offset += ECIESHandshaker.SIGNATURE_LENGTH, ECIESHandshaker.HASH_EPH_PUBKEY_LENGTH),
             0);
@@ -128,16 +128,16 @@ public final class InitiatorHandshakeMessageV1 implements InitiatorHandshakeMess
                 bytes.slice(
                     offset += ECIESHandshaker.HASH_EPH_PUBKEY_LENGTH,
                     ECIESHandshaker.PUBKEY_LENGTH));
-    final Bytes32 nonce =
-        Bytes32.wrap(
+    final Bytes nonce =
+        Bytes32.fromBytes(
             bytes.slice(offset += ECIESHandshaker.PUBKEY_LENGTH, ECIESHandshaker.NONCE_LENGTH), 0);
     final boolean token = bytes.get(offset) == 0x01;
 
-    final Bytes32 staticSharedSecret = nodeKey.calculateECDHKeyAgreement(pubKey);
+    final Bytes staticSharedSecret = nodeKey.calculateECDHKeyAgreement(pubKey);
     final SECPPublicKey ephPubKey =
         SIGNATURE_ALGORITHM
             .get()
-            .recoverPublicKeyFromSignature(staticSharedSecret.xor(nonce), signature)
+            .recoverPublicKeyFromSignature(staticSharedSecret.mutableCopy().xor(nonce), signature)
             .orElseThrow(() -> new RuntimeException("Could not recover public key from signature"));
 
     return new InitiatorHandshakeMessageV1(
@@ -147,16 +147,16 @@ public final class InitiatorHandshakeMessageV1 implements InitiatorHandshakeMess
   @Override
   public Bytes encode() {
     final MutableBytes bytes = MutableBytes.create(MESSAGE_LENGTH);
-    signature.encodedBytes().copyTo(bytes, 0);
-    ephPubKeyHash.copyTo(bytes, ECIESHandshaker.SIGNATURE_LENGTH);
-    pubKey
-        .getEncodedBytes()
-        .copyTo(bytes, ECIESHandshaker.SIGNATURE_LENGTH + ECIESHandshaker.HASH_EPH_PUBKEY_LENGTH);
-    nonce.copyTo(
-        bytes,
+    bytes.set(0, signature.encodedBytes());
+    bytes.set(ECIESHandshaker.SIGNATURE_LENGTH, ephPubKeyHash);
+    bytes.set(
+        ECIESHandshaker.SIGNATURE_LENGTH + ECIESHandshaker.HASH_EPH_PUBKEY_LENGTH,
+        pubKey.getEncodedBytes());
+    bytes.set(
         ECIESHandshaker.SIGNATURE_LENGTH
             + ECIESHandshaker.HASH_EPH_PUBKEY_LENGTH
-            + ECIESHandshaker.PUBKEY_LENGTH);
+            + ECIESHandshaker.PUBKEY_LENGTH,
+        nonce);
     bytes.set(MESSAGE_LENGTH - 1, (byte) (token ? 0x01 : 0x00));
     return bytes;
   }
@@ -167,12 +167,12 @@ public final class InitiatorHandshakeMessageV1 implements InitiatorHandshakeMess
   }
 
   @Override
-  public Bytes32 getEphPubKeyHash() {
+  public Bytes getEphPubKeyHash() {
     return ephPubKeyHash;
   }
 
   @Override
-  public Bytes32 getNonce() {
+  public Bytes getNonce() {
     return nonce;
   }
 

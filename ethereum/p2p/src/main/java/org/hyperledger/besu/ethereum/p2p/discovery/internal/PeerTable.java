@@ -186,7 +186,7 @@ public class PeerTable {
 
   private void buildBloomFilter() {
     final BloomFilter<Bytes> bf =
-        BloomFilter.create((id, val) -> val.putBytes(id.toArray()), maxEntriesCnt, 0.001);
+        BloomFilter.create((id, val) -> val.putBytes(id.toArrayUnsafe()), maxEntriesCnt, 0.001);
     streamAllPeers().map(Peer::getId).forEach(bf::put);
     this.evictionCnt = 0;
     this.idBloom = bf;

@@ -30,9 +30,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.bytes.v2.MutableBytes;
-import org.apache.tuweni.bytes.v2.MutableBytes32;
 import org.immutables.value.Value;
 
 public class InnerNodeDiscoveryManager<V> extends StoredNodeFactory<V> {
@@ -47,8 +45,8 @@ public class InnerNodeDiscoveryManager<V> extends StoredNodeFactory<V> {
       final NodeLoader nodeLoader,
       final Function<V, Bytes> valueSerializer,
       final Function<Bytes, V> valueDeserializer,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash,
       final boolean allowMissingElementInRange) {
     super(nodeLoader, valueSerializer, valueDeserializer);
     this.startKeyPath = createPath(startKeyHash);
@@ -64,7 +62,7 @@ public class InnerNodeDiscoveryManager<V> extends StoredNodeFactory<V> {
       final Supplier<String> errMessage) {
     final ExtensionNode<V> vNode =
         (ExtensionNode<V>) super.decodeExtension(location, path, valueRlp, errMessage);
-    if (isInRange(Bytes.concatenate(location, Bytes.of(0)), startKeyPath, endKeyPath)) {
+    if (isInRange(Bytes.wrap(location, Bytes.of(0)), startKeyPath, endKeyPath)) {
       innerNodes.add(
           ImmutableInnerNode.builder()
               .location(location)
@@ -80,7 +78,7 @@ public class InnerNodeDiscoveryManager<V> extends StoredNodeFactory<V> {
     final BranchNode<V> vBranchNode = super.decodeBranch(location, nodeRLPs, errMessage);
     final List<Node<V>> children = vBranchNode.getChildren();
     for (int i = 0; i < children.size(); i++) {
-      if (isInRange(Bytes.concatenate(location, Bytes.of(i)), startKeyPath, endKeyPath)) {
+      if (isInRange(Bytes.wrap(location, Bytes.of(i)), startKeyPath, endKeyPath)) {
         innerNodes.add(
             ImmutableInnerNode.builder()
                 .location(location)
@@ -98,7 +96,7 @@ public class InnerNodeDiscoveryManager<V> extends StoredNodeFactory<V> {
       final RLPInput valueRlp,
       final Supplier<String> errMessage) {
     final LeafNode<V> vLeafNode = super.decodeLeaf(location, path, valueRlp, errMessage);
-    final Bytes concatenatePath = Bytes.concatenate(location, path);
+    final Bytes concatenatePath = Bytes.wrap(location, path);
     if (isInRange(concatenatePath.slice(0, concatenatePath.size() - 1), startKeyPath, endKeyPath)) {
       innerNodes.add(ImmutableInnerNode.builder().location(location).path(path).build());
     }
@@ -106,7 +104,7 @@ public class InnerNodeDiscoveryManager<V> extends StoredNodeFactory<V> {
   }
 
   @Override
-  public Optional<Node<V>> retrieve(final Bytes location, final Bytes32 hash)
+  public Optional<Node<V>> retrieve(final Bytes location, final Bytes hash)
       throws MerkleTrieException {
 
     return super.retrieve(location, hash)
@@ -128,9 +126,9 @@ public class InnerNodeDiscoveryManager<V> extends StoredNodeFactory<V> {
     return List.copyOf(innerNodes);
   }
 
-  public static Bytes32 decodePath(final Bytes bytes) {
-    final MutableBytes32 decoded = MutableBytes32.create();
-    final MutableBytes path = MutableBytes.create(Bytes32.SIZE * 2);
+  public static Bytes decodePath(final Bytes bytes) {
+    final MutableBytes decoded = MutableBytes.create(32);
+    final MutableBytes path = MutableBytes.create(32 * 2);
     path.set(0, bytes);
     int decodedPos = 0;
     for (int pathPos = 0; pathPos < path.size() - 1; pathPos += 2, decodedPos += 1) {

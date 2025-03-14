@@ -51,7 +51,6 @@ import java.util.stream.IntStream;
 
 import com.google.common.collect.Lists;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -125,9 +124,9 @@ public class PrivGetLogsTest {
 
   @Test
   public void logQueryIsBuiltCorrectly() {
-    final Hash blockHash = Hash.hash(Bytes32.random());
+    final Hash blockHash = Hash.hash(Bytes.random(32));
     final List<Address> addresses = List.of(Address.ZERO);
-    final List<List<LogTopic>> logTopics = List.of(List.of(LogTopic.of(Bytes32.random())));
+    final List<List<LogTopic>> logTopics = List.of(List.of(LogTopic.of(Bytes.random(32))));
     final BlockHeader blockHeader = mock(BlockHeader.class);
     when(blockchainQueries.getBlockHeaderByHash(blockHash)).thenReturn(Optional.of(blockHeader));
     when(blockHeader.getNumber()).thenReturn(100L);
@@ -146,7 +145,7 @@ public class PrivGetLogsTest {
 
   @Test
   public void filterWithBlockHashQueriesOneBlockByHash() {
-    final Hash blockHash = Hash.hash(Bytes32.random());
+    final Hash blockHash = Hash.hash(Bytes.random(32));
     final FilterParameter blockHashFilter =
         new FilterParameter(
             null,

@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** This interface contains the methods used to access the private state until version 1.3 */
 @Deprecated
@@ -29,20 +28,20 @@ public interface LegacyPrivateStateStorage {
 
   Optional<Hash> getLatestStateRoot(Bytes privacyId);
 
-  Optional<List<Log>> getTransactionLogs(Bytes32 transactionHash);
+  Optional<List<Log>> getTransactionLogs(Bytes transactionHash);
 
-  Optional<Bytes> getTransactionOutput(Bytes32 transactionHash);
+  Optional<Bytes> getTransactionOutput(Bytes transactionHash);
 
-  Optional<Bytes> getStatus(Bytes32 transactionHash);
+  Optional<Bytes> getStatus(Bytes transactionHash);
 
-  Optional<Bytes> getRevertReason(Bytes32 transactionHash);
+  Optional<Bytes> getRevertReason(Bytes transactionHash);
 
   Optional<PrivateTransactionMetadata> getTransactionMetadata(
-      Bytes32 blockHash, Bytes32 transactionHash);
+      Bytes blockHash, Bytes transactionHash);
 
-  boolean isPrivateStateAvailable(Bytes32 transactionHash);
+  boolean isPrivateStateAvailable(Bytes transactionHash);
 
-  boolean isWorldStateAvailable(Bytes32 rootHash);
+  boolean isWorldStateAvailable(Bytes rootHash);
 
   Updater updater();
 
@@ -50,16 +49,16 @@ public interface LegacyPrivateStateStorage {
 
     Updater putLatestStateRoot(Bytes privacyId, Hash privateStateHash);
 
-    Updater putTransactionLogs(Bytes32 transactionHash, List<Log> logs);
+    Updater putTransactionLogs(Bytes transactionHash, List<Log> logs);
 
-    Updater putTransactionResult(Bytes32 transactionHash, Bytes events);
+    Updater putTransactionResult(Bytes transactionHash, Bytes events);
 
-    Updater putTransactionStatus(Bytes32 transactionHash, Bytes status);
+    Updater putTransactionStatus(Bytes transactionHash, Bytes status);
 
-    Updater putTransactionRevertReason(Bytes32 txHash, Bytes bytesValue);
+    Updater putTransactionRevertReason(Bytes txHash, Bytes bytesValue);
 
     Updater putTransactionMetadata(
-        Bytes32 blockHash, Bytes32 transactionHash, PrivateTransactionMetadata metadata);
+        Bytes blockHash, Bytes transactionHash, PrivateTransactionMetadata metadata);
 
     void commit();
 

@@ -59,7 +59,6 @@ import com.google.common.base.Preconditions;
 import graphql.GraphQLContext;
 import graphql.schema.DataFetcher;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /**
  * This class contains data fetchers for GraphQL queries.
@@ -122,7 +121,7 @@ public class GraphQLDataFetchers {
    *
    * @return a DataFetcher that fetches the result of sending a raw transaction
    */
-  DataFetcher<Optional<Bytes32>> getSendRawTransactionDataFetcher() {
+  DataFetcher<Optional<Bytes>> getSendRawTransactionDataFetcher() {
     return dataFetchingEnvironment -> {
       try {
         final TransactionPool transactionPool =
@@ -262,7 +261,7 @@ public class GraphQLDataFetchers {
       final BlockchainQueries blockchain =
           dataFetchingEnvironment.getGraphQlContext().get(GraphQLContextType.BLOCKCHAIN_QUERIES);
       final Long number = dataFetchingEnvironment.getArgument("number");
-      final Bytes32 hash = dataFetchingEnvironment.getArgument("hash");
+      final Bytes hash = dataFetchingEnvironment.getArgument("hash");
       if ((number != null) && (hash != null)) {
         throw new GraphQLException(GraphQLError.INVALID_PARAMS);
       }
@@ -342,10 +341,10 @@ public class GraphQLDataFetchers {
       @SuppressWarnings("unchecked")
       final List<Address> addrs = (List<Address>) filter.get("addresses");
       @SuppressWarnings("unchecked")
-      final List<List<Bytes32>> topics = (List<List<Bytes32>>) filter.get("topics");
+      final List<List<Bytes>> topics = (List<List<Bytes>>) filter.get("topics");
 
       final List<List<LogTopic>> transformedTopics = new ArrayList<>();
-      for (final List<Bytes32> topic : topics) {
+      for (final List<Bytes> topic : topics) {
         if (topic.isEmpty()) {
           transformedTopics.add(Collections.singletonList(null));
         } else {
@@ -374,7 +373,7 @@ public class GraphQLDataFetchers {
     return dataFetchingEnvironment -> {
       final BlockchainQueries blockchain =
           dataFetchingEnvironment.getGraphQlContext().get(GraphQLContextType.BLOCKCHAIN_QUERIES);
-      final Bytes32 hash = dataFetchingEnvironment.getArgument("hash");
+      final Bytes hash = dataFetchingEnvironment.getArgument("hash");
       final Optional<TransactionWithMetadata> tran = blockchain.transactionByHash(Hash.wrap(hash));
       return tran.map(this::getTransactionAdapter);
     };

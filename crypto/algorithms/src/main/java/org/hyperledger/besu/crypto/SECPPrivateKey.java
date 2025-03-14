@@ -18,19 +18,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.math.BigInteger;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /** The Secp private key. */
 public class SECPPrivateKey implements java.security.PrivateKey {
 
   /** Encoded Bytes */
-  private final Bytes32 encoded;
+  private final Bytes encoded;
 
   /** Algorithm */
   private final String algorithm;
 
-  private SECPPrivateKey(final Bytes32 encoded, final String algorithm) {
+  private SECPPrivateKey(final Bytes encoded, final String algorithm) {
     checkNotNull(encoded);
     checkNotNull(algorithm);
     this.encoded = encoded;
@@ -56,7 +56,7 @@ public class SECPPrivateKey implements java.security.PrivateKey {
    * @param algorithm the algorithm
    * @return the secp private key
    */
-  public static SECPPrivateKey create(final Bytes32 key, final String algorithm) {
+  public static SECPPrivateKey create(final Bytes key, final String algorithm) {
     return new SECPPrivateKey(key, algorithm);
   }
 
@@ -80,7 +80,7 @@ public class SECPPrivateKey implements java.security.PrivateKey {
    *
    * @return the encoded bytes
    */
-  public Bytes32 getEncodedBytes() {
+  public Bytes getEncodedBytes() {
     return encoded;
   }
 

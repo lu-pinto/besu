@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class PrivacyGroupUtil {
 
@@ -33,7 +32,7 @@ public class PrivacyGroupUtil {
    * Functionality relies on them both generating the same value. Tessera code is here:
    * https://github.com/ConsenSys/tessera/blob/c756e1bf2d1c7a7806cf3cb5b31361f51ad705f1/enclave/enclave-api/src/main/java/com/quorum/tessera/enclave/PrivacyGroupUtil.java
    */
-  public static Bytes32 calculateEeaPrivacyGroupId(
+  public static Bytes calculateEeaPrivacyGroupId(
       final Bytes privateFrom, final List<Bytes> privateFor) {
     final List<Bytes> privacyGroupMembers = new ArrayList<>();
     privacyGroupMembers.add(privateFrom);
@@ -42,7 +41,7 @@ public class PrivacyGroupUtil {
     final List<byte[]> sortedPublicEnclaveKeys =
         privacyGroupMembers.stream()
             .distinct()
-            .map(Bytes::toArray)
+            .map(Bytes::toArrayUnsafe)
             .sorted(Comparator.comparing(Arrays::hashCode))
             .collect(Collectors.toList());
 

@@ -23,7 +23,6 @@ import org.hyperledger.besu.ethereum.trie.StoredMerkleTrie;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /**
  * A {@link MerkleTrie} that persists trie nodes to a {@link MerkleStorage} key/value store.
@@ -45,7 +44,7 @@ public class StoredMerklePatriciaTrie<K extends Bytes, V> extends StoredMerkleTr
 
   public StoredMerklePatriciaTrie(
       final NodeLoader nodeLoader,
-      final Bytes32 rootHash,
+      final Bytes rootHash,
       final Bytes rootLocation,
       final Function<V, Bytes> valueSerializer,
       final Function<Bytes, V> valueDeserializer) {
@@ -57,13 +56,13 @@ public class StoredMerklePatriciaTrie<K extends Bytes, V> extends StoredMerkleTr
 
   public StoredMerklePatriciaTrie(
       final NodeLoader nodeLoader,
-      final Bytes32 rootHash,
+      final Bytes rootHash,
       final Function<V, Bytes> valueSerializer,
       final Function<Bytes, V> valueDeserializer) {
     super(new StoredNodeFactory<>(nodeLoader, valueSerializer, valueDeserializer), rootHash);
   }
 
-  public StoredMerklePatriciaTrie(final StoredNodeFactory<V> nodeFactory, final Bytes32 rootHash) {
+  public StoredMerklePatriciaTrie(final StoredNodeFactory<V> nodeFactory, final Bytes rootHash) {
     super(nodeFactory, rootHash);
   }
 

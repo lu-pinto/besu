@@ -38,19 +38,18 @@ import java.util.Optional;
 
 import kotlin.collections.ArrayDeque;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 
-public class GetBytecodeFromPeerTask extends AbstractPeerRequestTask<Map<Bytes32, Bytes>> {
+public class GetBytecodeFromPeerTask extends AbstractPeerRequestTask<Map<Bytes, Bytes>> {
 
   private static final Logger LOG = getLogger(GetBytecodeFromPeerTask.class);
 
-  private final List<Bytes32> codeHashes;
+  private final List<Bytes> codeHashes;
   private final BlockHeader blockHeader;
 
   private GetBytecodeFromPeerTask(
       final EthContext ethContext,
-      final List<Bytes32> codeHashes,
+      final List<Bytes> codeHashes,
       final BlockHeader blockHeader,
       final MetricsSystem metricsSystem) {
     super(ethContext, SnapV1.STORAGE_RANGE, metricsSystem);
@@ -60,7 +59,7 @@ public class GetBytecodeFromPeerTask extends AbstractPeerRequestTask<Map<Bytes32
 
   public static GetBytecodeFromPeerTask forBytecode(
       final EthContext ethContext,
-      final List<Bytes32> codeHashes,
+      final List<Bytes> codeHashes,
       final BlockHeader blockHeader,
       final MetricsSystem metricsSystem) {
     return new GetBytecodeFromPeerTask(ethContext, codeHashes, blockHeader, metricsSystem);
@@ -100,7 +99,7 @@ public class GetBytecodeFromPeerTask extends AbstractPeerRequestTask<Map<Bytes32
   }
 
   @Override
-  protected Optional<Map<Bytes32, Bytes>> processResponse(
+  protected Optional<Map<Bytes, Bytes>> processResponse(
       final boolean streamClosed, final MessageData message, final EthPeer peer) {
 
     if (streamClosed) {
@@ -117,8 +116,8 @@ public class GetBytecodeFromPeerTask extends AbstractPeerRequestTask<Map<Bytes32
     return mapCodeByHash(bytecodes);
   }
 
-  private Optional<Map<Bytes32, Bytes>> mapCodeByHash(final ArrayDeque<Bytes> bytecodes) {
-    final Map<Bytes32, Bytes> codeByHash = new HashMap<>();
+  private Optional<Map<Bytes, Bytes>> mapCodeByHash(final ArrayDeque<Bytes> bytecodes) {
+    final Map<Bytes, Bytes> codeByHash = new HashMap<>();
     for (int i = 0; i < bytecodes.size(); i++) {
       final Hash hash = Hash.hash(bytecodes.get(i));
       if (codeHashes.get(i).equals(hash)) {

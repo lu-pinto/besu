@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -151,7 +151,7 @@ public class BlockResult implements JsonRpcResult {
     this.blobGasUsed = header.getBlobGasUsed().map(Quantity::create).orElse(null);
     this.excessBlobGas = header.getExcessBlobGas().map(Quantity::create).orElse(null);
     this.parentBeaconBlockRoot =
-        header.getParentBeaconBlockRoot().map(Bytes32::toHexString).orElse(null);
+        header.getParentBeaconBlockRoot().map(Bytes::toHexString).orElse(null);
   }
 
   @JsonGetter(value = "number")

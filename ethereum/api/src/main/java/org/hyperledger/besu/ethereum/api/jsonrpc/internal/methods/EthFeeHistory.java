@@ -57,6 +57,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Streams;
+import org.apache.tuweni.units.bigints.UInt256;
 import org.apache.tuweni.units.bigints.UInt256s;
 
 public class EthFeeHistory implements JsonRpcMethod {
@@ -306,7 +307,10 @@ public class EthFeeHistory implements JsonRpcMethod {
     final Wei lowerBoundGasPrice = blockchainQueries.gasPriceLowerBound();
     final Wei lowerBoundPriorityFee = lowerBoundGasPrice.subtract(nextBaseFee);
     final Wei minPriorityFee = miningCoordinator.getMinPriorityFeePerGas();
-    final Wei forcedMinPriorityFee = UInt256s.max(minPriorityFee, lowerBoundPriorityFee);
+    final Wei forcedMinPriorityFee =
+        Wei.of(
+            UInt256s.max(
+                UInt256.fromBytes(minPriorityFee), UInt256.fromBytes(lowerBoundPriorityFee)));
     final Wei lowerBound =
         forcedMinPriorityFee
             .multiply(apiConfiguration.getLowerBoundGasAndPriorityFeeCoefficient())

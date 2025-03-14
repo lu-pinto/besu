@@ -37,6 +37,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Suppliers;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class DebugAccountRange implements JsonRpcMethod {
@@ -104,7 +105,7 @@ public class DebugAccountRange implements JsonRpcMethod {
                   state
                       .streamAccounts(Bytes32.fromHexStringLenient(addressHash), maxResults + 1)
                       .collect(Collectors.toList());
-              Bytes32 nextKey = Bytes32.ZERO;
+              Bytes nextKey = Bytes32.ZERO;
               if (accounts.size() == maxResults + 1) {
                 nextKey = accounts.get(maxResults).getAddressHash();
                 accounts.remove(maxResults);

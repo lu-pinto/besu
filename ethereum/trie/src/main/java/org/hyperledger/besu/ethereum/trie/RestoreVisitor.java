@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class RestoreVisitor<V> implements PathNodeVisitor<V> {
 
@@ -141,10 +140,10 @@ public class RestoreVisitor<V> implements PathNodeVisitor<V> {
 
   static class PersistedNode<V> implements Node<V> {
     private final Bytes path;
-    private final Bytes32 hash;
+    private final Bytes hash;
     private final Bytes refRlp;
 
-    PersistedNode(final Bytes path, final Bytes32 hash, final Bytes refRlp) {
+    PersistedNode(final Bytes path, final Bytes hash, final Bytes refRlp) {
       this.path = path;
       this.hash = hash;
       this.refRlp = refRlp;
@@ -226,7 +225,7 @@ public class RestoreVisitor<V> implements PathNodeVisitor<V> {
     }
 
     @Override
-    public Bytes32 getHash() {
+    public Bytes getHash() {
       return hash;
     }
 

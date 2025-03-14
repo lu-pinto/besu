@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,8 +49,7 @@ import org.mockito.quality.Strictness;
 public class PrivateWorldStateReaderTest {
 
   private final String PRIVACY_GROUP_ID = "B1aVtMxLCUHmBVHXoZzzBgPbW/wj5axDpW9X8l91SGo=";
-  private final Bytes32 PRIVACY_GROUP_ID_BYTES =
-      Bytes32.wrap(Bytes.fromBase64String(PRIVACY_GROUP_ID));
+  private final Bytes PRIVACY_GROUP_ID_BYTES = Bytes.fromBase64String(PRIVACY_GROUP_ID);
   private final Bytes contractCode = Bytes.fromBase64String("ZXhhbXBsZQ==");
   private final Address contractAddress = Address.ZERO;
   private final Hash blockHash = Hash.ZERO;
@@ -79,7 +77,7 @@ public class PrivateWorldStateReaderTest {
 
   @Test
   public void absentPrivateWorldStateReturnsEmpty() {
-    final Bytes32 privacyGroupBytes = Bytes32.wrap(Bytes.fromBase64String(PRIVACY_GROUP_ID));
+    final Bytes privacyGroupBytes = Bytes.fromBase64String(PRIVACY_GROUP_ID);
     final Address contractAddress = Address.ZERO;
 
     when(privateStateRootResolver.resolveLastStateRoot(eq(privacyGroupBytes), eq(blockHash)))
@@ -94,7 +92,7 @@ public class PrivateWorldStateReaderTest {
 
   @Test
   public void absentAccountReturnsEmpty() {
-    final Bytes32 privacyGroupBytes = Bytes32.wrap(Bytes.fromBase64String(PRIVACY_GROUP_ID));
+    final Bytes privacyGroupBytes = Bytes.fromBase64String(PRIVACY_GROUP_ID);
     final Address contractAddress = Address.ZERO;
 
     when(privateStateRootResolver.resolveLastStateRoot(eq(privacyGroupBytes), eq(blockHash)))
@@ -111,7 +109,7 @@ public class PrivateWorldStateReaderTest {
 
   @Test
   public void existingAccountWithEmptyCodeReturnsEmpty() {
-    final Bytes32 privacyGroupBytes = Bytes32.wrap(Bytes.fromBase64String(PRIVACY_GROUP_ID));
+    final Bytes privacyGroupBytes = Bytes.fromBase64String(PRIVACY_GROUP_ID);
     final Address contractAddress = Address.ZERO;
 
     when(privateStateRootResolver.resolveLastStateRoot(eq(privacyGroupBytes), eq(blockHash)))
@@ -169,8 +167,8 @@ public class PrivateWorldStateReaderTest {
 
   @Test
   public void getPrivateTransactionReceiptReturnEmptyIfReceiptDoesNotExist() {
-    final Bytes32 blockHash = Bytes32.random();
-    final Bytes32 transactionHash = Bytes32.random();
+    final Bytes blockHash = Bytes.random(32);
+    final Bytes transactionHash = Bytes.random(32);
 
     when(privateStateStorage.getTransactionReceipt(blockHash, transactionHash))
         .thenReturn(Optional.empty());
@@ -184,8 +182,8 @@ public class PrivateWorldStateReaderTest {
 
   @Test
   public void getPrivateTransactionReceiptReturnExpectedReceipt() {
-    final Hash blockHash = Hash.hash(Bytes32.random());
-    final Hash transactionHash = Hash.hash(Bytes32.random());
+    final Hash blockHash = Hash.hash(Bytes.random(32));
+    final Hash transactionHash = Hash.hash(Bytes.random(32));
 
     final PrivateTransactionReceipt receipt = new PrivateTransactionReceiptTestFixture().create();
 

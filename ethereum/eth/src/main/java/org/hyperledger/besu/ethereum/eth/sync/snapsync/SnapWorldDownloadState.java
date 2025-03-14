@@ -56,7 +56,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -199,12 +198,9 @@ public class SnapWorldDownloadState extends WorldDownloadState<SnapDataRequest> 
           final WorldStateKeyValueStorage.Updater updater = worldStateStorageCoordinator.updater();
           applyForStrategy(
               updater,
-              onBonsai -> {
-                onBonsai.saveWorldState(header.getHash(), header.getStateRoot(), rootNodeData);
-              },
-              onForest -> {
-                onForest.saveWorldState(header.getStateRoot(), rootNodeData);
-              });
+              onBonsai ->
+                  onBonsai.saveWorldState(header.getHash(), header.getStateRoot(), rootNodeData),
+              onForest -> onForest.saveWorldState(header.getStateRoot(), rootNodeData));
           updater.commit();
 
           // Remove the blockchain observer
@@ -278,7 +274,7 @@ public class SnapWorldDownloadState extends WorldDownloadState<SnapDataRequest> 
     LOG.info("Initiating the healing process for the flat database");
     syncDurationMetrics.startTimer(SyncDurationMetrics.Labels.FLAT_DB_HEAL);
     snapSyncState.setHealFlatDatabaseInProgress(true);
-    final Map<Bytes32, Bytes32> ranges = RangeManager.generateAllRanges(16);
+    final Map<Bytes, Bytes> ranges = RangeManager.generateAllRanges(16);
     ranges.forEach(
         (key, value) ->
             enqueueRequest(

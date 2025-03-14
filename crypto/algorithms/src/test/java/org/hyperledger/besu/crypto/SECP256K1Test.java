@@ -27,7 +27,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,7 +74,7 @@ public class SECP256K1Test {
     final KeyPair keyPair = secp256K1.createKeyPair(privateKey);
 
     final Bytes data = Bytes.wrap("This is an example of a signed message.".getBytes(UTF_8));
-    final Bytes32 dataHash = keccak256(data);
+    final Bytes dataHash = keccak256(data);
     final SECPSignature signature = secp256K1.sign(dataHash, keyPair);
 
     final SECPPublicKey recoveredPublicKey =
@@ -91,7 +90,7 @@ public class SECP256K1Test {
     final KeyPair keyPair = secp256K1.createKeyPair(privateKey);
 
     final Bytes data = Bytes.wrap("This is an example of a signed message.".getBytes(UTF_8));
-    final Bytes32 dataHash = keccak256(data);
+    final Bytes dataHash = keccak256(data);
     final SECPSignature expectedSignature =
         secp256K1.createSignature(
             new BigInteger("d2ce488f4da29e68f22cb05cac1b19b75df170a12b4ad1bdd4531b8e9115c6fb", 16),
@@ -110,7 +109,7 @@ public class SECP256K1Test {
     final KeyPair keyPair = secp256K1.createKeyPair(privateKey);
 
     final Bytes data = Bytes.wrap("This is an example of a signed message.".getBytes(UTF_8));
-    final Bytes32 dataHash = keccak256(data);
+    final Bytes dataHash = keccak256(data);
 
     final SECPSignature signature = secp256K1.sign(dataHash, keyPair);
     assertThat(secp256K1.verify(data, signature, keyPair.getPublicKey(), Hash::keccak256)).isTrue();

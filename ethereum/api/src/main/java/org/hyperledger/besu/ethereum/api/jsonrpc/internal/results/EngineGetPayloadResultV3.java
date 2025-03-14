@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 @JsonPropertyOrder({"executionPayload", "blockValue", "blobsBundle", "shouldOverrideBuilder"})
 public class EngineGetPayloadResultV3 {
@@ -105,7 +105,7 @@ public class EngineGetPayloadResultV3 {
       this.timestamp = Quantity.create(header.getTimestamp());
       this.transactions = transactions;
       this.feeRecipient = header.getCoinbase().toString();
-      this.prevRandao = header.getPrevRandao().map(Bytes32::toHexString).orElse(null);
+      this.prevRandao = header.getPrevRandao().map(Bytes::toHexString).orElse(null);
       this.withdrawals =
           withdrawals
               .map(
@@ -118,7 +118,7 @@ public class EngineGetPayloadResultV3 {
       this.excessBlobGas =
           header.getExcessBlobGas().map(Quantity::create).orElse(Quantity.HEX_ZERO);
       this.parentBeaconBlockRoot =
-          header.getParentBeaconBlockRoot().map(Bytes32::toHexString).orElse(null);
+          header.getParentBeaconBlockRoot().map(Bytes::toHexString).orElse(null);
     }
 
     @JsonGetter(value = "blockNumber")

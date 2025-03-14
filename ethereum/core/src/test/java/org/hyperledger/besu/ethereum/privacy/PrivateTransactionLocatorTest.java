@@ -42,7 +42,6 @@ import java.util.Collections;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -149,7 +148,7 @@ public class PrivateTransactionLocatorTest {
     final String privacyGroupId =
         privateTransaction.getPrivacyGroupId().orElseThrow().toBase64String();
 
-    final Bytes32 txVersion = Bytes32.wrap(Bytes.random(32));
+    final Bytes txVersion = Bytes.random(32);
     mockEnclaveForExistingPayload(privacyGroupId, pmt, privateTransaction, Optional.of(txVersion));
 
     return new ExecutedPrivateTransaction(
@@ -226,8 +225,8 @@ public class PrivateTransactionLocatorTest {
 
     mockStorageWithPrivacyGroupBlockHeaderMap(privacyGroupId, blockHeader);
 
-    final Bytes32 addDataKey = Bytes32.random();
-    when(privateStateStorage.getAddDataKey(any(Bytes32.class))).thenReturn(Optional.of(addDataKey));
+    final Bytes addDataKey = Bytes.random(32);
+    when(privateStateStorage.getAddDataKey(any(Bytes.class))).thenReturn(Optional.of(addDataKey));
 
     mockEnclaveForNonExistingPayload(pmt);
     mockEnclaveForAddBlob(pmt, privateTransaction, addDataKey);
@@ -245,7 +244,7 @@ public class PrivateTransactionLocatorTest {
       final String privacyGroupId,
       final Transaction pmt,
       final PrivateTransaction privateTransaction,
-      final Optional<Bytes32> version) {
+      final Optional<Bytes> version) {
     final String privateTransactionLookupId = pmt.getData().orElseThrow().toBase64String();
     final byte[] encodePrivateTransaction =
         encodePrivateTransaction(privateTransaction, version)
@@ -260,7 +259,7 @@ public class PrivateTransactionLocatorTest {
     final PrivacyGroupHeadBlockMap privacyGroupHeadBlockMap =
         new PrivacyGroupHeadBlockMap(
             Collections.singletonMap(
-                Bytes32.wrap(Bytes.fromBase64String(privacyGroupId)), blockHeader.getHash()));
+                Bytes.fromBase64String(privacyGroupId), blockHeader.getHash()));
     when(privateStateStorage.getPrivacyGroupHeadBlockMap(eq(blockHeader.getHash())))
         .thenReturn(Optional.of(privacyGroupHeadBlockMap));
   }
@@ -274,9 +273,7 @@ public class PrivateTransactionLocatorTest {
   }
 
   private void mockEnclaveForAddBlob(
-      final Transaction pmt,
-      final PrivateTransaction privateTransaction,
-      final Bytes32 addDataKey) {
+      final Transaction pmt, final PrivateTransaction privateTransaction, final Bytes addDataKey) {
     final ReceiveResponse addBlobResponse =
         generateAddToGroupReceiveResponse(privateTransaction, pmt);
 

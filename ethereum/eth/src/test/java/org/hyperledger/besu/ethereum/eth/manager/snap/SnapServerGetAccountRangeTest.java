@@ -36,14 +36,15 @@ import java.util.NavigableMap;
 
 import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class SnapServerGetAccountRangeTest {
   private Hash rootHash;
-  public Bytes32 firstAccount;
-  public Bytes32 secondAccount;
+  public Bytes firstAccount;
+  public Bytes secondAccount;
   private SnapServer snapServer;
   private static ProtocolContext protocolContext;
 
@@ -351,7 +352,7 @@ public class SnapServerGetAccountRangeTest {
   }
 
   private void testAccountRangeRequest(final AccountRangeRequestParams params) {
-    NavigableMap<Bytes32, Bytes> accounts = getAccountRange(params);
+    NavigableMap<Bytes, Bytes> accounts = getAccountRange(params);
     assertThat(accounts.size()).isEqualTo(params.getExpectedAccounts());
 
     if (params.getExpectedAccounts() > 0) {
@@ -360,10 +361,10 @@ public class SnapServerGetAccountRangeTest {
     }
   }
 
-  private NavigableMap<Bytes32, Bytes> getAccountRange(final AccountRangeRequestParams params) {
+  private NavigableMap<Bytes, Bytes> getAccountRange(final AccountRangeRequestParams params) {
     Hash rootHash = params.getRootHash();
-    Bytes32 startHash = params.getStartHash();
-    Bytes32 limitHash = params.getLimitHash();
+    Bytes startHash = params.getStartHash();
+    Bytes limitHash = params.getLimitHash();
     BigInteger sizeRequest = BigInteger.valueOf(params.getResponseBytes());
 
     GetAccountRangeMessage requestMessage =
@@ -373,7 +374,7 @@ public class SnapServerGetAccountRangeTest {
         AccountRangeMessage.readFrom(
             snapServer.constructGetAccountRangeResponse(
                 requestMessage.wrapMessageData(BigInteger.ONE)));
-    NavigableMap<Bytes32, Bytes> accounts = resultMessage.accountData(false).accounts();
+    NavigableMap<Bytes, Bytes> accounts = resultMessage.accountData(false).accounts();
     return accounts;
   }
 
@@ -386,26 +387,26 @@ public class SnapServerGetAccountRangeTest {
         AccountRangeMessage.readFrom(
             snapServer.constructGetAccountRangeResponse(
                 requestMessage.wrapMessageData(BigInteger.ONE)));
-    NavigableMap<Bytes32, Bytes> accounts = resultMessage.accountData(false).accounts();
+    NavigableMap<Bytes, Bytes> accounts = resultMessage.accountData(false).accounts();
     firstAccount = accounts.firstEntry().getKey();
     secondAccount =
         accounts.entrySet().stream().skip(1).findFirst().orElse(accounts.firstEntry()).getKey();
   }
 
-  private Bytes32 hashAdd(final Bytes32 hash, final int value) {
+  private Bytes hashAdd(final Bytes hash, final int value) {
     var result = Hash.wrap(hash).toBigInteger().add(BigInteger.valueOf(value));
-    Bytes resultBytes = Bytes.wrap(result.toByteArray());
-    return Bytes32.leftPad(resultBytes);
+    MutableBytes resultBytes = MutableBytes.fromArray(result.toByteArray());
+    return resultBytes.mutableCopy().leftPad(32);
   }
 
   public static class AccountRangeRequestParams {
     private final Hash rootHash;
-    private final Bytes32 startHash;
-    private final Bytes32 limitHash;
+    private final Bytes startHash;
+    private final Bytes limitHash;
     private final int responseBytes;
     private final int expectedAccounts;
-    private final Bytes32 expectedFirstAccount;
-    private final Bytes32 expectedLastAccount;
+    private final Bytes expectedFirstAccount;
+    private final Bytes expectedLastAccount;
 
     private AccountRangeRequestParams(final Builder builder) {
       this.rootHash = builder.rootHash;
@@ -419,24 +420,24 @@ public class SnapServerGetAccountRangeTest {
 
     public static class Builder {
       private Hash rootHash = null;
-      private Bytes32 startHash = Bytes32.ZERO;
-      private Bytes32 limitHash = Hash.LAST;
+      private Bytes startHash = Bytes32.ZERO;
+      private Bytes limitHash = Hash.LAST;
       private int responseBytes = Integer.MAX_VALUE;
       private int expectedAccounts = 0;
-      private Bytes32 expectedFirstAccount = null;
-      private Bytes32 expectedLastAccount = null;
+      private Bytes expectedFirstAccount = null;
+      private Bytes expectedLastAccount = null;
 
       public Builder rootHash(final Hash rootHashHex) {
         this.rootHash = rootHashHex;
         return this;
       }
 
-      public Builder startHash(final Bytes32 startHashHex) {
+      public Builder startHash(final Bytes startHashHex) {
         this.startHash = startHashHex;
         return this;
       }
 
-      public Builder limitHash(final Bytes32 limitHashHex) {
+      public Builder limitHash(final Bytes limitHashHex) {
         this.limitHash = limitHashHex;
         return this;
       }
@@ -451,12 +452,12 @@ public class SnapServerGetAccountRangeTest {
         return this;
       }
 
-      public Builder expectedFirstAccount(final Bytes32 expectedFirstAccount) {
+      public Builder expectedFirstAccount(final Bytes expectedFirstAccount) {
         this.expectedFirstAccount = expectedFirstAccount;
         return this;
       }
 
-      public Builder expectedLastAccount(final Bytes32 expectedLastAccount) {
+      public Builder expectedLastAccount(final Bytes expectedLastAccount) {
         this.expectedLastAccount = expectedLastAccount;
         return this;
       }
@@ -471,11 +472,11 @@ public class SnapServerGetAccountRangeTest {
       return rootHash;
     }
 
-    public Bytes32 getStartHash() {
+    public Bytes getStartHash() {
       return startHash;
     }
 
-    public Bytes32 getLimitHash() {
+    public Bytes getLimitHash() {
       return limitHash;
     }
 
@@ -487,11 +488,11 @@ public class SnapServerGetAccountRangeTest {
       return expectedAccounts;
     }
 
-    public Bytes32 getExpectedFirstAccount() {
+    public Bytes getExpectedFirstAccount() {
       return expectedFirstAccount;
     }
 
-    public Bytes32 getExpectedLastAccount() {
+    public Bytes getExpectedLastAccount() {
       return expectedLastAccount;
     }
   }

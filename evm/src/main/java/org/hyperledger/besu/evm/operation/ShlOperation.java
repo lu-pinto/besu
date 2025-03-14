@@ -14,13 +14,12 @@
  */
 package org.hyperledger.besu.evm.operation;
 
-import static org.apache.tuweni.bytes.v2.Bytes32.leftPad;
-
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 
 /** The Shl (Shift Left) operation. */
 public class ShlOperation extends AbstractFixedCostOperation {
@@ -56,11 +55,11 @@ public class ShlOperation extends AbstractFixedCostOperation {
       frame.pushStackItem(Bytes.EMPTY);
     } else {
       final int shiftAmountInt = shiftAmount.toInt();
-      final Bytes value = leftPad(frame.popStackItem());
 
       if (shiftAmountInt >= 256 || shiftAmountInt < 0) {
         frame.pushStackItem(Bytes.EMPTY);
       } else {
+        final MutableBytes value = frame.popStackItem().mutableCopy().leftPad(32);
         frame.pushStackItem(value.shiftLeft(shiftAmountInt));
       }
     }

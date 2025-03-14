@@ -162,7 +162,7 @@ public class BonsaiWorldState extends DiffBasedWorldState {
                         bonsaiUpdater.getWorldStateTransaction(),
                         location,
                         value)));
-    final Bytes32 rootHash = accountTrie.getRootHash();
+    final Bytes rootHash = accountTrie.getRootHash();
     return Hash.wrap(rootHash);
   }
 
@@ -322,13 +322,14 @@ public class BonsaiWorldState extends DiffBasedWorldState {
       try {
         final StorageConsumingMap<StorageSlotKey, DiffBasedValue<UInt256>> storageToDelete =
             worldStateUpdater.getStorageToUpdate().get(address);
-        Map<Bytes32, Bytes> entriesToDelete = storageTrie.entriesFrom(Bytes32.ZERO, 256);
+        Map<Bytes, Bytes> entriesToDelete = storageTrie.entriesFrom(Bytes32.ZERO, 256);
         while (!entriesToDelete.isEmpty()) {
           entriesToDelete.forEach(
               (k, v) -> {
                 final StorageSlotKey storageSlotKey =
                     new StorageSlotKey(Hash.wrap(k), Optional.empty());
-                final UInt256 slotValue = UInt256.fromBytes(Bytes32.leftPad(RLP.decodeValue(v)));
+                final UInt256 slotValue =
+                    UInt256.fromBytes(RLP.decodeValue(v).mutableCopy().leftPad(32));
                 maybeStateUpdater.ifPresent(
                     bonsaiUpdater ->
                         bonsaiUpdater.removeStorageValueBySlotHash(
@@ -370,7 +371,7 @@ public class BonsaiWorldState extends DiffBasedWorldState {
         .orElse(null);
   }
 
-  protected Optional<Bytes> getAccountStateTrieNode(final Bytes location, final Bytes32 nodeHash) {
+  protected Optional<Bytes> getAccountStateTrieNode(final Bytes location, final Bytes nodeHash) {
     return getWorldStateStorage().getAccountStateTrieNode(location, nodeHash);
   }
 
@@ -383,7 +384,7 @@ public class BonsaiWorldState extends DiffBasedWorldState {
   }
 
   protected Optional<Bytes> getStorageTrieNode(
-      final Hash accountHash, final Bytes location, final Bytes32 nodeHash) {
+      final Hash accountHash, final Bytes location, final Bytes nodeHash) {
     return getWorldStateStorage().getAccountStorageTrieNode(accountHash, location, nodeHash);
   }
 
@@ -391,7 +392,7 @@ public class BonsaiWorldState extends DiffBasedWorldState {
       final BonsaiWorldStateKeyValueStorage.Updater stateUpdater,
       final Hash accountHash,
       final Bytes location,
-      final Bytes32 nodeHash,
+      final Bytes nodeHash,
       final Bytes value) {
     stateUpdater.putAccountStorageTrieNode(accountHash, location, nodeHash, value);
   }
@@ -425,7 +426,7 @@ public class BonsaiWorldState extends DiffBasedWorldState {
   }
 
   @Override
-  public Map<Bytes32, Bytes> getAllAccountStorage(final Address address, final Hash rootHash) {
+  public Map<Bytes, Bytes> getAllAccountStorage(final Address address, final Hash rootHash) {
     final MerkleTrie<Bytes, Bytes> storageTrie =
         createTrie(
             (location, key) -> getStorageTrieNode(address.addressHash(), location, key), rootHash);
@@ -443,7 +444,7 @@ public class BonsaiWorldState extends DiffBasedWorldState {
     this.bonsaiCachedMerkleTrieLoader = new NoopBonsaiCachedMerkleTrieLoader();
   }
 
-  private MerkleTrie<Bytes, Bytes> createTrie(final NodeLoader nodeLoader, final Bytes32 rootHash) {
+  private MerkleTrie<Bytes, Bytes> createTrie(final NodeLoader nodeLoader, final Bytes rootHash) {
     if (worldStateConfig.isTrieDisabled()) {
       return new NoOpMerkleTrie<>();
     } else {

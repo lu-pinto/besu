@@ -621,7 +621,7 @@ public record EOFLayout(
 
       // Code sections
       for (CodeSection cs : codeSections) {
-        out.write(container.slice(cs.entryPoint, cs.length).toArray());
+        out.write(container.slice(cs.entryPoint, cs.length).toArrayUnsafe());
       }
 
       // Subcontainers
@@ -733,7 +733,7 @@ public record EOFLayout(
       out.printf(
           "       # Code section %d - in=%d out=%s height=%d%n",
           i, cs.inputs, cs.isReturning() ? cs.outputs : "non-returning", cs.maxStackHeight);
-      byte[] byteCode = container.slice(cs.getEntryPoint(), cs.getLength()).toArray();
+      byte[] byteCode = container.slice(cs.getEntryPoint(), cs.getLength()).toArrayUnsafe();
       int pc = 0;
       while (pc < byteCode.length) {
         out.print(prefix);

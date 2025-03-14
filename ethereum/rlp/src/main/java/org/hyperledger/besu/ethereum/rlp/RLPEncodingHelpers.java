@@ -65,12 +65,12 @@ class RLPEncodingHelpers {
 
     if (isShortElement(value)) {
       dest.set(destOffset, (byte) (0x80 + size));
-      value.copyTo(dest, destOffset + 1);
+      dest.set(destOffset + 1, value);
       return destOffset + 1 + size;
     }
 
     final int offset = writeLongMetadata(0xb7, size, dest, destOffset);
-    value.copyTo(dest, offset);
+    dest.set(offset, value);
     return offset + size;
   }
 

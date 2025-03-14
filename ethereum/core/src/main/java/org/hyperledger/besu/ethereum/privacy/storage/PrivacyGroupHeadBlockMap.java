@@ -26,16 +26,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 
-public class PrivacyGroupHeadBlockMap implements Map<Bytes32, Hash> {
-  private final HashMap<Bytes32, Hash> map;
+public class PrivacyGroupHeadBlockMap implements Map<Bytes, Hash> {
+  private final HashMap<Bytes, Hash> map;
 
   public static final PrivacyGroupHeadBlockMap empty() {
     return new PrivacyGroupHeadBlockMap(Collections.emptyMap());
   }
 
-  public PrivacyGroupHeadBlockMap(final Map<Bytes32, Hash> map) {
+  public PrivacyGroupHeadBlockMap(final Map<Bytes, Hash> map) {
     this.map = new HashMap<>(map);
   }
 
@@ -50,8 +51,11 @@ public class PrivacyGroupHeadBlockMap implements Map<Bytes32, Hash> {
   public static PrivacyGroupHeadBlockMap readFrom(final RLPInput input) {
     final List<RLPMapEntry> entries = input.readList(RLPMapEntry::readFrom);
 
-    final HashMap<Bytes32, Hash> map = new HashMap<>();
-    entries.forEach(e -> map.put(Bytes32.wrap(e.getKey()), Hash.wrap(Bytes32.wrap(e.getValue()))));
+    final HashMap<Bytes, Hash> map = new HashMap<>();
+    entries.forEach(
+        e ->
+            map.put(
+                Bytes32.fromBytes(e.getKey(), 0), Hash.wrap(Bytes32.fromBytes(e.getValue(), 0))));
 
     return new PrivacyGroupHeadBlockMap(map);
   }
@@ -64,7 +68,7 @@ public class PrivacyGroupHeadBlockMap implements Map<Bytes32, Hash> {
     return map.equals(that.map);
   }
 
-  public boolean contains(final Bytes32 key, final Hash value) {
+  public boolean contains(final Bytes key, final Hash value) {
     return map.containsKey(key) && map.get(key).equals(value);
   }
 
@@ -99,7 +103,7 @@ public class PrivacyGroupHeadBlockMap implements Map<Bytes32, Hash> {
   }
 
   @Override
-  public Hash put(final Bytes32 key, final Hash value) {
+  public Hash put(final Bytes key, final Hash value) {
     return map.put(key, value);
   }
 
@@ -109,7 +113,7 @@ public class PrivacyGroupHeadBlockMap implements Map<Bytes32, Hash> {
   }
 
   @Override
-  public void putAll(final Map<? extends Bytes32, ? extends Hash> m) {
+  public void putAll(final Map<? extends Bytes, ? extends Hash> m) {
     map.putAll(m);
   }
 
@@ -119,7 +123,7 @@ public class PrivacyGroupHeadBlockMap implements Map<Bytes32, Hash> {
   }
 
   @Override
-  public Set<Bytes32> keySet() {
+  public Set<Bytes> keySet() {
     return map.keySet();
   }
 
@@ -129,7 +133,7 @@ public class PrivacyGroupHeadBlockMap implements Map<Bytes32, Hash> {
   }
 
   @Override
-  public Set<Entry<Bytes32, Hash>> entrySet() {
+  public Set<Entry<Bytes, Hash>> entrySet() {
     return map.entrySet();
   }
 }

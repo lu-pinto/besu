@@ -47,6 +47,7 @@ import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.common.io.Resources;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,12 +56,12 @@ public class ValidatorContractTest {
 
   public static final Address NODE_ADDRESS =
       Address.fromHexString("0xeac51e3fe1afc9894f0dfeab8ceb471899b932df");
-  public static final Bytes32 NODE_PRIVATE_KEY =
+  public static final Bytes NODE_PRIVATE_KEY =
       Bytes32.fromHexString("0xa3bdf521b0f286a80918c4b67000dfd2a2bdef97e94d268016ef9ec86648eac3");
 
   private static final Address NODE_2_ADDRESS =
       Address.fromHexString("0xe98d92560fac3069ccff53ef348ded26a51d4b68");
-  private static final Bytes32 NODE_2_PRIVATE_KEY =
+  private static final Bytes NODE_2_PRIVATE_KEY =
       Bytes32.fromHexString("0xa3bdf521b0f286a80918c4b67000dfd2a2bdef97e94d268016ef9ec86648eac4");
 
   final Address NEW_VALIDATOR_CONTRACT_ADDRESS =

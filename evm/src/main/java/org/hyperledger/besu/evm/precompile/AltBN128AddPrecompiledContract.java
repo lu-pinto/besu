@@ -97,10 +97,10 @@ public class AltBN128AddPrecompiledContract extends AbstractAltBnPrecompiledCont
     final Bytes x = sum.getX().toBytes();
     final Bytes y = sum.getY().toBytes();
     final MutableBytes result = MutableBytes.create(64);
-    x.copyTo(result, 32 - x.size());
-    y.copyTo(result, 64 - y.size());
+    result.set(32 - x.size(), x);
+    result.set(64 - y.size(), y);
 
-    return PrecompileContractResult.success(result.copy());
+    return PrecompileContractResult.success(result);
   }
 
   private static BigInteger extractParameter(
@@ -108,7 +108,7 @@ public class AltBN128AddPrecompiledContract extends AbstractAltBnPrecompiledCont
     if (offset > input.size() || length == 0) {
       return BigInteger.ZERO;
     }
-    final byte[] raw = Arrays.copyOfRange(input.toArray(), offset, offset + length);
+    final byte[] raw = Arrays.copyOfRange(input.toArrayUnsafe(), offset, offset + length);
     return new BigInteger(1, raw);
   }
 }

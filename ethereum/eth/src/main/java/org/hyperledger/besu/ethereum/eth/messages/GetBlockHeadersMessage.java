@@ -146,7 +146,7 @@ public final class GetBlockHeadersMessage extends AbstractMessageData {
 
       final Optional<Hash> blockHash;
       final OptionalLong blockNumber;
-      if (input.nextSize() == Hash.SIZE) {
+      if (input.nextSize() == 32) {
         blockHash = Optional.of(Hash.wrap(input.readBytes32()));
         blockNumber = OptionalLong.empty();
       } else {

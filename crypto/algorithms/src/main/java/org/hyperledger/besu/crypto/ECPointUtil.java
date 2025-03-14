@@ -38,8 +38,8 @@ public class ECPointUtil {
     final ECFieldElement xCoord = bouncyCastleECPoint.getAffineXCoord();
     final ECFieldElement yCoord = bouncyCastleECPoint.getAffineYCoord();
 
-    final Bytes32 xEncoded = Bytes32.wrap(xCoord.getEncoded());
-    final Bytes32 yEncoded = Bytes32.wrap(yCoord.getEncoded());
+    final Bytes xEncoded = Bytes32.fromArray(xCoord.getEncoded());
+    final Bytes yEncoded = Bytes32.fromArray(yCoord.getEncoded());
 
     final BigInteger x = xEncoded.toUnsignedBigInteger();
     final BigInteger y = yEncoded.toUnsignedBigInteger();
@@ -54,8 +54,10 @@ public class ECPointUtil {
    * @return the encoded bytes
    */
   public static Bytes getEncodedBytes(final ECPoint ecPoint) {
-    final Bytes xBytes = Bytes32.wrap(BigIntegers.asUnsignedByteArray(32, ecPoint.getAffineX()));
-    final Bytes yBytes = Bytes32.wrap(BigIntegers.asUnsignedByteArray(32, ecPoint.getAffineY()));
-    return Bytes.concatenate(xBytes, yBytes);
+    final Bytes xBytes =
+        Bytes32.fromArray(BigIntegers.asUnsignedByteArray(32, ecPoint.getAffineX()));
+    final Bytes yBytes =
+        Bytes32.fromArray(BigIntegers.asUnsignedByteArray(32, ecPoint.getAffineY()));
+    return Bytes.wrap(xBytes, yBytes);
   }
 }

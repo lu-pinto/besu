@@ -33,7 +33,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import kotlin.collections.ArrayDeque;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.units.bigints.UInt256;
 import org.immutables.value.Value;
 
 public final class AccountRangeMessage extends AbstractSnapMessageData {
@@ -55,13 +55,13 @@ public final class AccountRangeMessage extends AbstractSnapMessageData {
   }
 
   public static AccountRangeMessage create(
-      final Map<Bytes32, Bytes> accounts, final List<Bytes> proof) {
+      final Map<Bytes, Bytes> accounts, final List<Bytes> proof) {
     return create(Optional.empty(), accounts, proof);
   }
 
   public static AccountRangeMessage create(
       final Optional<BigInteger> requestId,
-      final Map<Bytes32, Bytes> accounts,
+      final Map<Bytes, Bytes> accounts,
       final List<Bytes> proof) {
     final BytesValueRLPOutput tmp = new BytesValueRLPOutput();
     tmp.startList();
@@ -91,7 +91,7 @@ public final class AccountRangeMessage extends AbstractSnapMessageData {
   }
 
   public AccountRangeData accountData(final boolean withRequestId) {
-    final TreeMap<Bytes32, Bytes> accounts = new TreeMap<>();
+    final TreeMap<Bytes, Bytes> accounts = new TreeMap<>();
     final ArrayDeque<Bytes> proofs = new ArrayDeque<>();
     final RLPInput input = new BytesValueRLPInput(data, false);
     input.enterList();
@@ -102,7 +102,7 @@ public final class AccountRangeMessage extends AbstractSnapMessageData {
         .readList(
             rlpInput -> {
               rlpInput.enterList();
-              Map.Entry<Bytes32, Bytes> entry =
+              Map.Entry<Bytes, Bytes> entry =
                   Maps.immutableEntry(rlpInput.readBytes32(), toFullAccount(rlpInput.readAsRlp()));
               rlpInput.leaveList();
               return entry;
@@ -126,7 +126,7 @@ public final class AccountRangeMessage extends AbstractSnapMessageData {
     final BytesValueRLPOutput rlpOutput = new BytesValueRLPOutput();
     rlpOutput.startList();
     rlpOutput.writeLongScalar(accountValue.getNonce()); // nonce
-    rlpOutput.writeUInt256Scalar(accountValue.getBalance()); // balance
+    rlpOutput.writeUInt256Scalar(UInt256.fromBytes(accountValue.getBalance())); // balance
     rlpOutput.writeBytes(accountValue.getStorageRoot());
     rlpOutput.writeBytes(accountValue.getCodeHash());
     rlpOutput.endList();
@@ -139,7 +139,7 @@ public final class AccountRangeMessage extends AbstractSnapMessageData {
     var rlpOutput = new BytesValueRLPOutput();
     rlpOutput.startList();
     rlpOutput.writeLongScalar(accountValue.getNonce());
-    rlpOutput.writeUInt256Scalar(accountValue.getBalance());
+    rlpOutput.writeUInt256Scalar(UInt256.fromBytes(accountValue.getBalance()));
     if (accountValue.getStorageRoot().equals(Hash.EMPTY_TRIE_HASH)) {
       rlpOutput.writeNull();
     } else {
@@ -157,7 +157,7 @@ public final class AccountRangeMessage extends AbstractSnapMessageData {
   @Value.Immutable
   public interface AccountRangeData {
 
-    NavigableMap<Bytes32, Bytes> accounts();
+    NavigableMap<Bytes, Bytes> accounts();
 
     ArrayDeque<Bytes> proofs();
   }

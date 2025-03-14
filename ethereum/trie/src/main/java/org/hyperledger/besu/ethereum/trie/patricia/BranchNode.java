@@ -35,7 +35,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.bytes.v2.MutableBytes;
 
 public class BranchNode<V> implements Node<V> {
@@ -49,7 +48,7 @@ public class BranchNode<V> implements Node<V> {
   protected final NodeFactory<V> nodeFactory;
   private final Function<V, Bytes> valueSerializer;
   protected WeakReference<Bytes> encodedBytes;
-  private SoftReference<Bytes32> hash;
+  private SoftReference<Bytes> hash;
   private boolean dirty = false;
   private boolean needHeal = false;
 
@@ -153,14 +152,14 @@ public class BranchNode<V> implements Node<V> {
   }
 
   @Override
-  public Bytes32 getHash() {
+  public Bytes getHash() {
     if (hash != null) {
-      final Bytes32 hashed = hash.get();
+      final Bytes hashed = hash.get();
       if (hashed != null) {
         return hashed;
       }
     }
-    final Bytes32 hashed = keccak256(getEncodedBytes());
+    final Bytes hashed = keccak256(getEncodedBytes());
     hash = new SoftReference<>(hashed);
     return hashed;
   }
@@ -218,7 +217,7 @@ public class BranchNode<V> implements Node<V> {
       final Bytes onlyChildPath = onlyChild.getPath();
       final MutableBytes completePath = MutableBytes.create(1 + onlyChildPath.size());
       completePath.set(0, (byte) onlyChildIndex);
-      onlyChildPath.copyTo(completePath, 1);
+      completePath.set(1, onlyChildPath);
       return Optional.of(onlyChild.replacePath(completePath));
     }
     return Optional.empty();

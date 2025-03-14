@@ -18,6 +18,7 @@ import org.hyperledger.besu.datatypes.Hash;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -57,7 +58,9 @@ public class PendingBlockCache extends ConcurrentHashMap<Hash, ImmutablePendingB
    */
   private void removeLowestPriorityBlockWhenCacheFull(final Bytes nodeId) {
     final List<ImmutablePendingBlock> blockByNodeId =
-        values().stream().filter(value -> value.nodeId() == nodeId).collect(Collectors.toList());
+        values().stream()
+            .filter(value -> Objects.equals(value.nodeId(), nodeId))
+            .collect(Collectors.toList());
     if (blockByNodeId.size() > cacheSizePerPeer) {
       blockByNodeId.stream()
           .min(getComparatorByBlockNumber().reversed().thenComparing(getComparatorByTimeStamp()))

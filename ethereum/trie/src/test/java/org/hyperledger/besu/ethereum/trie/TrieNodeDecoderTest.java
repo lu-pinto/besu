@@ -121,12 +121,12 @@ public class TrieNodeDecoderTest {
     // First node should be root node
     assertThat(depth0And1Nodes.get(0).getHash()).isEqualTo(rootNode.getHash());
     // Subsequent nodes should be children of root node
-    final List<Bytes32> expectedNodesHashes =
+    final List<Bytes> expectedNodesHashes =
         rootNode.getChildren().stream()
             .filter(n -> !Objects.equals(n, NullNode.instance()))
             .map(Node::getHash)
             .collect(Collectors.toList());
-    final List<Bytes32> actualNodeHashes =
+    final List<Bytes> actualNodeHashes =
         depth0And1Nodes.subList(1, expectedNodeCount).stream()
             .map(Node::getHash)
             .collect(Collectors.toList());
@@ -224,7 +224,7 @@ public class TrieNodeDecoderTest {
   @Test
   public void breadthFirstDecode_unknownTrie() {
 
-    final Bytes32 randomRootHash = Bytes32.fromHexStringLenient("0x12");
+    final Bytes randomRootHash = Bytes32.fromHexStringLenient("0x12");
     final List<Node<Bytes>> result =
         TrieNodeDecoder.breadthFirstDecoder((l, h) -> Optional.empty(), randomRootHash)
             .collect(Collectors.toList());
@@ -240,7 +240,7 @@ public class TrieNodeDecoderTest {
     }
 
     @Override
-    public Optional<Bytes> getNode(final Bytes location, final Bytes32 hash) {
+    public Optional<Bytes> getNode(final Bytes location, final Bytes hash) {
       final byte[] value = storage.get(hash.toArrayUnsafe()).orElse(null);
       return value == null ? Optional.empty() : Optional.of(Bytes.wrap(value));
     }

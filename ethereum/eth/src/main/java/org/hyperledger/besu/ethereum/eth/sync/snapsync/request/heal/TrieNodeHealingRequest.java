@@ -36,12 +36,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public abstract class TrieNodeHealingRequest extends SnapDataRequest
     implements TasksPriorityProvider {
 
-  private final Bytes32 nodeHash;
+  private final Bytes nodeHash;
   private final Bytes location;
   protected Bytes data;
 
@@ -147,7 +146,7 @@ public abstract class TrieNodeHealingRequest extends SnapDataRequest
     return requiresPersisting.get();
   }
 
-  public Bytes32 getNodeHash() {
+  public Bytes getNodeHash() {
     return nodeHash;
   }
 
@@ -166,7 +165,7 @@ public abstract class TrieNodeHealingRequest extends SnapDataRequest
   }
 
   public Bytes getPathId() {
-    return Bytes.concatenate(new ArrayList<>(getTrieNodePath()));
+    return Bytes.wrap(new ArrayList<>(getTrieNodePath()));
   }
 
   public void setData(final Bytes data) {

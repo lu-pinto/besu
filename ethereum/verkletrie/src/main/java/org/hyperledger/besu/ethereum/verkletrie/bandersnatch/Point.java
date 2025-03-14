@@ -18,7 +18,7 @@ import org.hyperledger.besu.ethereum.verkletrie.bandersnatch.fp.Element;
 
 import java.nio.ByteOrder;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class Point {
 
@@ -39,12 +39,12 @@ public class Point {
     return "Point{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
   }
 
-  public Bytes32 mapToBaseFieldBytes() {
+  public Bytes mapToBaseFieldBytes() {
     Element res = x.divide(y);
     return res.getBytes(ByteOrder.LITTLE_ENDIAN);
   }
 
-  public Bytes32 bytes() {
+  public Bytes bytes() {
     PointAffine affineRepresentation = PointAffine.fromProj(this);
     Element x = affineRepresentation.x;
     if (!affineRepresentation.y.lexicographicallyLargest()) {

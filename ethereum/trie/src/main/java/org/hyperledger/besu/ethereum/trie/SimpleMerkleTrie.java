@@ -109,7 +109,7 @@ public abstract class SimpleMerkleTrie<K extends Bytes, V> implements MerkleTrie
   }
 
   @Override
-  public Bytes32 getRootHash() {
+  public Bytes getRootHash() {
     return root.getHash();
   }
 
@@ -129,12 +129,12 @@ public abstract class SimpleMerkleTrie<K extends Bytes, V> implements MerkleTrie
   }
 
   @Override
-  public Map<Bytes32, V> entriesFrom(final Bytes32 startKeyHash, final int limit) {
+  public Map<Bytes, V> entriesFrom(final Bytes startKeyHash, final int limit) {
     return StorageEntriesCollector.collectEntries(root, startKeyHash, limit);
   }
 
   @Override
-  public Map<Bytes32, V> entriesFrom(final Function<Node<V>, Map<Bytes32, V>> handler) {
+  public Map<Bytes, V> entriesFrom(final Function<Node<V>, Map<Bytes, V>> handler) {
     return handler.apply(root);
   }
 

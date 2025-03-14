@@ -79,9 +79,10 @@ class AccountTrieNodeDataRequest extends TrieNodeDataRequest {
     final Optional<Hash> accountHash =
         Optional.of(
             Hash.wrap(
-                Bytes32.wrap(
+                Bytes32.fromBytes(
                     CompactEncoding.pathToBytes(
-                        Bytes.concatenate(getLocation().orElse(Bytes.EMPTY), path)))));
+                        Bytes.wrap(getLocation().orElse(Bytes.EMPTY), path)),
+                    0)));
 
     worldStateKeyValueStorage.applyWhenFlatModeEnabled(
         onBonsai -> {

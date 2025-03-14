@@ -18,10 +18,8 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
-import org.apache.tuweni.units.bigints.UInt256Value;
-import org.apache.tuweni.units.bigints.UInt64Value;
+import org.apache.tuweni.units.bigints.UInt64;
 
 /**
  * Utility for formatting "quantity" fields and results to be returned. Quantity fields are
@@ -35,11 +33,11 @@ public class Quantity {
 
   private Quantity() {}
 
-  public static String create(final UInt256Value<?> value) {
+  public static String create(final UInt256 value) {
     return uint256ToHex(value);
   }
 
-  public static String create(final UInt64Value<?> value) {
+  public static String create(final UInt64 value) {
     return (value == null || value.isZero()) ? HEX_ZERO : value.toMinimalBytes().toShortHexString();
   }
 
@@ -56,7 +54,7 @@ public class Quantity {
   }
 
   public static String create(final byte[] value) {
-    return uint256ToHex(UInt256.fromBytes(Bytes32.leftPad(Bytes.wrap(value))));
+    return uint256ToHex(UInt256.fromBytes(Bytes.wrap(value)));
   }
 
   public static String create(final BigInteger value) {
@@ -91,7 +89,7 @@ public class Quantity {
     return value.startsWith(HEX_PREFIX);
   }
 
-  private static String uint256ToHex(final UInt256Value<?> value) {
+  private static String uint256ToHex(final UInt256 value) {
     return value == null ? null : formatMinimalValue(value.toMinimalBytes().toShortHexString());
   }
 

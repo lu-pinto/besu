@@ -25,7 +25,7 @@ import org.hyperledger.besu.plugin.services.MetricsSystem;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class RetryingGetStorageRangeFromPeerTask
     extends AbstractRetryingSwitchingPeerTask<StorageRangeMessage.SlotRangeData> {
@@ -33,17 +33,17 @@ public class RetryingGetStorageRangeFromPeerTask
   public static final int MAX_RETRIES = 4;
 
   private final EthContext ethContext;
-  private final List<Bytes32> accountHashes;
-  private final Bytes32 startKeyHash;
-  private final Bytes32 endKeyHash;
+  private final List<Bytes> accountHashes;
+  private final Bytes startKeyHash;
+  private final Bytes endKeyHash;
   private final BlockHeader blockHeader;
   private final MetricsSystem metricsSystem;
 
   private RetryingGetStorageRangeFromPeerTask(
       final EthContext ethContext,
-      final List<Bytes32> accountHashes,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash,
+      final List<Bytes> accountHashes,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash,
       final BlockHeader blockHeader,
       final MetricsSystem metricsSystem) {
     super(
@@ -61,9 +61,9 @@ public class RetryingGetStorageRangeFromPeerTask
 
   public static EthTask<StorageRangeMessage.SlotRangeData> forStorageRange(
       final EthContext ethContext,
-      final List<Bytes32> accountHashes,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash,
+      final List<Bytes> accountHashes,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash,
       final BlockHeader blockHeader,
       final MetricsSystem metricsSystem) {
     return new RetryingGetStorageRangeFromPeerTask(

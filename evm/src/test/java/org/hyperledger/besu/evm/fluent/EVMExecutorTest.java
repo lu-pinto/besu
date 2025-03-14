@@ -106,7 +106,7 @@ class EVMExecutorTest {
   @SuppressWarnings({"removal", "InlineMeInliner"})
   @Test
   void defaultChainIdAPIs() {
-    Bytes32 defaultChainId = Bytes32.leftPad(Bytes.of(1));
+    Bytes defaultChainId = Bytes.of(1).mutableCopy().leftPad(32);
 
     EVMExecutor istanbulEVM = EVMExecutor.istanbul(EvmConfiguration.DEFAULT);
     assertThat(istanbulEVM.getChainId()).contains(defaultChainId);
@@ -191,7 +191,7 @@ class EVMExecutorTest {
             .forceCommitAddresses(List.of())
             .warmAddress(Address.ZERO)
             .accessListWarmStorage(
-                Address.ZERO, Bytes32.ZERO, Bytes32.leftPad(Bytes.ofUnsignedLong(2L)))
+                Address.ZERO, Bytes32.ZERO, Bytes.ofUnsignedLong(2L).mutableCopy().leftPad(32))
             .messageCallProcessor(new MessageCallProcessor(null, null))
             .contractCallProcessor(new ContractCreationProcessor(null, true, null, 1L))
             .execute();

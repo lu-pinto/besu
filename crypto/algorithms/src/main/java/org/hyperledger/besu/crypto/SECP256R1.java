@@ -22,7 +22,6 @@ import java.math.BigInteger;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.bouncycastle.crypto.signers.DSAKCalculator;
 import org.bouncycastle.crypto.signers.RandomDSAKCalculator;
 import org.bouncycastle.math.ec.custom.sec.SecP256R1Curve;
@@ -93,7 +92,7 @@ public class SECP256R1 extends AbstractSECP256 {
   }
 
   @Override
-  public SECPSignature sign(final Bytes32 dataHash, final KeyPair keyPair) {
+  public SECPSignature sign(final Bytes dataHash, final KeyPair keyPair) {
     if (useNative) {
       return signNative(dataHash, keyPair);
     } else {
@@ -112,7 +111,7 @@ public class SECP256R1 extends AbstractSECP256 {
 
   @Override
   public Optional<SECPPublicKey> recoverPublicKeyFromSignature(
-      final Bytes32 dataHash, final SECPSignature signature) {
+      final Bytes dataHash, final SECPSignature signature) {
     if (useNative) {
       return recoverPublicKeyFromSignatureNative(dataHash, signature);
     } else {
@@ -120,7 +119,7 @@ public class SECP256R1 extends AbstractSECP256 {
     }
   }
 
-  private SECPSignature signNative(final Bytes32 dataHash, final KeyPair keyPair) {
+  private SECPSignature signNative(final Bytes dataHash, final KeyPair keyPair) {
     Signature nativeSignature =
         libSECP256R1.sign(
             dataHash.toArrayUnsafe(),
@@ -135,7 +134,7 @@ public class SECP256R1 extends AbstractSECP256 {
 
   @Override
   protected BigInteger recoverFromSignature(
-      final int recId, final BigInteger r, final BigInteger s, final Bytes32 dataHash) {
+      final int recId, final BigInteger r, final BigInteger s, final Bytes dataHash) {
     if (useNative) {
       return recoverPublicKeyFromSignatureNative(dataHash, new SECPSignature(r, s, (byte) recId))
           .map(key -> new BigInteger(1, key.getEncoded()))
@@ -146,7 +145,7 @@ public class SECP256R1 extends AbstractSECP256 {
   }
 
   private Optional<SECPPublicKey> recoverPublicKeyFromSignatureNative(
-      final Bytes32 dataHash, final SECPSignature signature) {
+      final Bytes dataHash, final SECPSignature signature) {
     byte[] recoveredKey;
 
     try {

@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.Test;
 
 public class BlockValueCalculatorTest {
@@ -35,7 +35,7 @@ public class BlockValueCalculatorTest {
     final long baseFee = 15;
     final BlockHeader blockHeader =
         new BlockHeaderTestFixture()
-            .prevRandao(Bytes32.random())
+            .prevRandao(Bytes.random(32))
             .baseFeePerGas(Wei.of(baseFee))
             .buildHeader();
     final Block block =
@@ -79,7 +79,7 @@ public class BlockValueCalculatorTest {
             Hash.EMPTY_TRIE_HASH, 214, Collections.emptyList(), Optional.empty());
     final BlockHeader blockHeader =
         new BlockHeaderTestFixture()
-            .prevRandao(Bytes32.random())
+            .prevRandao(Bytes.random(32))
             .baseFeePerGas(Wei.of(baseFee))
             .buildHeader();
     final Block block =
@@ -107,7 +107,7 @@ public class BlockValueCalculatorTest {
             Hash.EMPTY_TRIE_HASH, 21000L, Collections.emptyList(), Optional.empty());
     final BlockHeader blockHeader =
         new BlockHeaderTestFixture()
-            .prevRandao(Bytes32.random())
+            .prevRandao(Bytes.random(32))
             .baseFeePerGas(Wei.of(baseFee))
             .buildHeader();
     final Block block =

@@ -42,7 +42,6 @@ import javax.inject.Singleton;
 
 import com.google.common.base.Preconditions;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 @Singleton
 public class PacketFactory {
@@ -95,10 +94,9 @@ public class PacketFactory {
             });
 
     SECPSignature signature = nodeKey.sign(Hash.keccak256(Bytes.wrap(typeBytes, dataBytes)));
-    Bytes32 hash =
+    Bytes hash =
         Hash.keccak256(
-            Bytes.concatenate(
-                packetSignatureEncoder.encodeSignature(signature), typeBytes, dataBytes));
+            Bytes.wrap(packetSignatureEncoder.encodeSignature(signature), typeBytes, dataBytes));
     SECPPublicKey publicKey = nodeKey.getPublicKey();
 
     return new Packet(type, data, hash, signature, publicKey);
@@ -115,7 +113,7 @@ public class PacketFactory {
     // Perform hash integrity check.
     final Bytes rest =
         message.slice(Packet.SIGNATURE_INDEX, message.size() - Packet.SIGNATURE_INDEX);
-    if (!Arrays.equals(Hash.keccak256(rest).toArray(), hash.toArray())) {
+    if (!Arrays.equals(Hash.keccak256(rest).toArrayUnsafe(), hash.toArrayUnsafe())) {
       throw new PeerDiscoveryPacketDecodingException(
           "Integrity check failed: non-matching hashes.");
     }

@@ -331,7 +331,7 @@ class FastWorldStateDownloaderTest {
         new ForestWorldStateKeyValueStorage(new InMemoryKeyValueStorage());
 
     // Seed local storage with some contract values
-    final Map<Bytes32, Bytes> knownCode = new HashMap<>();
+    final Map<Bytes, Bytes> knownCode = new HashMap<>();
     accounts.subList(0, 5).forEach(a -> knownCode.put(a.getCodeHash(), a.getCode()));
     final ForestWorldStateKeyValueStorage.Updater localStorageUpdater = localStorage.updater();
     knownCode.forEach((bytes32, code) -> localStorageUpdater.putCode(code));
@@ -354,7 +354,7 @@ class FastWorldStateDownloaderTest {
     respondUntilDone(peers, responder, result);
 
     // Check that known code was not requested
-    final List<Bytes32> requestedHashes =
+    final List<Bytes> requestedHashes =
         sentMessages.stream()
             .filter(m -> m.getCode() == EthPV63.GET_NODE_DATA)
             .map(GetNodeDataMessage::readFrom)
@@ -496,10 +496,10 @@ class FastWorldStateDownloaderTest {
         new ForestWorldStateKeyValueStorage(new InMemoryKeyValueStorage());
 
     // Seed local storage with some trie node values
-    final Map<Bytes32, Bytes> allNodes =
+    final Map<Bytes, Bytes> allNodes =
         collectTrieNodesToBeRequestedAfterRoot(remoteStorage, remoteWorldState.rootHash(), 5);
-    final Set<Bytes32> knownNodes = new HashSet<>();
-    final Set<Bytes32> unknownNodes = new HashSet<>();
+    final Set<Bytes> knownNodes = new HashSet<>();
+    final Set<Bytes> unknownNodes = new HashSet<>();
     assertThat(allNodes).isNotEmpty(); // Sanity check
     final ForestWorldStateKeyValueStorage.Updater localStorageUpdater = localStorage.updater();
     final AtomicBoolean storeNode = new AtomicBoolean(true);
@@ -532,7 +532,7 @@ class FastWorldStateDownloaderTest {
     respondUntilDone(peers, responder, result);
 
     // Check that unknown trie nodes were requested
-    final List<Bytes32> requestedHashes =
+    final List<Bytes> requestedHashes =
         sentMessages.stream()
             .filter(m -> m.getCode() == EthPV63.GET_NODE_DATA)
             .map(GetNodeDataMessage::readFrom)
@@ -587,7 +587,7 @@ class FastWorldStateDownloaderTest {
         new ForestWorldStateKeyValueStorage(new InMemoryKeyValueStorage());
 
     // Seed local storage with some trie node values
-    final List<Bytes32> storageRootHashes =
+    final List<Bytes> storageRootHashes =
         new StoredMerklePatriciaTrie<>(
                 (location, hash) -> remoteStorage.getNodeData(hash),
                 remoteWorldState.rootHash(),
@@ -598,18 +598,18 @@ class FastWorldStateDownloaderTest {
                 .map(PmtStateTrieAccountValue::readFrom)
                 .map(PmtStateTrieAccountValue::getStorageRoot)
                 .collect(Collectors.toList());
-    final Map<Bytes32, Bytes> allTrieNodes = new HashMap<>();
-    final Set<Bytes32> knownNodes = new HashSet<>();
-    final Set<Bytes32> unknownNodes = new HashSet<>();
-    for (final Bytes32 storageRootHash : storageRootHashes) {
+    final Map<Bytes, Bytes> allTrieNodes = new HashMap<>();
+    final Set<Bytes> knownNodes = new HashSet<>();
+    final Set<Bytes> unknownNodes = new HashSet<>();
+    for (final Bytes storageRootHash : storageRootHashes) {
       allTrieNodes.putAll(
           collectTrieNodesToBeRequestedAfterRoot(remoteStorage, storageRootHash, 5));
     }
     assertThat(allTrieNodes).isNotEmpty(); // Sanity check
     final ForestWorldStateKeyValueStorage.Updater localStorageUpdater = localStorage.updater();
     boolean storeNode = true;
-    for (final Map.Entry<Bytes32, Bytes> entry : allTrieNodes.entrySet()) {
-      final Bytes32 hash = entry.getKey();
+    for (final Map.Entry<Bytes, Bytes> entry : allTrieNodes.entrySet()) {
+      final Bytes hash = entry.getKey();
       final Bytes data = entry.getValue();
       if (storeNode) {
         localStorageUpdater.putAccountStorageTrieNode(hash, data);
@@ -641,7 +641,7 @@ class FastWorldStateDownloaderTest {
     assertThat(localStorage.isWorldStateAvailable(stateRoot)).isTrue();
 
     // Check that unknown trie nodes were requested
-    final List<Bytes32> requestedHashes =
+    final List<Bytes> requestedHashes =
         sentMessages.stream()
             .filter(m -> m.getCode() == EthPV63.GET_NODE_DATA)
             .map(GetNodeDataMessage::readFrom)
@@ -755,13 +755,13 @@ class FastWorldStateDownloaderTest {
     // Add some nodes to the taskCollection
     final InMemoryTasksPriorityQueues<NodeDataRequest> taskCollection =
         spy(new InMemoryTasksPriorityQueues<>());
-    List<Bytes32> queuedHashes = getFirstSetOfChildNodeRequests(remoteStorage, stateRoot);
+    List<Bytes> queuedHashes = getFirstSetOfChildNodeRequests(remoteStorage, stateRoot);
     assertThat(queuedHashes).isNotEmpty(); // Sanity check
-    for (Bytes32 bytes32 : queuedHashes) {
+    for (Bytes bytes32 : queuedHashes) {
       taskCollection.add(new AccountTrieNodeDataRequest(Hash.wrap(bytes32), Optional.empty()));
     }
     // Sanity check
-    for (final Bytes32 bytes32 : queuedHashes) {
+    for (final Bytes bytes32 : queuedHashes) {
       final Hash hash = Hash.wrap(bytes32);
       verify(taskCollection, times(1)).add(argThat((r) -> r.getHash().equals(hash)));
     }
@@ -789,7 +789,7 @@ class FastWorldStateDownloaderTest {
     assertThat(localStorage.isWorldStateAvailable(stateRoot)).isTrue();
 
     // Check that already enqueued trie nodes were requested
-    final List<Bytes32> requestedHashes =
+    final List<Bytes> requestedHashes =
         sentMessages.stream()
             .filter(m -> m.getCode() == EthPV63.GET_NODE_DATA)
             .map(GetNodeDataMessage::readFrom)
@@ -798,7 +798,7 @@ class FastWorldStateDownloaderTest {
     assertThat(requestedHashes).isNotEmpty().containsAll(queuedHashes);
 
     // Check that already enqueued requests were not enqueued more than once
-    for (Bytes32 bytes32 : queuedHashes) {
+    for (Bytes bytes32 : queuedHashes) {
       final Hash hash = Hash.wrap(bytes32);
       verify(taskCollection, times(1)).add(argThat((r) -> r.getHash().equals(hash)));
     }
@@ -825,9 +825,9 @@ class FastWorldStateDownloaderTest {
    * @param maxNodes The maximum number of values to collect before returning
    * @return A list of hash-node pairs
    */
-  private Map<Bytes32, Bytes> collectTrieNodesToBeRequestedAfterRoot(
-      final ForestWorldStateKeyValueStorage storage, final Bytes32 rootHash, final int maxNodes) {
-    final Map<Bytes32, Bytes> trieNodes = new HashMap<>();
+  private Map<Bytes, Bytes> collectTrieNodesToBeRequestedAfterRoot(
+      final ForestWorldStateKeyValueStorage storage, final Bytes rootHash, final int maxNodes) {
+    final Map<Bytes, Bytes> trieNodes = new HashMap<>();
 
     TrieNodeDecoder.breadthFirstDecoder((location, hash) -> storage.getNodeData(hash), rootHash)
         .filter(n -> !Objects.equals(n.getHash(), rootHash))
@@ -848,9 +848,9 @@ class FastWorldStateDownloaderTest {
    * @param rootHash The hash of the root node of some trie
    * @return A list of node hashes
    */
-  private List<Bytes32> getFirstSetOfChildNodeRequests(
-      final ForestWorldStateKeyValueStorage storage, final Bytes32 rootHash) {
-    final List<Bytes32> hashesToRequest = new ArrayList<>();
+  private List<Bytes> getFirstSetOfChildNodeRequests(
+      final ForestWorldStateKeyValueStorage storage, final Bytes rootHash) {
+    final List<Bytes> hashesToRequest = new ArrayList<>();
 
     final Bytes rootNodeRlp = storage.getNodeData(rootHash).get();
     TrieNodeDecoder.decodeNodes(Bytes.EMPTY, rootNodeRlp).stream()
@@ -1030,9 +1030,9 @@ class FastWorldStateDownloaderTest {
       assertThat(actualAccount.getCode()).isEqualTo(expectedAccount.getCode());
       assertThat(actualAccount.getBalance()).isEqualTo(expectedAccount.getBalance());
 
-      final Map<Bytes32, AccountStorageEntry> actualStorage =
+      final Map<Bytes, AccountStorageEntry> actualStorage =
           actualAccount.storageEntriesFrom(Bytes32.ZERO, 500);
-      final Map<Bytes32, AccountStorageEntry> expectedStorage =
+      final Map<Bytes, AccountStorageEntry> expectedStorage =
           expectedAccount.storageEntriesFrom(Bytes32.ZERO, 500);
       assertThat(actualStorage).isEqualTo(expectedStorage);
     }

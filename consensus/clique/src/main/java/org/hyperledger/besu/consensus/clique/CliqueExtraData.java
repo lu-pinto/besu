@@ -181,8 +181,8 @@ public class CliqueExtraData implements ParsedExtraData {
       final Bytes vanityData,
       final List<Address> validators,
       final Optional<SECPSignature> proposerSeal) {
-    final Bytes validatorData = Bytes.concatenate(validators.toArray(new Bytes[0]));
-    return Bytes.concatenate(
+    final Bytes validatorData = Bytes.wrap(validators.toArray(new Bytes[0]));
+    return Bytes.wrap(
         vanityData,
         validatorData,
         proposerSeal

@@ -89,7 +89,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -99,7 +98,7 @@ public abstract class AbstractIsolationTests {
   protected ProtocolContext protocolContext;
   protected EthContext ethContext;
   protected EthScheduler ethScheduler = new DeterministicEthScheduler();
-  final Function<Bytes32, KeyPair> asKeyPair =
+  final Function<Bytes, KeyPair> asKeyPair =
       key ->
           SignatureAlgorithmFactory.getInstance()
               .createKeyPair(SECPPrivateKey.create(key, "ECDSA"));

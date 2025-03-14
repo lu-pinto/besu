@@ -31,6 +31,7 @@ import graphql.schema.CoercingParseLiteralException;
 import graphql.schema.CoercingParseValueException;
 import graphql.schema.CoercingSerializeException;
 import graphql.schema.GraphQLScalarType;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ public class Bytes32ScalarTest {
   private GraphQLScalarType scalar;
 
   private final String str = "0x1234567812345678123456781234567812345678123456781234567812345678";
-  private final Bytes32 value = Bytes32.fromHexString(str);
+  private final Bytes value = Bytes32.fromHexString(str);
   private final StringValue strValue = StringValue.newStringValue(str).build();
   private final StringValue invalidStrValue = StringValue.newStringValue("0xgh").build();
 
@@ -85,8 +86,8 @@ public class Bytes32ScalarTest {
 
   @Test
   public void parseLiteralTest() {
-    final Bytes32 result =
-        (Bytes32)
+    final Bytes result =
+        (Bytes)
             scalar
                 .getCoercing()
                 .parseLiteral(

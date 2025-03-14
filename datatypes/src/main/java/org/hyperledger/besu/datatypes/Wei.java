@@ -19,11 +19,11 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.units.bigints.BaseUInt256Value;
+import org.apache.tuweni.bytes.v2.DelegatingBytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /** A particular quantity of Wei, the Ethereum currency. */
-public final class Wei extends BaseUInt256Value<Wei> implements Quantity {
+public final class Wei extends DelegatingBytes implements Quantity {
 
   /** The constant ZERO. */
   public static final Wei ZERO = of(0);
@@ -40,7 +40,7 @@ public final class Wei extends BaseUInt256Value<Wei> implements Quantity {
    * @param value the value
    */
   Wei(final UInt256 value) {
-    super(value, Wei::new);
+    super(value, 32);
   }
 
   private Wei(final long v) {
@@ -186,6 +186,42 @@ public final class Wei extends BaseUInt256Value<Wei> implements Quantity {
     final Unit preferredUnit = Unit.getPreferred(numOfDigits);
     final double res = amount.doubleValue() / preferredUnit.divisor;
     return String.format("%" + width + "." + preferredUnit.decimals + "f %s", res, preferredUnit);
+  }
+
+  public Wei subtract(final Wei value) {
+    return new Wei(UInt256.fromBytes(this.getImpl()).subtract(UInt256.fromBytes(value.getImpl())));
+  }
+
+  public Wei addExact(final Wei value) {
+    return new Wei(((UInt256) this.getImpl()).addExact((UInt256) value.getImpl()));
+  }
+
+  public Wei multiply(final long value) {
+    return new Wei(UInt256.fromBytes(getImpl()).multiply(value));
+  }
+
+  public boolean greaterOrEqualThan(final Wei value) {
+    return UInt256.fromBytes(this.getImpl()).greaterOrEqualThan(UInt256.fromBytes(value));
+  }
+
+  public Wei divide(final long value) {
+    return new Wei(UInt256.fromBytes(this.getImpl()).divide(value));
+  }
+
+  public Wei add(final Wei value) {
+    return new Wei(UInt256.fromBytes(this.getImpl()).add(UInt256.fromBytes(value)));
+  }
+
+  public boolean lessThan(final Wei value) {
+    return UInt256.fromBytes(this.getImpl()).lessThan(UInt256.fromBytes(value.getImpl()));
+  }
+
+  public String toDecimalString() {
+    return UInt256.fromBytes(this.getImpl()).toDecimalString();
+  }
+
+  public boolean greaterThan(final Wei value) {
+    return UInt256.fromBytes(this.getImpl()).greaterThan(UInt256.fromBytes(value.getImpl()));
   }
 
   /** The enum Unit. */

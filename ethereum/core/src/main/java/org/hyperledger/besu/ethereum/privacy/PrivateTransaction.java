@@ -95,7 +95,7 @@ public class PrivateTransaction implements org.hyperledger.besu.plugin.data.Priv
   // Note that this hash does not include the transaction signature, so it does not
   // fully identify the transaction (use the result of the {@code hash()} for that).
   // It is only used to compute said signature and recover the sender from it.
-  protected volatile Bytes32 hashNoSignature;
+  protected volatile Bytes hashNoSignature;
 
   // Caches the transaction sender.
   protected volatile Address sender;
@@ -439,7 +439,7 @@ public class PrivateTransaction implements org.hyperledger.besu.plugin.data.Priv
     return sender;
   }
 
-  private Bytes32 getOrComputeSenderRecoveryHash() {
+  private Bytes getOrComputeSenderRecoveryHash() {
     if (hashNoSignature == null) {
       hashNoSignature =
           computeSenderRecoveryHash(
@@ -473,10 +473,10 @@ public class PrivateTransaction implements org.hyperledger.besu.plugin.data.Priv
     out.startList();
 
     out.writeLongScalar(t.getNonce());
-    out.writeUInt256Scalar((Wei) t.getGasPrice());
+    out.writeUInt256Scalar(UInt256.fromBytes((Wei) t.getGasPrice()));
     out.writeLongScalar(t.getGasLimit());
     out.writeBytes(t.getTo().isPresent() ? t.getTo().get() : Bytes.EMPTY);
-    out.writeUInt256Scalar((Wei) t.getValue());
+    out.writeUInt256Scalar(UInt256.fromBytes((Wei) t.getValue()));
     out.writeBytes(t.getPayload());
     out.writeBigIntegerScalar(t.getV());
     out.writeBigIntegerScalar(t.getR());
@@ -550,16 +550,16 @@ public class PrivateTransaction implements org.hyperledger.besu.plugin.data.Priv
    *
    * @return the privacyGroupId
    */
-  public Bytes32 determinePrivacyGroupId() {
+  public Bytes determinePrivacyGroupId() {
     if (getPrivacyGroupId().isPresent()) {
-      return Bytes32.wrap(getPrivacyGroupId().get());
+      return Bytes32.fromBytes(getPrivacyGroupId().get(), 0);
     } else {
       final List<Bytes> privateFor = getPrivateFor().orElse(Lists.newArrayList());
       return PrivacyGroupUtil.calculateEeaPrivacyGroupId(getPrivateFrom(), privateFor);
     }
   }
 
-  private static Bytes32 computeSenderRecoveryHash(
+  private static Bytes computeSenderRecoveryHash(
       final long nonce,
       final Wei gasPrice,
       final long gasLimit,
@@ -576,10 +576,10 @@ public class PrivateTransaction implements org.hyperledger.besu.plugin.data.Priv
             out -> {
               out.startList();
               out.writeLongScalar(nonce);
-              out.writeUInt256Scalar(gasPrice);
+              out.writeUInt256Scalar(UInt256.fromBytes(gasPrice));
               out.writeLongScalar(gasLimit);
               out.writeBytes(to == null ? Bytes.EMPTY : to);
-              out.writeUInt256Scalar(value);
+              out.writeUInt256Scalar(UInt256.fromBytes(value));
               out.writeBytes(payload);
               if (chainId.isPresent()) {
                 out.writeBigIntegerScalar(chainId.get());
@@ -782,7 +782,7 @@ public class PrivateTransaction implements org.hyperledger.besu.plugin.data.Priv
     }
 
     protected SECPSignature computeSignature(final KeyPair keys) {
-      final Bytes32 hash =
+      final Bytes hash =
           computeSenderRecoveryHash(
               nonce,
               gasPrice,

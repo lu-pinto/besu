@@ -17,11 +17,11 @@ package org.hyperledger.besu.evm.log;
 import org.hyperledger.besu.ethereum.rlp.RLPInput;
 import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 
-import org.apache.tuweni.bytes.v2.DelegatingBytes32;
 import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.DelegatingBytes;
 
 /** The Log topic. */
-public class LogTopic extends DelegatingBytes32 {
+public class LogTopic extends DelegatingBytes {
 
   /**
    * Instantiates a new Log topic.
@@ -29,7 +29,7 @@ public class LogTopic extends DelegatingBytes32 {
    * @param bytes the bytes
    */
   protected LogTopic(final Bytes bytes) {
-    super(bytes);
+    super(bytes, 32);
   }
 
   /**
@@ -59,7 +59,7 @@ public class LogTopic extends DelegatingBytes32 {
    * @return the log topic
    */
   public static LogTopic of(final Bytes bytes) {
-    return new LogTopic(bytes.copy());
+    return new LogTopic(bytes.mutableCopy());
   }
 
   /**

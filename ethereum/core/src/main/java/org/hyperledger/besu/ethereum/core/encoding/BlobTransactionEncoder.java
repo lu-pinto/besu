@@ -21,6 +21,7 @@ import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 import java.util.List;
 
 import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.units.bigints.UInt256;
 
 public class BlobTransactionEncoder {
 
@@ -28,14 +29,15 @@ public class BlobTransactionEncoder {
     out.startList();
     out.writeBigIntegerScalar(transaction.getChainId().orElseThrow());
     out.writeLongScalar(transaction.getNonce());
-    out.writeUInt256Scalar(transaction.getMaxPriorityFeePerGas().orElseThrow());
-    out.writeUInt256Scalar(transaction.getMaxFeePerGas().orElseThrow());
+    out.writeUInt256Scalar(
+        transaction.getMaxPriorityFeePerGas().map(UInt256::fromBytes).orElseThrow());
+    out.writeUInt256Scalar(transaction.getMaxFeePerGas().map(UInt256::fromBytes).orElseThrow());
     out.writeLongScalar(transaction.getGasLimit());
-    out.writeBytes(transaction.getTo().map(Bytes::copy).orElse(Bytes.EMPTY));
-    out.writeUInt256Scalar(transaction.getValue());
+    out.writeBytes(transaction.getTo().map(b -> (Bytes) b).orElse(Bytes.EMPTY));
+    out.writeUInt256Scalar(UInt256.fromBytes(transaction.getValue()));
     out.writeBytes(transaction.getPayload());
     AccessListTransactionEncoder.writeAccessList(out, transaction.getAccessList());
-    out.writeUInt256Scalar(transaction.getMaxFeePerBlobGas().orElseThrow());
+    out.writeUInt256Scalar(transaction.getMaxFeePerBlobGas().map(UInt256::fromBytes).orElseThrow());
     out.startList();
     transaction
         .getVersionedHashes()

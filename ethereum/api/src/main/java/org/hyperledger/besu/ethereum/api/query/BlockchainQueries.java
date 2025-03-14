@@ -1068,14 +1068,18 @@ public class BlockchainQueries {
 
     return gasCollection.length == 0
         ? gasPriceLowerBound(chainHeadHeader, nextBlockFeeMarket)
-        : UInt256s.max(
-            gasPriceLowerBound(chainHeadHeader, nextBlockFeeMarket),
-            UInt256s.min(
-                apiConfig.getGasPriceMax(),
-                gasCollection[
-                    Math.min(
-                        gasCollection.length - 1,
-                        (int) ((gasCollection.length) * apiConfig.getGasPriceFraction()))]));
+        : Wei.of(
+            UInt256s.max(
+                UInt256.fromBytes(gasPriceLowerBound(chainHeadHeader, nextBlockFeeMarket)),
+                UInt256s.min(
+                    UInt256.fromBytes(apiConfig.getGasPriceMax()),
+                    UInt256.fromBytes(
+                        gasCollection[
+                            Math.min(
+                                gasCollection.length - 1,
+                                (int)
+                                    ((gasCollection.length)
+                                        * apiConfig.getGasPriceFraction()))]))));
   }
 
   /**
@@ -1098,8 +1102,11 @@ public class BlockchainQueries {
     final var minGasPrice = miningConfiguration.getMinTransactionGasPrice();
 
     if (nextBlockFeeMarket.implementsBaseFee()) {
-      return UInt256s.max(
-          getNextBlockBaseFee(chainHeadHeader, (BaseFeeMarket) nextBlockFeeMarket), minGasPrice);
+      return Wei.of(
+          UInt256s.max(
+              UInt256.fromBytes(
+                  getNextBlockBaseFee(chainHeadHeader, (BaseFeeMarket) nextBlockFeeMarket)),
+              UInt256.fromBytes(minGasPrice)));
     }
 
     return minGasPrice;
@@ -1132,12 +1139,14 @@ public class BlockchainQueries {
 
     return gasCollection.length == 0
         ? miningConfiguration.getMinPriorityFeePerGas()
-        : UInt256s.max(
-            miningConfiguration.getMinPriorityFeePerGas(),
-            gasCollection[
-                Math.min(
-                    gasCollection.length - 1,
-                    (int) ((gasCollection.length) * apiConfig.getGasPriceFraction()))]);
+        : Wei.of(
+            UInt256s.max(
+                UInt256.fromBytes(miningConfiguration.getMinPriorityFeePerGas()),
+                UInt256.fromBytes(
+                    gasCollection[
+                        Math.min(
+                            gasCollection.length - 1,
+                            (int) ((gasCollection.length) * apiConfig.getGasPriceFraction()))])));
   }
 
   /**

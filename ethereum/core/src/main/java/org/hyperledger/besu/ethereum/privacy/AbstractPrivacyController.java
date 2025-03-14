@@ -88,7 +88,7 @@ public abstract class AbstractPrivacyController implements PrivacyController {
   public long determineNonce(
       final Address sender, final String privacyGroupId, final String privacyUserId) {
     return privateNonceProvider.getNonce(
-        sender, Bytes32.wrap(Bytes.fromBase64String(privacyGroupId)));
+        sender, Bytes32.fromBytes(Bytes.fromBase64String(privacyGroupId), 0));
   }
 
   @Override
@@ -117,6 +117,6 @@ public abstract class AbstractPrivacyController implements PrivacyController {
         .map(
             block ->
                 privateStateRootResolver.resolveLastStateRoot(
-                    Bytes32.wrap(Bytes.fromBase64String(privacyGroupId)), block.getHash()));
+                    Bytes32.fromBytes(Bytes.fromBase64String(privacyGroupId), 0), block.getHash()));
   }
 }

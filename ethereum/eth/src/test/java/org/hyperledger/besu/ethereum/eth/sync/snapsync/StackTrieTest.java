@@ -31,13 +31,12 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class StackTrieTest {
 
-  final Bytes32 lastAccount = RangeManager.MIN_RANGE;
+  final Bytes lastAccount = RangeManager.MIN_RANGE;
 
   @Test
   public void shouldNotSaveTheRootWhenIncomplete() {
@@ -63,8 +62,8 @@ public class StackTrieTest {
         RangeStorageEntriesCollector.createCollector(
             lastAccount, RangeManager.MAX_RANGE, 5, Integer.MAX_VALUE);
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> accounts =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> accounts =
+        (TreeMap<Bytes, Bytes>)
             accountStateTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -81,7 +80,7 @@ public class StackTrieTest {
         worldStateProofProvider.getAccountProofRelatedNodes(
             Hash.wrap(accountStateTrie.getRootHash()), accounts.lastKey()));
 
-    stackTrie.addElement(Bytes32.random(), proofs, accounts);
+    stackTrie.addElement(Bytes.random(32), proofs, accounts);
 
     final ForestWorldStateKeyValueStorage.Updater updater = recreatedWorldStateStorage.updater();
     stackTrie.commit(((location, hash, value) -> updater.putAccountStateTrieNode(hash, value)));
@@ -117,8 +116,8 @@ public class StackTrieTest {
           RangeStorageEntriesCollector.createCollector(
               lastAccount, RangeManager.MAX_RANGE, 5, Integer.MAX_VALUE);
       final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
-      final TreeMap<Bytes32, Bytes> accounts =
-          (TreeMap<Bytes32, Bytes>)
+      final TreeMap<Bytes, Bytes> accounts =
+          (TreeMap<Bytes, Bytes>)
               accountStateTrie.entriesFrom(
                   root ->
                       RangeStorageEntriesCollector.collectEntries(
@@ -135,7 +134,7 @@ public class StackTrieTest {
           worldStateProofProvider.getAccountProofRelatedNodes(
               Hash.wrap(accountStateTrie.getRootHash()), accounts.lastKey()));
 
-      stackTrie.addElement(Bytes32.random(), proofs, accounts);
+      stackTrie.addElement(Bytes.random(32), proofs, accounts);
 
       final ForestWorldStateKeyValueStorage.Updater updater = recreatedWorldStateStorage.updater();
       stackTrie.commit((location, hash, value) -> updater.putAccountStateTrieNode(hash, value));
@@ -160,26 +159,26 @@ public class StackTrieTest {
             b -> b,
             b -> b);
 
-    trie.put(Bytes32.rightPad(Bytes.of(0x10)), Bytes.of(0x01));
-    trie.put(Bytes32.rightPad(Bytes.of(0x11)), Bytes.of(0x01));
-    trie.put(Bytes32.rightPad(Bytes.of(0x20)), Bytes.of(0x01));
-    trie.put(Bytes32.rightPad(Bytes.of(0x21)), Bytes.of(0x01));
-    trie.put(Bytes32.rightPad(Bytes.of(0x01)), Bytes.of(0x02));
-    trie.put(Bytes32.rightPad(Bytes.of(0x02)), Bytes.of(0x03));
-    trie.put(Bytes32.rightPad(Bytes.of(0x03)), Bytes.of(0x04));
+    trie.put(Bytes.of(0x10).mutableCopy().rightPad(32), Bytes.of(0x01));
+    trie.put(Bytes.of(0x11).mutableCopy().rightPad(32), Bytes.of(0x01));
+    trie.put(Bytes.of(0x20).mutableCopy().rightPad(32), Bytes.of(0x01));
+    trie.put(Bytes.of(0x21).mutableCopy().rightPad(32), Bytes.of(0x01));
+    trie.put(Bytes.of(0x01).mutableCopy().rightPad(32), Bytes.of(0x02));
+    trie.put(Bytes.of(0x02).mutableCopy().rightPad(32), Bytes.of(0x03));
+    trie.put(Bytes.of(0x03).mutableCopy().rightPad(32), Bytes.of(0x04));
 
     final ForestWorldStateKeyValueStorage.Updater updater = worldStateStorage.updater();
     trie.commit((location, hash, value) -> updater.putAccountStateTrieNode(hash, value));
     updater.commit();
 
-    final Bytes32 startRange = Bytes32.rightPad(Bytes.of(0x02));
+    final Bytes startRange = Bytes.of(0x02).mutableCopy().rightPad(32);
 
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(
             startRange, RangeManager.MAX_RANGE, 15, Integer.MAX_VALUE);
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> entries =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> entries =
+        (TreeMap<Bytes, Bytes>)
             trie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -201,7 +200,7 @@ public class StackTrieTest {
         new ForestWorldStateKeyValueStorage(new InMemoryKeyValueStorage());
     final StackTrie stackTrie = new StackTrie(Hash.wrap(trie.getRootHash()), 0, 256, startRange);
     stackTrie.addSegment();
-    stackTrie.addElement(Bytes32.random(), proofs, entries);
+    stackTrie.addElement(Bytes.random(32), proofs, entries);
     final ForestWorldStateKeyValueStorage.Updater updaterStackTrie =
         recreatedWorldStateStorage.updater();
     stackTrie.commit(
@@ -226,26 +225,26 @@ public class StackTrieTest {
             b -> b,
             b -> b);
 
-    trie.put(Bytes32.rightPad(Bytes.of(0x10)), Bytes.of(0x01));
-    trie.put(Bytes32.rightPad(Bytes.of(0x11)), Bytes.of(0x01));
-    trie.put(Bytes32.rightPad(Bytes.of(0x20)), Bytes.of(0x01));
-    trie.put(Bytes32.rightPad(Bytes.of(0x21)), Bytes.of(0x01));
-    trie.put(Bytes32.rightPad(Bytes.of(0x01)), Bytes.of(0x02));
-    trie.put(Bytes32.rightPad(Bytes.of(0x02)), Bytes.of(0x03));
-    trie.put(Bytes32.rightPad(Bytes.of(0x03)), Bytes.of(0x04));
+    trie.put(Bytes.of(0x10).mutableCopy().rightPad(32), Bytes.of(0x01));
+    trie.put(Bytes.of(0x11).mutableCopy().rightPad(32), Bytes.of(0x01));
+    trie.put(Bytes.of(0x20).mutableCopy().rightPad(32), Bytes.of(0x01));
+    trie.put(Bytes.of(0x21).mutableCopy().rightPad(32), Bytes.of(0x01));
+    trie.put(Bytes.of(0x01).mutableCopy().rightPad(32), Bytes.of(0x02));
+    trie.put(Bytes.of(0x02).mutableCopy().rightPad(32), Bytes.of(0x03));
+    trie.put(Bytes.of(0x03).mutableCopy().rightPad(32), Bytes.of(0x04));
 
     final ForestWorldStateKeyValueStorage.Updater updater = worldStateStorage.updater();
     trie.commit((location, hash, value) -> updater.putAccountStateTrieNode(hash, value));
     updater.commit();
 
-    final Bytes32 startRange = Bytes32.rightPad(Bytes.of(0x00));
+    final Bytes startRange = Bytes.of(0x00).mutableCopy().rightPad(32);
 
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(
             startRange, RangeManager.MAX_RANGE, 15, Integer.MAX_VALUE);
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> entries =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> entries =
+        (TreeMap<Bytes, Bytes>)
             trie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -256,7 +255,7 @@ public class StackTrieTest {
         new ForestWorldStateKeyValueStorage(new InMemoryKeyValueStorage());
     final StackTrie stackTrie = new StackTrie(Hash.wrap(trie.getRootHash()), 0, 256, startRange);
     stackTrie.addSegment();
-    stackTrie.addElement(Bytes32.random(), new ArrayList<>(), entries);
+    stackTrie.addElement(Bytes.random(32), new ArrayList<>(), entries);
     final ForestWorldStateKeyValueStorage.Updater updaterStackTrie =
         recreatedWorldStateStorage.updater();
     stackTrie.commit(

@@ -216,10 +216,12 @@ public class BaseTransactionPoolTest {
                 .toList();
         final var kgzCommitments =
             IntStream.range(0, blobCount)
-                .mapToObj(i -> new KZGCommitment(Bytes48.random()))
+                .mapToObj(i -> new KZGCommitment(Bytes48.fromRandom()))
                 .toList();
         final var kzgProofs =
-            IntStream.range(0, blobCount).mapToObj(i -> new KZGProof(Bytes48.random())).toList();
+            IntStream.range(0, blobCount)
+                .mapToObj(i -> new KZGProof(Bytes48.fromRandom()))
+                .toList();
         final var blobs =
             IntStream.range(0, blobCount).mapToObj(i -> new Blob(Bytes.random(32 * 4096))).toList();
         tx.versionedHashes(Optional.of(versionHashes));

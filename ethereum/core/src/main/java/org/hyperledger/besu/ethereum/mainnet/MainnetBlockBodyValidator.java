@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,12 +76,12 @@ public class MainnetBlockBodyValidator implements BlockBodyValidator {
     final BlockHeader header = block.getHeader();
     final BlockBody body = block.getBody();
 
-    final Bytes32 transactionsRoot = BodyValidation.transactionsRoot(body.getTransactions());
+    final Bytes transactionsRoot = BodyValidation.transactionsRoot(body.getTransactions());
     if (!validateTransactionsRoot(header, header.getTransactionsRoot(), transactionsRoot)) {
       return false;
     }
 
-    final Bytes32 receiptsRoot = BodyValidation.receiptsRoot(receipts);
+    final Bytes receiptsRoot = BodyValidation.receiptsRoot(receipts);
     if (!validateReceiptsRoot(header, header.getReceiptsRoot(), receiptsRoot)) {
       return false;
     }
@@ -127,7 +127,7 @@ public class MainnetBlockBodyValidator implements BlockBodyValidator {
   }
 
   private boolean validateTransactionsRoot(
-      final BlockHeader header, final Bytes32 expected, final Bytes32 actual) {
+      final BlockHeader header, final Bytes expected, final Bytes actual) {
     if (!expected.equals(actual)) {
       LOG.warn(
           "Invalid block {}: transaction root mismatch (expected={}, actual={})",
@@ -169,7 +169,7 @@ public class MainnetBlockBodyValidator implements BlockBodyValidator {
   }
 
   private boolean validateReceiptsRoot(
-      final BlockHeader header, final Bytes32 expected, final Bytes32 actual) {
+      final BlockHeader header, final Bytes expected, final Bytes actual) {
     if (!expected.equals(actual)) {
       LOG.warn(
           "Invalid block {}: receipts root mismatch (expected={}, actual={})",
@@ -183,7 +183,7 @@ public class MainnetBlockBodyValidator implements BlockBodyValidator {
   }
 
   private boolean validateStateRoot(
-      final BlockHeader header, final Bytes32 expected, final Bytes32 actual) {
+      final BlockHeader header, final Bytes expected, final Bytes actual) {
     if (!expected.equals(actual)) {
       LOG.warn(
           "Invalid block {}: state root mismatch (expected={}, actual={})",
@@ -203,7 +203,7 @@ public class MainnetBlockBodyValidator implements BlockBodyValidator {
     final BlockHeader header = block.getHeader();
     final BlockBody body = block.getBody();
 
-    final Bytes32 ommerHash = BodyValidation.ommersHash(body.getOmmers());
+    final Bytes ommerHash = BodyValidation.ommersHash(body.getOmmers());
     if (!validateOmmersHash(header, header.getOmmersHash(), ommerHash)) {
       return false;
     }
@@ -216,7 +216,7 @@ public class MainnetBlockBodyValidator implements BlockBodyValidator {
   }
 
   private static boolean validateOmmersHash(
-      final BlockHeader header, final Bytes32 expected, final Bytes32 actual) {
+      final BlockHeader header, final Bytes expected, final Bytes actual) {
     if (!expected.equals(actual)) {
       LOG.warn(
           "Invalid block {}: ommers hash mismatch (expected={}, actual={})",

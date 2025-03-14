@@ -18,7 +18,7 @@ import org.hyperledger.besu.plugin.services.storage.DataStorageFormat;
 
 import java.util.Collection;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public interface WorldStateKeyValueStorage {
 
@@ -29,7 +29,7 @@ public interface WorldStateKeyValueStorage {
   void clear();
 
   interface NodesAddedListener {
-    void onNodesAdded(Collection<Bytes32> nodeHash);
+    void onNodesAdded(Collection<Bytes> nodeHash);
   }
 
   interface Updater {

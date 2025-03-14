@@ -32,7 +32,6 @@ import java.util.stream.Stream;
 
 import kotlin.Pair;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.rlp.RLP;
 
 /**
@@ -148,29 +147,29 @@ public abstract class FlatDbStrategy {
 
   public abstract void resetOnResync(final SegmentedKeyValueStorage storage);
 
-  public NavigableMap<Bytes32, Bytes> streamAccountFlatDatabase(
+  public NavigableMap<Bytes, Bytes> streamAccountFlatDatabase(
       final SegmentedKeyValueStorage storage,
       final Bytes startKeyHash,
-      final Bytes32 endKeyHash,
+      final Bytes endKeyHash,
       final long max) {
 
     return toNavigableMap(accountsToPairStream(storage, startKeyHash, endKeyHash).limit(max));
   }
 
-  public NavigableMap<Bytes32, Bytes> streamAccountFlatDatabase(
+  public NavigableMap<Bytes, Bytes> streamAccountFlatDatabase(
       final SegmentedKeyValueStorage storage,
       final Bytes startKeyHash,
-      final Predicate<Pair<Bytes32, Bytes>> takeWhile) {
+      final Predicate<Pair<Bytes, Bytes>> takeWhile) {
 
     return toNavigableMap(accountsToPairStream(storage, startKeyHash).takeWhile(takeWhile));
   }
 
   /** streams RLP encoded storage values using a specified stream limit. */
-  public NavigableMap<Bytes32, Bytes> streamStorageFlatDatabase(
+  public NavigableMap<Bytes, Bytes> streamStorageFlatDatabase(
       final SegmentedKeyValueStorage storage,
       final Hash accountHash,
       final Bytes startKeyHash,
-      final Bytes32 endKeyHash,
+      final Bytes endKeyHash,
       final long max) {
 
     return toNavigableMap(
@@ -179,12 +178,12 @@ public abstract class FlatDbStrategy {
   }
 
   /** streams raw storage Bytes using a specified predicate filter and value mapper. */
-  public NavigableMap<Bytes32, Bytes> streamStorageFlatDatabase(
+  public NavigableMap<Bytes, Bytes> streamStorageFlatDatabase(
       final SegmentedKeyValueStorage storage,
       final Hash accountHash,
       final Bytes startKeyHash,
-      final Bytes32 endKeyHash,
-      final Predicate<Pair<Bytes32, Bytes>> takeWhile) {
+      final Bytes endKeyHash,
+      final Predicate<Pair<Bytes, Bytes>> takeWhile) {
 
     return toNavigableMap(
         storageToPairStream(storage, accountHash, startKeyHash, endKeyHash, RLP::encodeValue)
@@ -192,38 +191,37 @@ public abstract class FlatDbStrategy {
   }
 
   /** streams raw storage Bytes using a specified predicate filter and value mapper. */
-  public NavigableMap<Bytes32, Bytes> streamStorageFlatDatabase(
+  public NavigableMap<Bytes, Bytes> streamStorageFlatDatabase(
       final SegmentedKeyValueStorage storage,
       final Hash accountHash,
       final Bytes startKeyHash,
-      final Predicate<Pair<Bytes32, Bytes>> takeWhile) {
+      final Predicate<Pair<Bytes, Bytes>> takeWhile) {
     return toNavigableMap(
         storageToPairStream(storage, accountHash, startKeyHash, RLP::encodeValue)
             .takeWhile(takeWhile));
   }
 
-  protected abstract Stream<Pair<Bytes32, Bytes>> storageToPairStream(
+  protected abstract Stream<Pair<Bytes, Bytes>> storageToPairStream(
       final SegmentedKeyValueStorage storage,
       final Hash accountHash,
       final Bytes startKeyHash,
       final Function<Bytes, Bytes> valueMapper);
 
-  protected abstract Stream<Pair<Bytes32, Bytes>> storageToPairStream(
+  protected abstract Stream<Pair<Bytes, Bytes>> storageToPairStream(
       final SegmentedKeyValueStorage storage,
       final Hash accountHash,
       final Bytes startKeyHash,
-      final Bytes32 endKeyHash,
+      final Bytes endKeyHash,
       final Function<Bytes, Bytes> valueMapper);
 
-  protected abstract Stream<Pair<Bytes32, Bytes>> accountsToPairStream(
-      final SegmentedKeyValueStorage storage, final Bytes startKeyHash, final Bytes32 endKeyHash);
+  protected abstract Stream<Pair<Bytes, Bytes>> accountsToPairStream(
+      final SegmentedKeyValueStorage storage, final Bytes startKeyHash, final Bytes endKeyHash);
 
-  protected abstract Stream<Pair<Bytes32, Bytes>> accountsToPairStream(
+  protected abstract Stream<Pair<Bytes, Bytes>> accountsToPairStream(
       final SegmentedKeyValueStorage storage, final Bytes startKeyHash);
 
-  private NavigableMap<Bytes32, Bytes> toNavigableMap(
-      final Stream<Pair<Bytes32, Bytes>> pairStream) {
-    final TreeMap<Bytes32, Bytes> collected =
+  private NavigableMap<Bytes, Bytes> toNavigableMap(final Stream<Pair<Bytes, Bytes>> pairStream) {
+    final TreeMap<Bytes, Bytes> collected =
         pairStream.collect(
             Collectors.toMap(
                 Pair::getFirst,

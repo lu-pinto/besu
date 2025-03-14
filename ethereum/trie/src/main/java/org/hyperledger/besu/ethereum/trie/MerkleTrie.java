@@ -26,13 +26,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** A Merkle Patricia Trie. */
 public interface MerkleTrie<K, V> {
 
   Bytes EMPTY_TRIE_NODE = RLP.NULL;
-  Bytes32 EMPTY_TRIE_NODE_HASH = keccak256(EMPTY_TRIE_NODE);
+  Bytes EMPTY_TRIE_NODE_HASH = keccak256(EMPTY_TRIE_NODE);
 
   /**
    * Returns an {@code Optional} of value mapped to the hash if it exists; otherwise empty.
@@ -105,7 +104,7 @@ public interface MerkleTrie<K, V> {
    *
    * @return The KECCAK256 hash of the root node of the trie.
    */
-  Bytes32 getRootHash();
+  Bytes getRootHash();
 
   /**
    * Commits any pending changes to the underlying storage.
@@ -130,7 +129,7 @@ public interface MerkleTrie<K, V> {
    * @param limit the maximum number of entries to return.
    * @return the requested storage entries as a map of key hash to value.
    */
-  Map<Bytes32, V> entriesFrom(Bytes32 startKeyHash, int limit);
+  Map<Bytes, V> entriesFrom(Bytes startKeyHash, int limit);
 
   /**
    * Retrieve entries using a custom collector
@@ -138,7 +137,7 @@ public interface MerkleTrie<K, V> {
    * @param handler a custom trie collector.
    * @return the requested storage entries as a map of key hash to value.
    */
-  Map<Bytes32, V> entriesFrom(final Function<Node<V>, Map<Bytes32, V>> handler);
+  Map<Bytes, V> entriesFrom(final Function<Node<V>, Map<Bytes, V>> handler);
 
   void visitAll(Consumer<Node<V>> nodeConsumer);
 

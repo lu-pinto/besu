@@ -26,7 +26,6 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
@@ -95,7 +94,7 @@ public abstract class AbstractSECP256 implements SignatureAlgorithm {
       final BigInteger nativeR,
       final BigInteger nativeS,
       final SECPPublicKey publicKey,
-      final Bytes32 dataHash) {
+      final Bytes dataHash) {
 
     BigInteger s = nativeS;
     // Automatically adjust the S component to be less than or equal to half the curve
@@ -140,7 +139,7 @@ public abstract class AbstractSECP256 implements SignatureAlgorithm {
    * @return The agreed secret.
    */
   @Override
-  public Bytes32 calculateECDHKeyAgreement(
+  public Bytes calculateECDHKeyAgreement(
       final SECPPrivateKey privKey, final SECPPublicKey theirPubKey) {
     checkArgument(privKey != null, "missing private key");
     checkArgument(theirPubKey != null, "missing remote public key");
@@ -162,7 +161,7 @@ public abstract class AbstractSECP256 implements SignatureAlgorithm {
   }
 
   @Override
-  public SECPPrivateKey createPrivateKey(final Bytes32 key) {
+  public SECPPrivateKey createPrivateKey(final Bytes key) {
     return SECPPrivateKey.create(key, ALGORITHM);
   }
 
@@ -279,7 +278,7 @@ public abstract class AbstractSECP256 implements SignatureAlgorithm {
    * @return An ECKey containing only the public part, or null if recovery wasn't possible.
    */
   protected BigInteger recoverFromSignature(
-      final int recId, final BigInteger r, final BigInteger s, final Bytes32 dataHash) {
+      final int recId, final BigInteger r, final BigInteger s, final Bytes dataHash) {
     assert (recId >= 0);
     assert (r.signum() >= 0);
     assert (s.signum() >= 0);
@@ -341,7 +340,7 @@ public abstract class AbstractSECP256 implements SignatureAlgorithm {
   }
 
   @Override
-  public SECPSignature sign(final Bytes32 dataHash, final KeyPair keyPair) {
+  public SECPSignature sign(final Bytes dataHash, final KeyPair keyPair) {
     final ECDSASigner signer = new ECDSASigner(getKCalculator());
 
     final ECPrivateKeyParameters privKey =
@@ -405,7 +404,7 @@ public abstract class AbstractSECP256 implements SignatureAlgorithm {
 
   @Override
   public Optional<SECPPublicKey> recoverPublicKeyFromSignature(
-      final Bytes32 dataHash, final SECPSignature signature) {
+      final Bytes dataHash, final SECPSignature signature) {
     final BigInteger publicKeyBI =
         recoverFromSignature(signature.getRecId(), signature.getR(), signature.getS(), dataHash);
     return publicKeyBI == null

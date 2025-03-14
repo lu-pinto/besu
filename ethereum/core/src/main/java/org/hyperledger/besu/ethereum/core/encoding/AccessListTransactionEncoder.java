@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.units.bigints.UInt256;
 
 public class AccessListTransactionEncoder {
 
@@ -64,10 +65,10 @@ public class AccessListTransactionEncoder {
       final RLPOutput rlpOutput) {
     rlpOutput.writeBigIntegerScalar(chainId.orElseThrow());
     rlpOutput.writeLongScalar(nonce);
-    rlpOutput.writeUInt256Scalar(gasPrice);
+    rlpOutput.writeUInt256Scalar(UInt256.fromBytes(gasPrice));
     rlpOutput.writeLongScalar(gasLimit);
-    rlpOutput.writeBytes(to.map(Bytes::copy).orElse(Bytes.EMPTY));
-    rlpOutput.writeUInt256Scalar(value);
+    rlpOutput.writeBytes(to.map(b -> (Bytes) b).orElse(Bytes.EMPTY));
+    rlpOutput.writeUInt256Scalar(UInt256.fromBytes(value));
     rlpOutput.writeBytes(payload);
     /*
     Access List encoding should look like this

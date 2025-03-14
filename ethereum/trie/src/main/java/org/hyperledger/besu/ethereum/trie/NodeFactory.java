@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public interface NodeFactory<V> {
 
@@ -30,7 +29,7 @@ public interface NodeFactory<V> {
 
   Node<V> createLeaf(Bytes path, V value);
 
-  default Optional<Node<V>> retrieve(final Bytes location, final Bytes32 hash) {
+  default Optional<Node<V>> retrieve(final Bytes location, final Bytes hash) {
     throw new UnsupportedOperationException("retrieve is not implemented");
   }
 }

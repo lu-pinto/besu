@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ public class EntriesFromIntegrationTest {
     final MutableWorldState worldState = createInMemoryWorldStateArchive().getWorldState();
     final WorldUpdater updater = worldState.updater();
     MutableAccount account = updater.getOrCreate(Address.fromHexString("0x56"));
-    final Map<Bytes32, AccountStorageEntry> expectedValues = new TreeMap<>();
+    final Map<Bytes, AccountStorageEntry> expectedValues = new TreeMap<>();
     final int nodeCount = 100_000;
     final Random random = new Random(42989428249L);
 
@@ -64,14 +65,14 @@ public class EntriesFromIntegrationTest {
           UInt256.valueOf(i * 10 + 1L));
     }
 
-    final Map<Bytes32, AccountStorageEntry> values =
+    final Map<Bytes, AccountStorageEntry> values =
         account.storageEntriesFrom(Bytes32.ZERO, Integer.MAX_VALUE);
     assertThat(values).isEqualTo(expectedValues);
   }
 
   private void addExpectedValue(
       final MutableAccount account,
-      final Map<Bytes32, AccountStorageEntry> expectedValues,
+      final Map<Bytes, AccountStorageEntry> expectedValues,
       final UInt256 key,
       final UInt256 value) {
     account.setStorageValue(key, value);

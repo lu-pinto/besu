@@ -30,7 +30,6 @@ public class ConsensusHelpers {
    */
   public static Bytes zeroLeftPad(final Bytes input, final int requiredLength) {
     final int paddingByteCount = Math.max(0, requiredLength - input.size());
-    return Bytes.concatenate(Bytes.wrap(new byte[paddingByteCount]), input)
-        .slice(0, requiredLength);
+    return Bytes.wrap(Bytes.wrap(new byte[paddingByteCount]), input).slice(0, requiredLength);
   }
 }

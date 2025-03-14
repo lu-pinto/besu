@@ -141,7 +141,7 @@ public class TrieLogPruner implements TrieLogEvent.TrieLogObserver {
               throw new RuntimeException(
                   new InterruptedException("Thread interrupted during trie log processing."));
             }
-            final Hash blockHash = Hash.wrap(Bytes32.wrap(blockHashAsBytes));
+            final Hash blockHash = Hash.wrap(Bytes32.fromArray(blockHashAsBytes));
             final Optional<BlockHeader> header = blockchain.getBlockHeader(blockHash);
             if (header.isPresent()) {
               addToPruneQueue(header.get().getNumber(), blockHash);

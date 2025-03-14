@@ -108,7 +108,7 @@ public class FlexiblePrivacyController extends AbstractRestrictedPrivacyControll
     final Optional<String> optionalSecondPart =
         buildAndSendAddPayload(
             privateTransaction,
-            Bytes32.wrap(privateTransaction.getPrivacyGroupId().orElseThrow()),
+            Bytes32.fromBytes(privateTransaction.getPrivacyGroupId().orElseThrow(), 0),
             privacyUserId);
 
     return buildCompoundLookupId(firstPart, optionalSecondPart);
@@ -213,7 +213,7 @@ public class FlexiblePrivacyController extends AbstractRestrictedPrivacyControll
         pmtHashes.addAll(
             0,
             privateStateStorage
-                .getPrivateBlockMetadata(blockHash, Bytes32.wrap(privacyGroupId))
+                .getPrivateBlockMetadata(blockHash, Bytes32.fromBytes(privacyGroupId, 0))
                 .orElseThrow()
                 .getPrivateTransactionMetadataList());
         blockHash = blockchain.getBlockHeader(blockHash).orElseThrow().getParentHash();
@@ -232,7 +232,7 @@ public class FlexiblePrivacyController extends AbstractRestrictedPrivacyControll
   }
 
   private List<PrivateTransactionWithMetadata> retrievePrivateTransactions(
-      final Bytes32 privacyGroupId,
+      final Bytes privacyGroupId,
       final List<PrivateTransactionMetadata> privateTransactionMetadataList,
       final String privacyUserId) {
     final ArrayList<PrivateTransactionWithMetadata> privateTransactions = new ArrayList<>();
@@ -270,7 +270,7 @@ public class FlexiblePrivacyController extends AbstractRestrictedPrivacyControll
 
   private Optional<String> buildAndSendAddPayload(
       final PrivateTransaction privateTransaction,
-      final Bytes32 privacyGroupId,
+      final Bytes privacyGroupId,
       final String privacyUserId) {
     if (FlexibleUtil.isGroupAdditionTransaction(privateTransaction)) {
       final List<PrivateTransactionMetadata> privateTransactionMetadataList =
@@ -294,7 +294,7 @@ public class FlexiblePrivacyController extends AbstractRestrictedPrivacyControll
       final String privateTransactionLookupId,
       final Optional<String> maybePrivateTransactionLookupId) {
     return maybePrivateTransactionLookupId.isPresent()
-        ? Bytes.concatenate(
+        ? Bytes.wrap(
                 Bytes.fromBase64String(privateTransactionLookupId),
                 Bytes.fromBase64String(maybePrivateTransactionLookupId.get()))
             .toBase64String()

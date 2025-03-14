@@ -44,7 +44,7 @@ public class RangeManager {
   private RangeManager() {}
 
   public static int getRangeCount(
-      final Bytes32 min, final Bytes32 max, final NavigableMap<Bytes32, Bytes> items) {
+      final Bytes min, final Bytes max, final NavigableMap<Bytes, Bytes> items) {
     if (min.equals(MIN_RANGE) && max.equals(MAX_RANGE)) {
       return MAX_RANGE
           .toUnsignedBigInteger()
@@ -54,7 +54,7 @@ public class RangeManager {
     return 1;
   }
 
-  public static Map<Bytes32, Bytes32> generateAllRanges(final int sizeRange) {
+  public static Map<Bytes, Bytes> generateAllRanges(final int sizeRange) {
     if (sizeRange == 1) {
       return Map.ofEntries(Map.entry(MIN_RANGE, MAX_RANGE));
     }
@@ -70,8 +70,8 @@ public class RangeManager {
    * @param nbRange number of ranges
    * @return the start and end of the generated range
    */
-  public static Map<Bytes32, Bytes32> generateRanges(
-      final Bytes32 min, final Bytes32 max, final int nbRange) {
+  public static Map<Bytes, Bytes> generateRanges(
+      final Bytes min, final Bytes max, final int nbRange) {
     return generateRanges(min.toUnsignedBigInteger(), max.toUnsignedBigInteger(), nbRange);
   }
 
@@ -83,10 +83,10 @@ public class RangeManager {
    * @param nbRange number of ranges
    * @return the start and end of the generated range
    */
-  public static Map<Bytes32, Bytes32> generateRanges(
+  public static Map<Bytes, Bytes> generateRanges(
       final BigInteger min, final BigInteger max, final int nbRange) {
     final BigInteger rangeSize = max.subtract(min).divide(BigInteger.valueOf(nbRange));
-    final TreeMap<Bytes32, Bytes32> ranges = new TreeMap<>();
+    final TreeMap<Bytes, Bytes> ranges = new TreeMap<>();
     if (min.compareTo(max) > 0) {
       return ranges;
     }
@@ -118,15 +118,15 @@ public class RangeManager {
    * @param receivedKeys the last key received
    * @return begin of the new range
    */
-  public static Optional<Bytes32> findNewBeginElementInRange(
-      final Bytes32 worldstateRootHash,
+  public static Optional<Bytes> findNewBeginElementInRange(
+      final Bytes worldstateRootHash,
       final List<Bytes> proofs,
-      final NavigableMap<Bytes32, Bytes> receivedKeys,
-      final Bytes32 endKeyHash) {
+      final NavigableMap<Bytes, Bytes> receivedKeys,
+      final Bytes endKeyHash) {
     if (receivedKeys.isEmpty() || receivedKeys.lastKey().compareTo(endKeyHash) >= 0) {
       return Optional.empty();
     } else {
-      final Map<Bytes32, Bytes> proofsEntries = new HashMap<>();
+      final Map<Bytes, Bytes> proofsEntries = new HashMap<>();
       for (Bytes proof : proofs) {
         proofsEntries.put(Hash.hash(proof), proof);
       }
@@ -150,8 +150,8 @@ public class RangeManager {
     }
   }
 
-  private static Bytes32 format(final BigInteger data) {
-    return Bytes32.leftPad(Bytes.of(data.toByteArray()).trimLeadingZeros());
+  private static Bytes format(final BigInteger data) {
+    return MutableBytes.fromArray(data.toByteArray()).leftPad(32);
   }
 
   /**
@@ -166,7 +166,7 @@ public class RangeManager {
    */
   public static boolean isInRange(
       final Bytes location, final Bytes startKeyPath, final Bytes endKeyPath) {
-    final MutableBytes path = MutableBytes.create(Bytes32.SIZE * 2);
+    final MutableBytes path = MutableBytes.create(32 * 2);
     path.set(0, location);
     return !location.isEmpty()
         && Arrays.compare(path.toArrayUnsafe(), startKeyPath.toArrayUnsafe()) >= 0

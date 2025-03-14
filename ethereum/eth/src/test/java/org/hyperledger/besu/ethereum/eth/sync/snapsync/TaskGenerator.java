@@ -65,8 +65,8 @@ public class TaskGenerator {
         RangeStorageEntriesCollector.createCollector(
             Bytes32.ZERO, RangeManager.MAX_RANGE, 1, Integer.MAX_VALUE);
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> accounts =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> accounts =
+        (TreeMap<Bytes, Bytes>)
             trie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -113,7 +113,7 @@ public class TaskGenerator {
       final WorldStateStorageCoordinator worldStateKeyValueStorage,
       final Hash rootHash,
       final Hash accountHash,
-      final Bytes32 storageRoot,
+      final Bytes storageRoot,
       final boolean withData,
       final boolean withNullTaskElement) {
 
@@ -129,8 +129,8 @@ public class TaskGenerator {
             b -> b);
 
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> slots =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> slots =
+        (TreeMap<Bytes, Bytes>)
             storageTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(

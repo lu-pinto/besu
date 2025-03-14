@@ -96,7 +96,7 @@ public class ECIESEncryptionEngine {
    */
   public static ECIESEncryptionEngine forDecryption(
       final NodeKey nodeKey, final SECPPublicKey ephPubKey, final Bytes iv) {
-    final byte[] ivb = iv.toArray();
+    final byte[] ivb = iv.toArrayUnsafe();
 
     // Create parameters.
     final Bytes agreedSecret = nodeKey.calculateECDHKeyAgreement(ephPubKey);
@@ -120,7 +120,7 @@ public class ECIESEncryptionEngine {
     final KeyPair ephKeyPair = signatureAlgorithm.generateKeyPair();
 
     // Create random iv.
-    final byte[] ivb = ECIESHandshaker.random(CIPHER_BLOCK_SIZE).toArray();
+    final byte[] ivb = ECIESHandshaker.random(CIPHER_BLOCK_SIZE).toArrayUnsafe();
 
     return new ECIESEncryptionEngine(
         signatureAlgorithm.calculateECDHKeyAgreement(ephKeyPair.getPrivateKey(), pubKey),
@@ -136,11 +136,11 @@ public class ECIESEncryptionEngine {
    * @throws InvalidCipherTextException Thrown if an error occurred during encryption.
    */
   public Bytes encrypt(final Bytes in) throws InvalidCipherTextException {
-    return Bytes.wrap(encrypt(in.toArray(), 0, in.size(), null));
+    return Bytes.wrap(encrypt(in.toArrayUnsafe(), 0, in.size(), null));
   }
 
   public Bytes encrypt(final Bytes in, final byte[] macData) throws InvalidCipherTextException {
-    return Bytes.wrap(encrypt(in.toArray(), 0, in.size(), macData));
+    return Bytes.wrap(encrypt(in.toArrayUnsafe(), 0, in.size(), macData));
   }
 
   private byte[] encrypt(final byte[] in, final int inOff, final int inLen, final byte[] macData)
@@ -208,11 +208,11 @@ public class ECIESEncryptionEngine {
    * @throws InvalidCipherTextException Thrown if an error occurred during decryption.
    */
   public Bytes decrypt(final Bytes in) throws InvalidCipherTextException {
-    return Bytes.wrap(decrypt(in.toArray(), 0, in.size(), null));
+    return Bytes.wrap(decrypt(in.toArrayUnsafe(), 0, in.size(), null));
   }
 
   public Bytes decrypt(final Bytes in, final byte[] commonMac) throws InvalidCipherTextException {
-    return Bytes.wrap(decrypt(in.toArray(), 0, in.size(), commonMac));
+    return Bytes.wrap(decrypt(in.toArrayUnsafe(), 0, in.size(), commonMac));
   }
 
   private byte[] decrypt(

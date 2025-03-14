@@ -597,7 +597,7 @@ public class MessageFrame {
    * @param length The length of the bytes to read
    * @return The bytes in the specified range
    */
-  public MutableBytes readMutableMemory(final long offset, final long length) {
+  public Bytes readMutableMemory(final long offset, final long length) {
     return readMutableMemory(offset, length, false);
   }
 
@@ -620,7 +620,7 @@ public class MessageFrame {
    * @return The bytes in the specified range
    */
   public Bytes readMemory(final long offset, final long length) {
-    return readMutableMemory(offset, length, false).copy();
+    return readMutableMemory(offset, length, false).mutableCopy();
   }
 
   /**
@@ -632,9 +632,9 @@ public class MessageFrame {
    * @param explicitMemoryRead true if triggered by a memory opcode, false otherwise
    * @return The bytes in the specified range
    */
-  public MutableBytes readMutableMemory(
+  public Bytes readMutableMemory(
       final long offset, final long length, final boolean explicitMemoryRead) {
-    final MutableBytes memBytes = memory.getMutableBytes(offset, length);
+    final Bytes memBytes = memory.getMutableBytes(offset, length);
     if (explicitMemoryRead) {
       setUpdatedMemory(offset, memBytes);
     }
@@ -762,11 +762,11 @@ public class MessageFrame {
       if (endIndex > srcSize) {
         final MutableBytes paddedAnswer = MutableBytes.create((int) length);
         if (sourceOffset < srcSize) {
-          value.slice((int) sourceOffset, (int) (srcSize - sourceOffset)).copyTo(paddedAnswer, 0);
+          paddedAnswer.set(0, value.slice((int) sourceOffset, (int) (srcSize - sourceOffset)));
         }
-        setUpdatedMemory(offset, paddedAnswer.copy());
+        setUpdatedMemory(offset, paddedAnswer.mutableCopy());
       } else {
-        setUpdatedMemory(offset, value.slice((int) sourceOffset, (int) length).copy());
+        setUpdatedMemory(offset, value.slice((int) sourceOffset, (int) length).mutableCopy());
       }
     }
   }
@@ -778,11 +778,11 @@ public class MessageFrame {
       if (length > srcSize) {
         final MutableBytes paddedAnswer = MutableBytes.create((int) length);
         if ((long) 0 < srcSize) {
-          value.slice(0, srcSize).copyTo(paddedAnswer, (int) (length - srcSize));
+          paddedAnswer.set((int) (length - srcSize), value.slice(0, srcSize));
         }
-        setUpdatedMemory(offset, paddedAnswer.copy());
+        setUpdatedMemory(offset, paddedAnswer.mutableCopy());
       } else {
-        setUpdatedMemory(offset, value.slice(0, (int) length).copy());
+        setUpdatedMemory(offset, value.slice(0, (int) length).mutableCopy());
       }
     }
   }
@@ -970,7 +970,7 @@ public class MessageFrame {
    * @param slot the slot being warmed up
    * @return true if the storage slot was already warmed up
    */
-  public boolean warmUpStorage(final Address address, final Bytes32 slot) {
+  public boolean warmUpStorage(final Address address, final Bytes slot) {
     return txValues.warmedUpStorage().put(address, slot, Boolean.TRUE) != null;
   }
 
@@ -1254,7 +1254,7 @@ public class MessageFrame {
    *
    * @return the warmed up storage
    */
-  public Table<Address, Bytes32, Boolean> getWarmedUpStorage() {
+  public Table<Address, Bytes, Boolean> getWarmedUpStorage() {
     return txValues.warmedUpStorage();
   }
 
@@ -1283,8 +1283,8 @@ public class MessageFrame {
    * @param slot the slot to retrieve
    * @return the data value read
    */
-  public Bytes32 getTransientStorageValue(final Address accountAddress, final Bytes32 slot) {
-    Bytes32 v = txValues.transientStorage().get(accountAddress, slot);
+  public Bytes getTransientStorageValue(final Address accountAddress, final Bytes slot) {
+    Bytes v = txValues.transientStorage().get(accountAddress, slot);
     return v == null ? Bytes32.ZERO : v;
   }
 
@@ -1296,7 +1296,7 @@ public class MessageFrame {
    * @param value the value to set in the transient store
    */
   public void setTransientStorageValue(
-      final Address accountAddress, final Bytes32 slot, final Bytes32 value) {
+      final Address accountAddress, final Bytes slot, final Bytes value) {
     txValues.transientStorage().put(accountAddress, slot, value);
   }
 
@@ -1346,7 +1346,7 @@ public class MessageFrame {
     private Map<String, Object> contextVariables;
     private Optional<Bytes> reason = Optional.empty();
     private Set<Address> accessListWarmAddresses = emptySet();
-    private Multimap<Address, Bytes32> accessListWarmStorage = HashMultimap.create();
+    private Multimap<Address, Bytes> accessListWarmStorage = HashMultimap.create();
 
     private Optional<List<VersionedHash>> versionedHashes = Optional.empty();
 
@@ -1615,7 +1615,7 @@ public class MessageFrame {
      * @param accessListWarmStorage the access list warm storage
      * @return the builder
      */
-    public Builder accessListWarmStorage(final Multimap<Address, Bytes32> accessListWarmStorage) {
+    public Builder accessListWarmStorage(final Multimap<Address, Bytes> accessListWarmStorage) {
       this.accessListWarmStorage = accessListWarmStorage;
       return this;
     }

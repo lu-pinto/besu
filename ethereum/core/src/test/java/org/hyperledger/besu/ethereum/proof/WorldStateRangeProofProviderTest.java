@@ -60,8 +60,8 @@ public class WorldStateRangeProofProviderTest {
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(Hash.ZERO, MAX_RANGE, 10, Integer.MAX_VALUE);
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> accounts =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> accounts =
+        (TreeMap<Bytes, Bytes>)
             accountStateTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -89,8 +89,8 @@ public class WorldStateRangeProofProviderTest {
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(Hash.ZERO, MAX_RANGE, 10, Integer.MAX_VALUE);
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> accounts =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> accounts =
+        (TreeMap<Bytes, Bytes>)
             accountStateTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -105,7 +105,7 @@ public class WorldStateRangeProofProviderTest {
             Hash.wrap(accountStateTrie.getRootHash()), accounts.lastKey()));
 
     // remove an account
-    final Iterator<Map.Entry<Bytes32, Bytes>> iterator = accounts.entrySet().iterator();
+    final Iterator<Map.Entry<Bytes, Bytes>> iterator = accounts.entrySet().iterator();
     int i = 0;
     while (iterator.hasNext()) {
       iterator.next();
@@ -129,8 +129,8 @@ public class WorldStateRangeProofProviderTest {
         RangeStorageEntriesCollector.createCollector(Hash.ZERO, MAX_RANGE, 12, Integer.MAX_VALUE);
     final TrieIterator<Bytes> invalidVisitor =
         RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> accounts =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> accounts =
+        (TreeMap<Bytes, Bytes>)
             accountStateTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -166,8 +166,8 @@ public class WorldStateRangeProofProviderTest {
         RangeStorageEntriesCollector.createCollector(Hash.ZERO, MAX_RANGE, 15, Integer.MAX_VALUE);
     final TrieIterator<Bytes> invalidVisitor =
         RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> accounts =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> accounts =
+        (TreeMap<Bytes, Bytes>)
             accountStateTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -194,8 +194,8 @@ public class WorldStateRangeProofProviderTest {
         RangeStorageEntriesCollector.createCollector(Hash.ZERO, MAX_RANGE, 9, Integer.MAX_VALUE);
     final TrieIterator<Bytes> invalidVisitor =
         RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> accounts =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> accounts =
+        (TreeMap<Bytes, Bytes>)
             accountStateTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(

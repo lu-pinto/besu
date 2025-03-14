@@ -36,7 +36,7 @@ public class NodeKeyTest {
     final Bytes keyPairPubKey =
         Bytes.fromHexString(
             "0x35f48529f73c4172850ed18997d00d101a9aebc130103c23d41d46351c1b1d72ffc8b246af3a446d99a8218bd69e231b75932ea9a79173751dc7eb2eb0e301f2");
-    final Bytes32 keyPairPrvKey =
+    final Bytes keyPairPrvKey =
         Bytes32.fromHexString("0xf7a58d5e755d51fa2f6206e91dd574597c73248aaf946ec1964b8c6268d6207b");
 
     final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithmFactory.getInstance();

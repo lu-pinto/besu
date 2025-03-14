@@ -20,7 +20,6 @@ import org.hyperledger.besu.services.kvstore.InMemoryKeyValueStorage;
 import java.util.List;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -35,14 +34,16 @@ public class RangeStorageEntriesCollectorTest {
                 worldStateKeyValueStorage.get(hash.toArrayUnsafe()).map(Bytes::wrap),
             b -> b,
             b -> b);
-    final List<Bytes32> lists =
+    final List<Bytes> lists =
         List.of(
-            Bytes32.rightPad(Bytes.of(1, 1, 3, 0)),
-            Bytes32.rightPad(Bytes.of(1, 1, 3, 1)),
-            Bytes32.rightPad(Bytes.of(1, 2, 0, 0)));
+            Bytes.of(1, 1, 3, 0).mutableCopy().rightPad(32),
+            Bytes.of(1, 1, 3, 1),
+            Bytes.of(1, 2, 0, 0));
     lists.forEach(bytes -> accountStateTrie.put(bytes, Bytes.of(1, 2, 3)));
     Assertions.assertThat(
-            accountStateTrie.entriesFrom(Bytes32.rightPad(Bytes.of(0, 0, 0, 0)), 3).keySet())
+            accountStateTrie
+                .entriesFrom(Bytes.of(0, 0, 0, 0).mutableCopy().rightPad(32), 3)
+                .keySet())
         .containsAll(lists);
   }
 
@@ -55,14 +56,16 @@ public class RangeStorageEntriesCollectorTest {
                 worldStateKeyValueStorage.get(hash.toArrayUnsafe()).map(Bytes::wrap),
             b -> b,
             b -> b);
-    final List<Bytes32> lists =
+    final List<Bytes> lists =
         List.of(
-            Bytes32.rightPad(Bytes.of(1, 1, 3, 0)),
-            Bytes32.rightPad(Bytes.of(1, 1, 3, 1)),
-            Bytes32.rightPad(Bytes.of(1, 2, 0, 0)));
+            Bytes.of(1, 1, 3, 0).mutableCopy().rightPad(32),
+            Bytes.of(1, 1, 3, 1).mutableCopy().rightPad(32),
+            Bytes.of(1, 2, 0, 0).mutableCopy().rightPad(32));
     lists.forEach(bytes -> accountStateTrie.put(bytes, Bytes.of(1, 2, 3)));
     Assertions.assertThat(
-            accountStateTrie.entriesFrom(Bytes32.rightPad(Bytes.of(1, 1, 2, 1)), 3).keySet())
+            accountStateTrie
+                .entriesFrom(Bytes.of(1, 1, 2, 1).mutableCopy().rightPad(32), 3)
+                .keySet())
         .containsAll(lists);
   }
 
@@ -75,14 +78,16 @@ public class RangeStorageEntriesCollectorTest {
                 worldStateKeyValueStorage.get(hash.toArrayUnsafe()).map(Bytes::wrap),
             b -> b,
             b -> b);
-    final List<Bytes32> lists =
+    final List<Bytes> lists =
         List.of(
-            Bytes32.rightPad(Bytes.of(1, 1, 3, 0)),
-            Bytes32.rightPad(Bytes.of(1, 1, 3, 1)),
-            Bytes32.rightPad(Bytes.of(1, 2, 0, 0)));
+            Bytes.of(1, 1, 3, 0).mutableCopy().rightPad(32),
+            Bytes.of(1, 1, 3, 1).mutableCopy().rightPad(32),
+            Bytes.of(1, 2, 0, 0).mutableCopy().rightPad(32));
     lists.forEach(bytes -> accountStateTrie.put(bytes, Bytes.of(1, 2, 3)));
     Assertions.assertThat(
-            accountStateTrie.entriesFrom(Bytes32.rightPad(Bytes.of(1, 1, 9, 9)), 1).keySet())
-        .contains(Bytes32.rightPad(Bytes.of(1, 2, 0, 0)));
+            accountStateTrie
+                .entriesFrom(Bytes.of(1, 1, 9, 9).mutableCopy().rightPad(32), 1)
+                .keySet())
+        .contains(Bytes.of(1, 2, 0, 0).mutableCopy().rightPad(32));
   }
 }

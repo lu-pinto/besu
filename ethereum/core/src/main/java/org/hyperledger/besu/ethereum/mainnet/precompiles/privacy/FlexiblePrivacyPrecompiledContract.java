@@ -144,7 +144,7 @@ public class FlexiblePrivacyPrecompiledContract extends PrivacyPrecompiledContra
       return NO_RESULT;
     }
 
-    final Bytes32 privacyGroupId = Bytes32.wrap(maybeGroupId.get());
+    final Bytes privacyGroupId = Bytes32.fromBytes(maybeGroupId.get(), 0);
 
     LOG.debug("Processing private transaction {} in privacy group {}", pmtHash, privacyGroupId);
 
@@ -228,8 +228,8 @@ public class FlexiblePrivacyPrecompiledContract extends PrivacyPrecompiledContra
       final MessageFrame messageFrame,
       final ProcessableBlockHeader currentBlockHeader,
       final PrivateTransaction privateTransaction,
-      final Bytes32 version,
-      final Bytes32 privacyGroupId,
+      final Bytes version,
+      final Bytes privacyGroupId,
       final MutableWorldState disposablePrivateState,
       final WorldUpdater privateWorldStateUpdater,
       final Bytes privateFrom) {
@@ -292,7 +292,7 @@ public class FlexiblePrivacyPrecompiledContract extends PrivacyPrecompiledContra
       final PrivateTransaction privateTransaction,
       final Bytes privateFrom,
       final FlexiblePrivacyGroupContract flexiblePrivacyGroupContract,
-      final Bytes32 privacyGroupId) {
+      final Bytes privacyGroupId) {
     final List<String> members =
         flexiblePrivacyGroupContract
             .getPrivacyGroupByIdAndBlockHash(privacyGroupId.toBase64String(), Optional.empty())
@@ -337,9 +337,8 @@ public class FlexiblePrivacyPrecompiledContract extends PrivacyPrecompiledContra
   }
 
   protected boolean isContractLocked(
-      final FlexiblePrivacyGroupContract flexiblePrivacyGroupContract,
-      final Bytes32 privacyGroupId) {
-    final Optional<Bytes32> canExecuteResult =
+      final FlexiblePrivacyGroupContract flexiblePrivacyGroupContract, final Bytes privacyGroupId) {
+    final Optional<Bytes> canExecuteResult =
         flexiblePrivacyGroupContract.getCanExecute(
             privacyGroupId.toBase64String(), Optional.empty());
     return canExecuteResult.map(Bytes::isZero).orElse(true);
@@ -347,9 +346,9 @@ public class FlexiblePrivacyPrecompiledContract extends PrivacyPrecompiledContra
 
   protected boolean flexiblePrivacyGroupVersionMatches(
       final FlexiblePrivacyGroupContract flexiblePrivacyGroupContract,
-      final Bytes32 privacyGroupId,
-      final Bytes32 version) {
-    final Optional<Bytes32> contractVersionResult =
+      final Bytes privacyGroupId,
+      final Bytes version) {
+    final Optional<Bytes> contractVersionResult =
         flexiblePrivacyGroupContract.getVersion(privacyGroupId.toBase64String(), Optional.empty());
     final boolean versionEqual = contractVersionResult.map(version::equals).orElse(false);
 

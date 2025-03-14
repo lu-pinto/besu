@@ -18,11 +18,11 @@ import java.math.BigInteger;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.units.bigints.BaseUInt64Value;
+import org.apache.tuweni.bytes.v2.DelegatingBytes;
 import org.apache.tuweni.units.bigints.UInt64;
 
 /** A particular quantity of BlobGas */
-public final class BlobGas extends BaseUInt64Value<BlobGas> implements Quantity {
+public final class BlobGas extends DelegatingBytes implements Quantity {
 
   /** The constant ZERO. */
   public static final BlobGas ZERO = of(0);
@@ -39,7 +39,7 @@ public final class BlobGas extends BaseUInt64Value<BlobGas> implements Quantity 
    * @param value the value
    */
   BlobGas(final UInt64 value) {
-    super(value, BlobGas::new);
+    super(value, 8);
   }
 
   private BlobGas(final long v) {

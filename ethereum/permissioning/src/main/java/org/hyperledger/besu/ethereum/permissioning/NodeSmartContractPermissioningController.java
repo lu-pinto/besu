@@ -112,17 +112,16 @@ public class NodeSmartContractPermissioningController
   @VisibleForTesting
   public static Bytes createPayload(
       final Bytes signature, final EnodeURL sourceEnode, final EnodeURL destinationEnode) {
-    return Bytes.concatenate(
-        signature, encodeEnodeUrl(sourceEnode), encodeEnodeUrl(destinationEnode));
+    return Bytes.wrap(signature, encodeEnodeUrl(sourceEnode), encodeEnodeUrl(destinationEnode));
   }
 
   @VisibleForTesting
   public static Bytes createPayload(final Bytes signature, final EnodeURL enodeURL) {
-    return Bytes.concatenate(signature, encodeEnodeUrl(enodeURL));
+    return Bytes.wrap(signature, encodeEnodeUrl(enodeURL));
   }
 
   private static Bytes encodeEnodeUrl(final EnodeURL enode) {
-    return Bytes.concatenate(
+    return Bytes.wrap(
         enode.getNodeId(), encodeIp(enode.getIp()), encodePort(enode.getListeningPortOrZero()));
   }
 

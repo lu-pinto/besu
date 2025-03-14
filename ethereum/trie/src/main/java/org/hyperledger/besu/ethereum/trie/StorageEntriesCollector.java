@@ -17,21 +17,21 @@ package org.hyperledger.besu.ethereum.trie;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class StorageEntriesCollector<V> implements TrieIterator.LeafHandler<V> {
 
-  protected final Bytes32 startKeyHash;
+  protected final Bytes startKeyHash;
   protected final int limit;
-  protected final Map<Bytes32, V> values = new TreeMap<>();
+  protected final Map<Bytes, V> values = new TreeMap<>();
 
-  public StorageEntriesCollector(final Bytes32 startKeyHash, final int limit) {
+  public StorageEntriesCollector(final Bytes startKeyHash, final int limit) {
     this.startKeyHash = startKeyHash;
     this.limit = limit;
   }
 
-  public static <V> Map<Bytes32, V> collectEntries(
-      final Node<V> root, final Bytes32 startKeyHash, final int limit) {
+  public static <V> Map<Bytes, V> collectEntries(
+      final Node<V> root, final Bytes startKeyHash, final int limit) {
     final StorageEntriesCollector<V> entriesCollector =
         new StorageEntriesCollector<>(startKeyHash, limit);
     final TrieIterator<V> visitor = new TrieIterator<>(entriesCollector, false);
@@ -44,14 +44,14 @@ public class StorageEntriesCollector<V> implements TrieIterator.LeafHandler<V> {
   }
 
   @Override
-  public TrieIterator.State onLeaf(final Bytes32 keyHash, final Node<V> node) {
+  public TrieIterator.State onLeaf(final Bytes keyHash, final Node<V> node) {
     if (keyHash.compareTo(startKeyHash) >= 0) {
       node.getValue().ifPresent(value -> values.put(keyHash, value));
     }
     return limitReached() ? TrieIterator.State.STOP : TrieIterator.State.CONTINUE;
   }
 
-  public Map<Bytes32, V> getValues() {
+  public Map<Bytes, V> getValues() {
     return values;
   }
 }

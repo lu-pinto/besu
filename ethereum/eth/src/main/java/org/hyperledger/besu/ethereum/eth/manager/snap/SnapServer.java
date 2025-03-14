@@ -81,7 +81,7 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
   private static final ByteCodesMessage EMPTY_BYTE_CODES_MESSAGE =
       ByteCodesMessage.create(new ArrayDeque<>());
 
-  static final Hash HASH_LAST = Hash.wrap(Bytes32.leftPad(Bytes.fromHexString("FF"), (byte) 0xFF));
+  static final Hash HASH_LAST = Hash.wrap(Bytes32.ZERO.mutableCopy().not());
 
   private final AtomicBoolean isStarted = new AtomicBoolean(false);
   private final EthMessages snapMessages;
@@ -238,15 +238,15 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
                         (pair) -> {
                           Bytes bytes =
                               AccountRangeMessage.toSlimAccount(RLP.input(pair.getSecond()));
-                          return Hash.SIZE + bytes.size();
+                          return 32 + bytes.size();
                         });
 
-                final Bytes32 endKeyBytes = range.endKeyHash();
+                final Bytes endKeyBytes = range.endKeyHash();
                 var shouldContinuePredicate =
                     new ExceedingPredicate(
                         new EndKeyExceedsPredicate(endKeyBytes).and(responseSizePredicate));
 
-                NavigableMap<Bytes32, Bytes> accounts =
+                NavigableMap<Bytes, Bytes> accounts =
                     storage.streamFlatAccounts(range.startKeyHash(), shouldContinuePredicate);
 
                 if (accounts.isEmpty() && shouldContinuePredicate.shouldContinue.get()) {
@@ -347,7 +347,7 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
                         });
 
                 // only honor start and end hash if request is for a single account's storage:
-                Bytes32 startKeyBytes, endKeyBytes;
+                Bytes startKeyBytes, endKeyBytes;
                 boolean isPartialRange = false;
                 if (range.hashes().size() > 1) {
                   startKeyBytes = Bytes32.ZERO;
@@ -359,7 +359,7 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
                       !(startKeyBytes.equals(Hash.ZERO) && endKeyBytes.equals(HASH_LAST));
                 }
 
-                ArrayDeque<NavigableMap<Bytes32, Bytes>> collectedStorages = new ArrayDeque<>();
+                ArrayDeque<NavigableMap<Bytes, Bytes>> collectedStorages = new ArrayDeque<>();
                 List<Bytes> proofNodes = new ArrayList<>();
                 final var worldStateProof =
                     new WorldStateProofProvider(new WorldStateStorageCoordinator(storage));
@@ -458,7 +458,7 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
           (codeHashes.hashes().size() < MAX_CODE_LOOKUPS_PER_REQUEST)
               ? codeHashes.hashes()
               : codeHashes.hashes().subList(0, MAX_CODE_LOOKUPS_PER_REQUEST);
-      for (Bytes32 codeHash : codeHashList) {
+      for (Bytes codeHash : codeHashList) {
         if (Hash.EMPTY.equals(codeHash)) {
           codeBytes.add(Bytes.EMPTY);
         } else {
@@ -540,7 +540,7 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
                     // otherwise the first element should be account hash, and subsequent paths
                     // are compact encoded account storage paths
 
-                    final Bytes32 accountPrefix = Bytes32.leftPad(triePath.getFirst());
+                    final Bytes accountPrefix = triePath.getFirst().mutableCopy().leftPad(32);
                     var optAccount = storage.getAccount(Hash.wrap(accountPrefix));
                     if (optAccount.isEmpty()) {
                       continue;
@@ -550,7 +550,7 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
                     for (var path : storagePaths) {
                       final Bytes location = CompactEncoding.decode(path);
                       var optStorage =
-                          storage.getTrieNodeUnsafe(Bytes.concatenate(accountPrefix, location));
+                          storage.getTrieNodeUnsafe(Bytes.wrap(accountPrefix, location));
                       if (optStorage.isEmpty() && location.isEmpty()) {
                         optStorage = Optional.of(MerkleTrie.EMPTY_TRIE_NODE);
                       }
@@ -587,16 +587,16 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
    * Predicate that doesn't immediately stop when the delegate predicate returns false, but instead
    * sets a flag to stop after the current element is processed.
    */
-  static class ExceedingPredicate implements Predicate<Pair<Bytes32, Bytes>> {
-    private final Predicate<Pair<Bytes32, Bytes>> delegate;
+  static class ExceedingPredicate implements Predicate<Pair<Bytes, Bytes>> {
+    private final Predicate<Pair<Bytes, Bytes>> delegate;
     final AtomicBoolean shouldContinue = new AtomicBoolean(true);
 
-    public ExceedingPredicate(final Predicate<Pair<Bytes32, Bytes>> delegate) {
+    public ExceedingPredicate(final Predicate<Pair<Bytes, Bytes>> delegate) {
       this.delegate = delegate;
     }
 
     @Override
-    public boolean test(final Pair<Bytes32, Bytes> pair) {
+    public boolean test(final Pair<Bytes, Bytes> pair) {
       final boolean result = delegate.test(pair);
       return shouldContinue.getAndSet(result);
     }
@@ -607,22 +607,22 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
   }
 
   /** Predicate that stops when the end key is exceeded. */
-  record EndKeyExceedsPredicate(Bytes endKey) implements Predicate<Pair<Bytes32, Bytes>> {
+  record EndKeyExceedsPredicate(Bytes endKey) implements Predicate<Pair<Bytes, Bytes>> {
 
     @Override
-    public boolean test(final Pair<Bytes32, Bytes> pair) {
+    public boolean test(final Pair<Bytes, Bytes> pair) {
       return endKey.compareTo(Bytes.wrap(pair.getFirst())) > 0;
     }
   }
 
-  static class ResponseSizePredicate implements Predicate<Pair<Bytes32, Bytes>> {
+  static class ResponseSizePredicate implements Predicate<Pair<Bytes, Bytes>> {
     // default to a max of 4 seconds per request
     static final long MAX_MILLIS_PER_REQUEST = 4000;
 
     final AtomicInteger byteLimit = new AtomicInteger(0);
     final AtomicInteger recordLimit = new AtomicInteger(0);
     final AtomicBoolean shouldContinue = new AtomicBoolean(true);
-    final Function<Pair<Bytes32, Bytes>, Integer> encodingSizeAccumulator;
+    final Function<Pair<Bytes, Bytes>, Integer> encodingSizeAccumulator;
     final StopWatch stopWatch;
     final int maxResponseBytes;
     final String forWhat;
@@ -631,7 +631,7 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
         final String forWhat,
         final StopWatch stopWatch,
         final int maxResponseBytes,
-        final Function<Pair<Bytes32, Bytes>, Integer> encodingSizeAccumulator) {
+        final Function<Pair<Bytes, Bytes>, Integer> encodingSizeAccumulator) {
       this.stopWatch = stopWatch;
       this.maxResponseBytes = maxResponseBytes;
       this.forWhat = forWhat;
@@ -639,7 +639,7 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
     }
 
     @Override
-    public boolean test(final Pair<Bytes32, Bytes> pair) {
+    public boolean test(final Pair<Bytes, Bytes> pair) {
       LOGGER
           .atTrace()
           .setMessage("{} pre-accumulate limits, bytes: {} , stream count: {}")
@@ -679,9 +679,9 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
   }
 
   Hash getAccountStorageRoot(
-      final Bytes32 accountHash, final BonsaiWorldStateKeyValueStorage storage) {
+      final Bytes accountHash, final BonsaiWorldStateKeyValueStorage storage) {
     return storage
-        .getTrieNodeUnsafe(Bytes.concatenate(accountHash, Bytes.EMPTY))
+        .getTrieNodeUnsafe(Bytes.wrap(accountHash, Bytes.EMPTY))
         .map(Hash::hash)
         .orElse(Hash.EMPTY_TRIE_HASH);
   }
@@ -691,7 +691,7 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
     return listOfBytes.stream().map(Bytes::size).reduce((a, b) -> a + b).orElse(0) * 11 / 10;
   }
 
-  private static String asLogHash(final Bytes32 hash) {
+  private static String asLogHash(final Bytes hash) {
     var str = hash.toHexString();
     return str.substring(0, 4) + ".." + str.substring(59, 63);
   }

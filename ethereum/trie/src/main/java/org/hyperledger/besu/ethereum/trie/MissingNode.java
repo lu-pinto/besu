@@ -17,22 +17,21 @@ package org.hyperledger.besu.ethereum.trie;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class MissingNode<V> extends NullNode<V> {
 
-  private final Bytes32 hash;
+  private final Bytes hash;
   private final Bytes location;
   private final Bytes path;
 
-  public MissingNode(final Bytes32 hash, final Bytes location) {
+  public MissingNode(final Bytes hash, final Bytes location) {
     this.hash = hash;
     this.location = location;
     this.path = location.isEmpty() ? Bytes.EMPTY : location.slice(0, location.size() - 1);
   }
 
   @Override
-  public Bytes32 getHash() {
+  public Bytes getHash() {
     return hash;
   }
 

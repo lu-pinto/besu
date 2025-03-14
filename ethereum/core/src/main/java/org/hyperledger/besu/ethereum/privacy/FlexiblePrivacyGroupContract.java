@@ -181,19 +181,19 @@ public class FlexiblePrivacyGroupContract {
     }
   }
 
-  public Optional<Bytes32> getVersion(final String privacyGroupId, final Optional<Hash> blockHash) {
+  public Optional<Bytes> getVersion(final String privacyGroupId, final Optional<Hash> blockHash) {
     final Optional<TransactionProcessingResult> result =
         transactionSimulator.simulate(
             privacyGroupId, GET_VERSION_METHOD_SIGNATURE, blockHash, Optional.empty());
-    return result.map(TransactionProcessingResult::getOutput).map(Bytes32::wrap);
+    return result.map(TransactionProcessingResult::getOutput).map(b -> Bytes32.fromBytes(b, 0));
   }
 
-  public Optional<Bytes32> getCanExecute(
+  public Optional<Bytes> getCanExecute(
       final String privacyGroupId, final Optional<Hash> blockHash) {
     final Optional<TransactionProcessingResult> result =
         transactionSimulator.simulate(
             privacyGroupId, CAN_EXECUTE_METHOD_SIGNATURE, blockHash, Optional.empty());
-    return result.map(TransactionProcessingResult::getOutput).map(Bytes32::wrap);
+    return result.map(TransactionProcessingResult::getOutput).map(b -> Bytes32.fromBytes(b, 0));
   }
 
   private static final Supplier<SignatureAlgorithm> SIGNATURE_ALGORITHM =

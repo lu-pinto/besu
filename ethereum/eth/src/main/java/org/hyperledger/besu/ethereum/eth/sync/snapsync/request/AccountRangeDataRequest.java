@@ -49,7 +49,6 @@ import java.util.stream.Stream;
 import com.google.common.annotations.VisibleForTesting;
 import kotlin.collections.ArrayDeque;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,20 +57,20 @@ public class AccountRangeDataRequest extends SnapDataRequest {
 
   private static final Logger LOG = LoggerFactory.getLogger(AccountRangeDataRequest.class);
 
-  protected final Bytes32 startKeyHash;
-  protected final Bytes32 endKeyHash;
-  protected final Optional<Bytes32> startStorageRange;
-  protected final Optional<Bytes32> endStorageRange;
+  protected final Bytes startKeyHash;
+  protected final Bytes endKeyHash;
+  protected final Optional<Bytes> startStorageRange;
+  protected final Optional<Bytes> endStorageRange;
 
   protected final StackTrie stackTrie;
   private Optional<Boolean> isProofValid;
 
   protected AccountRangeDataRequest(
       final Hash rootHash,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash,
-      final Optional<Bytes32> startStorageRange,
-      final Optional<Bytes32> endStorageRange) {
+      final Bytes startKeyHash,
+      final Bytes endKeyHash,
+      final Optional<Bytes> startStorageRange,
+      final Optional<Bytes> endStorageRange) {
     super(ACCOUNT_RANGE, rootHash);
     this.startKeyHash = startKeyHash;
     this.endKeyHash = endKeyHash;
@@ -87,15 +86,15 @@ public class AccountRangeDataRequest extends SnapDataRequest {
   }
 
   protected AccountRangeDataRequest(
-      final Hash rootHash, final Bytes32 startKeyHash, final Bytes32 endKeyHash) {
+      final Hash rootHash, final Bytes startKeyHash, final Bytes endKeyHash) {
     this(rootHash, startKeyHash, endKeyHash, Optional.empty(), Optional.empty());
   }
 
   protected AccountRangeDataRequest(
       final Hash rootHash,
       final Hash accountHash,
-      final Bytes32 startStorageRange,
-      final Bytes32 endStorageRange) {
+      final Bytes startStorageRange,
+      final Bytes endStorageRange) {
     this(
         rootHash,
         accountHash,
@@ -155,7 +154,7 @@ public class AccountRangeDataRequest extends SnapDataRequest {
 
   public void addResponse(
       final WorldStateProofProvider worldStateProofProvider,
-      final NavigableMap<Bytes32, Bytes> accounts,
+      final NavigableMap<Bytes, Bytes> accounts,
       final ArrayDeque<Bytes> proofs) {
     if (!accounts.isEmpty() || !proofs.isEmpty()) {
       if (!worldStateProofProvider.isValidRangeProof(
@@ -209,7 +208,7 @@ public class AccountRangeDataRequest extends SnapDataRequest {
                     .notifyRangeProgress(DOWNLOAD, endKeyHash, endKeyHash));
 
     // find missing storages and code
-    for (Map.Entry<Bytes32, Bytes> account : taskElement.keys().entrySet()) {
+    for (Map.Entry<Bytes, Bytes> account : taskElement.keys().entrySet()) {
       final PmtStateTrieAccountValue accountValue =
           PmtStateTrieAccountValue.readFrom(RLP.input(account.getValue()));
       if (!accountValue.getStorageRoot().equals(Hash.EMPTY_TRIE_HASH)) {
@@ -229,16 +228,16 @@ public class AccountRangeDataRequest extends SnapDataRequest {
     return childRequests.stream();
   }
 
-  public Bytes32 getStartKeyHash() {
+  public Bytes getStartKeyHash() {
     return startKeyHash;
   }
 
-  public Bytes32 getEndKeyHash() {
+  public Bytes getEndKeyHash() {
     return endKeyHash;
   }
 
   @VisibleForTesting
-  public NavigableMap<Bytes32, Bytes> getAccounts() {
+  public NavigableMap<Bytes, Bytes> getAccounts() {
     return stackTrie.getElement(startKeyHash).keys();
   }
 
@@ -264,8 +263,8 @@ public class AccountRangeDataRequest extends SnapDataRequest {
     in.enterList();
     in.skipNext(); // skip request type
     final Hash rootHash = Hash.wrap(in.readBytes32());
-    final Bytes32 startKeyHash = in.readBytes32();
-    final Bytes32 endKeyHash = in.readBytes32();
+    final Bytes startKeyHash = in.readBytes();
+    final Bytes endKeyHash = in.readBytes();
     in.leaveList();
     return createAccountRangeDataRequest(rootHash, startKeyHash, endKeyHash);
   }

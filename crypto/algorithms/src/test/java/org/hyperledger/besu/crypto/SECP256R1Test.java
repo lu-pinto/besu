@@ -28,7 +28,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -134,7 +133,7 @@ public class SECP256R1Test {
     final KeyPair keyPair = secp256R1.createKeyPair(privateKey);
 
     final Bytes data = Bytes.wrap("This is an example of a signed message.".getBytes(UTF_8));
-    final Bytes32 dataHash = keccak256(data);
+    final Bytes dataHash = keccak256(data);
     final SECPSignature signature = secp256R1.sign(dataHash, keyPair);
 
     final SECPPublicKey recoveredPublicKey =
@@ -152,7 +151,7 @@ public class SECP256R1Test {
           final SECPPublicKey publicKey = secp256R1.createPublicKey(publicKeyBigInt);
           final KeyPair keyPair = secp256R1.createKeyPair(privateKey);
 
-          final Bytes32 dataHash = keccak256(Bytes.wrap(signTestVector.data().getBytes(UTF_8)));
+          final Bytes dataHash = keccak256(Bytes.wrap(signTestVector.data().getBytes(UTF_8)));
 
           final SECPSignature signature = secp256R1.sign(dataHash, keyPair);
           assertThat(secp256R1.verify(dataHash, signature, publicKey)).isTrue();

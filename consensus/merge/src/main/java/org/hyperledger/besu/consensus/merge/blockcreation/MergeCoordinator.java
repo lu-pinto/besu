@@ -63,7 +63,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -265,10 +265,10 @@ public class MergeCoordinator implements MergeMiningCoordinator, BadChainListene
   public PayloadIdentifier preparePayload(
       final BlockHeader parentHeader,
       final Long timestamp,
-      final Bytes32 prevRandao,
+      final Bytes prevRandao,
       final Address feeRecipient,
       final Optional<List<Withdrawal>> withdrawals,
-      final Optional<Bytes32> parentBeaconBlockRoot) {
+      final Optional<Bytes> parentBeaconBlockRoot) {
 
     // we assume that preparePayload is always called sequentially, since the RPC Engine calls
     // are sequential, if this assumption changes then more synchronization should be added to
@@ -374,11 +374,11 @@ public class MergeCoordinator implements MergeMiningCoordinator, BadChainListene
 
   private void tryToBuildBetterBlock(
       final Long timestamp,
-      final Bytes32 random,
+      final Bytes random,
       final PayloadIdentifier payloadIdentifier,
       final MergeBlockCreator mergeBlockCreator,
       final Optional<List<Withdrawal>> withdrawals,
-      final Optional<Bytes32> parentBeaconBlockRoot,
+      final Optional<Bytes> parentBeaconBlockRoot,
       final BlockHeader parentHeader) {
 
     final Supplier<BlockCreationResult> blockCreator =

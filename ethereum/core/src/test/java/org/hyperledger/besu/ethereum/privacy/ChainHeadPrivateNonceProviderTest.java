@@ -31,7 +31,6 @@ import org.hyperledger.besu.evm.worldstate.WorldState;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,8 +38,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class ChainHeadPrivateNonceProviderTest {
-  private static final Bytes32 PRIVACY_GROUP_ID =
-      Bytes32.wrap(Bytes.fromBase64String("DyAOiF/ynpc+JXa2YAGB0bCitSlOMNm+ShmB/7M6C4w="));
+  private static final Bytes PRIVACY_GROUP_ID =
+      Bytes.fromBase64String("DyAOiF/ynpc+JXa2YAGB0bCitSlOMNm+ShmB/7M6C4w=");
   private static final Address ADDRESS = Address.fromHexString("55");
 
   private Account account;
@@ -68,7 +67,7 @@ public class ChainHeadPrivateNonceProviderTest {
 
   @Test
   public void determineNonceForPrivacyGroupRequestWhenPrivateStateDoesNotExist() {
-    when(privateStateRootResolver.resolveLastStateRoot(any(Bytes32.class), any(Hash.class)))
+    when(privateStateRootResolver.resolveLastStateRoot(any(Bytes.class), any(Hash.class)))
         .thenReturn(Hash.ZERO);
     when(privateWorldStateArchive.get(any(Hash.class), any(Hash.class)))
         .thenReturn(Optional.empty());
@@ -82,7 +81,7 @@ public class ChainHeadPrivateNonceProviderTest {
   public void determineNonceForPrivacyGroupRequestWhenAccountExists() {
     when(account.getNonce()).thenReturn(4L);
     when(worldState.get(any(Address.class))).thenReturn(account);
-    when(privateStateRootResolver.resolveLastStateRoot(any(Bytes32.class), any(Hash.class)))
+    when(privateStateRootResolver.resolveLastStateRoot(any(Bytes.class), any(Hash.class)))
         .thenReturn(Hash.ZERO);
     when(privateWorldStateArchive.get(any(Hash.class), any(Hash.class)))
         .thenReturn(Optional.of(worldState));
@@ -94,7 +93,7 @@ public class ChainHeadPrivateNonceProviderTest {
 
   @Test
   public void determineNonceForPrivacyGroupRequestWhenAccountDoesNotExist() {
-    when(privateStateRootResolver.resolveLastStateRoot(any(Bytes32.class), any(Hash.class)))
+    when(privateStateRootResolver.resolveLastStateRoot(any(Bytes.class), any(Hash.class)))
         .thenReturn(Hash.ZERO);
     when(privateWorldStateArchive.get(any(Hash.class), any(Hash.class)))
         .thenReturn(Optional.of(worldState));

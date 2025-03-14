@@ -33,7 +33,7 @@ import java.util.NavigableMap;
 import java.util.Objects;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.units.bigints.UInt256;
 
 public class BonsaiAccount extends DiffBasedAccount {
   private Hash storageRoot;
@@ -127,8 +127,8 @@ public class BonsaiAccount extends DiffBasedAccount {
   }
 
   @Override
-  public NavigableMap<Bytes32, AccountStorageEntry> storageEntriesFrom(
-      final Bytes32 startKeyHash, final int limit) {
+  public NavigableMap<Bytes, AccountStorageEntry> storageEntriesFrom(
+      final Bytes startKeyHash, final int limit) {
     return ((BonsaiWorldStateKeyValueStorage) context.getWorldStateStorage())
         .storageEntriesFrom(this.addressHash, startKeyHash, limit);
   }
@@ -138,7 +138,7 @@ public class BonsaiAccount extends DiffBasedAccount {
     out.startList();
 
     out.writeLongScalar(nonce);
-    out.writeUInt256Scalar(balance);
+    out.writeUInt256Scalar(UInt256.fromBytes(balance));
     out.writeBytes(storageRoot);
     out.writeBytes(codeHash);
 

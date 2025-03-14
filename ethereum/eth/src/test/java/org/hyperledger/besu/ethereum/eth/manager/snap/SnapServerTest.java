@@ -62,7 +62,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -72,7 +71,7 @@ public class SnapServerTest {
   record SnapTestAccount(
       Hash addressHash,
       PmtStateTrieAccountValue accountValue,
-      MerkleTrie<Bytes32, Bytes> storage,
+      MerkleTrie<Bytes, Bytes> storage,
       Bytes code) {
     Bytes accountRLP() {
       return RLP.encode(accountValue::writeTo);
@@ -198,7 +197,7 @@ public class SnapServerTest {
             i ->
                 insertTestAccounts(
                     createTestAccount(
-                        Bytes.concatenate(
+                        Bytes.wrap(
                                 Bytes.fromHexString("0x40"),
                                 Bytes.fromHexStringLenient(Integer.toHexString(i * 256)))
                             .toHexString())));
@@ -230,7 +229,7 @@ public class SnapServerTest {
             i ->
                 insertTestAccounts(
                     createTestAccount(
-                        Bytes.concatenate(
+                        Bytes.wrap(
                                 Bytes.fromHexString("0x40"),
                                 Bytes.fromHexStringLenient(Integer.toHexString(i * 256)))
                             .toHexString())));
@@ -318,11 +317,12 @@ public class SnapServerTest {
   @Test
   public void assertPartialStorageLimitHashBetweenSlots() {
     Bytes accountShortHash = Bytes.fromHexStringLenient("0x40");
-    Hash accountFullHash = Hash.wrap(Bytes32.leftPad(accountShortHash));
+    Hash accountFullHash = Hash.wrap(accountShortHash.mutableCopy().leftPad(32));
     SnapTestAccount testAccount = createTestContractAccount(accountFullHash, 2, inMemoryStorage);
 
-    Hash startHash = Hash.wrap(Bytes32.rightPad(Bytes.fromHexString("12"))); // slot 2
-    Hash endHash = Hash.wrap(Bytes32.rightPad(Bytes.fromHexString("13"))); // between slots 2 and 3
+    Hash startHash = Hash.wrap(Bytes.fromHexString("12").mutableCopy().rightPad(32)); // slot 2
+    Hash endHash =
+        Hash.wrap(Bytes.fromHexString("13").mutableCopy().rightPad(32)); // between slots 2 and 3
     var rangeData = requestStorageRange(List.of(testAccount.addressHash), startHash, endHash);
 
     assertThat(rangeData).isNotNull();
@@ -579,7 +579,7 @@ public class SnapServerTest {
   @Test
   public void assertStorageTrieShortAccountHashPathRequest() {
     Bytes accountShortHash = Bytes.fromHexStringLenient("0x40");
-    Hash accountFullHash = Hash.wrap(Bytes32.leftPad(accountShortHash));
+    Hash accountFullHash = Hash.wrap(accountShortHash.mutableCopy().leftPad(32));
     SnapTestAccount testAccount = createTestContractAccount(accountFullHash, 1, inMemoryStorage);
     insertTestAccounts(testAccount);
     var pathToSlot11 = CompactEncoding.encode(Bytes.fromHexStringLenient("0x0101"));
@@ -721,7 +721,7 @@ public class SnapServerTest {
 
   static SnapTestAccount createTestAccount(final String hexAddr) {
     return new SnapTestAccount(
-        Hash.wrap(Bytes32.rightPad(Bytes.fromHexString(hexAddr))),
+        Hash.wrap(Bytes.fromHexString(hexAddr).mutableCopy().rightPad(32)),
         new PmtStateTrieAccountValue(
             rand.nextInt(0, 1), Wei.of(rand.nextLong(0L, 1L)), Hash.EMPTY_TRIE_HASH, Hash.EMPTY),
         new SimpleMerklePatriciaTrie<>(a -> a),
@@ -730,19 +730,19 @@ public class SnapServerTest {
 
   static SnapTestAccount createTestContractAccount(
       final String hexAddr, final BonsaiWorldStateKeyValueStorage storage) {
-    final Hash acctHash = Hash.wrap(Bytes32.rightPad(Bytes.fromHexString(hexAddr)));
+    final Hash acctHash = Hash.wrap(Bytes.fromHexString(hexAddr).mutableCopy().rightPad(32));
     return createTestContractAccount(acctHash, 1, storage);
   }
 
   static SnapTestAccount createTestContractAccount(
       final Hash acctHash, final int slotKeyGap, final BonsaiWorldStateKeyValueStorage storage) {
-    MerkleTrie<Bytes32, Bytes> trie =
+    MerkleTrie<Bytes, Bytes> trie =
         new StoredMerklePatriciaTrie<>(
             (loc, hash) -> storage.getAccountStorageTrieNode(acctHash, loc, hash),
             Hash.EMPTY_TRIE_HASH,
             a -> a,
             a -> a);
-    Bytes32 mockCode = Bytes32.random();
+    Bytes mockCode = Bytes.random(32);
 
     // mock some storage data
     var flatdb = storage.getFlatDbStrategy();
@@ -752,7 +752,7 @@ public class SnapServerTest {
         .boxed()
         .forEach(
             i -> {
-              Bytes32 mockBytes32 = Bytes32.rightPad(Bytes.fromHexString(i.toString()));
+              Bytes mockBytes32 = Bytes.fromHexString(i.toString()).mutableCopy().rightPad(32);
               var rlpOut = new BytesValueRLPOutput();
               rlpOut.writeBytes(mockBytes32);
               trie.put(mockBytes32, rlpOut.encoded());
@@ -787,7 +787,7 @@ public class SnapServerTest {
 
   boolean assertIsValidAccountRangeProof(
       final Hash startHash, final AccountRangeMessage.AccountRangeData accountRange) {
-    Bytes32 lastKey =
+    Bytes lastKey =
         Optional.of(accountRange.accounts())
             .filter(z -> z.size() > 0)
             .map(NavigableMap::lastKey)
@@ -804,10 +804,10 @@ public class SnapServerTest {
   boolean assertIsValidStorageProof(
       final SnapTestAccount account,
       final Hash startHash,
-      final NavigableMap<Bytes32, Bytes> slotRangeData,
+      final NavigableMap<Bytes, Bytes> slotRangeData,
       final List<Bytes> proofs) {
 
-    Bytes32 lastKey =
+    Bytes lastKey =
         Optional.of(slotRangeData)
             .filter(z -> z.size() > 0)
             .map(NavigableMap::lastKey)
@@ -827,7 +827,7 @@ public class SnapServerTest {
   }
 
   StorageRangeMessage requestStorageRange(
-      final List<Bytes32> accountHashes, final Hash startHash, final Hash limitHash) {
+      final List<Bytes> accountHashes, final Hash startHash, final Hash limitHash) {
     return (StorageRangeMessage)
         snapServer.constructGetStorageRangeResponse(
             GetStorageRangeMessage.create(
@@ -835,14 +835,14 @@ public class SnapServerTest {
                 .wrapMessageData(BigInteger.ONE));
   }
 
-  TrieNodesMessage requestTrieNodes(final Bytes32 rootHash, final List<List<Bytes>> trieNodesList) {
+  TrieNodesMessage requestTrieNodes(final Bytes rootHash, final List<List<Bytes>> trieNodesList) {
     return (TrieNodesMessage)
         snapServer.constructGetTrieNodesResponse(
             GetTrieNodesMessage.create(Hash.wrap(rootHash), trieNodesList)
                 .wrapMessageData(BigInteger.ONE));
   }
 
-  ByteCodesMessage requestByteCodes(final List<Bytes32> codeHashes) {
+  ByteCodesMessage requestByteCodes(final List<Bytes> codeHashes) {
     return (ByteCodesMessage)
         snapServer.constructGetBytecodesResponse(
             GetByteCodesMessage.create(codeHashes).wrapMessageData(BigInteger.ONE));

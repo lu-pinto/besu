@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 public interface DiffBasedWorldView extends WorldView {
@@ -47,7 +46,7 @@ public interface DiffBasedWorldView extends WorldView {
    * @return A map that is a copy of the entries. The key is the hashed slot number, and the value
    *     is the Bytes representation of the storage value.
    */
-  Map<Bytes32, Bytes> getAllAccountStorage(final Address address, final Hash rootHash);
+  Map<Bytes, Bytes> getAllAccountStorage(final Address address, final Hash rootHash);
 
   static Bytes encodeTrieValue(final Bytes bytes) {
     final BytesValueRLPOutput out = new BytesValueRLPOutput();

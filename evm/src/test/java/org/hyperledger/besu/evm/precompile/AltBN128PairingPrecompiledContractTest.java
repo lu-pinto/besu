@@ -53,13 +53,13 @@ class AltBN128PairingPrecompiledContractTest {
 
   Bytes validPointBytes() {
     final Bytes g1Point0 =
-        Bytes.concatenate(
+        Bytes.wrap(
             Bytes.fromHexString(
                 "0x0000000000000000000000000000000000000000000000000000000000000001"),
             Bytes.fromHexString(
                 "0x0000000000000000000000000000000000000000000000000000000000000002"));
     final Bytes g2Point0 =
-        Bytes.concatenate(
+        Bytes.wrap(
             Bytes.fromHexString(
                 "0x198e9393920d483a7260bfb731fb5d25f1aa493335a9e71297e485b7aef312c2"),
             Bytes.fromHexString(
@@ -69,13 +69,13 @@ class AltBN128PairingPrecompiledContractTest {
             Bytes.fromHexString(
                 "0x12c85ea5db8c6deb4aab71808dcb408fe3d1e7690c43d37b4ce6cc0166fa7daa"));
     final Bytes g1Point1 =
-        Bytes.concatenate(
+        Bytes.wrap(
             Bytes.fromHexString(
                 "0x0000000000000000000000000000000000000000000000000000000000000001"),
             Bytes.fromHexString(
                 "0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd45"));
     final Bytes g2Point1 =
-        Bytes.concatenate(
+        Bytes.wrap(
             Bytes.fromHexString(
                 "0x198e9393920d483a7260bfb731fb5d25f1aa493335a9e71297e485b7aef312c2"),
             Bytes.fromHexString(
@@ -85,7 +85,7 @@ class AltBN128PairingPrecompiledContractTest {
             Bytes.fromHexString(
                 "0x12c85ea5db8c6deb4aab71808dcb408fe3d1e7690c43d37b4ce6cc0166fa7daa"));
 
-    return Bytes.concatenate(g1Point0, g2Point0, g1Point1, g2Point1);
+    return Bytes.wrap(g1Point0, g2Point0, g1Point1, g2Point1);
   }
 
   @ParameterizedTest
@@ -97,13 +97,13 @@ class AltBN128PairingPrecompiledContractTest {
       AbstractAltBnPrecompiledContract.disableNative();
     }
     final Bytes g1Point0 =
-        Bytes.concatenate(
+        Bytes.wrap(
             Bytes.fromHexString(
                 "0x0000000000000000000000000000000000000000000000000000000000000001"),
             Bytes.fromHexString(
                 "0x0000000000000000000000000000000000000000000000000000000000000002"));
     final Bytes g2Point0 =
-        Bytes.concatenate(
+        Bytes.wrap(
             Bytes.fromHexString(
                 "0x1382cd45e5674247f9c900b5c6f6cabbc189c2fabe2df0bf5acd84c97818f508"),
             Bytes.fromHexString(
@@ -113,13 +113,13 @@ class AltBN128PairingPrecompiledContractTest {
             Bytes.fromHexString(
                 "0x1fbf8045ce3e79b5cde4112d38bcd0efbdb1295d2eefdf58151ae309d7ded7db"));
     final Bytes g1Point1 =
-        Bytes.concatenate(
+        Bytes.wrap(
             Bytes.fromHexString(
                 "0x0000000000000000000000000000000000000000000000000000000000000001"),
             Bytes.fromHexString(
                 "0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd45"));
     final Bytes g2Point1 =
-        Bytes.concatenate(
+        Bytes.wrap(
             Bytes.fromHexString(
                 "0x1382cd45e5674247f9c900b5c6f6cabbc189c2fabe2df0bf5acd84c97818f508"),
             Bytes.fromHexString(
@@ -129,7 +129,7 @@ class AltBN128PairingPrecompiledContractTest {
             Bytes.fromHexString(
                 "0x1fbf8045ce3e79b5cde4112d38bcd0efbdb1295d2eefdf58151ae309d7ded7db"));
 
-    final Bytes input = Bytes.concatenate(g1Point0, g2Point0, g1Point1, g2Point1);
+    final Bytes input = Bytes.wrap(g1Point0, g2Point0, g1Point1, g2Point1);
     final Bytes result = byzantiumContract.computePrecompile(input, messageFrame).getOutput();
     assertThat(result).isNull();
   }

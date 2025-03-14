@@ -50,14 +50,14 @@ public class LegacyPrivateStateKeyValueStorage implements LegacyPrivateStateStor
     final byte[] id = privacyId.toArrayUnsafe();
 
     if (keyValueStorage.get(id).isPresent()) {
-      return Optional.of(Hash.wrap(Bytes32.wrap(keyValueStorage.get(id).get())));
+      return Optional.of(Hash.wrap(Bytes32.fromArray(keyValueStorage.get(id).get())));
     } else {
       return Optional.empty();
     }
   }
 
   @Override
-  public Optional<List<Log>> getTransactionLogs(final Bytes32 transactionHash) {
+  public Optional<List<Log>> getTransactionLogs(final Bytes transactionHash) {
     final Optional<List<Log>> logs = get(transactionHash, LOGS_KEY_SUFFIX).map(this::rlpDecodeLog);
     if (logs.isEmpty()) {
       return get(transactionHash, EVENTS_KEY_SUFFIX).map(this::rlpDecodeLog);
@@ -66,39 +66,39 @@ public class LegacyPrivateStateKeyValueStorage implements LegacyPrivateStateStor
   }
 
   @Override
-  public Optional<Bytes> getTransactionOutput(final Bytes32 transactionHash) {
+  public Optional<Bytes> getTransactionOutput(final Bytes transactionHash) {
     return get(transactionHash, OUTPUT_KEY_SUFFIX);
   }
 
   @Override
-  public Optional<Bytes> getStatus(final Bytes32 transactionHash) {
+  public Optional<Bytes> getStatus(final Bytes transactionHash) {
     return get(transactionHash, STATUS_KEY_SUFFIX);
   }
 
   @Override
-  public Optional<Bytes> getRevertReason(final Bytes32 transactionHash) {
+  public Optional<Bytes> getRevertReason(final Bytes transactionHash) {
     return get(transactionHash, REVERT_KEY_SUFFIX);
   }
 
   @Override
   public Optional<PrivateTransactionMetadata> getTransactionMetadata(
-      final Bytes32 blockHash, final Bytes32 transactionHash) {
-    return get(Bytes.concatenate(blockHash, transactionHash), METADATA_KEY_SUFFIX)
+      final Bytes blockHash, final Bytes transactionHash) {
+    return get(Bytes.wrap(blockHash, transactionHash), METADATA_KEY_SUFFIX)
         .map(bytes -> PrivateTransactionMetadata.readFrom(new BytesValueRLPInput(bytes, false)));
   }
 
   @Override
-  public boolean isPrivateStateAvailable(final Bytes32 transactionHash) {
+  public boolean isPrivateStateAvailable(final Bytes transactionHash) {
     return false;
   }
 
   @Override
-  public boolean isWorldStateAvailable(final Bytes32 rootHash) {
+  public boolean isWorldStateAvailable(final Bytes rootHash) {
     return false;
   }
 
   private Optional<Bytes> get(final Bytes key, final Bytes keySuffix) {
-    return keyValueStorage.get(Bytes.concatenate(key, keySuffix).toArrayUnsafe()).map(Bytes::wrap);
+    return keyValueStorage.get(Bytes.wrap(key, keySuffix).toArrayUnsafe()).map(Bytes::wrap);
   }
 
   private List<Log> rlpDecodeLog(final Bytes bytes) {
@@ -120,42 +120,42 @@ public class LegacyPrivateStateKeyValueStorage implements LegacyPrivateStateStor
 
     @Override
     public Updater putLatestStateRoot(final Bytes privacyId, final Hash privateStateHash) {
-      transaction.put(privacyId.toArrayUnsafe(), privateStateHash.toArray());
+      transaction.put(privacyId.toArrayUnsafe(), privateStateHash.toArrayUnsafe());
       return this;
     }
 
     @Override
-    public Updater putTransactionLogs(final Bytes32 transactionHash, final List<Log> logs) {
+    public Updater putTransactionLogs(final Bytes transactionHash, final List<Log> logs) {
       set(transactionHash, LOGS_KEY_SUFFIX, RLP.encode(out -> out.writeList(logs, Log::writeTo)));
       return this;
     }
 
     @Override
-    public Updater putTransactionResult(final Bytes32 transactionHash, final Bytes events) {
+    public Updater putTransactionResult(final Bytes transactionHash, final Bytes events) {
       set(transactionHash, OUTPUT_KEY_SUFFIX, events);
       return this;
     }
 
     @Override
-    public Updater putTransactionStatus(final Bytes32 transactionHash, final Bytes status) {
+    public Updater putTransactionStatus(final Bytes transactionHash, final Bytes status) {
       set(transactionHash, STATUS_KEY_SUFFIX, status);
       return this;
     }
 
     @Override
     public Updater putTransactionRevertReason(
-        final Bytes32 transactionHash, final Bytes revertReason) {
+        final Bytes transactionHash, final Bytes revertReason) {
       set(transactionHash, REVERT_KEY_SUFFIX, revertReason);
       return this;
     }
 
     @Override
     public Updater putTransactionMetadata(
-        final Bytes32 blockHash,
-        final Bytes32 transactionHash,
+        final Bytes blockHash,
+        final Bytes transactionHash,
         final PrivateTransactionMetadata metadata) {
       set(
-          Bytes.concatenate(blockHash, transactionHash),
+          Bytes.wrap(blockHash, transactionHash),
           METADATA_KEY_SUFFIX,
           RLP.encode(metadata::writeTo));
       return this;
@@ -172,7 +172,7 @@ public class LegacyPrivateStateKeyValueStorage implements LegacyPrivateStateStor
     }
 
     private void set(final Bytes key, final Bytes keySuffix, final Bytes value) {
-      transaction.put(Bytes.concatenate(key, keySuffix).toArrayUnsafe(), value.toArrayUnsafe());
+      transaction.put(Bytes.wrap(key, keySuffix).toArrayUnsafe(), value.toArrayUnsafe());
     }
   }
 }

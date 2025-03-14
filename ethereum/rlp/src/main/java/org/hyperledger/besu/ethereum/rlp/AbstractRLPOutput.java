@@ -150,12 +150,12 @@ abstract class AbstractRLPOutput implements RLPOutput {
     if (listsCount == 1) {
       // writeBytes make sure we cannot have more than 1 value without a list
       assert values.size() == 1;
-      final Bytes value = values.get(0);
+      final Bytes value = values.getFirst();
 
       final int finalOffset;
       // Single non-list value.
       if (rlpEncoded.get(0)) {
-        value.copyTo(mutableBytes, 0);
+        mutableBytes.set(0, value);
         finalOffset = value.size();
       } else {
         finalOffset = RLPEncodingHelpers.writeElement(value, mutableBytes, 0);
@@ -172,11 +172,11 @@ abstract class AbstractRLPOutput implements RLPOutput {
     int listIdx = 0;
     for (int i = 0; i < values.size(); i++) {
       final Bytes value = values.get(i);
-      if (value == LIST_MARKER) {
+      if (LIST_MARKER.equals(value)) {
         final int payloadSize = payloadSizes[++listIdx];
         offset = RLPEncodingHelpers.writeListHeader(payloadSize, mutableBytes, offset);
       } else if (rlpEncoded.get(i)) {
-        value.copyTo(mutableBytes, offset);
+        mutableBytes.set(offset, value);
         offset += value.size();
       } else {
         offset = RLPEncodingHelpers.writeElement(value, mutableBytes, offset);

@@ -29,7 +29,6 @@ import org.hyperledger.besu.plugin.services.privacy.PrivacyGroupGenesisProvider;
 import java.math.BigInteger;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,7 +101,8 @@ public class PrivateStateGenesisAllocator {
       proxyContract.setCode(FlexibleGroupManagement.PROXY_RUNTIME_BYTECODE);
       // manually set the management contract address so the proxy can trust it
       proxyContract.setStorageValue(
-          UInt256.ZERO, UInt256.fromBytes(Bytes32.leftPad(DEFAULT_FLEXIBLE_PRIVACY_MANAGEMENT)));
+          UInt256.ZERO,
+          UInt256.fromBytes(DEFAULT_FLEXIBLE_PRIVACY_MANAGEMENT.mutableCopy().leftPad(32)));
     }
 
     privateWorldStateUpdater.commit();

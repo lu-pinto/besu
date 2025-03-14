@@ -40,7 +40,6 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableMap;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 @SuppressWarnings("UnusedMethod")
 public class Benchmarks {
@@ -83,7 +82,7 @@ public class Benchmarks {
     final KeyPair keyPair = signatureAlgorithm.createKeyPair(privateKey);
 
     final Bytes data = Bytes.wrap("This is an example of a signed message.".getBytes(UTF_8));
-    final Bytes32 dataHash = keccak256(data);
+    final Bytes dataHash = keccak256(data);
     final SECPSignature signature = signatureAlgorithm.sign(dataHash, keyPair);
     for (int i = 0; i < MATH_WARMUP; i++) {
       signatureAlgorithm.recoverPublicKeyFromSignature(dataHash, signature);
@@ -298,19 +297,19 @@ public class Benchmarks {
 
   private static void benchBNADD() {
     final Bytes g1Point0 =
-        Bytes.concatenate(
+        Bytes.wrap(
             Bytes.fromHexString(
                 "0x17c139df0efee0f766bc0204762b774362e4ded88953a39ce849a8a7fa163fa9"),
             Bytes.fromHexString(
                 "0x01e0559bacb160664764a357af8a9fe70baa9258e0b959273ffc5718c6d4cc7c"));
 
     final Bytes g1Point1 =
-        Bytes.concatenate(
+        Bytes.wrap(
             Bytes.fromHexString(
                 "0x17c139df0efee0f766bc0204762b774362e4ded88953a39ce849a8a7fa163fa9"),
             Bytes.fromHexString(
                 "0x2e83f8d734803fc370eba25ed1f6b8768bd6d83887b87165fc2434fe11a830cb"));
-    final Bytes arg = Bytes.concatenate(g1Point0, g1Point1);
+    final Bytes arg = Bytes.wrap(g1Point0, g1Point1);
 
     final AltBN128AddPrecompiledContract contract =
         AltBN128AddPrecompiledContract.istanbul(new IstanbulGasCalculator());
@@ -323,14 +322,14 @@ public class Benchmarks {
 
   private static void benchBNMUL() {
     final Bytes g1Point1 =
-        Bytes.concatenate(
+        Bytes.wrap(
             Bytes.fromHexString(
                 "0x0000000000000000000000000000000000000000000000000000000000000001"),
             Bytes.fromHexString(
                 "0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd45"));
     final Bytes scalar =
         Bytes.fromHexString("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-    final Bytes arg = Bytes.concatenate(g1Point1, scalar);
+    final Bytes arg = Bytes.wrap(g1Point1, scalar);
 
     final AltBN128MulPrecompiledContract contract =
         AltBN128MulPrecompiledContract.istanbul(new IstanbulGasCalculator());

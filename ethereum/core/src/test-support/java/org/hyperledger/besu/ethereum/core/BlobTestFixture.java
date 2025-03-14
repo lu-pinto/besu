@@ -61,10 +61,10 @@ public class BlobTestFixture {
     byte[] rawMaterial = new byte[131072];
     rawMaterial[0] = byteValue++;
 
-    Bytes48 commitment = Bytes48.wrap(CKZG4844JNI.blobToKzgCommitment(rawMaterial));
+    Bytes commitment = Bytes48.fromArray(CKZG4844JNI.blobToKzgCommitment(rawMaterial));
 
-    Bytes48 proof =
-        Bytes48.wrap(CKZG4844JNI.computeBlobKzgProof(rawMaterial, commitment.toArray()));
+    Bytes proof =
+        Bytes48.fromArray(CKZG4844JNI.computeBlobKzgProof(rawMaterial, commitment.toArrayUnsafe()));
     VersionedHash versionedHash = hashCommitment(new KZGCommitment(commitment));
     return new BlobTriplet(
         new Blob(Bytes.wrap(rawMaterial)),
@@ -97,6 +97,6 @@ public class BlobTestFixture {
     digest.doFinal(dig, 0);
 
     dig[0] = VersionedHash.SHA256_VERSION_ID;
-    return new VersionedHash(Bytes32.wrap(dig));
+    return new VersionedHash(Bytes32.fromArray(dig));
   }
 }

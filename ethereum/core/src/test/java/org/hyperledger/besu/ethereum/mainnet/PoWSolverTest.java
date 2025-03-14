@@ -37,7 +37,6 @@ import java.util.concurrent.TimeoutException;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -74,8 +73,8 @@ public class PoWSolverTest {
               PoWSolution solution =
                   new PoWSolution(
                       nonce,
-                      Hash.wrap(Bytes32.leftPad(Bytes.EMPTY)),
-                      Bytes32.rightPad(Bytes.of((byte) (nonce & 0xFF))),
+                      Hash.wrap(Bytes.EMPTY.mutableCopy().leftPad(32)),
+                      Bytes.of((byte) (nonce & 0xFF)).mutableCopy().rightPad(32),
                       prePow);
               return solution;
             })

@@ -23,7 +23,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.OverflowException;
 import org.hyperledger.besu.evm.internal.UnderflowException;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /** The SLoad operation. */
@@ -55,7 +55,7 @@ public class SLoadOperation extends AbstractOperation {
     try {
       final Account account = frame.getWorldUpdater().get(frame.getRecipientAddress());
       final Address address = account.getAddress();
-      final Bytes32 key = UInt256.fromBytes(frame.popStackItem());
+      final Bytes key = UInt256.fromBytes(frame.popStackItem());
       final boolean slotIsWarm = frame.warmUpStorage(address, key);
       final long cost = slotIsWarm ? warmCost : coldCost;
       if (frame.getRemainingGas() < cost) {

@@ -20,15 +20,16 @@ import org.hyperledger.besu.ethereum.core.Transaction;
 import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 
 import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.units.bigints.UInt256;
 
 public class FrontierTransactionEncoder {
   public static void encode(final Transaction transaction, final RLPOutput out) {
     out.startList();
     out.writeLongScalar(transaction.getNonce());
-    out.writeUInt256Scalar(transaction.getGasPrice().orElseThrow());
+    out.writeUInt256Scalar(transaction.getGasPrice().map(UInt256::fromBytes).orElseThrow());
     out.writeLongScalar(transaction.getGasLimit());
-    out.writeBytes(transaction.getTo().map(Bytes::copy).orElse(Bytes.EMPTY));
-    out.writeUInt256Scalar(transaction.getValue());
+    out.writeBytes(transaction.getTo().map(b -> (Bytes) b).orElse(Bytes.EMPTY));
+    out.writeUInt256Scalar(UInt256.fromBytes(transaction.getValue()));
     out.writeBytes(transaction.getPayload());
     writeSignatureAndV(transaction, out);
     out.endList();

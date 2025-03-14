@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -134,7 +133,7 @@ public class IntrinsicGasTest {
 
     int accessListStorageCount = 0;
     for (final var entry : accessListEntries) {
-      final List<Bytes32> storageKeys = entry.storageKeys();
+      final List<Bytes> storageKeys = entry.storageKeys();
       accessListStorageCount += storageKeys.size();
     }
     final long accessListGas =

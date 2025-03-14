@@ -17,11 +17,11 @@ package org.hyperledger.besu.datatypes;
 import java.math.BigInteger;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.units.bigints.BaseUInt64Value;
+import org.apache.tuweni.bytes.v2.DelegatingBytes;
 import org.apache.tuweni.units.bigints.UInt64;
 
 /** A particular quantity of GWei, the Ethereum currency. */
-public final class GWei extends BaseUInt64Value<GWei> implements Quantity {
+public final class GWei extends DelegatingBytes implements Quantity {
 
   /** The constant ZERO. */
   public static final GWei ZERO = of(0);
@@ -41,7 +41,7 @@ public final class GWei extends BaseUInt64Value<GWei> implements Quantity {
    * @param value the value
    */
   GWei(final UInt64 value) {
-    super(value, GWei::new);
+    super(value, 8);
   }
 
   private GWei(final long v) {

@@ -50,7 +50,6 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import kotlin.collections.ArrayDeque;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,18 +118,18 @@ public class RequestDataStep {
 
   public CompletableFuture<List<Task<SnapDataRequest>>> requestStorage(
       final List<Task<SnapDataRequest>> requestTasks) {
-    final List<Bytes32> accountHashes =
+    final List<Bytes> accountHashes =
         requestTasks.stream()
             .map(Task::getData)
             .map(StorageRangeDataRequest.class::cast)
             .map(StorageRangeDataRequest::getAccountHash)
             .collect(Collectors.toList());
     final BlockHeader blockHeader = fastSyncState.getPivotBlockHeader().get();
-    final Bytes32 minRange =
+    final Bytes minRange =
         requestTasks.size() == 1
             ? ((StorageRangeDataRequest) requestTasks.get(0).getData()).getStartKeyHash()
             : RangeManager.MIN_RANGE;
-    final Bytes32 maxRange =
+    final Bytes maxRange =
         requestTasks.size() == 1
             ? ((StorageRangeDataRequest) requestTasks.get(0).getData()).getEndKeyHash()
             : RangeManager.MAX_RANGE;
@@ -145,7 +144,7 @@ public class RequestDataStep {
             (response, error) -> {
               downloadState.removeOutstandingTask(getStorageRangeTask);
               if (response != null) {
-                final ArrayDeque<NavigableMap<Bytes32, Bytes>> slots = new ArrayDeque<>();
+                final ArrayDeque<NavigableMap<Bytes, Bytes>> slots = new ArrayDeque<>();
                 /*
                  * Checks if the response represents an "empty range".
                  *
@@ -187,7 +186,7 @@ public class RequestDataStep {
 
   public CompletableFuture<List<Task<SnapDataRequest>>> requestCode(
       final List<Task<SnapDataRequest>> requestTasks) {
-    final List<Bytes32> codeHashes =
+    final List<Bytes> codeHashes =
         requestTasks.stream()
             .map(Task::getData)
             .map(BytecodeRequest.class::cast)
@@ -195,7 +194,7 @@ public class RequestDataStep {
             .distinct()
             .collect(Collectors.toList());
     final BlockHeader blockHeader = fastSyncState.getPivotBlockHeader().get();
-    final EthTask<Map<Bytes32, Bytes>> getByteCodeTask =
+    final EthTask<Map<Bytes, Bytes>> getByteCodeTask =
         RetryingGetBytecodeFromPeerTask.forByteCode(
             ethContext, codeHashes, blockHeader, metricsSystem);
     downloadState.addOutstandingTask(getByteCodeTask);
@@ -285,7 +284,7 @@ public class RequestDataStep {
     final BlockHeader blockHeader = fastSyncState.getPivotBlockHeader().get();
 
     // retrieve accounts from flat database
-    final TreeMap<Bytes32, Bytes> accounts = new TreeMap<>();
+    final TreeMap<Bytes, Bytes> accounts = new TreeMap<>();
 
     worldStateStorageCoordinator.applyOnMatchingFlatMode(
         FlatDbMode.FULL,
@@ -331,7 +330,7 @@ public class RequestDataStep {
     storageDataRequest.setRootHash(blockHeader.getStateRoot());
 
     // retrieve slots from flat database
-    final TreeMap<Bytes32, Bytes> slots = new TreeMap<>();
+    final TreeMap<Bytes, Bytes> slots = new TreeMap<>();
     worldStateStorageCoordinator.applyOnMatchingFlatMode(
         FlatDbMode.FULL,
         onBonsai -> {

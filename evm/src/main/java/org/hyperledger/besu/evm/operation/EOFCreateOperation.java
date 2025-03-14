@@ -27,7 +27,6 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import java.util.function.Supplier;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** The Create2 operation. */
 public class EOFCreateOperation extends AbstractCreateOperation {
@@ -60,8 +59,8 @@ public class EOFCreateOperation extends AbstractCreateOperation {
   @Override
   public Address generateTargetContractAddress(final MessageFrame frame, final Code initcode) {
     final Address sender = frame.getRecipientAddress();
-    final Bytes32 salt = Bytes32.leftPad(frame.getStackItem(1));
-    final Bytes32 hash = keccak256(Bytes.concatenate(PREFIX, sender, salt, initcode.getCodeHash()));
+    final Bytes salt = frame.getStackItem(1).mutableCopy().leftPad(32);
+    final Bytes hash = keccak256(Bytes.wrap(PREFIX, sender, salt, initcode.getCodeHash()));
     return Address.extract(hash);
   }
 

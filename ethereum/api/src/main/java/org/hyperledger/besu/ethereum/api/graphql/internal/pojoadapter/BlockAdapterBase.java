@@ -44,7 +44,6 @@ import java.util.function.Function;
 import com.google.common.primitives.Longs;
 import graphql.schema.DataFetchingEnvironment;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /**
@@ -84,7 +83,7 @@ public class BlockAdapterBase extends AdapterBase {
    *
    * @return the hash of the block
    */
-  public Bytes32 getHash() {
+  public Bytes getHash() {
     return header.getHash();
   }
 
@@ -104,7 +103,7 @@ public class BlockAdapterBase extends AdapterBase {
    *
    * @return the transactions root of the block
    */
-  public Bytes32 getTransactionsRoot() {
+  public Bytes getTransactionsRoot() {
     return header.getTransactionsRoot();
   }
 
@@ -113,7 +112,7 @@ public class BlockAdapterBase extends AdapterBase {
    *
    * @return the state root of the block
    */
-  public Bytes32 getStateRoot() {
+  public Bytes getStateRoot() {
     return header.getStateRoot();
   }
 
@@ -122,7 +121,7 @@ public class BlockAdapterBase extends AdapterBase {
    *
    * @return the receipts root of the block
    */
-  public Bytes32 getReceiptsRoot() {
+  public Bytes getReceiptsRoot() {
     return header.getReceiptsRoot();
   }
 
@@ -206,7 +205,7 @@ public class BlockAdapterBase extends AdapterBase {
    *
    * @return the mix hash of the block
    */
-  public Bytes32 getMixHash() {
+  public Bytes getMixHash() {
     return header.getMixHash();
   }
 
@@ -224,7 +223,7 @@ public class BlockAdapterBase extends AdapterBase {
    *
    * @return the ommer hash of the block
    */
-  public Bytes32 getOmmerHash() {
+  public Bytes getOmmerHash() {
     return header.getOmmersHash();
   }
 
@@ -268,10 +267,10 @@ public class BlockAdapterBase extends AdapterBase {
     @SuppressWarnings("unchecked")
     final List<Address> addresses = (List<Address>) filter.get("addresses");
     @SuppressWarnings("unchecked")
-    final List<List<Bytes32>> topics = (List<List<Bytes32>>) filter.get("topics");
+    final List<List<Bytes>> topics = (List<List<Bytes>>) filter.get("topics");
 
     final List<List<LogTopic>> transformedTopics = new ArrayList<>();
-    for (final List<Bytes32> topic : topics) {
+    for (final List<Bytes> topic : topics) {
       if (topic.isEmpty()) {
         transformedTopics.add(Collections.singletonList(null));
       } else {
@@ -411,7 +410,7 @@ public class BlockAdapterBase extends AdapterBase {
    *
    * @return an Optional containing the withdrawals root if it exists, otherwise an empty Optional
    */
-  Optional<Bytes32> getWithdrawalsRoot() {
+  Optional<Bytes> getWithdrawalsRoot() {
     return header.getWithdrawalsRoot().map(Function.identity());
   }
 

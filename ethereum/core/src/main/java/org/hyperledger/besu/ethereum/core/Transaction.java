@@ -57,9 +57,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.primitives.Longs;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
-import org.apache.tuweni.units.bigints.UInt256s;
 
 /** An operation submitted by an external actor to be applied to the system. */
 public class Transaction
@@ -109,7 +107,7 @@ public class Transaction
   // Note that this hash does not include the transaction signature, so it does not
   // fully identify the transaction (use the result of the {@code hash()} for that).
   // It is only used to compute said signature and recover the sender from it.
-  private volatile Bytes32 hashNoSignature;
+  private volatile Bytes hashNoSignature;
 
   // Caches the transaction sender.
   protected volatile Address sender;
@@ -309,11 +307,14 @@ public class Transaction
         .map(
             baseFee -> {
               if (getType().supports1559FeeMarket()) {
-                if (baseFee.greaterOrEqualThan(getMaxFeePerGas().get())) {
+                if (UInt256.fromBytes(baseFee.getImpl())
+                    .greaterOrEqualThan(UInt256.fromBytes(getMaxFeePerGas().get().getImpl()))) {
                   return Wei.ZERO;
                 }
-                return UInt256s.min(
-                    getMaxPriorityFeePerGas().get(), getMaxFeePerGas().get().subtract(baseFee));
+                Wei finalBaseFee = getMaxFeePerGas().get().subtract(baseFee);
+                return finalBaseFee.greaterOrEqualThan(getMaxPriorityFeePerGas().get())
+                    ? getMaxPriorityFeePerGas().get()
+                    : finalBaseFee;
               } else {
                 if (baseFee.greaterOrEqualThan(getGasPrice().get())) {
                   return Wei.ZERO;
@@ -461,7 +462,7 @@ public class Transaction
         .map(SECPPublicKey::toString);
   }
 
-  private Bytes32 getOrComputeSenderRecoveryHash() {
+  private Bytes getOrComputeSenderRecoveryHash() {
     if (hashNoSignature == null) {
       hashNoSignature =
           computeSenderRecoveryHash(
@@ -709,7 +710,7 @@ public class Transaction
     return transactions.stream().map(Transaction::getHash).toList();
   }
 
-  private static Bytes32 computeSenderRecoveryHash(
+  private static Bytes computeSenderRecoveryHash(
       final TransactionType transactionType,
       final long nonce,
       final Wei gasPrice,
@@ -798,10 +799,10 @@ public class Transaction
         rlpOutput -> {
           rlpOutput.startList();
           rlpOutput.writeLongScalar(nonce);
-          rlpOutput.writeUInt256Scalar(gasPrice);
+          rlpOutput.writeUInt256Scalar(UInt256.fromBytes(gasPrice));
           rlpOutput.writeLongScalar(gasLimit);
-          rlpOutput.writeBytes(to.map(Bytes::copy).orElse(Bytes.EMPTY));
-          rlpOutput.writeUInt256Scalar(value);
+          rlpOutput.writeBytes(to.map(x -> (Bytes) x.mutableCopy()).orElse(Bytes.EMPTY));
+          rlpOutput.writeUInt256Scalar(UInt256.fromBytes(value));
           rlpOutput.writeBytes(payload);
           if (chainId.isPresent()) {
             rlpOutput.writeBigIntegerScalar(chainId.get());
@@ -839,7 +840,7 @@ public class Transaction
                   rlpOutput);
               rlpOutput.endList();
             });
-    return Bytes.concatenate(Bytes.of(TransactionType.EIP1559.getSerializedType()), encoded);
+    return Bytes.wrap(Bytes.of(TransactionType.EIP1559.getSerializedType()), encoded);
   }
 
   private static void eip1559PreimageFields(
@@ -855,11 +856,11 @@ public class Transaction
       final RLPOutput rlpOutput) {
     rlpOutput.writeBigIntegerScalar(chainId.orElseThrow());
     rlpOutput.writeLongScalar(nonce);
-    rlpOutput.writeUInt256Scalar(maxPriorityFeePerGas);
-    rlpOutput.writeUInt256Scalar(maxFeePerGas);
+    rlpOutput.writeUInt256Scalar(UInt256.fromBytes(maxPriorityFeePerGas));
+    rlpOutput.writeUInt256Scalar(UInt256.fromBytes(maxFeePerGas));
     rlpOutput.writeLongScalar(gasLimit);
-    rlpOutput.writeBytes(to.map(Bytes::copy).orElse(Bytes.EMPTY));
-    rlpOutput.writeUInt256Scalar(value);
+    rlpOutput.writeBytes(to.map(x -> (Bytes) x.mutableCopy()).orElse(Bytes.EMPTY));
+    rlpOutput.writeUInt256Scalar(UInt256.fromBytes(value));
     rlpOutput.writeBytes(payload);
     AccessListTransactionEncoder.writeAccessList(rlpOutput, accessList);
   }
@@ -892,11 +893,11 @@ public class Transaction
                   chainId,
                   accessList,
                   rlpOutput);
-              rlpOutput.writeUInt256Scalar(maxFeePerBlobGas);
+              rlpOutput.writeUInt256Scalar(UInt256.fromBytes(maxFeePerBlobGas));
               BlobTransactionEncoder.writeBlobVersionedHashes(rlpOutput, versionedHashes);
               rlpOutput.endList();
             });
-    return Bytes.concatenate(Bytes.of(TransactionType.BLOB.getSerializedType()), encoded);
+    return Bytes.wrap(Bytes.of(TransactionType.BLOB.getSerializedType()), encoded);
   }
 
   private static Bytes accessListPreimage(
@@ -916,7 +917,7 @@ public class Transaction
                   chainId, nonce, gasPrice, gasLimit, to, value, payload, accessList, rlpOutput);
               rlpOutput.endList();
             });
-    return Bytes.concatenate(Bytes.of(TransactionType.ACCESS_LIST.getSerializedType()), encode);
+    return Bytes.wrap(Bytes.of(TransactionType.ACCESS_LIST.getSerializedType()), encode);
   }
 
   private static Bytes codeDelegationPreimage(
@@ -949,7 +950,7 @@ public class Transaction
                   authorizationList, rlpOutput);
               rlpOutput.endList();
             });
-    return Bytes.concatenate(Bytes.of(TransactionType.DELEGATE_CODE.getSerializedType()), encoded);
+    return Bytes.wrap(Bytes.of(TransactionType.DELEGATE_CODE.getSerializedType()), encoded);
   }
 
   @Override
@@ -1024,7 +1025,7 @@ public class Transaction
       if (!vhs.isEmpty()) {
         sb.append("versionedHashes=[");
         sb.append(
-            vhs.get(0)
+            vhs.getFirst()
                 .toString()); // can't be empty if present, as this is checked in the constructor
         for (int i = 1; i < vhs.size(); i++) {
           sb.append(", ").append(vhs.get(i).toString());
@@ -1088,14 +1089,15 @@ public class Transaction
    * @return a copy of the transaction
    */
   public Transaction detachedCopy() {
-    final Optional<Address> detachedTo = to.map(address -> Address.wrap(address.copy()));
+    final Optional<Address> detachedTo = to.map(address -> Address.wrap(address.mutableCopy()));
     final Optional<List<AccessListEntry>> detachedAccessList =
         maybeAccessList.map(
             accessListEntries ->
                 accessListEntries.stream().map(this::accessListDetachedCopy).toList());
     final Optional<List<VersionedHash>> detachedVersionedHashes =
         versionedHashes.map(
-            hashes -> hashes.stream().map(vh -> new VersionedHash(vh.toBytes().copy())).toList());
+            hashes ->
+                hashes.stream().map(vh -> new VersionedHash(vh.toBytes().mutableCopy())).toList());
     final Optional<BlobsWithCommitments> detachedBlobsWithCommitments =
         blobsWithCommitments.map(
             withCommitments ->
@@ -1118,7 +1120,7 @@ public class Transaction
             detachedTo,
             value,
             signature,
-            payload.copy(),
+            payload.mutableCopy(),
             detachedAccessList,
             sender,
             chainId,
@@ -1137,13 +1139,14 @@ public class Transaction
   }
 
   private AccessListEntry accessListDetachedCopy(final AccessListEntry accessListEntry) {
-    final Address detachedAddress = Address.wrap(accessListEntry.address().copy());
-    final var detachedStorage = accessListEntry.storageKeys().stream().map(Bytes32::copy).toList();
+    final Address detachedAddress = Address.wrap(accessListEntry.address().mutableCopy());
+    final var detachedStorage =
+        accessListEntry.storageKeys().stream().map(x -> (Bytes) x.mutableCopy()).toList();
     return new AccessListEntry(detachedAddress, detachedStorage);
   }
 
   private CodeDelegation codeDelegationDetachedCopy(final CodeDelegation codeDelegation) {
-    final Address detachedAddress = Address.wrap(codeDelegation.address().copy());
+    final Address detachedAddress = Address.wrap(codeDelegation.address().mutableCopy());
     return new org.hyperledger.besu.ethereum.core.CodeDelegation(
         codeDelegation.chainId(),
         detachedAddress,
@@ -1155,15 +1158,15 @@ public class Transaction
       final BlobsWithCommitments blobsWithCommitments, final List<VersionedHash> versionedHashes) {
     final var detachedCommitments =
         blobsWithCommitments.getKzgCommitments().stream()
-            .map(kc -> new KZGCommitment(kc.getData().copy()))
+            .map(kc -> new KZGCommitment(kc.getData().mutableCopy()))
             .toList();
     final var detachedBlobs =
         blobsWithCommitments.getBlobs().stream()
-            .map(blob -> new Blob(blob.getData().copy()))
+            .map(blob -> new Blob(blob.getData().mutableCopy()))
             .toList();
     final var detachedProofs =
         blobsWithCommitments.getKzgProofs().stream()
-            .map(proof -> new KZGProof(proof.getData().copy()))
+            .map(proof -> new KZGProof(proof.getData().mutableCopy()))
             .toList();
 
     return new BlobsWithCommitments(

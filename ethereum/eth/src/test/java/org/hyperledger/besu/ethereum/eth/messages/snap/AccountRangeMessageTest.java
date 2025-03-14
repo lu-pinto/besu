@@ -31,20 +31,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.Test;
 
 public final class AccountRangeMessageTest {
 
   @Test
   public void roundTripTest() {
-    final Map<Bytes32, Bytes> keys = new HashMap<>();
+    final Map<Bytes, Bytes> keys = new HashMap<>();
     final PmtStateTrieAccountValue accountValue =
         new PmtStateTrieAccountValue(1L, Wei.of(2L), Hash.EMPTY_TRIE_HASH, Hash.EMPTY);
-    keys.put(Hash.wrap(Bytes32.leftPad(Bytes.of(1))), RLP.encode(accountValue::writeTo));
+    keys.put(Hash.wrap(Bytes.of(1).mutableCopy().leftPad(32)), RLP.encode(accountValue::writeTo));
 
     final List<Bytes> proofs = new ArrayList<>();
-    proofs.add(Bytes32.random());
+    proofs.add(Bytes.random(32));
 
     // Perform round-trip transformation
     final MessageData initialMessage = AccountRangeMessage.create(keys, proofs);

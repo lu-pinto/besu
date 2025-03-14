@@ -30,7 +30,6 @@ import java.util.TreeMap;
 import javax.annotation.Nullable;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /**
@@ -258,9 +257,9 @@ public class UpdateTrackingAccount<A extends Account> implements MutableAccount 
   }
 
   @Override
-  public NavigableMap<Bytes32, AccountStorageEntry> storageEntriesFrom(
-      final Bytes32 startKeyHash, final int limit) {
-    final NavigableMap<Bytes32, AccountStorageEntry> entries;
+  public NavigableMap<Bytes, AccountStorageEntry> storageEntriesFrom(
+      final Bytes startKeyHash, final int limit) {
+    final NavigableMap<Bytes, AccountStorageEntry> entries;
     if (account != null) {
       entries = account.storageEntriesFrom(startKeyHash, limit);
     } else {

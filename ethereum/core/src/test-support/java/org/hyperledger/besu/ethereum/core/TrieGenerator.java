@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 public class TrieGenerator {
@@ -41,7 +41,7 @@ public class TrieGenerator {
     return generateTrie(
         worldStateStorageCoordinator,
         IntStream.range(0, nbAccounts)
-            .mapToObj(operand -> Hash.wrap(Bytes32.leftPad(Bytes.of(operand + 1))))
+            .mapToObj(operand -> Hash.wrap(MutableBytes.of(operand + 1).leftPad(32)))
             .collect(Collectors.toList()));
   }
 
@@ -72,7 +72,7 @@ public class TrieGenerator {
                   onForest.putAccountStorageTrieNode(hash, value);
                 });
           });
-      final Bytes code = Bytes32.leftPad(Bytes.of(i + 10));
+      final Bytes code = MutableBytes.of(i + 10).leftPad(32);
       final Hash codeHash = Hash.hash(code);
       final PmtStateTrieAccountValue accountValue =
           new PmtStateTrieAccountValue(

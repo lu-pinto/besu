@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class Tracer {
 
@@ -83,7 +83,7 @@ public class Tracer {
     }
 
     @Override
-    public Stream<StreamableAccount> streamAccounts(final Bytes32 startKeyHash, final int limit) {
+    public Stream<StreamableAccount> streamAccounts(final Bytes startKeyHash, final int limit) {
       return mutableWorldState.streamAccounts(startKeyHash, limit);
     }
 

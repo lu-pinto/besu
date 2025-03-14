@@ -20,7 +20,7 @@ import org.hyperledger.besu.ethereum.privacy.PrivateTransactionReceipt;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class PrivateMetadataUpdater {
 
@@ -28,7 +28,7 @@ public class PrivateMetadataUpdater {
   private final BlockHeader blockHeader;
   private final PrivateStateStorage.Updater updater;
   private final PrivacyGroupHeadBlockMap privacyGroupHeadBlockMap;
-  private final Map<Bytes32, PrivateBlockMetadata> privateBlockMetadataMap = new HashMap<>();
+  private final Map<Bytes, PrivateBlockMetadata> privateBlockMetadataMap = new HashMap<>();
 
   public PrivateMetadataUpdater(
       final BlockHeader blockHeader, final PrivateStateStorage keyValueStorage) {
@@ -41,7 +41,7 @@ public class PrivateMetadataUpdater {
             .orElse(PrivacyGroupHeadBlockMap.empty());
   }
 
-  public PrivateBlockMetadata getPrivateBlockMetadata(final Bytes32 privacyGroupId) {
+  public PrivateBlockMetadata getPrivateBlockMetadata(final Bytes privacyGroupId) {
     return privateBlockMetadataMap.get(privacyGroupId);
   }
 
@@ -50,12 +50,12 @@ public class PrivateMetadataUpdater {
   }
 
   public void putTransactionReceipt(
-      final Bytes32 transactionHash, final PrivateTransactionReceipt receipt) {
+      final Bytes transactionHash, final PrivateTransactionReceipt receipt) {
     updater.putTransactionReceipt(blockHeader.getBlockHash(), transactionHash, receipt);
   }
 
   public void addPrivateTransactionMetadata(
-      final Bytes32 privacyGroupId, final PrivateTransactionMetadata metadata) {
+      final Bytes privacyGroupId, final PrivateTransactionMetadata metadata) {
     PrivateBlockMetadata privateBlockMetadata = privateBlockMetadataMap.get(privacyGroupId);
     if (privateBlockMetadata == null) {
       privateBlockMetadata = PrivateBlockMetadata.empty();
@@ -64,7 +64,7 @@ public class PrivateMetadataUpdater {
     privateBlockMetadataMap.put(privacyGroupId, privateBlockMetadata);
   }
 
-  public void updatePrivacyGroupHeadBlockMap(final Bytes32 privacyGroupId) {
+  public void updatePrivacyGroupHeadBlockMap(final Bytes privacyGroupId) {
     privacyGroupHeadBlockMap.put(privacyGroupId, blockHeader.getHash());
   }
 

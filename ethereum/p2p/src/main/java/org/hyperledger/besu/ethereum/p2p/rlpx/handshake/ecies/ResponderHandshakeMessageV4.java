@@ -21,16 +21,15 @@ import org.hyperledger.besu.ethereum.rlp.BytesValueRLPOutput;
 import org.hyperledger.besu.ethereum.rlp.RLPInput;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class ResponderHandshakeMessageV4 implements ResponderHandshakeMessage {
 
   private final SECPPublicKey ephPublicKey;
 
-  private final Bytes32 nonce;
+  private final Bytes nonce;
 
   public static ResponderHandshakeMessageV4 create(
-      final SECPPublicKey ephPublicKey, final Bytes32 nonce) {
+      final SECPPublicKey ephPublicKey, final Bytes nonce) {
     return new ResponderHandshakeMessageV4(ephPublicKey, nonce);
   }
 
@@ -39,10 +38,10 @@ public class ResponderHandshakeMessageV4 implements ResponderHandshakeMessage {
     input.enterList();
     return new ResponderHandshakeMessageV4(
         SignatureAlgorithmFactory.getInstance().createPublicKey(input.readBytes()),
-        input.readBytes32());
+        input.readBytes());
   }
 
-  private ResponderHandshakeMessageV4(final SECPPublicKey ephPublicKey, final Bytes32 nonce) {
+  private ResponderHandshakeMessageV4(final SECPPublicKey ephPublicKey, final Bytes nonce) {
     this.ephPublicKey = ephPublicKey;
     this.nonce = nonce;
   }
@@ -53,7 +52,7 @@ public class ResponderHandshakeMessageV4 implements ResponderHandshakeMessage {
   }
 
   @Override
-  public Bytes32 getNonce() {
+  public Bytes getNonce() {
     return nonce;
   }
 

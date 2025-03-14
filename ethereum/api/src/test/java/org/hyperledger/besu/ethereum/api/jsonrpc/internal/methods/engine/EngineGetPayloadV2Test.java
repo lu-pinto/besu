@@ -37,7 +37,7 @@ import org.hyperledger.besu.ethereum.core.BlockWithReceipts;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -96,7 +96,7 @@ public class EngineGetPayloadV2Test extends AbstractEngineGetPayloadTest {
                   .isEqualTo(mockHeader.getHash().toString());
               assertThat(res.getBlockValue()).isEqualTo(Quantity.create(0));
               assertThat(res.getExecutionPayload().getPrevRandao())
-                  .isEqualTo(mockHeader.getPrevRandao().map(Bytes32::toString).orElse(""));
+                  .isEqualTo(mockHeader.getPrevRandao().map(Bytes::toString).orElse(""));
             });
     verify(engineCallListener, times(1)).executionEngineCalled();
   }

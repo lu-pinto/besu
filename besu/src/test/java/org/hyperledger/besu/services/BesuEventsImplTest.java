@@ -337,7 +337,7 @@ public class BesuEventsImplTest {
         gen.block(
             new BlockDataGenerator.BlockOptions()
                 .setParentHash(blockchain.getGenesisBlock().getHash())
-                .setDifficulty(block.getHeader().getDifficulty().subtract(1))
+                .setDifficulty(block.getHeader().getDifficulty().subtract(Difficulty.ONE))
                 .setBlockNumber(blockchain.getGenesisBlock().getHeader().getNumber() + 1));
     blockchain.appendBlock(forkBlock, gen.receipts(forkBlock));
     assertThat(result.get()).isNull();

@@ -21,7 +21,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import java.math.BigInteger;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 
 /** The Sub (Subtract) operation. */
 public class SubOperation extends AbstractFixedCostOperation {
@@ -60,12 +60,17 @@ public class SubOperation extends AbstractFixedCostOperation {
     int length = resultArray.length;
     if (length >= 32) {
       frame.pushStackItem(Bytes.wrap(resultArray, length - 32, 32));
-    } else if (result.signum() < 0) {
-      frame.pushStackItem(Bytes32.leftPad(Bytes.wrap(resultArray), (byte) -1));
+      return subSuccess;
+    }
+    MutableBytes resultBytes;
+    if (result.signum() < 0) {
+      resultBytes = MutableBytes.create(32).not();
     } else {
-      frame.pushStackItem(Bytes.wrap(resultArray));
+      resultBytes = MutableBytes.create(32);
     }
 
+    resultBytes.set(32 - resultArray.length, resultArray);
+    frame.pushStackItem(resultBytes);
     return subSuccess;
   }
 }

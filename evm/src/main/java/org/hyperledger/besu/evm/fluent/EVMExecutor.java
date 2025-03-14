@@ -52,7 +52,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.errorprone.annotations.InlineMe;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** The Evm executor. */
 public class EVMExecutor {
@@ -83,7 +82,7 @@ public class EVMExecutor {
   private long initialNonce = 1;
   private Collection<Address> forceCommitAddresses = List.of(Address.fromHexString("0x03"));
   private Set<Address> accessListWarmAddresses = new BytesTrieSet<>(Address.SIZE);
-  private Multimap<Address, Bytes32> accessListWarmStorage = HashMultimap.create();
+  private Multimap<Address, Bytes> accessListWarmStorage = HashMultimap.create();
   private MessageCallProcessor messageCallProcessor = null;
   private ContractCreationProcessor contractCreationProcessor = null;
   private MessageFrame.Type messageFrameType = MessageFrame.Type.MESSAGE_CALL;
@@ -946,7 +945,7 @@ public class EVMExecutor {
    * @throws ClassCastException if the blockValues was set with a value that is not a {@link
    *     SimpleBlockValues}
    */
-  public EVMExecutor mixHash(final Bytes32 mixHash) {
+  public EVMExecutor mixHash(final Bytes mixHash) {
     ((SimpleBlockValues) this.blockValues).setMixHashOrPrevRandao(mixHash);
     return this;
   }
@@ -959,7 +958,7 @@ public class EVMExecutor {
    * @throws ClassCastException if the blockValues was set with a value that is not a {@link
    *     SimpleBlockValues}
    */
-  public EVMExecutor prevRandao(final Bytes32 prevRandao) {
+  public EVMExecutor prevRandao(final Bytes prevRandao) {
     ((SimpleBlockValues) this.blockValues).setMixHashOrPrevRandao(prevRandao);
     return this;
   }
@@ -1149,7 +1148,7 @@ public class EVMExecutor {
    * @param accessListWarmStorage the access list warm storage
    * @return the evm executor
    */
-  public EVMExecutor accessListWarmStorage(final Multimap<Address, Bytes32> accessListWarmStorage) {
+  public EVMExecutor accessListWarmStorage(final Multimap<Address, Bytes> accessListWarmStorage) {
     this.accessListWarmStorage = accessListWarmStorage;
     return this;
   }
@@ -1161,7 +1160,7 @@ public class EVMExecutor {
    * @param slots the slots
    * @return the evm executor
    */
-  public EVMExecutor accessListWarmStorage(final Address address, final Bytes32... slots) {
+  public EVMExecutor accessListWarmStorage(final Address address, final Bytes... slots) {
     this.accessListWarmStorage.putAll(address, List.of(slots));
     return this;
   }

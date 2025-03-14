@@ -49,7 +49,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -416,6 +415,6 @@ public class EthCreateAccessListTest {
 
   private List<AccessListEntry> createAccessList() {
     return List.of(
-        new AccessListEntry(Address.wrap(Bytes.random(Address.SIZE)), List.of(Bytes32.random())));
+        new AccessListEntry(Address.wrap(Bytes.random(Address.SIZE)), List.of(Bytes.random(32))));
   }
 }

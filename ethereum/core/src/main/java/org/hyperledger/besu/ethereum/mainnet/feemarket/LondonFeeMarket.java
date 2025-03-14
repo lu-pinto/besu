@@ -21,7 +21,6 @@ import org.hyperledger.besu.ethereum.core.feemarket.TransactionPriceCalculator;
 
 import java.util.Optional;
 
-import org.apache.tuweni.units.bigints.UInt256s;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,9 +103,8 @@ public class LondonFeeMarket implements BaseFeeMarket {
     } else if (parentBlockGasUsed > targetGasUsed) {
       gasDelta = parentBlockGasUsed - targetGasUsed;
       final long denominator = getBasefeeMaxChangeDenominator();
-      feeDelta =
-          UInt256s.max(
-              parentBaseFee.multiply(gasDelta).divide(targetGasUsed).divide(denominator), Wei.ONE);
+      feeDelta = parentBaseFee.multiply(gasDelta).divide(targetGasUsed).divide(denominator);
+      feeDelta = feeDelta.greaterOrEqualThan(Wei.ONE) ? feeDelta : Wei.ONE;
       baseFee = parentBaseFee.add(feeDelta);
     } else {
       gasDelta = targetGasUsed - parentBlockGasUsed;

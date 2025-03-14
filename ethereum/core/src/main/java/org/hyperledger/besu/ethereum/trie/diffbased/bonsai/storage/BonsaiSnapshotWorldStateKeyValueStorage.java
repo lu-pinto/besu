@@ -27,7 +27,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +84,7 @@ public class BonsaiSnapshotWorldStateKeyValueStorage extends BonsaiWorldStateKey
   }
 
   @Override
-  public Optional<Bytes> getAccountStateTrieNode(final Bytes location, final Bytes32 nodeHash) {
+  public Optional<Bytes> getAccountStateTrieNode(final Bytes location, final Bytes nodeHash) {
     return isClosedGet() ? Optional.empty() : super.getAccountStateTrieNode(location, nodeHash);
   }
 
@@ -96,7 +95,7 @@ public class BonsaiSnapshotWorldStateKeyValueStorage extends BonsaiWorldStateKey
 
   @Override
   public Optional<Bytes> getAccountStorageTrieNode(
-      final Hash accountHash, final Bytes location, final Bytes32 nodeHash) {
+      final Hash accountHash, final Bytes location, final Bytes nodeHash) {
     return isClosedGet()
         ? Optional.empty()
         : super.getAccountStorageTrieNode(accountHash, location, nodeHash);
@@ -141,7 +140,7 @@ public class BonsaiSnapshotWorldStateKeyValueStorage extends BonsaiWorldStateKey
   }
 
   @Override
-  public boolean isWorldStateAvailable(final Bytes32 rootHash, final Hash blockHash) {
+  public boolean isWorldStateAvailable(final Bytes rootHash, final Hash blockHash) {
     return !isClosedGet() && super.isWorldStateAvailable(rootHash, blockHash);
   }
 

@@ -29,7 +29,6 @@ import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /** The Simple account. */
@@ -131,8 +130,8 @@ public class SimpleAccount implements MutableAccount {
   }
 
   @Override
-  public NavigableMap<Bytes32, AccountStorageEntry> storageEntriesFrom(
-      final Bytes32 startKeyHash, final int limit) {
+  public NavigableMap<Bytes, AccountStorageEntry> storageEntriesFrom(
+      final Bytes startKeyHash, final int limit) {
     throw new UnsupportedOperationException(
         "Storage iteration not supported in simple account facade");
   }

@@ -25,6 +25,7 @@ import org.hyperledger.besu.tests.acceptance.dsl.node.configuration.BesuNodeConf
 import java.net.ServerSocket;
 import java.util.Optional;
 
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
@@ -89,7 +90,7 @@ public class BootNodesGenesisSetupTest extends AcceptanceTestBase {
     cluster.start(nodeA, nodeB);
   }
 
-  private KeyPair createKeyPair(final Bytes32 privateKey) {
+  private KeyPair createKeyPair(final Bytes privateKey) {
     return KeyPair.create(SECPPrivateKey.create(privateKey, ALGORITHM), curve, ALGORITHM);
   }
 

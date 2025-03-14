@@ -49,7 +49,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -593,8 +592,8 @@ public abstract class DiffBasedWorldStateUpdateAccumulator<ACCOUNT extends DiffB
   }
 
   @Override
-  public Map<Bytes32, Bytes> getAllAccountStorage(final Address address, final Hash rootHash) {
-    final Map<Bytes32, Bytes> results = wrappedWorldView().getAllAccountStorage(address, rootHash);
+  public Map<Bytes, Bytes> getAllAccountStorage(final Address address, final Hash rootHash) {
+    final Map<Bytes, Bytes> results = wrappedWorldView().getAllAccountStorage(address, rootHash);
     final StorageConsumingMap<StorageSlotKey, DiffBasedValue<UInt256>> diffBasedValueStorage =
         storageToUpdate.get(address);
     if (diffBasedValueStorage != null) {

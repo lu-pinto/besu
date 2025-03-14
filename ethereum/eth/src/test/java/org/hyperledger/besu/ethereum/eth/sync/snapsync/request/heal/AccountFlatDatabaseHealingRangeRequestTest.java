@@ -47,7 +47,6 @@ import java.util.stream.Stream;
 
 import kotlin.collections.ArrayDeque;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,8 +91,8 @@ public class AccountFlatDatabaseHealingRangeRequestTest {
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
 
     // Collect the account entries within the specified range using the trie and range collector
-    final TreeMap<Bytes32, Bytes> accounts =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> accounts =
+        (TreeMap<Bytes, Bytes>)
             accountStateTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -164,8 +163,8 @@ public class AccountFlatDatabaseHealingRangeRequestTest {
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
 
     // Collect the account entries within the specified range using the trie and range collector
-    final TreeMap<Bytes32, Bytes> accounts =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> accounts =
+        (TreeMap<Bytes, Bytes>)
             accountStateTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -211,8 +210,8 @@ public class AccountFlatDatabaseHealingRangeRequestTest {
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
 
     // Collect the account entries within the specified range using the trie and range collector
-    final TreeMap<Bytes32, Bytes> accounts =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> accounts =
+        (TreeMap<Bytes, Bytes>)
             accountStateTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -272,8 +271,8 @@ public class AccountFlatDatabaseHealingRangeRequestTest {
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
 
     // Collect the account entries within the specified range using the trie and range collector
-    final TreeMap<Bytes32, Bytes> accounts =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> accounts =
+        (TreeMap<Bytes, Bytes>)
             accountStateTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -288,8 +287,8 @@ public class AccountFlatDatabaseHealingRangeRequestTest {
             Hash.wrap(accountStateTrie.getRootHash()), accounts.lastKey()));
 
     // Remove an account in the middle of the range
-    final Iterator<Map.Entry<Bytes32, Bytes>> iterator = accounts.entrySet().iterator();
-    Map.Entry<Bytes32, Bytes> removedAccount = null;
+    final Iterator<Map.Entry<Bytes, Bytes>> iterator = accounts.entrySet().iterator();
+    Map.Entry<Bytes, Bytes> removedAccount = null;
     int i = 0;
     while (iterator.hasNext()) {
       if (i == 7) {

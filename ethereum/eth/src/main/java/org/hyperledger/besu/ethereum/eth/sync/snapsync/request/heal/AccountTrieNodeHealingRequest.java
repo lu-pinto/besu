@@ -14,7 +14,6 @@
  */
 package org.hyperledger.besu.ethereum.eth.sync.snapsync.request.heal;
 
-import static org.hyperledger.besu.ethereum.eth.sync.snapsync.request.SnapDataRequest.createAccountTrieNodeDataRequest;
 import static org.hyperledger.besu.ethereum.worldstate.WorldStateStorageCoordinator.applyForStrategy;
 
 import org.hyperledger.besu.datatypes.Hash;
@@ -112,7 +111,7 @@ public class AccountTrieNodeHealingRequest extends TrieNodeHealingRequest {
             Function.identity(),
             Function.identity());
     for (Bytes account : inconsistentAccounts) {
-      final Bytes32 accountHash = Bytes32.wrap(CompactEncoding.pathToBytes(account));
+      final Bytes accountHash = Bytes32.fromBytes(CompactEncoding.pathToBytes(account), 0);
       accountTrie
           .getPath(
               Bytes.wrap(
@@ -158,7 +157,7 @@ public class AccountTrieNodeHealingRequest extends TrieNodeHealingRequest {
     // Retrieve account hash
     final Hash accountHash =
         Hash.wrap(
-            Bytes32.wrap(CompactEncoding.pathToBytes(Bytes.concatenate(getLocation(), path))));
+            Bytes32.fromBytes(CompactEncoding.pathToBytes(Bytes.wrap(getLocation(), path)), 0));
 
     // update the flat db only for bonsai
     worldStateStorageCoordinator.applyWhenFlatModeEnabled(
@@ -174,7 +173,7 @@ public class AccountTrieNodeHealingRequest extends TrieNodeHealingRequest {
     // Retrieve the storage root from the database, if available
     final Hash storageRootFoundInDb =
         worldStateStorageCoordinator
-            .getTrieNodeUnsafe(Bytes.concatenate(accountHash, Bytes.EMPTY))
+            .getTrieNodeUnsafe(Bytes.wrap(accountHash, Bytes.EMPTY))
             .map(Hash::hash)
             .orElse(Hash.wrap(MerkleTrie.EMPTY_TRIE_NODE_HASH));
     if (!storageRootFoundInDb.equals(accountValue.getStorageRoot())) {

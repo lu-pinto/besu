@@ -87,7 +87,9 @@ public class StorageTrieNodeHealingRequest extends TrieNodeHealingRequest {
           onBonsai
               .updater()
               .putStorageValueBySlotHash(
-                  accountHash, getSlotHash(location, path), Bytes32.leftPad(RLP.decodeValue(value)))
+                  accountHash,
+                  getSlotHash(location, path),
+                  RLP.decodeValue(value).mutableCopy().leftPad(32))
               .commit();
         });
     return Stream.empty();
@@ -98,7 +100,7 @@ public class StorageTrieNodeHealingRequest extends TrieNodeHealingRequest {
   }
 
   private Hash getSlotHash(final Bytes location, final Bytes path) {
-    return Hash.wrap(Bytes32.wrap(CompactEncoding.pathToBytes(Bytes.concatenate(location, path))));
+    return Hash.wrap(Bytes32.fromBytes(CompactEncoding.pathToBytes(Bytes.wrap(location, path)), 0));
   }
 
   @Override

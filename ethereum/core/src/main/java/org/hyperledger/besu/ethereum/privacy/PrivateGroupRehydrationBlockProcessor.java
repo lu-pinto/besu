@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,7 +122,8 @@ public class PrivateGroupRehydrationBlockProcessor {
       final Hash transactionHash = transaction.getHash();
       if (forExecution.containsKey(transactionHash)) {
         final PrivateTransaction privateTransaction = forExecution.get(transactionHash);
-        final Bytes32 privacyGroupId = Bytes32.wrap(privateTransaction.getPrivacyGroupId().get());
+        final Bytes privacyGroupId =
+            Bytes32.fromBytes(privateTransaction.getPrivacyGroupId().get(), 0);
         final Hash lastRootHash =
             privateStateRootResolver.resolveLastStateRoot(privacyGroupId, metadataUpdater);
 
@@ -202,7 +204,7 @@ public class PrivateGroupRehydrationBlockProcessor {
 
   void storePrivateMetadata(
       final Hash commitmentHash,
-      final Bytes32 privacyGroupId,
+      final Bytes privacyGroupId,
       final MutableWorldState disposablePrivateState,
       final PrivateMetadataUpdater privateMetadataUpdater,
       final TransactionProcessingResult result) {

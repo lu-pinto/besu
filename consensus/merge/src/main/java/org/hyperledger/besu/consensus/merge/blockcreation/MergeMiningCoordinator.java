@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The interface Merge mining coordinator. */
 public interface MergeMiningCoordinator extends MiningCoordinator {
@@ -48,10 +48,10 @@ public interface MergeMiningCoordinator extends MiningCoordinator {
   PayloadIdentifier preparePayload(
       final BlockHeader parentHeader,
       final Long timestamp,
-      final Bytes32 prevRandao,
+      final Bytes prevRandao,
       final Address feeRecipient,
       final Optional<List<Withdrawal>> withdrawals,
-      final Optional<Bytes32> parentBeaconBlockRoot);
+      final Optional<Bytes> parentBeaconBlockRoot);
 
   @Override
   default boolean isCompatibleWithEngineApi() {

@@ -38,7 +38,6 @@ import java.lang.reflect.Field;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -94,7 +93,7 @@ public class PacketFactoryTest {
         .when(pingPacketDataRlpWriter)
         .writeTo(Mockito.eq(packetData), Mockito.any(RLPOutput.class));
 
-    Mockito.when(nodeKey.sign(Mockito.any(Bytes32.class))).thenReturn(secpSignature);
+    Mockito.when(nodeKey.sign(Mockito.any(Bytes.class))).thenReturn(secpSignature);
     Mockito.when(packetSignatureEncoder.encodeSignature(secpSignature))
         .thenReturn(Bytes.fromHexString("0xeeeeeeeeeeeeeeee"));
     Mockito.when(nodeKey.getPublicKey()).thenReturn(secpPublicKey);
@@ -103,7 +102,7 @@ public class PacketFactoryTest {
 
     Mockito.verify(pingPacketDataRlpWriter)
         .writeTo(Mockito.eq(packetData), Mockito.any(RLPOutput.class));
-    ArgumentCaptor<Bytes32> typeAndDataBytesHashCaptor = ArgumentCaptor.forClass(Bytes32.class);
+    ArgumentCaptor<Bytes> typeAndDataBytesHashCaptor = ArgumentCaptor.forClass(Bytes.class);
     Mockito.verify(nodeKey).sign(typeAndDataBytesHashCaptor.capture());
     Mockito.verify(packetSignatureEncoder).encodeSignature(secpSignature);
     Mockito.verify(nodeKey).getPublicKey();
@@ -155,7 +154,7 @@ public class PacketFactoryTest {
         .when(pongPacketDataRlpWriter)
         .writeTo(Mockito.eq(packetData), Mockito.any(RLPOutput.class));
 
-    Mockito.when(nodeKey.sign(Mockito.any(Bytes32.class))).thenReturn(secpSignature);
+    Mockito.when(nodeKey.sign(Mockito.any(Bytes.class))).thenReturn(secpSignature);
     Mockito.when(packetSignatureEncoder.encodeSignature(secpSignature))
         .thenReturn(Bytes.fromHexString("0xeeeeeeeeeeeeeeee"));
     Mockito.when(nodeKey.getPublicKey()).thenReturn(secpPublicKey);
@@ -164,7 +163,7 @@ public class PacketFactoryTest {
 
     Mockito.verify(pongPacketDataRlpWriter)
         .writeTo(Mockito.eq(packetData), Mockito.any(RLPOutput.class));
-    ArgumentCaptor<Bytes32> typeAndDataBytesHashCaptor = ArgumentCaptor.forClass(Bytes32.class);
+    ArgumentCaptor<Bytes> typeAndDataBytesHashCaptor = ArgumentCaptor.forClass(Bytes.class);
     Mockito.verify(nodeKey).sign(typeAndDataBytesHashCaptor.capture());
     Mockito.verify(packetSignatureEncoder).encodeSignature(secpSignature);
     Mockito.verify(nodeKey).getPublicKey();
@@ -216,7 +215,7 @@ public class PacketFactoryTest {
         .when(findNeighborsPacketDataRlpWriter)
         .writeTo(Mockito.eq(packetData), Mockito.any(RLPOutput.class));
 
-    Mockito.when(nodeKey.sign(Mockito.any(Bytes32.class))).thenReturn(secpSignature);
+    Mockito.when(nodeKey.sign(Mockito.any(Bytes.class))).thenReturn(secpSignature);
     Mockito.when(packetSignatureEncoder.encodeSignature(secpSignature))
         .thenReturn(Bytes.fromHexString("0xeeeeeeeeeeeeeeee"));
     Mockito.when(nodeKey.getPublicKey()).thenReturn(secpPublicKey);
@@ -225,7 +224,7 @@ public class PacketFactoryTest {
 
     Mockito.verify(findNeighborsPacketDataRlpWriter)
         .writeTo(Mockito.eq(packetData), Mockito.any(RLPOutput.class));
-    ArgumentCaptor<Bytes32> typeAndDataBytesHashCaptor = ArgumentCaptor.forClass(Bytes32.class);
+    ArgumentCaptor<Bytes> typeAndDataBytesHashCaptor = ArgumentCaptor.forClass(Bytes.class);
     Mockito.verify(nodeKey).sign(typeAndDataBytesHashCaptor.capture());
     Mockito.verify(packetSignatureEncoder).encodeSignature(secpSignature);
     Mockito.verify(nodeKey).getPublicKey();
@@ -277,7 +276,7 @@ public class PacketFactoryTest {
         .when(neighborsPacketDataRlpWriter)
         .writeTo(Mockito.eq(packetData), Mockito.any(RLPOutput.class));
 
-    Mockito.when(nodeKey.sign(Mockito.any(Bytes32.class))).thenReturn(secpSignature);
+    Mockito.when(nodeKey.sign(Mockito.any(Bytes.class))).thenReturn(secpSignature);
     Mockito.when(packetSignatureEncoder.encodeSignature(secpSignature))
         .thenReturn(Bytes.fromHexString("0xeeeeeeeeeeeeeeee"));
     Mockito.when(nodeKey.getPublicKey()).thenReturn(secpPublicKey);
@@ -286,7 +285,7 @@ public class PacketFactoryTest {
 
     Mockito.verify(neighborsPacketDataRlpWriter)
         .writeTo(Mockito.eq(packetData), Mockito.any(RLPOutput.class));
-    ArgumentCaptor<Bytes32> typeAndDataBytesHashCaptor = ArgumentCaptor.forClass(Bytes32.class);
+    ArgumentCaptor<Bytes> typeAndDataBytesHashCaptor = ArgumentCaptor.forClass(Bytes.class);
     Mockito.verify(nodeKey).sign(typeAndDataBytesHashCaptor.capture());
     Mockito.verify(packetSignatureEncoder).encodeSignature(secpSignature);
     Mockito.verify(nodeKey).getPublicKey();
@@ -338,7 +337,7 @@ public class PacketFactoryTest {
         .when(enrRequestPacketDataRlpWriter)
         .writeTo(Mockito.eq(packetData), Mockito.any(RLPOutput.class));
 
-    Mockito.when(nodeKey.sign(Mockito.any(Bytes32.class))).thenReturn(secpSignature);
+    Mockito.when(nodeKey.sign(Mockito.any(Bytes.class))).thenReturn(secpSignature);
     Mockito.when(packetSignatureEncoder.encodeSignature(secpSignature))
         .thenReturn(Bytes.fromHexString("0xeeeeeeeeeeeeeeee"));
     Mockito.when(nodeKey.getPublicKey()).thenReturn(secpPublicKey);
@@ -347,7 +346,7 @@ public class PacketFactoryTest {
 
     Mockito.verify(enrRequestPacketDataRlpWriter)
         .writeTo(Mockito.eq(packetData), Mockito.any(RLPOutput.class));
-    ArgumentCaptor<Bytes32> typeAndDataBytesHashCaptor = ArgumentCaptor.forClass(Bytes32.class);
+    ArgumentCaptor<Bytes> typeAndDataBytesHashCaptor = ArgumentCaptor.forClass(Bytes.class);
     Mockito.verify(nodeKey).sign(typeAndDataBytesHashCaptor.capture());
     Mockito.verify(packetSignatureEncoder).encodeSignature(secpSignature);
     Mockito.verify(nodeKey).getPublicKey();
@@ -399,7 +398,7 @@ public class PacketFactoryTest {
         .when(enrResponsePacketDataRlpWriter)
         .writeTo(Mockito.eq(packetData), Mockito.any(RLPOutput.class));
 
-    Mockito.when(nodeKey.sign(Mockito.any(Bytes32.class))).thenReturn(secpSignature);
+    Mockito.when(nodeKey.sign(Mockito.any(Bytes.class))).thenReturn(secpSignature);
     Mockito.when(packetSignatureEncoder.encodeSignature(secpSignature))
         .thenReturn(Bytes.fromHexString("0xeeeeeeeeeeeeeeee"));
     Mockito.when(nodeKey.getPublicKey()).thenReturn(secpPublicKey);
@@ -408,7 +407,7 @@ public class PacketFactoryTest {
 
     Mockito.verify(enrResponsePacketDataRlpWriter)
         .writeTo(Mockito.eq(packetData), Mockito.any(RLPOutput.class));
-    ArgumentCaptor<Bytes32> typeAndDataBytesHashCaptor = ArgumentCaptor.forClass(Bytes32.class);
+    ArgumentCaptor<Bytes> typeAndDataBytesHashCaptor = ArgumentCaptor.forClass(Bytes.class);
     Mockito.verify(nodeKey).sign(typeAndDataBytesHashCaptor.capture());
     Mockito.verify(packetSignatureEncoder).encodeSignature(secpSignature);
     Mockito.verify(nodeKey).getPublicKey();
@@ -449,8 +448,8 @@ public class PacketFactoryTest {
     final Bytes encodedSignature =
         Bytes.repeat((byte) 0x02, Packet.PACKET_TYPE_INDEX - Packet.SIGNATURE_INDEX);
     final Bytes signedPayload = Bytes.repeat((byte) 0x03, 128);
-    final Bytes hash = Hash.keccak256(Bytes.concatenate(encodedSignature, signedPayload));
-    final Bytes message = Bytes.concatenate(hash, encodedSignature, signedPayload);
+    final Bytes hash = Hash.keccak256(Bytes.wrap(encodedSignature, signedPayload));
+    final Bytes message = Bytes.wrap(hash, encodedSignature, signedPayload);
     final SECPSignature secpSignature = Mockito.mock(SECPSignature.class);
     final SECPPublicKey secpPublicKey = Mockito.mock(SECPPublicKey.class);
 

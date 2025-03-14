@@ -61,7 +61,7 @@ public class SignUtil {
 
     SECPSignature secpSignature =
         signatureAlgorithm.sign(
-            Bytes32.wrap(transactionHash), signatureAlgorithm.createKeyPair(privateKey));
+            Bytes32.fromArray(transactionHash), signatureAlgorithm.createKeyPair(privateKey));
 
     Sign.SignatureData signature =
         new Sign.SignatureData(

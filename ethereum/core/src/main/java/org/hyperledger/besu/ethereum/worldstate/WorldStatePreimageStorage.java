@@ -18,22 +18,22 @@ import org.hyperledger.besu.datatypes.Address;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 public interface WorldStatePreimageStorage {
 
-  Optional<UInt256> getStorageTrieKeyPreimage(Bytes32 trieKey);
+  Optional<UInt256> getStorageTrieKeyPreimage(Bytes trieKey);
 
-  Optional<Address> getAccountTrieKeyPreimage(Bytes32 trieKey);
+  Optional<Address> getAccountTrieKeyPreimage(Bytes trieKey);
 
   Updater updater();
 
   interface Updater {
 
-    Updater putStorageTrieKeyPreimage(Bytes32 trieKey, UInt256 preimage);
+    Updater putStorageTrieKeyPreimage(Bytes trieKey, UInt256 preimage);
 
-    Updater putAccountTrieKeyPreimage(Bytes32 trieKey, Address preimage);
+    Updater putAccountTrieKeyPreimage(Bytes trieKey, Address preimage);
 
     void commit();
 

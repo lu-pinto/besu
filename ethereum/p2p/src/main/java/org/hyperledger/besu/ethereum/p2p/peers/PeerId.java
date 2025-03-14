@@ -15,7 +15,6 @@
 package org.hyperledger.besu.ethereum.p2p.peers;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public interface PeerId {
   /**
@@ -32,7 +31,7 @@ public interface PeerId {
    *
    * @return The Keccak-256 hash of the peer's ID.
    */
-  Bytes32 keccak256();
+  Bytes keccak256();
 
   String getLoggableId();
 }

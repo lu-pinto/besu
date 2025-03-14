@@ -20,12 +20,12 @@ import static org.hyperledger.besu.crypto.Hash.sha256;
 import org.hyperledger.besu.ethereum.rlp.RLP;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import org.apache.tuweni.bytes.v2.DelegatingBytes32;
 import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.DelegatingBytes;
 
 /** A 32-bytes hash value as used in Ethereum blocks, usually the result of the KEC algorithm. */
-public class Hash extends DelegatingBytes32 {
+public class Hash extends DelegatingBytes {
 
   /** The constant ZERO. */
   public static final Hash ZERO = new Hash(Bytes32.ZERO);
@@ -61,8 +61,8 @@ public class Hash extends DelegatingBytes32 {
    *
    * @param bytes raw bytes
    */
-  protected Hash(final Bytes32 bytes) {
-    super(bytes);
+  protected Hash(final Bytes bytes) {
+    super(bytes, 32);
   }
 
   /**
@@ -81,7 +81,7 @@ public class Hash extends DelegatingBytes32 {
    * @param bytes the bytes
    * @return the hash
    */
-  public static Hash wrap(final Bytes32 bytes) {
+  public static Hash wrap(final Bytes bytes) {
     if (bytes instanceof Hash) {
       return (Hash) bytes;
     }

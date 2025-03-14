@@ -273,7 +273,7 @@ public final class GenesisState {
     return BlobGas.of(excessBlobGas);
   }
 
-  private static Bytes32 parseParentBeaconBlockRoot(final GenesisConfig genesis) {
+  private static Bytes parseParentBeaconBlockRoot(final GenesisConfig genesis) {
     return withNiceErrorMessage(
         "parentBeaconBlockRoot", genesis.getParentBeaconBlockRoot(), Bytes32::fromHexString);
   }

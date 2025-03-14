@@ -50,6 +50,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.tuweni.units.bigints.UInt256;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -187,7 +188,9 @@ public class ProcessBesuNodeRunner implements BesuNodeRunner {
       params.add(node.getMiningParameters().getStratumNetworkInterface());
       params.add("--min-gas-price");
       params.add(
-          Integer.toString(node.getMiningParameters().getMinTransactionGasPrice().intValue()));
+          Integer.toString(
+              UInt256.fromBytes(node.getMiningParameters().getMinTransactionGasPrice())
+                  .intValue()));
       params.add("--Xminer-remote-sealers-limit");
       params.add(
           Integer.toString(node.getMiningParameters().getUnstable().getRemoteSealersLimit()));

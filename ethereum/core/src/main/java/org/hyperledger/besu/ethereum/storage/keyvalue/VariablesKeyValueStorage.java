@@ -78,7 +78,7 @@ public class VariablesKeyValueStorage implements VariablesStorage {
   }
 
   private Hash bytesToHash(final Bytes bytes) {
-    return Hash.wrap(Bytes32.wrap(bytes, 0));
+    return Hash.wrap(Bytes32.fromBytes(bytes, 0));
   }
 
   Optional<Bytes> getVariable(final Keys key) {

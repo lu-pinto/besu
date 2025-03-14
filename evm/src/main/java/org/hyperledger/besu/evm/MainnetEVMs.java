@@ -138,8 +138,7 @@ import org.hyperledger.besu.evm.operation.XorOperation;
 
 import java.math.BigInteger;
 
-import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 
 /** Provides EVMs supporting the appropriate operations for mainnet hard forks. */
 public class MainnetEVMs {
@@ -553,7 +552,8 @@ public class MainnetEVMs {
       final BigInteger chainId) {
     registerConstantinopleOperations(registry, gasCalculator);
     registry.put(
-        new ChainIdOperation(gasCalculator, Bytes32.leftPad(Bytes.of(chainId.toByteArray()))));
+        new ChainIdOperation(
+            gasCalculator, MutableBytes.fromArray(chainId.toByteArray()).leftPad(32)));
     registry.put(new SelfBalanceOperation(gasCalculator));
     registry.put(new SStoreOperation(gasCalculator, SStoreOperation.EIP_1706_MINIMUM));
   }

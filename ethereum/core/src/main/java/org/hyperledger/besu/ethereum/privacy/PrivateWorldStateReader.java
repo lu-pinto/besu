@@ -47,7 +47,7 @@ public class PrivateWorldStateReader {
       final String privacyGroupId, final Hash blockHash, final Address contractAddress) {
     final Hash latestStateRoot =
         privateStateRootResolver.resolveLastStateRoot(
-            Bytes32.wrap(Bytes.fromBase64String(privacyGroupId)), blockHash);
+            Bytes32.fromBytes(Bytes.fromBase64String(privacyGroupId), 0), blockHash);
 
     return privateWorldStateArchive
         .get(latestStateRoot, blockHash)
@@ -57,7 +57,7 @@ public class PrivateWorldStateReader {
 
   public List<PrivateTransactionMetadata> getPrivateTransactionMetadataList(
       final String privacyGroupId, final Hash blockHash) {
-    final Bytes32 privacyGroupIdBytes = Bytes32.wrap(Bytes.fromBase64String(privacyGroupId));
+    final Bytes privacyGroupIdBytes = Bytes32.fromBytes(Bytes.fromBase64String(privacyGroupId), 0);
     final Optional<PrivateBlockMetadata> privateBlockMetadata =
         privateStateStorage.getPrivateBlockMetadata(blockHash, privacyGroupIdBytes);
 
@@ -68,7 +68,7 @@ public class PrivateWorldStateReader {
 
   public Optional<PrivateBlockMetadata> getPrivateBlockMetadata(
       final String privacyGroupId, final Hash blockHash) {
-    final Bytes32 privacyGroupIdBytes = Bytes32.wrap(Bytes.fromBase64String(privacyGroupId));
+    final Bytes privacyGroupIdBytes = Bytes32.fromBytes(Bytes.fromBase64String(privacyGroupId), 0);
     return privateStateStorage.getPrivateBlockMetadata(blockHash, privacyGroupIdBytes);
   }
 

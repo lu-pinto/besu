@@ -236,7 +236,7 @@ public class EngineNewPayloadV4Test extends EngineNewPayloadV3Test {
             .sorted(Comparator.comparing(Request::getType))
             .map(
                 r ->
-                    Bytes.concatenate(Bytes.of(r.getType().getSerializedType()), r.getData())
+                    Bytes.wrap(Bytes.of(r.getType().getSerializedType()), r.getData())
                         .toHexString())
             .toList();
     Object[] params =

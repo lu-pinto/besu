@@ -30,8 +30,8 @@ public class PacketSignatureEncoder {
 
   public Bytes encodeSignature(final SECPSignature signature) {
     final MutableBytes encoded = MutableBytes.create(65);
-    UInt256.valueOf(signature.getR()).copyTo(encoded, 0);
-    UInt256.valueOf(signature.getS()).copyTo(encoded, 32);
+    encoded.set(0, UInt256.valueOf(signature.getR()));
+    encoded.set(32, UInt256.valueOf(signature.getS()));
     final int v = signature.getRecId();
     encoded.set(64, (byte) v);
     return encoded;

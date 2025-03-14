@@ -48,7 +48,6 @@ import java.util.stream.Stream;
 
 import kotlin.collections.ArrayDeque;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -122,8 +121,8 @@ class StorageFlatDatabaseHealingRangeRequestTest {
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
 
     // Collect the slot entries within the specified range using the trie and range collector
-    final TreeMap<Bytes32, Bytes> slots =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> slots =
+        (TreeMap<Bytes, Bytes>)
             storageTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -181,8 +180,8 @@ class StorageFlatDatabaseHealingRangeRequestTest {
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
 
     // Collect the slots entries within the specified range using the trie and range collector
-    final TreeMap<Bytes32, Bytes> slots =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> slots =
+        (TreeMap<Bytes, Bytes>)
             storageTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -222,8 +221,8 @@ class StorageFlatDatabaseHealingRangeRequestTest {
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
 
     // Collect the slot entries within the specified range using the trie and range collector
-    final TreeMap<Bytes32, Bytes> slots =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> slots =
+        (TreeMap<Bytes, Bytes>)
             storageTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -279,8 +278,8 @@ class StorageFlatDatabaseHealingRangeRequestTest {
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
 
     // Collect the slot entries within the specified range using the trie and range collector
-    final TreeMap<Bytes32, Bytes> slots =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> slots =
+        (TreeMap<Bytes, Bytes>)
             storageTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -295,8 +294,8 @@ class StorageFlatDatabaseHealingRangeRequestTest {
             Hash.wrap(storageTrie.getRootHash()), account0Hash, slots.lastKey()));
 
     // Remove a slot in the middle of the range
-    final Iterator<Map.Entry<Bytes32, Bytes>> iterator = slots.entrySet().iterator();
-    Map.Entry<Bytes32, Bytes> removedSlot = null;
+    final Iterator<Map.Entry<Bytes, Bytes>> iterator = slots.entrySet().iterator();
+    Map.Entry<Bytes, Bytes> removedSlot = null;
     int i = 0;
     while (iterator.hasNext()) {
       if (i == 1) {
@@ -332,6 +331,6 @@ class StorageFlatDatabaseHealingRangeRequestTest {
         .putStorageValueBySlotHash(
             account0Hash,
             Hash.wrap(removedSlot.getKey()),
-            Bytes32.leftPad(decodeValue(removedSlot.getValue())));
+            decodeValue(removedSlot.getValue().mutableCopy().leftPad(32)));
   }
 }

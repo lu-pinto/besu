@@ -37,7 +37,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public abstract class SnapDataRequest implements TasksPriorityProvider {
 
@@ -55,21 +54,21 @@ public abstract class SnapDataRequest implements TasksPriorityProvider {
   }
 
   public static AccountRangeDataRequest createAccountRangeDataRequest(
-      final Hash rootHash, final Bytes32 startKeyHash, final Bytes32 endKeyHash) {
+      final Hash rootHash, final Bytes startKeyHash, final Bytes endKeyHash) {
     return new AccountRangeDataRequest(rootHash, startKeyHash, endKeyHash);
   }
 
   public static AccountFlatDatabaseHealingRangeRequest createAccountFlatHealingRangeRequest(
-      final Hash rootHash, final Bytes32 startKeyHash, final Bytes32 endKeyHash) {
+      final Hash rootHash, final Bytes startKeyHash, final Bytes endKeyHash) {
     return new AccountFlatDatabaseHealingRangeRequest(rootHash, startKeyHash, endKeyHash);
   }
 
   public static StorageFlatDatabaseHealingRangeRequest createStorageFlatHealingRangeRequest(
       final Hash rootHash,
-      final Bytes32 accountHash,
-      final Bytes32 storageRoot,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash) {
+      final Bytes accountHash,
+      final Bytes storageRoot,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash) {
     return new StorageFlatDatabaseHealingRangeRequest(
         rootHash, accountHash, storageRoot, startKeyHash, endKeyHash);
   }
@@ -77,17 +76,17 @@ public abstract class SnapDataRequest implements TasksPriorityProvider {
   public static AccountRangeDataRequest createAccountDataRequest(
       final Hash rootHash,
       final Hash accountHash,
-      final Bytes32 startStorageRange,
-      final Bytes32 endStorageRange) {
+      final Bytes startStorageRange,
+      final Bytes endStorageRange) {
     return new AccountRangeDataRequest(rootHash, accountHash, startStorageRange, endStorageRange);
   }
 
   public static StorageRangeDataRequest createStorageRangeDataRequest(
       final Hash rootHash,
-      final Bytes32 accountHash,
-      final Bytes32 storageRoot,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash) {
+      final Bytes accountHash,
+      final Bytes storageRoot,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash) {
     return new StorageRangeDataRequest(
         rootHash, accountHash, storageRoot, startKeyHash, endKeyHash);
   }
@@ -111,7 +110,7 @@ public abstract class SnapDataRequest implements TasksPriorityProvider {
   }
 
   public static BytecodeRequest createBytecodeRequest(
-      final Bytes32 accountHash, final Hash rootHash, final Bytes32 codeHash) {
+      final Bytes accountHash, final Hash rootHash, final Bytes codeHash) {
     return new BytecodeRequest(rootHash, accountHash, codeHash);
   }
 

@@ -54,7 +54,7 @@ public class LogTest {
   }
 
   private Bytes bytesWithLeadingZeros(final int noLeadingZeros, final int totalSize) {
-    return Bytes.concatenate(
+    return Bytes.wrap(
         Bytes.repeat((byte) 0, noLeadingZeros), gen.bytesValue(totalSize - noLeadingZeros));
   }
 }

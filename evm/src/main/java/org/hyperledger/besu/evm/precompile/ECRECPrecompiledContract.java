@@ -27,9 +27,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.bytes.v2.MutableBytes;
-import org.apache.tuweni.bytes.v2.MutableBytes32;
 
 /** The ECREC precompiled contract. */
 public class ECRECPrecompiledContract extends AbstractPrecompiledContract {
@@ -69,7 +67,7 @@ public class ECRECPrecompiledContract extends AbstractPrecompiledContract {
       final Bytes input, @Nonnull final MessageFrame messageFrame) {
     final int size = input.size();
     final Bytes d = size >= 128 ? input : Bytes.wrap(input, MutableBytes.create(128 - size));
-    final Bytes32 h = Bytes32.wrap(d, 0);
+    final Bytes h = d.slice(0, 32);
     // Note that the Yellow Paper defines v as the next 32 bytes (so 32..63). Yet, v is a simple
     // byte in ECDSARECOVER and the Yellow Paper is not very clear on this mismatch, but it appears
     // it is simply the last byte of those 32 bytes that needs to be used. It does appear we need
@@ -100,9 +98,9 @@ public class ECRECPrecompiledContract extends AbstractPrecompiledContract {
         return PrecompileContractResult.success(Bytes.EMPTY);
       }
 
-      final Bytes32 hashed = Hash.keccak256(recovered.get().getEncodedBytes());
-      final MutableBytes32 result = MutableBytes32.create();
-      hashed.slice(12).copyTo(result, 12);
+      final Bytes hashed = Hash.keccak256(recovered.get().getEncodedBytes());
+      final MutableBytes result = MutableBytes.create(32);
+      result.set(12, hashed.slice(12));
       return PrecompileContractResult.success(result);
     } catch (final IllegalArgumentException e) {
       return PrecompileContractResult.success(Bytes.EMPTY);

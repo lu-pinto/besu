@@ -67,6 +67,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import io.vertx.core.Vertx;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,7 +80,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public abstract class AbstractEngineNewPayloadTest extends AbstractScheduledApiTest {
 
   protected AbstractEngineNewPayload method;
-  protected Optional<Bytes32> maybeParentBeaconBlockRoot = Optional.empty();
+  protected Optional<Bytes> maybeParentBeaconBlockRoot = Optional.empty();
 
   public AbstractEngineNewPayloadTest() {}
 
@@ -393,7 +394,7 @@ public abstract class AbstractEngineNewPayloadTest extends AbstractScheduledApiT
         header.getExtraData() == null ? null : header.getExtraData().toHexString(),
         header.getReceiptsRoot(),
         header.getLogsBloom(),
-        header.getPrevRandao().map(Bytes32::toHexString).orElse("0x0"),
+        header.getPrevRandao().map(Bytes::toHexString).orElse("0x0"),
         txs,
         withdrawals,
         header.getBlobGasUsed().map(UnsignedLongParameter::new).orElse(null),

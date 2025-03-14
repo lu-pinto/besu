@@ -19,7 +19,6 @@ import org.hyperledger.besu.ethereum.trie.patricia.StoredMerklePatriciaTrie;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** Storage for use in a {@link StoredMerklePatriciaTrie}. */
 public interface MerkleStorage {
@@ -31,7 +30,7 @@ public interface MerkleStorage {
    * @param hash The hash for the content.
    * @return an {@code Optional} of the content mapped to the hash if it exists; otherwise empty
    */
-  Optional<Bytes> get(Bytes location, Bytes32 hash);
+  Optional<Bytes> get(Bytes location, Bytes hash);
 
   /**
    * Updates the content mapped to the specified hash, creating the mapping if one does not already
@@ -44,7 +43,7 @@ public interface MerkleStorage {
    * @param hash The hash for the content.
    * @param content The content to store.
    */
-  void put(Bytes location, Bytes32 hash, Bytes content);
+  void put(Bytes location, Bytes hash, Bytes content);
 
   /** Persist accumulated changes to underlying storage. */
   void commit();

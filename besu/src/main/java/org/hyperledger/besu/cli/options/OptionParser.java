@@ -111,7 +111,7 @@ public class OptionParser {
    * @return the string
    */
   public static String format(final Wei value) {
-    return format(value.toUInt256());
+    return format(UInt256.fromBytes(value));
   }
 
   /**

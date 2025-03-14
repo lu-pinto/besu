@@ -41,7 +41,6 @@ import java.util.Optional;
 import java.util.stream.LongStream;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -73,7 +72,7 @@ public class PrivacyQueriesTest {
 
   @Test
   public void matchingLogsReturnEmptyListForNonExistingBlockHash() {
-    final Hash blockHash = Hash.hash(Bytes32.random());
+    final Hash blockHash = Hash.hash(Bytes.random(32));
     final LogsQuery query = new LogsQuery.Builder().build();
 
     when(blockchainQueries.getBlockHeaderByHash(blockHash)).thenReturn(Optional.empty());
@@ -104,7 +103,7 @@ public class PrivacyQueriesTest {
   public void matchingLogsReturnsEmptyListWhenQueryDoesNotMatch() {
     final BlockHeader blockHeader = new BlockHeaderTestFixture().buildHeader();
     final Hash blockHash = blockHeader.getHash();
-    final LogTopic nonMatchingTopic = LogTopic.of(Bytes32.random());
+    final LogTopic nonMatchingTopic = LogTopic.of(Bytes.random(32));
     final LogsQuery query =
         new LogsQuery.Builder().topics(List.of(List.of(nonMatchingTopic))).build();
 
@@ -128,7 +127,7 @@ public class PrivacyQueriesTest {
   public void matchingLogsReturnsAllLogsThatMatchQuery() {
     final BlockHeader blockHeader = new BlockHeaderTestFixture().buildHeader();
     final Hash blockHash = blockHeader.getHash();
-    final LogTopic matchingTopic = LogTopic.of(Bytes32.random());
+    final LogTopic matchingTopic = LogTopic.of(Bytes.random(32));
     final LogsQuery query = new LogsQuery.Builder().topics(List.of(List.of(matchingTopic))).build();
 
     final List<PrivateTransactionMetadata> transactionMetadataList =
@@ -165,13 +164,13 @@ public class PrivacyQueriesTest {
 
   @Test
   public void matchingLogsByBlockRangeReturnsAllLogsThatMatchQuery() {
-    final LogTopic matchingTopic = LogTopic.of(Bytes32.random());
+    final LogTopic matchingTopic = LogTopic.of(Bytes.random(32));
     final LogsQuery query = new LogsQuery.Builder().topics(List.of(List.of(matchingTopic))).build();
 
     LongStream.rangeClosed(FROM_BLOCK_NUMBER, TO_BLOCK_NUMBER)
         .forEach(
             i -> {
-              final Hash blockHash = Hash.hash(Bytes32.random());
+              final Hash blockHash = Hash.hash(Bytes.random(32));
               final BlockHeader blockHeader = new BlockHeaderTestFixture().buildHeader();
 
               final List<PrivateTransactionMetadata> transactionMetadataList =

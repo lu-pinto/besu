@@ -20,8 +20,8 @@ import org.hyperledger.besu.ethereum.rlp.RLPException;
 import org.hyperledger.besu.ethereum.rlp.RLPInput;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import org.apache.tuweni.bytes.v2.DelegatingBytes;
 import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.DelegatingBytes;
 
 /** A BLS Signature * */
 public class BLSSignature extends DelegatingBytes {
@@ -35,7 +35,7 @@ public class BLSSignature extends DelegatingBytes {
    * @param bytes the bytes
    */
   protected BLSSignature(final Bytes bytes) {
-    super(bytes);
+    super(bytes, SIZE);
   }
 
   /**

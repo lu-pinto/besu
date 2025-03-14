@@ -24,15 +24,16 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class EnginePreparePayloadParameter {
   private final Optional<Hash> parentHash;
   private final Address feeRecipient;
-  private final Bytes32 prevRandao;
+  private final Bytes prevRandao;
   private final Optional<Long> timestamp;
   final List<WithdrawalParameter> withdrawals;
-  private final Optional<Bytes32> parentBeaconBlockRoot;
+  private final Optional<Bytes> parentBeaconBlockRoot;
 
   @JsonCreator
   public EnginePreparePayloadParameter(
@@ -41,7 +42,7 @@ public class EnginePreparePayloadParameter {
       @JsonProperty("timestamp") final Optional<UnsignedLongParameter> timestamp,
       @JsonProperty("prevRandao") final Optional<String> prevRandao,
       @JsonProperty("withdrawals") final Optional<List<WithdrawalParameter>> withdrawals,
-      @JsonProperty("parentBeaconBlockRoot") final Optional<Bytes32> parentBeaconBlockRoot) {
+      @JsonProperty("parentBeaconBlockRoot") final Optional<Bytes> parentBeaconBlockRoot) {
     this.parentHash = parentHash;
     this.feeRecipient = feeRecipient.orElse(Address.ZERO);
     this.timestamp = timestamp.map(UnsignedLongParameter::getValue);
@@ -62,7 +63,7 @@ public class EnginePreparePayloadParameter {
     return timestamp;
   }
 
-  public Bytes32 getPrevRandao() {
+  public Bytes getPrevRandao() {
     return prevRandao;
   }
 
@@ -70,7 +71,7 @@ public class EnginePreparePayloadParameter {
     return withdrawals;
   }
 
-  public Optional<Bytes32> getParentBeaconBlockRoot() {
+  public Optional<Bytes> getParentBeaconBlockRoot() {
     return parentBeaconBlockRoot;
   }
 }

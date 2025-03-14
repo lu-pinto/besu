@@ -42,11 +42,14 @@ public class KZGPointEvalPrecompiledContract implements PrecompiledContract {
   private static void loadLib() {
     CKZG4844JNI.loadNativeLibrary();
     Bytes fieldElementsPerBlob =
-        Bytes32.wrap(Words.intBytes(CKZG4844JNI.FIELD_ELEMENTS_PER_BLOB).xor(Bytes32.ZERO));
+        Words.intBytes(CKZG4844JNI.FIELD_ELEMENTS_PER_BLOB)
+            .mutableCopy()
+            .leftPad(32)
+            .xor(Bytes32.ZERO);
     Bytes blsModulus =
-        Bytes32.wrap(Bytes.of(CKZG4844JNI.BLS_MODULUS.toByteArray()).xor(Bytes32.ZERO));
+        Bytes.of(CKZG4844JNI.BLS_MODULUS.toByteArray()).mutableCopy().leftPad(32).xor(Bytes32.ZERO);
 
-    successResult = Bytes.concatenate(fieldElementsPerBlob, blsModulus);
+    successResult = Bytes.wrap(fieldElementsPerBlob, blsModulus);
   }
 
   /**
@@ -112,7 +115,7 @@ public class KZGPointEvalPrecompiledContract implements PrecompiledContract {
       return PrecompileContractResult.halt(
           null, Optional.of(ExceptionalHaltReason.PRECOMPILE_ERROR));
     }
-    Bytes32 versionedHash = Bytes32.wrap(input.slice(0, 32));
+    Bytes versionedHash = input.slice(0, 32);
     Bytes z = input.slice(32, 32);
     Bytes y = input.slice(64, 32);
     Bytes commitment = input.slice(96, 48);
@@ -123,7 +126,7 @@ public class KZGPointEvalPrecompiledContract implements PrecompiledContract {
     } else {
       byte[] hash = Hash.sha256(commitment).toArrayUnsafe();
       hash[0] = 0x01;
-      if (!versionedHash.equals(Bytes32.wrap(hash))) {
+      if (!versionedHash.equals(Bytes32.fromArray(hash))) {
         return PrecompileContractResult.halt(
             null, Optional.of(ExceptionalHaltReason.PRECOMPILE_ERROR));
       }
@@ -131,7 +134,10 @@ public class KZGPointEvalPrecompiledContract implements PrecompiledContract {
     try {
       boolean proved =
           CKZG4844JNI.verifyKzgProof(
-              commitment.toArray(), z.toArray(), y.toArray(), proof.toArray());
+              commitment.toArrayUnsafe(),
+              z.toArrayUnsafe(),
+              y.toArrayUnsafe(),
+              proof.toArrayUnsafe());
 
       if (proved) {
         return PrecompileContractResult.success(successResult);

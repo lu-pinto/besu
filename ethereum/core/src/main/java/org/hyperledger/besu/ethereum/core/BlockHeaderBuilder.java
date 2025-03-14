@@ -33,7 +33,6 @@ import java.util.Optional;
 import java.util.OptionalLong;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** A utility class for building block headers. */
 public class BlockHeaderBuilder {
@@ -69,7 +68,7 @@ public class BlockHeaderBuilder {
 
   private Wei baseFee = null;
 
-  private Bytes32 mixHashOrPrevRandao = null;
+  private Bytes mixHashOrPrevRandao = null;
 
   private BlockHeaderFunctions blockHeaderFunctions;
 
@@ -79,7 +78,7 @@ public class BlockHeaderBuilder {
 
   private Long blobGasUsed = null;
   private BlobGas excessBlobGas = null;
-  private Bytes32 parentBeaconBlockRoot = null;
+  private Bytes parentBeaconBlockRoot = null;
 
   public static BlockHeaderBuilder create() {
     return new BlockHeaderBuilder();
@@ -163,8 +162,8 @@ public class BlockHeaderBuilder {
       final BlockHeader parentHeader,
       final MiningConfiguration miningConfiguration,
       final long timestamp,
-      final Optional<Bytes32> maybePrevRandao,
-      final Optional<Bytes32> maybeParentBeaconBlockRoot) {
+      final Optional<Bytes> maybePrevRandao,
+      final Optional<Bytes> maybeParentBeaconBlockRoot) {
 
     final long newBlockNumber = parentHeader.getNumber() + 1;
     final long gasLimit =
@@ -192,8 +191,8 @@ public class BlockHeaderBuilder {
       baseFee = null;
     }
 
-    final Bytes32 prevRandao = maybePrevRandao.orElse(null);
-    final Bytes32 parentBeaconBlockRoot = maybeParentBeaconBlockRoot.orElse(null);
+    final Bytes prevRandao = maybePrevRandao.orElse(null);
+    final Bytes parentBeaconBlockRoot = maybeParentBeaconBlockRoot.orElse(null);
 
     return BlockHeaderBuilder.create()
         .parentHash(parentHeader.getHash())
@@ -440,7 +439,7 @@ public class BlockHeaderBuilder {
     return this;
   }
 
-  public BlockHeaderBuilder prevRandao(final Bytes32 prevRandao) {
+  public BlockHeaderBuilder prevRandao(final Bytes prevRandao) {
     if (prevRandao != null) {
       this.mixHashOrPrevRandao = prevRandao;
     }
@@ -467,7 +466,7 @@ public class BlockHeaderBuilder {
     return this;
   }
 
-  public BlockHeaderBuilder parentBeaconBlockRoot(final Bytes32 parentBeaconBlockRoot) {
+  public BlockHeaderBuilder parentBeaconBlockRoot(final Bytes parentBeaconBlockRoot) {
     this.parentBeaconBlockRoot = parentBeaconBlockRoot;
     return this;
   }

@@ -171,8 +171,7 @@ public class StorageSubCommand implements Runnable {
         final Bytes prefix,
         final Bytes key,
         final Bytes value) {
-      blockchainTransaction.put(
-          Bytes.concatenate(prefix, key).toArrayUnsafe(), value.toArrayUnsafe());
+      blockchainTransaction.put(Bytes.wrap(prefix, key).toArrayUnsafe(), value.toArrayUnsafe());
     }
   }
 }

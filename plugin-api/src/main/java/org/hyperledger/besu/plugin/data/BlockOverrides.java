@@ -24,14 +24,13 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** BlockOverrides represents the block overrides for a block. */
 public class BlockOverrides {
   private final Optional<Long> timestamp;
   private final Optional<Long> blockNumber;
   private final Optional<Hash> blockHash;
-  private final Optional<Bytes32> prevRandao;
+  private final Optional<Bytes> prevRandao;
   private final Optional<Long> gasLimit;
   private final Optional<Address> feeRecipient;
   private final Optional<Wei> baseFeePerGas;
@@ -62,7 +61,7 @@ public class BlockOverrides {
       final Optional<UnsignedLongParameter> timestamp,
       final Optional<UnsignedLongParameter> blockNumber,
       final Optional<Hash> blockHash,
-      final Optional<Bytes32> prevRandao,
+      final Optional<Bytes> prevRandao,
       final Optional<UnsignedLongParameter> gasLimit,
       final Optional<Address> feeRecipient,
       final Optional<Wei> baseFeePerGas,
@@ -130,7 +129,7 @@ public class BlockOverrides {
    *
    * @return the optional previous Randao
    */
-  public Optional<Bytes32> getPrevRandao() {
+  public Optional<Bytes> getPrevRandao() {
     return prevRandao;
   }
 
@@ -238,7 +237,7 @@ public class BlockOverrides {
     private Long timestamp;
     private Long blockNumber;
     private Hash blockHash;
-    private Bytes32 prevRandao;
+    private Bytes prevRandao;
     private Long gasLimit;
     private Address feeRecipient;
     private Wei baseFeePerGas;
@@ -291,7 +290,7 @@ public class BlockOverrides {
      * @param prevRandao the previous Randao to set
      * @return the builder instance
      */
-    public Builder prevRandao(final Bytes32 prevRandao) {
+    public Builder prevRandao(final Bytes prevRandao) {
       this.prevRandao = prevRandao;
       return this;
     }

@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,8 +67,8 @@ public class WorldStateProofProviderTest {
   @Test
   public void getProofWhenWorldStateAvailable() {
     final Hash addressHash = address.addressHash();
-    final MerkleTrie<Bytes32, Bytes> worldStateTrie = emptyWorldStateTrie();
-    final MerkleTrie<Bytes32, Bytes> storageTrie = emptyStorageTrie();
+    final MerkleTrie<Bytes, Bytes> worldStateTrie = emptyWorldStateTrie();
+    final MerkleTrie<Bytes, Bytes> storageTrie = emptyStorageTrie();
 
     final ForestWorldStateKeyValueStorage.Updater updater = worldStateKeyValueStorage.updater();
 
@@ -120,7 +119,7 @@ public class WorldStateProofProviderTest {
 
   @Test
   public void getProofWhenStateTrieAccountUnavailable() {
-    final MerkleTrie<Bytes32, Bytes> worldStateTrie = emptyWorldStateTrie();
+    final MerkleTrie<Bytes, Bytes> worldStateTrie = emptyWorldStateTrie();
 
     final Optional<WorldStateProof> accountProof =
         worldStateProofProvider.getAccountProof(
@@ -130,11 +129,11 @@ public class WorldStateProofProviderTest {
   }
 
   private void writeStorageValue(
-      final MerkleTrie<Bytes32, Bytes> storageTrie, final UInt256 key, final UInt256 value) {
+      final MerkleTrie<Bytes, Bytes> storageTrie, final UInt256 key, final UInt256 value) {
     storageTrie.put(storageKeyHash(key), encodeStorageValue(value));
   }
 
-  private Bytes32 storageKeyHash(final UInt256 storageKey) {
+  private Bytes storageKeyHash(final UInt256 storageKey) {
     return Hash.hash(storageKey);
   }
 
@@ -142,14 +141,14 @@ public class WorldStateProofProviderTest {
     return RLP.encode(out -> out.writeBytes(storageValue.toMinimalBytes()));
   }
 
-  private MerkleTrie<Bytes32, Bytes> emptyStorageTrie() {
+  private MerkleTrie<Bytes, Bytes> emptyStorageTrie() {
     return new StoredMerklePatriciaTrie<>(
         (location, hash) -> worldStateKeyValueStorage.getAccountStateTrieNode(hash),
         b -> b,
         b -> b);
   }
 
-  private MerkleTrie<Bytes32, Bytes> emptyWorldStateTrie() {
+  private MerkleTrie<Bytes, Bytes> emptyWorldStateTrie() {
     return new StoredMerklePatriciaTrie<>(
         (location, hash) -> worldStateKeyValueStorage.getAccountStorageTrieNode(hash),
         b -> b,

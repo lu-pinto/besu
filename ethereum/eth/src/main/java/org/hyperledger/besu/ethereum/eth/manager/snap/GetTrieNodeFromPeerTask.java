@@ -128,7 +128,7 @@ public class GetTrieNodeFromPeerTask extends AbstractPeerRequestTask<Map<Bytes, 
           } else {
             while (!nodeData.isEmpty() && i < list.size()) {
               Bytes bytes = nodeData.removeFirst();
-              nodeDataByPath.put(Bytes.concatenate(list.get(0), list.get(i)), bytes);
+              nodeDataByPath.put(Bytes.wrap(list.get(0), list.get(i)), bytes);
               i++;
             }
           }

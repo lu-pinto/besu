@@ -20,7 +20,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
-import org.apache.tuweni.bytes.v2.MutableBytes32;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 
 /** The Sign extend operation. */
 public class SignExtendOperation extends AbstractFixedCostOperation {
@@ -50,9 +50,9 @@ public class SignExtendOperation extends AbstractFixedCostOperation {
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes value0 = frame.popStackItem().trimLeadingZeros();
-    final Bytes value1 = Bytes32.leftPad(frame.popStackItem());
-
-    final MutableBytes32 result = MutableBytes32.create();
+    final Bytes stackItem = frame.popStackItem();
+    final Bytes value1 =
+        stackItem.size() >= 32 ? stackItem : frame.popStackItem().mutableCopy().leftPad(32);
 
     // Any value >= 31 imply an index <= 0, so no work to do (note that 0 itself is a valid index,
     // but copying the 0th byte to itself is only so useful).
@@ -68,10 +68,10 @@ public class SignExtendOperation extends AbstractFixedCostOperation {
       return signExtendSuccess;
     }
 
-    final int byteIndex = 31 - value0.toInt();
-    final byte toSet = value1.get(byteIndex) < 0 ? (byte) 0xFF : 0x00;
-    result.mutableSlice(0, byteIndex).fill(toSet);
-    value1.slice(byteIndex).copyTo(result, byteIndex);
+    final int byteIndex = 31 - value0Value;
+    final MutableBytes result =
+        value1.get(byteIndex) < 0 ? Bytes32.ZERO.mutableCopy().not() : Bytes32.ZERO.mutableCopy();
+    result.set(byteIndex, value1.slice(byteIndex));
     frame.pushStackItem(result);
 
     return signExtendSuccess;

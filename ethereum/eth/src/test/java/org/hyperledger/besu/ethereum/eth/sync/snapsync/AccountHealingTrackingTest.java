@@ -46,7 +46,6 @@ import java.util.stream.Collectors;
 
 import kotlin.collections.ArrayDeque;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -99,8 +98,8 @@ public class AccountHealingTrackingTest {
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(Hash.ZERO, MAX_RANGE, 10, Integer.MAX_VALUE);
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> slots =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> slots =
+        (TreeMap<Bytes, Bytes>)
             storageTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -148,8 +147,8 @@ public class AccountHealingTrackingTest {
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(Hash.ZERO, MAX_RANGE, 10, Integer.MAX_VALUE);
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> slots =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> slots =
+        (TreeMap<Bytes, Bytes>)
             storageTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -217,8 +216,8 @@ public class AccountHealingTrackingTest {
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(Hash.ZERO, MAX_RANGE, 1, Integer.MAX_VALUE);
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> slots =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> slots =
+        (TreeMap<Bytes, Bytes>)
             storageTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -257,8 +256,8 @@ public class AccountHealingTrackingTest {
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(Hash.ZERO, MAX_RANGE, 1, Integer.MAX_VALUE);
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> slots =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> slots =
+        (TreeMap<Bytes, Bytes>)
             storageTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(

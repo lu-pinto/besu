@@ -30,7 +30,6 @@ import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.junit.jupiter.api.Test;
 
@@ -51,7 +50,7 @@ class BaseFeeOperationTest {
     final MessageFrame frame = createMessageFrame(100, Optional.of(Wei.of(5L)));
     final Operation operation = new BaseFeeOperation(gasCalculator);
     final OperationResult result = operation.execute(frame, null);
-    verify(frame).pushStackItem(UInt256.fromBytes(Bytes32.leftPad(Words.longBytes(5L))));
+    verify(frame).pushStackItem(UInt256.fromBytes(Words.longBytes(5L)));
     assertSuccessResult(result);
   }
 

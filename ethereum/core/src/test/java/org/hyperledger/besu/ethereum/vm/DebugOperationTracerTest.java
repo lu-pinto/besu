@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.OptionalLong;
 import java.util.TreeMap;
 
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.assertj.core.api.Assertions;
@@ -129,9 +130,9 @@ class DebugOperationTracerTest {
   @Test
   void shouldRecordMemoryWhenEnabled() {
     final MessageFrame frame = validMessageFrame();
-    final Bytes32 word1 = Bytes32.fromHexString("0x01");
-    final Bytes32 word2 = Bytes32.fromHexString("0x02");
-    final Bytes32 word3 = Bytes32.fromHexString("0x03");
+    final Bytes word1 = Bytes32.fromHexString("0x01");
+    final Bytes word2 = Bytes32.fromHexString("0x02");
+    final Bytes word3 = Bytes32.fromHexString("0x03");
     frame.writeMemory(0, 32, word1);
     frame.writeMemory(32, 32, word2);
     frame.writeMemory(64, 32, word3);
@@ -255,9 +256,9 @@ class DebugOperationTracerTest {
     updatedStorage.put(UInt256.ZERO, UInt256.valueOf(233));
     updatedStorage.put(UInt256.ONE, UInt256.valueOf(2424));
     when(account.getUpdatedStorage()).thenReturn(updatedStorage);
-    final Bytes32 word1 = Bytes32.fromHexString("0x01");
-    final Bytes32 word2 = Bytes32.fromHexString("0x02");
-    final Bytes32 word3 = Bytes32.fromHexString("0x03");
+    final Bytes word1 = Bytes32.fromHexString("0x01");
+    final Bytes word2 = Bytes32.fromHexString("0x02");
+    final Bytes word3 = Bytes32.fromHexString("0x03");
     frame.writeMemory(0, 32, word1);
     frame.writeMemory(32, 32, word2);
     frame.writeMemory(64, 32, word3);

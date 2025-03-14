@@ -78,7 +78,7 @@ public class PrivateStateRehydration {
       LOG.debug("Flexible groups must have a group id.");
       return;
     }
-    final Bytes32 privacyGroupId = Bytes32.wrap(maybeGroupId.get());
+    final Bytes privacyGroupId = Bytes32.fromBytes(maybeGroupId.get(), 0);
 
     LOG.debug("Rehydrating privacy group {}", privacyGroupId.toBase64String());
 
@@ -213,7 +213,7 @@ public class PrivateStateRehydration {
   }
 
   protected void rehydratePrivacyGroupHeadBlockMap(
-      final Bytes32 privacyGroupId,
+      final Bytes privacyGroupId,
       final Hash hashOfLastBlockWithPmt,
       final Blockchain currentBlockchain,
       final long from,

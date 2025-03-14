@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class ExtensionNode<V> implements Node<V> {
 
@@ -41,7 +40,7 @@ public class ExtensionNode<V> implements Node<V> {
   private final Node<V> child;
   private final NodeFactory<V> nodeFactory;
   private WeakReference<Bytes> rlp;
-  private SoftReference<Bytes32> hash;
+  private SoftReference<Bytes> hash;
   private boolean dirty = false;
   private boolean needHeal = false;
 
@@ -136,22 +135,22 @@ public class ExtensionNode<V> implements Node<V> {
   }
 
   @Override
-  public Bytes32 getHash() {
+  public Bytes getHash() {
     if (hash != null) {
-      final Bytes32 hashed = hash.get();
+      final Bytes hashed = hash.get();
       if (hashed != null) {
         return hashed;
       }
     }
     final Bytes rlp = getEncodedBytes();
-    final Bytes32 hashed = keccak256(rlp);
+    final Bytes hashed = keccak256(rlp);
     hash = new SoftReference<>(hashed);
     return hashed;
   }
 
   public Node<V> replaceChild(final Node<V> updatedChild) {
     // collapse this extension - if the child is a branch, it will create a new extension
-    return updatedChild.replacePath(Bytes.concatenate(path, updatedChild.getPath()));
+    return updatedChild.replacePath(Bytes.wrap(path, updatedChild.getPath()));
   }
 
   @Override

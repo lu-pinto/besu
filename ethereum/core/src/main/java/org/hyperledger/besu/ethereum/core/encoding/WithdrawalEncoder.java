@@ -19,6 +19,7 @@ import org.hyperledger.besu.ethereum.rlp.RLP;
 import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 
 import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.units.bigints.UInt64;
 
 public class WithdrawalEncoder {
 
@@ -27,7 +28,7 @@ public class WithdrawalEncoder {
     rlpOutput.writeBigIntegerScalar(withdrawal.getIndex().toBigInteger());
     rlpOutput.writeBigIntegerScalar(withdrawal.getValidatorIndex().toBigInteger());
     rlpOutput.writeBytes(withdrawal.getAddress());
-    rlpOutput.writeUInt64Scalar(withdrawal.getAmount());
+    rlpOutput.writeUInt64Scalar(UInt64.fromBytes(withdrawal.getAmount()));
     rlpOutput.endList();
   }
 

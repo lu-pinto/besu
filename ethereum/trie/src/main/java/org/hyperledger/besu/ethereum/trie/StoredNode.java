@@ -20,15 +20,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class StoredNode<V> implements Node<V> {
   private final NodeFactory<V> nodeFactory;
   private final Bytes location;
-  private final Bytes32 hash;
+  private final Bytes hash;
   private Node<V> loaded;
 
-  public StoredNode(final NodeFactory<V> nodeFactory, final Bytes location, final Bytes32 hash) {
+  public StoredNode(final NodeFactory<V> nodeFactory, final Bytes location, final Bytes hash) {
     this.nodeFactory = nodeFactory;
     this.location = location;
     this.hash = hash;
@@ -116,7 +115,7 @@ public class StoredNode<V> implements Node<V> {
   }
 
   @Override
-  public Bytes32 getHash() {
+  public Bytes getHash() {
     return hash;
   }
 

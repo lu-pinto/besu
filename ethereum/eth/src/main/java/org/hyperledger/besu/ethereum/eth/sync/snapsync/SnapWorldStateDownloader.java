@@ -47,7 +47,6 @@ import java.util.function.Function;
 import java.util.function.IntSupplier;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,7 +154,7 @@ public class SnapWorldStateDownloader implements WorldStateDownloader {
               ethContext,
               syncDurationMetrics);
 
-      final Map<Bytes32, Bytes32> ranges = RangeManager.generateAllRanges(16);
+      final Map<Bytes, Bytes> ranges = RangeManager.generateAllRanges(16);
       snapsyncMetricsManager.initRange(ranges);
 
       final List<AccountRangeDataRequest> currentAccountRange =

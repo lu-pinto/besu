@@ -22,7 +22,6 @@ import org.hyperledger.besu.plugin.data.BlockHeader;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class NonBesuBlockHeader implements BlockHeader {
 
@@ -135,7 +134,7 @@ public class NonBesuBlockHeader implements BlockHeader {
   }
 
   @Override
-  public Optional<? extends Bytes32> getParentBeaconBlockRoot() {
+  public Optional<? extends Bytes> getParentBeaconBlockRoot() {
     return Optional.empty();
   }
 }

@@ -75,7 +75,7 @@ public class TransactionAnnouncementDecoder {
     input.enterList();
 
     final List<TransactionType> types = new ArrayList<>();
-    final byte[] bytes = input.readBytes().toArray();
+    final byte[] bytes = input.readBytes().toArrayUnsafe();
     for (final byte b : bytes) {
       types.add(b == 0 ? TransactionType.FRONTIER : TransactionType.of(b));
     }

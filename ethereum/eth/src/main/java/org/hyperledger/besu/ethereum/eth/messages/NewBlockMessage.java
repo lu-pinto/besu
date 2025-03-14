@@ -109,7 +109,7 @@ public class NewBlockMessage extends AbstractMessageData {
     public void writeTo(final RLPOutput out) {
       out.startList();
       block.writeTo(out);
-      out.writeUInt256Scalar(totalDifficulty);
+      out.writeUInt256Scalar(UInt256.fromBytes(totalDifficulty));
       out.endList();
     }
 

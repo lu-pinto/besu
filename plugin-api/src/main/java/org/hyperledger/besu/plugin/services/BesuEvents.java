@@ -26,7 +26,7 @@ import org.hyperledger.besu.plugin.data.SyncStatus;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * This service allows plugins to attach to various events during the normal operation of Besu.
@@ -157,7 +157,7 @@ public interface BesuEvents extends BesuService {
    * @param logListener The listener that will accept the log.
    * @return The id of the listener to be used to remove the listener.
    */
-  long addLogListener(List<Address> addresses, List<List<Bytes32>> topics, LogListener logListener);
+  long addLogListener(List<Address> addresses, List<List<Bytes>> topics, LogListener logListener);
 
   /**
    * Remove the log listener with the associated id.

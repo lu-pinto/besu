@@ -102,7 +102,7 @@ public class SECP256K1 extends AbstractSECP256 {
   }
 
   @Override
-  public SECPSignature sign(final Bytes32 dataHash, final KeyPair keyPair) {
+  public SECPSignature sign(final Bytes dataHash, final KeyPair keyPair) {
     if (useNative) {
       return signNative(dataHash, keyPair);
     } else {
@@ -132,7 +132,7 @@ public class SECP256K1 extends AbstractSECP256 {
 
   @Override
   public Optional<SECPPublicKey> recoverPublicKeyFromSignature(
-      final Bytes32 dataHash, final SECPSignature signature) {
+      final Bytes dataHash, final SECPSignature signature) {
     if (useNative) {
       Optional<SECPPublicKey> result = recoverFromSignatureNative(dataHash, signature);
       if (result.isEmpty()) {
@@ -150,7 +150,7 @@ public class SECP256K1 extends AbstractSECP256 {
     return CURVE_NAME;
   }
 
-  private SECPSignature signNative(final Bytes32 dataHash, final KeyPair keyPair) {
+  private SECPSignature signNative(final Bytes dataHash, final KeyPair keyPair) {
     final LibSecp256k1.secp256k1_ecdsa_recoverable_signature signature =
         new secp256k1_ecdsa_recoverable_signature();
     // sign in internal form
@@ -175,8 +175,8 @@ public class SECP256K1 extends AbstractSECP256 {
     final byte[] sig = compactSig.array();
 
     // wrap in signature object
-    final Bytes32 r = Bytes32.wrap(sig, 0);
-    final Bytes32 s = Bytes32.wrap(sig, 32);
+    final Bytes r = Bytes32.fromArray(sig, 0);
+    final Bytes s = Bytes32.fromArray(sig, 32);
     return SECPSignature.create(
         r.toUnsignedBigInteger(), s.toUnsignedBigInteger(), (byte) recId.getValue(), curveOrder);
   }
@@ -194,7 +194,7 @@ public class SECP256K1 extends AbstractSECP256 {
 
     // translate key
     final LibSecp256k1.secp256k1_pubkey _pub = new secp256k1_pubkey();
-    final Bytes encodedPubKey = Bytes.concatenate(Bytes.of(0x04), pub.getEncodedBytes());
+    final Bytes encodedPubKey = Bytes.wrap(Bytes.of(0x04), pub.getEncodedBytes());
     if (LibSecp256k1.secp256k1_ec_pubkey_parse(
             LibSecp256k1.CONTEXT, _pub, encodedPubKey.toArrayUnsafe(), encodedPubKey.size())
         == 0) {
@@ -208,7 +208,7 @@ public class SECP256K1 extends AbstractSECP256 {
 
   @Override
   protected BigInteger recoverFromSignature(
-      final int recId, final BigInteger r, final BigInteger s, final Bytes32 dataHash) {
+      final int recId, final BigInteger r, final BigInteger s, final Bytes dataHash) {
     if (useNative) {
       return recoverFromSignatureNative(dataHash, new SECPSignature(r, s, (byte) recId))
           .map(key -> new BigInteger(1, key.getEncoded()))
@@ -219,7 +219,7 @@ public class SECP256K1 extends AbstractSECP256 {
   }
 
   private Optional<SECPPublicKey> recoverFromSignatureNative(
-      final Bytes32 dataHash, final SECPSignature signature) {
+      final Bytes dataHash, final SECPSignature signature) {
 
     // parse the sig
     final LibSecp256k1.secp256k1_ecdsa_recoverable_signature parsedSignature =

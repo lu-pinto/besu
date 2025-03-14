@@ -91,7 +91,7 @@ final class EncryptedMessage {
     // Perform the decryption.
     final ECIESEncryptionEngine decryptor =
         ECIESEncryptionEngine.forDecryption(nodeKey, ephPubKey, iv);
-    return decryptor.decrypt(encrypted, msgBytes.slice(0, 2).toArray());
+    return decryptor.decrypt(encrypted, msgBytes.slice(0, 2).toArrayUnsafe());
   }
 
   /**
@@ -120,9 +120,9 @@ final class EncryptedMessage {
     int offset = 0;
     // Set the first byte as 0x04 to specify it's an uncompressed key.
     answer.set(offset, (byte) 0x04);
-    ephPubKey.getEncodedBytes().copyTo(answer, offset += 1);
-    iv.copyTo(answer, offset += ECIESHandshaker.PUBKEY_LENGTH);
-    encrypted.copyTo(answer, offset + iv.size());
+    answer.set(offset += 1, ephPubKey.getEncodedBytes());
+    answer.set(offset += ECIESHandshaker.PUBKEY_LENGTH, iv);
+    answer.set(offset + iv.size(), encrypted);
     return answer;
   }
 
@@ -156,14 +156,14 @@ final class EncryptedMessage {
     // Set the first byte as 0x04 to specify it's an uncompressed key.
     answer.set(2, (byte) 0x04);
     int offset = 0;
-    ephPubKey.getEncodedBytes().copyTo(answer, offset += 3);
-    iv.copyTo(answer, offset += ECIESHandshaker.PUBKEY_LENGTH);
-    encrypted.copyTo(answer, offset + IV_SIZE);
+    answer.set(offset += 3, ephPubKey.getEncodedBytes());
+    answer.set(offset += ECIESHandshaker.PUBKEY_LENGTH, iv);
+    answer.set(offset + IV_SIZE, encrypted);
     return answer;
   }
 
   private static Bytes addPadding(final Bytes message) {
-    final byte[] raw = message.toArray();
+    final byte[] raw = message.toArrayUnsafe();
     final int padding = 100 + RANDOM.nextInt(200);
     final byte[] paddingBytes = new byte[padding];
     RANDOM.nextBytes(paddingBytes);

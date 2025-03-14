@@ -24,7 +24,6 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.google.common.base.MoreObjects;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 public class DebugStorageRangeAtResult implements JsonRpcResult {
@@ -33,8 +32,8 @@ public class DebugStorageRangeAtResult implements JsonRpcResult {
   private final String nextKey;
 
   public DebugStorageRangeAtResult(
-      final NavigableMap<Bytes32, AccountStorageEntry> entries,
-      final Bytes32 nextKey,
+      final NavigableMap<Bytes, AccountStorageEntry> entries,
+      final Bytes nextKey,
       final boolean shortValues) {
     if (shortValues) {
       entries.forEach(

@@ -73,7 +73,6 @@ import java.util.OptionalLong;
 
 import com.google.common.collect.Range;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -293,7 +292,7 @@ public class MergeBesuControllerBuilderTest {
 
   private BlockHeader finalizedBlockHeader() {
     final long blockNumber = 42;
-    final Hash magicHash = Hash.wrap(Bytes32.leftPad(Bytes.ofUnsignedInt(42)));
+    final Hash magicHash = Hash.wrap(Bytes.ofUnsignedInt(42).mutableCopy().leftPad(32));
 
     return headerGenerator
         .difficulty(Difficulty.MAX_VALUE)

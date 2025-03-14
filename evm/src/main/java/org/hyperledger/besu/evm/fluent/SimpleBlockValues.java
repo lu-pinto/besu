@@ -26,7 +26,7 @@ import org.apache.tuweni.bytes.v2.Bytes32;
 public class SimpleBlockValues implements BlockValues {
 
   Bytes difficultyBytes = Bytes32.ZERO;
-  Bytes32 mixHashOrPrevRandao = Bytes32.ZERO;
+  Bytes mixHashOrPrevRandao = Bytes32.ZERO;
   Optional<Wei> baseFee = Optional.empty();
   long number = 1;
   long timestamp = 1;
@@ -50,7 +50,7 @@ public class SimpleBlockValues implements BlockValues {
   }
 
   @Override
-  public Bytes32 getMixHashOrPrevRandao() {
+  public Bytes getMixHashOrPrevRandao() {
     return mixHashOrPrevRandao;
   }
 
@@ -59,7 +59,7 @@ public class SimpleBlockValues implements BlockValues {
    *
    * @param mixHashOrPrevRandao new mixHash or prevRandao
    */
-  public void setMixHashOrPrevRandao(final Bytes32 mixHashOrPrevRandao) {
+  public void setMixHashOrPrevRandao(final Bytes mixHashOrPrevRandao) {
     this.mixHashOrPrevRandao = mixHashOrPrevRandao;
   }
 

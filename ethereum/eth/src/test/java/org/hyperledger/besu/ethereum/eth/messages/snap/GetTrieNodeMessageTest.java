@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -31,11 +30,11 @@ public final class GetTrieNodeMessageTest {
 
   @Test
   public void roundTripTest() {
-    final Hash rootHash = Hash.wrap(Bytes32.random());
+    final Hash rootHash = Hash.wrap(Bytes.random(32));
     final List<Bytes> paths = new ArrayList<>();
     final int hashCount = 20;
     for (int i = 0; i < hashCount; ++i) {
-      paths.add(Bytes32.random());
+      paths.add(Bytes.random(32));
     }
 
     // Perform round-trip transformation

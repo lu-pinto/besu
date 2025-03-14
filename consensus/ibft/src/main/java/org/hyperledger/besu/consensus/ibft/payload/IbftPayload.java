@@ -26,6 +26,6 @@ public abstract class IbftPayload implements Payload {
 
   @Override
   public Hash hashForSignature() {
-    return Hash.hash(Bytes.concatenate(Bytes.of(getMessageType()), encoded()));
+    return Hash.hash(Bytes.wrap(Bytes.of(getMessageType()), encoded()));
   }
 }

@@ -21,7 +21,6 @@ import org.hyperledger.besu.ethereum.trie.patricia.LeafNode;
 import java.util.function.BiConsumer;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class PersistVisitor<V> implements NodeVisitor<V> {
 
@@ -29,9 +28,9 @@ public class PersistVisitor<V> implements NodeVisitor<V> {
   private int extensionNodeCount = 0;
   private int leafNodeCount = 0;
 
-  private final BiConsumer<Bytes32, Bytes> writer;
+  private final BiConsumer<Bytes, Bytes> writer;
 
-  public PersistVisitor(final BiConsumer<Bytes32, Bytes> writer) {
+  public PersistVisitor(final BiConsumer<Bytes, Bytes> writer) {
     this.writer = writer;
   }
 

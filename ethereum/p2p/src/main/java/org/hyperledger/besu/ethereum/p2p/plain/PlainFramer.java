@@ -49,6 +49,6 @@ public class PlainFramer extends Framer {
     LOG.trace("Framing Message");
     output.writeBytes(
         MessageHandler.buildMessage(MessageType.DATA, message.getCode(), message.getData())
-            .toArray());
+            .toArrayUnsafe());
   }
 }

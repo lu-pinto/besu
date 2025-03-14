@@ -106,7 +106,7 @@ public class TrieIterator<V> implements PathNodeVisitor<V> {
     return node;
   }
 
-  private Bytes32 keyHash() {
+  private Bytes keyHash() {
     final Iterator<Bytes> iterator = paths.descendingIterator();
     Bytes fullPath = iterator.next();
     while (iterator.hasNext()) {
@@ -114,12 +114,12 @@ public class TrieIterator<V> implements PathNodeVisitor<V> {
     }
     return fullPath.isZero()
         ? Bytes32.ZERO
-        : Bytes32.wrap(CompactEncoding.pathToBytes(fullPath), 0);
+        : Bytes32.fromBytes(CompactEncoding.pathToBytes(fullPath), 0);
   }
 
   public interface LeafHandler<V> {
 
-    State onLeaf(Bytes32 keyHash, Node<V> node);
+    State onLeaf(Bytes keyHash, Node<V> node);
   }
 
   public enum State {

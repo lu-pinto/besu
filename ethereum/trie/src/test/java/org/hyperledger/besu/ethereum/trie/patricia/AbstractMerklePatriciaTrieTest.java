@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -92,11 +91,11 @@ public abstract class AbstractMerklePatriciaTrieTest {
     final Bytes key = Bytes.of(1);
     final String value1 = "value1";
     trie.put(key, value1);
-    final Bytes32 hash1 = trie.getRootHash();
+    final Bytes hash1 = trie.getRootHash();
 
     final String value2 = "value2";
     trie.put(key, value2);
-    final Bytes32 hash2 = trie.getRootHash();
+    final Bytes hash2 = trie.getRootHash();
 
     assertThat(hash1).isNotEqualTo(hash2);
 
@@ -285,19 +284,19 @@ public abstract class AbstractMerklePatriciaTrieTest {
 
     final String value1 = "value1";
     trie.put(key1, value1);
-    final Bytes32 hash1 = trie.getRootHash();
+    final Bytes hash1 = trie.getRootHash();
 
     final String value2 = "value2";
     trie.put(key2, value2);
     final String value3 = "value3";
     trie.put(key3, value3);
-    final Bytes32 hash2 = trie.getRootHash();
+    final Bytes hash2 = trie.getRootHash();
 
     assertThat(hash1).isNotEqualTo(hash2);
 
     final String value4 = "value4";
     trie.put(key1, value4);
-    final Bytes32 hash3 = trie.getRootHash();
+    final Bytes hash3 = trie.getRootHash();
 
     assertThat(hash1).isNotEqualTo(hash3);
     assertThat(hash2).isNotEqualTo(hash3);
@@ -324,7 +323,7 @@ public abstract class AbstractMerklePatriciaTrieTest {
     trie.commit(merkleStorage::put);
 
     // Ensure the extension branch can be loaded correct with its inlined child.
-    final Bytes32 rootHash = trie.getRootHash();
+    final Bytes rootHash = trie.getRootHash();
     final StoredMerklePatriciaTrie<Bytes, Bytes> newTrie =
         new StoredMerklePatriciaTrie<>(merkleStorage::get, rootHash, b -> b, b -> b);
     newTrie.get(Bytes.fromHexString("0x0401"));
@@ -344,7 +343,7 @@ public abstract class AbstractMerklePatriciaTrieTest {
     trie.put(Bytes.fromHexString("0x0800"), Bytes.of(2));
     trie.commit(merkleStorage::put);
 
-    final Bytes32 rootHash = trie.getRootHash();
+    final Bytes rootHash = trie.getRootHash();
     final StoredMerklePatriciaTrie<Bytes, Bytes> newTrie =
         new StoredMerklePatriciaTrie<>(merkleStorage::get, rootHash, b -> b, b -> b);
 
@@ -386,8 +385,8 @@ public abstract class AbstractMerklePatriciaTrieTest {
     final List<Node<Bytes>> nodes =
         TrieNodeDecoder.decodeNodes(null, valueWithProof.getProofRelatedNodes().get(1));
 
-    assertThat(new String(nodes.get(1).getValue().get().toArray(), UTF_8)).isEqualTo(value1);
-    assertThat(new String(nodes.get(2).getValue().get().toArray(), UTF_8)).isEqualTo(value2);
+    assertThat(new String(nodes.get(1).getValue().get().toArrayUnsafe(), UTF_8)).isEqualTo(value1);
+    assertThat(new String(nodes.get(2).getValue().get().toArrayUnsafe(), UTF_8)).isEqualTo(value2);
   }
 
   @Test
@@ -425,7 +424,7 @@ public abstract class AbstractMerklePatriciaTrieTest {
         TrieNodeDecoder.decodeNodes(null, valueWithProof.getProofRelatedNodes().get(0));
 
     assertThat(nodes.size()).isEqualTo(1);
-    final String nodeValue = new String(nodes.get(0).getValue().get().toArray(), UTF_8);
+    final String nodeValue = new String(nodes.get(0).getValue().get().toArrayUnsafe(), UTF_8);
     assertThat(nodeValue).isEqualTo(value1);
   }
 }

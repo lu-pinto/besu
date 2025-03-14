@@ -19,7 +19,6 @@ import org.hyperledger.besu.datatypes.Address;
 import java.util.List;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** A Log entry from a transaction execution. */
 public interface Log {
@@ -36,7 +35,7 @@ public interface Log {
    *
    * @return The list, possibly zero length, of log topics.
    */
-  List<? extends Bytes32> getTopics();
+  List<? extends Bytes> getTopics();
 
   /**
    * The data, of possibly unlimited length, for this log entry.

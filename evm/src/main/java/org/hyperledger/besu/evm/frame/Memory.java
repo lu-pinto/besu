@@ -20,7 +20,6 @@ import java.util.Arrays;
 
 import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
-import org.apache.tuweni.bytes.v2.MutableBytes;
 
 /**
  * An EVM memory implementation.
@@ -120,7 +119,7 @@ public class Memory {
       return;
     }
     final long lastByteIndex = Math.addExact(offset, numBytes);
-    final long lastWordRequired = ((lastByteIndex - 1) / Bytes32.SIZE);
+    final long lastWordRequired = ((lastByteIndex - 1) / 32);
     maybeExpandCapacity((int) lastWordRequired + 1);
   }
 
@@ -132,7 +131,7 @@ public class Memory {
   private void maybeExpandCapacity(final int newActiveWords) {
     if (activeWords >= newActiveWords) return;
 
-    int neededSize = newActiveWords * Bytes32.SIZE;
+    int neededSize = newActiveWords * 32;
     if (neededSize > memBytes.length) {
       int newSize = Math.max(neededSize, memBytes.length * 2);
       byte[] newMem = new byte[newSize];
@@ -168,7 +167,7 @@ public class Memory {
    * @return The current number of active bytes stored in memory.
    */
   int getActiveBytes() {
-    return activeWords * Bytes32.SIZE;
+    return activeWords * 32;
   }
 
   /**
@@ -241,20 +240,20 @@ public class Memory {
    * @return A fresh copy of the bytes from memory starting at {@code location} and extending {@code
    *     numBytes}.
    */
-  public MutableBytes getMutableBytes(final long location, final long numBytes) {
+  public Bytes getMutableBytes(final long location, final long numBytes) {
     // Note: if length == 0, we don't require any memory expansion, whatever location is. So
     // we must call asByteIndex(location) after this check so as it doesn't throw if the location
     // is too big but the length is 0 (which is somewhat nonsensical, but is exercise by some
     // tests).
     final int length = asByteLength(numBytes);
     if (length == 0) {
-      return MutableBytes.EMPTY;
+      return Bytes.EMPTY;
     }
 
     final int start = asByteIndex(location);
 
     ensureCapacityForBytes(start, length);
-    return MutableBytes.wrap(memBytes, start, length);
+    return Bytes.wrap(memBytes, start, length);
   }
 
   /**
@@ -415,10 +414,10 @@ public class Memory {
    * @param location The memory location the 256-bit word begins at.
    * @return a copy of the 32-bytes word that begins at the specified memory location.
    */
-  public Bytes32 getWord(final long location) {
+  public Bytes getWord(final long location) {
     final int start = asByteIndex(location);
-    ensureCapacityForBytes(start, Bytes32.SIZE);
-    return Bytes32.wrap(Arrays.copyOfRange(memBytes, start, start + Bytes32.SIZE));
+    ensureCapacityForBytes(start, 32);
+    return Bytes32.fromArray(Arrays.copyOfRange(memBytes, start, start + 32));
   }
 
   /**
@@ -430,10 +429,10 @@ public class Memory {
    * @param location the location at which to start setting the bytes.
    * @param bytes the 32 bytes to copy at {@code location}.
    */
-  public void setWord(final long location, final Bytes32 bytes) {
+  public void setWord(final long location, final Bytes bytes) {
     final int start = asByteIndex(location);
-    ensureCapacityForBytes(start, Bytes32.SIZE);
-    System.arraycopy(bytes.toArrayUnsafe(), 0, memBytes, start, Bytes32.SIZE);
+    ensureCapacityForBytes(start, 32);
+    System.arraycopy(bytes.toArrayUnsafe(), 0, memBytes, start, 32);
   }
 
   /**

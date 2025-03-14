@@ -79,7 +79,7 @@ public class PrivateBlockTracer {
                   .getProtocolSpec(header)
                   .getBlockHashProcessor()
                   .createBlockHashLookup(blockchain, header),
-              Bytes32.wrap(Bytes.fromBase64String(privacyGroupId)));
+              Bytes32.fromBytes(Bytes.fromBase64String(privacyGroupId), 0));
 
       final List<TraceFrame> traceFrames = tracer.copyTraceFrames();
       tracer.reset();

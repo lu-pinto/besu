@@ -22,7 +22,6 @@ import java.util.List;
 
 import kotlin.collections.ArrayDeque;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +32,7 @@ public final class TrieNodeMessageTest {
     final List<Bytes> nodes = new ArrayList<>();
     final int hashCount = 20;
     for (int i = 0; i < hashCount; ++i) {
-      nodes.add(Bytes32.random());
+      nodes.add(Bytes.random(32));
     }
 
     // Perform round-trip transformation

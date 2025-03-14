@@ -28,7 +28,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Stopwatch;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** Benchmark secp256k1 public key extraction */
 public class Secp256k1Benchmark extends BenchmarkExecutor {
@@ -53,7 +52,7 @@ public class Secp256k1Benchmark extends BenchmarkExecutor {
     final KeyPair keyPair = signatureAlgorithm.createKeyPair(privateKey);
 
     final Bytes data = Bytes.wrap("This is an example of a signed message.".getBytes(UTF_8));
-    final Bytes32 dataHash = keccak256(data);
+    final Bytes dataHash = keccak256(data);
     final SECPSignature signature = signatureAlgorithm.sign(dataHash, keyPair);
     for (int i = 0; i < warmup; i++) {
       signatureAlgorithm.recoverPublicKeyFromSignature(dataHash, signature);

@@ -41,7 +41,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,13 +147,13 @@ public class GetBodiesFromPeerTask extends AbstractPeerRequestTask<List<Block>> 
   }
 
   static class BodyIdentifier {
-    private final Bytes32 transactionsRoot;
-    private final Bytes32 ommersHash;
-    private final Bytes32 withdrawalsRoot;
+    private final Bytes transactionsRoot;
+    private final Bytes ommersHash;
+    private final Bytes withdrawalsRoot;
 
     // TODO should requestsHash be included in this?
     public BodyIdentifier(
-        final Bytes32 transactionsRoot, final Bytes32 ommersHash, final Bytes32 withdrawalsRoot) {
+        final Bytes transactionsRoot, final Bytes ommersHash, final Bytes withdrawalsRoot) {
       this.transactionsRoot = transactionsRoot;
       this.ommersHash = ommersHash;
       this.withdrawalsRoot = withdrawalsRoot;

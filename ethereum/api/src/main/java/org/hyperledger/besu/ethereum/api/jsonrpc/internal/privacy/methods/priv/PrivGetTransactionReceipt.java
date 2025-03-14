@@ -39,7 +39,6 @@ import org.hyperledger.besu.ethereum.rlp.RLP;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,7 +162,7 @@ public class PrivGetTransactionReceipt implements JsonRpcMethod {
       final Hash blockHash,
       final PrivateTransaction privateTransaction) {
     final Bytes rlpEncoded = RLP.encode(privateTransaction::writeTo);
-    final Bytes32 txHash = org.hyperledger.besu.crypto.Hash.keccak256(rlpEncoded);
+    final Bytes txHash = org.hyperledger.besu.crypto.Hash.keccak256(rlpEncoded);
 
     return privateStateStorage.getTransactionReceipt(blockHash, txHash);
   }

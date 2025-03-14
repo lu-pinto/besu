@@ -34,7 +34,6 @@ public class DepositLogDecoder {
         Bytes.wrap((byte[]) eventValues.getNonIndexedValues().get(3).getValue());
     final Bytes rawIndex = Bytes.wrap((byte[]) eventValues.getNonIndexedValues().get(4).getValue());
 
-    return Bytes.concatenate(
-        rawPublicKey, rawWithdrawalCredential, rawAmount, rawSignature, rawIndex);
+    return Bytes.wrap(rawPublicKey, rawWithdrawalCredential, rawAmount, rawSignature, rawIndex);
   }
 }

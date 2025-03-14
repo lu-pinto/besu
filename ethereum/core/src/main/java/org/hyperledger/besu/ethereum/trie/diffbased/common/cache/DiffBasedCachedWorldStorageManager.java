@@ -39,7 +39,7 @@ import java.util.function.Function;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,12 +57,12 @@ public abstract class DiffBasedCachedWorldStorageManager implements StorageSubsc
           .build();
 
   private final DiffBasedWorldStateKeyValueStorage rootWorldStateStorage;
-  private final Map<Bytes32, DiffBasedCachedWorldView> cachedWorldStatesByHash;
+  private final Map<Bytes, DiffBasedCachedWorldView> cachedWorldStatesByHash;
 
   private DiffBasedCachedWorldStorageManager(
       final DiffBasedWorldStateProvider archive,
       final DiffBasedWorldStateKeyValueStorage worldStateKeyValueStorage,
-      final Map<Bytes32, DiffBasedCachedWorldView> cachedWorldStatesByHash,
+      final Map<Bytes, DiffBasedCachedWorldView> cachedWorldStatesByHash,
       final EvmConfiguration evmConfiguration,
       final WorldStateConfig worldStateConfig) {
     worldStateKeyValueStorage.subscribe(this);

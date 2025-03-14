@@ -38,8 +38,7 @@ public class SnapCommitVisitorTest {
     final ArrayList<Node<Bytes>> children = new ArrayList<>();
     for (int i = 0; i < 16; i++) {
       children.add(
-          new StoredNode<>(
-              storedNodeFactory, Bytes.concatenate(Bytes.of(0x00), Bytes.of(i)), Hash.ZERO));
+          new StoredNode<>(storedNodeFactory, Bytes.wrap(Bytes.of(0x00), Bytes.of(i)), Hash.ZERO));
     }
     final BranchNode<Bytes> validBranchNode =
         new BranchNode<>(
@@ -63,8 +62,7 @@ public class SnapCommitVisitorTest {
     final ArrayList<Node<Bytes>> children = new ArrayList<>();
     for (int i = 0; i < 16; i++) {
       children.add(
-          new StoredNode<>(
-              storedNodeFactory, Bytes.concatenate(Bytes.of(0x01), Bytes.of(i)), Hash.ZERO));
+          new StoredNode<>(storedNodeFactory, Bytes.wrap(Bytes.of(0x01), Bytes.of(i)), Hash.ZERO));
     }
 
     final BranchNode<Bytes> invalidBranchNode =

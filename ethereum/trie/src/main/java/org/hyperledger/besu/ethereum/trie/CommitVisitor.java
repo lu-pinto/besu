@@ -36,7 +36,7 @@ public class CommitVisitor<V> implements LocationNodeVisitor<V> {
 
     final Node<V> child = extensionNode.getChild();
     if (child.isDirty()) {
-      child.accept(Bytes.concatenate(location, extensionNode.getPath()), this);
+      child.accept(Bytes.wrap(location, extensionNode.getPath()), this);
     }
 
     maybeStoreNode(location, extensionNode);
@@ -52,7 +52,7 @@ public class CommitVisitor<V> implements LocationNodeVisitor<V> {
       Bytes index = Bytes.of(i);
       final Node<V> child = branchNode.child((byte) i);
       if (child.isDirty()) {
-        child.accept(Bytes.concatenate(location, index), this);
+        child.accept(Bytes.wrap(location, index), this);
       }
     }
 

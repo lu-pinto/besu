@@ -24,7 +24,8 @@ import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 
 import java.util.Objects;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.units.bigints.UInt256;
 
 /** Represents the raw values associated with an account in the world state patricia merkle trie. */
 public class PmtStateTrieAccountValue extends AbstractStateTrieAccountValue
@@ -70,7 +71,7 @@ public class PmtStateTrieAccountValue extends AbstractStateTrieAccountValue
     out.startList();
 
     out.writeLongScalar(nonce);
-    out.writeUInt256Scalar(balance);
+    out.writeUInt256Scalar(UInt256.fromBytes(balance));
     out.writeBytes(storageRoot);
     out.writeBytes(codeHash);
     out.endList();
@@ -81,8 +82,8 @@ public class PmtStateTrieAccountValue extends AbstractStateTrieAccountValue
 
     final long nonce = in.readLongScalar();
     final Wei balance = Wei.of(in.readUInt256Scalar());
-    Bytes32 storageRoot;
-    Bytes32 codeHash;
+    Bytes storageRoot;
+    Bytes codeHash;
     if (in.nextIsNull()) {
       storageRoot = Hash.EMPTY_TRIE_HASH;
       in.skipNext();

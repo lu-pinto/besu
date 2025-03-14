@@ -21,7 +21,6 @@ import java.util.NavigableMap;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /**
@@ -157,5 +156,5 @@ public interface AccountState {
    * @param limit the maximum number of entries to return.
    * @return the requested storage entries as a map of key hash to entry.
    */
-  NavigableMap<Bytes32, AccountStorageEntry> storageEntriesFrom(Bytes32 startKeyHash, int limit);
+  NavigableMap<Bytes, AccountStorageEntry> storageEntriesFrom(Bytes startKeyHash, int limit);
 }

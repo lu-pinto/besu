@@ -23,7 +23,7 @@ import org.hyperledger.besu.ethereum.trie.MerkleTrie;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class PrivateStateRootResolver {
   public static final Hash EMPTY_ROOT_HASH = Hash.wrap(MerkleTrie.EMPTY_TRIE_NODE_HASH);
@@ -35,7 +35,7 @@ public class PrivateStateRootResolver {
   }
 
   public Hash resolveLastStateRoot(
-      final Bytes32 privacyGroupId, final PrivateMetadataUpdater privateMetadataUpdater) {
+      final Bytes privacyGroupId, final PrivateMetadataUpdater privateMetadataUpdater) {
     final PrivateBlockMetadata privateBlockMetadata =
         privateMetadataUpdater.getPrivateBlockMetadata(privacyGroupId);
     if (privateBlockMetadata != null) {
@@ -58,7 +58,7 @@ public class PrivateStateRootResolver {
     }
   }
 
-  public Hash resolveLastStateRoot(final Bytes32 privacyGroupId, final Hash blockHash) {
+  public Hash resolveLastStateRoot(final Bytes privacyGroupId, final Hash blockHash) {
     final Optional<PrivateBlockMetadata> privateBlockMetadataOptional =
         privateStateStorage.getPrivateBlockMetadata(blockHash, privacyGroupId);
     if (privateBlockMetadataOptional.isPresent()) {
@@ -76,7 +76,7 @@ public class PrivateStateRootResolver {
   }
 
   private Hash resolveLastStateRoot(
-      final Bytes32 privacyGroupId, final PrivacyGroupHeadBlockMap privacyGroupHeadBlockMap) {
+      final Bytes privacyGroupId, final PrivacyGroupHeadBlockMap privacyGroupHeadBlockMap) {
     final Hash lastRootHash;
     if (privacyGroupHeadBlockMap.containsKey(privacyGroupId)) {
       // Check this PG head block is being tracked

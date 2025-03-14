@@ -21,7 +21,7 @@ import org.hyperledger.besu.plugin.Unstable;
 
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * The minimum set of data for a BlockHeader, as defined in the <a href=
@@ -84,7 +84,7 @@ public interface ProcessableBlockHeader {
    *
    * @return Optional prevRandao bytes from this header.
    */
-  default Optional<Bytes32> getPrevRandao() {
+  default Optional<Bytes> getPrevRandao() {
     return Optional.empty();
   }
 
@@ -104,5 +104,5 @@ public interface ProcessableBlockHeader {
    * @return The parent_beacon_block_root of this header.
    */
   @Unstable
-  Optional<? extends Bytes32> getParentBeaconBlockRoot();
+  Optional<? extends Bytes> getParentBeaconBlockRoot();
 }

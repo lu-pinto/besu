@@ -31,7 +31,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Merge block creator. */
 class MergeBlockCreator extends AbstractBlockCreator {
@@ -76,10 +76,10 @@ class MergeBlockCreator extends AbstractBlockCreator {
    */
   public BlockCreationResult createBlock(
       final Optional<List<Transaction>> maybeTransactions,
-      final Bytes32 random,
+      final Bytes random,
       final long timestamp,
       final Optional<List<Withdrawal>> withdrawals,
-      final Optional<Bytes32> parentBeaconBlockRoot,
+      final Optional<Bytes> parentBeaconBlockRoot,
       final BlockHeader parentHeader) {
 
     return createBlock(

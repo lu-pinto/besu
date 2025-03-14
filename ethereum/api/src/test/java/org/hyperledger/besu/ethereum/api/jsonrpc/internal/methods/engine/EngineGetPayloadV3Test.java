@@ -55,7 +55,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -96,7 +95,7 @@ public class EngineGetPayloadV3Test extends AbstractEngineGetPayloadTest {
   public void shouldReturnUnsupportedForkIfBlockTimestampIsBeforeCancunMilestone() {
     BlockHeader shanghaiHeader =
         new BlockHeaderTestFixture()
-            .prevRandao(Bytes32.random())
+            .prevRandao(Bytes.random(32))
             .timestamp(cancunHardfork.milestone() - 1)
             .excessBlobGas(BlobGas.of(10L))
             .buildHeader();
@@ -105,7 +104,7 @@ public class EngineGetPayloadV3Test extends AbstractEngineGetPayloadTest {
         PayloadIdentifier.forPayloadParams(
             Hash.ZERO,
             cancunHardfork.milestone() - 1,
-            Bytes32.random(),
+            Bytes.random(32),
             Address.fromHexString("0x42"),
             Optional.empty(),
             Optional.empty());
@@ -131,7 +130,7 @@ public class EngineGetPayloadV3Test extends AbstractEngineGetPayloadTest {
   public void shouldReturnUnsupportedForkIfBlockTimestampIsAfterPragueMilestone() {
     BlockHeader pragueHeader =
         new BlockHeaderTestFixture()
-            .prevRandao(Bytes32.random())
+            .prevRandao(Bytes.random(32))
             .timestamp(pragueHardfork.milestone())
             .excessBlobGas(BlobGas.of(10L))
             .buildHeader();
@@ -140,7 +139,7 @@ public class EngineGetPayloadV3Test extends AbstractEngineGetPayloadTest {
         PayloadIdentifier.forPayloadParams(
             Hash.ZERO,
             cancunHardfork.milestone(),
-            Bytes32.random(),
+            Bytes.random(32),
             Address.fromHexString("0x42"),
             Optional.empty(),
             Optional.empty());
@@ -168,7 +167,7 @@ public class EngineGetPayloadV3Test extends AbstractEngineGetPayloadTest {
 
     BlockHeader cancunHeader =
         new BlockHeaderTestFixture()
-            .prevRandao(Bytes32.random())
+            .prevRandao(Bytes.random(32))
             .timestamp(cancunHardfork.milestone() + 1)
             .excessBlobGas(BlobGas.of(10L))
             .buildHeader();
@@ -177,7 +176,7 @@ public class EngineGetPayloadV3Test extends AbstractEngineGetPayloadTest {
         PayloadIdentifier.forPayloadParams(
             Hash.ZERO,
             cancunHardfork.milestone(),
-            Bytes32.random(),
+            Bytes.random(32),
             Address.fromHexString("0x42"),
             Optional.empty(),
             Optional.empty());
@@ -225,9 +224,10 @@ public class EngineGetPayloadV3Test extends AbstractEngineGetPayloadTest {
                   .isEqualTo(cancunHeader.getHash().toString());
               assertThat(res.getBlockValue()).isEqualTo(Quantity.create(0));
               assertThat(res.getExecutionPayload().getPrevRandao())
-                  .isEqualTo(cancunHeader.getPrevRandao().map(Bytes32::toString).orElse(""));
+                  .isEqualTo(cancunHeader.getPrevRandao().map(Bytes::toString).orElse(""));
               // excessBlobGas: QUANTITY, 256 bits
-              String expectedQuantityOf10 = Bytes32.leftPad(Bytes.of(10)).toQuantityHexString();
+              String expectedQuantityOf10 =
+                  Bytes.of(10).mutableCopy().leftPad(32).toQuantityHexString();
               assertThat(res.getExecutionPayload().getExcessBlobGas()).isNotEmpty();
               assertThat(res.getExecutionPayload().getExcessBlobGas())
                   .isEqualTo(expectedQuantityOf10);

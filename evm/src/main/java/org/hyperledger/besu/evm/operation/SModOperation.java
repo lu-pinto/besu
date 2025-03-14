@@ -77,7 +77,7 @@ public class SModOperation extends AbstractFixedCostOperation {
       final byte[] padding = new byte[32 - resultBytes.size()];
       Arrays.fill(padding, result.signum() < 0 ? (byte) 0xFF : 0x00);
 
-      frame.pushStackItem(Bytes.concatenate(Bytes.wrap(padding), resultBytes));
+      frame.pushStackItem(Bytes.wrap(Bytes.wrap(padding), resultBytes));
     }
 
     return smodSuccess;

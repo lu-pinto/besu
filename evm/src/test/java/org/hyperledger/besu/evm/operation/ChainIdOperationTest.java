@@ -48,7 +48,7 @@ class ChainIdOperationTest {
   @ParameterizedTest
   @MethodSource("params")
   void shouldReturnChainId(final String chainIdString, final int expectedGas) {
-    Bytes32 chainId = Bytes32.fromHexString(chainIdString);
+    Bytes chainId = Bytes32.fromHexString(chainIdString);
     ChainIdOperation operation = new ChainIdOperation(new ConstantinopleGasCalculator(), chainId);
     final ArgumentCaptor<Bytes> arg = ArgumentCaptor.forClass(Bytes.class);
     when(messageFrame.getRemainingGas()).thenReturn(100L);
@@ -62,7 +62,7 @@ class ChainIdOperationTest {
   @ParameterizedTest
   @MethodSource("params")
   void shouldCalculateGasPrice(final String chainIdString, final int expectedGas) {
-    Bytes32 chainId = Bytes32.fromHexString(chainIdString);
+    Bytes chainId = Bytes32.fromHexString(chainIdString);
     ChainIdOperation operation = new ChainIdOperation(new ConstantinopleGasCalculator(), chainId);
     final OperationResult result = operation.execute(messageFrame, null);
     assertThat(result.getGasCost()).isEqualTo(expectedGas);

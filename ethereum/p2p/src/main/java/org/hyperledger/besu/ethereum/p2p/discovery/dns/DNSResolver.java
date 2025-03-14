@@ -31,7 +31,6 @@ import io.vertx.core.Vertx;
 import io.vertx.core.dns.DnsClient;
 import io.vertx.core.dns.DnsClientOptions;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.crypto.SECP256K1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -193,7 +192,7 @@ public class DNSResolver {
 
   private boolean checkSignature(
       final ENRTreeRoot root, final SECP256K1.PublicKey pubKey, final SECP256K1.Signature sig) {
-    final Bytes32 hash =
+    final Bytes hash =
         Hash.keccak256(Bytes.wrap(root.signedContent().getBytes(StandardCharsets.UTF_8)));
     return SECP256K1.verifyHashed(hash, sig, pubKey);
   }

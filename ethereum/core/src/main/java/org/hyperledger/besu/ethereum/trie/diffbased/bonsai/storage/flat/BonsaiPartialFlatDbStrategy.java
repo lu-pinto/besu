@@ -96,7 +96,7 @@ public class BonsaiPartialFlatDbStrategy extends BonsaiFlatDbStrategy {
         response =
             new StoredMerklePatriciaTrie<>(
                     new StoredNodeFactory<>(nodeLoader, Function.identity(), Function.identity()),
-                    Bytes32.wrap(worldStateRootHash.get()))
+                    Bytes32.fromBytes(worldStateRootHash.get(), 0))
                 .get(accountHash);
         if (response.isEmpty()) {
           getAccountMissingMerkleTrieCounter.inc();
@@ -124,7 +124,7 @@ public class BonsaiPartialFlatDbStrategy extends BonsaiFlatDbStrategy {
         storage
             .get(
                 ACCOUNT_STORAGE_STORAGE,
-                Bytes.concatenate(accountHash, storageSlotKey.getSlotHash()).toArrayUnsafe())
+                Bytes.wrap(accountHash, storageSlotKey.getSlotHash()).toArrayUnsafe())
             .map(Bytes::wrap);
     if (response.isEmpty()) {
       final Optional<Hash> storageRoot = storageRootSupplier.get();
@@ -135,7 +135,7 @@ public class BonsaiPartialFlatDbStrategy extends BonsaiFlatDbStrategy {
                     new StoredNodeFactory<>(nodeLoader, Function.identity(), Function.identity()),
                     storageRoot.get())
                 .get(storageSlotKey.getSlotHash())
-                .map(bytes -> Bytes32.leftPad(RLP.decodeValue(bytes)));
+                .map(bytes -> RLP.decodeValue(bytes).mutableCopy().leftPad(32));
         if (response.isEmpty()) getStorageValueMissingMerkleTrieCounter.inc();
         else getStorageValueMerkleTrieCounter.inc();
       }

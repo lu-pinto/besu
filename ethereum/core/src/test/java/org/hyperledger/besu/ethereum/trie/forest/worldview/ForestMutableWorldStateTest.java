@@ -232,7 +232,7 @@ class ForestMutableWorldStateTest {
         .hasValue(accountAIsFirst ? accountB.getAddress() : accountA.getAddress());
 
     // Get second account
-    final Bytes32 startHashForSecondAccount = UInt256.fromBytes(startHash).add(1L);
+    final Bytes startHashForSecondAccount = UInt256.fromBytes(startHash).add(1L);
     final List<StreamableAccount> secondAccount =
         worldState.streamAccounts(startHashForSecondAccount, 100).toList();
     assertThat(secondAccount).hasSize(1);
@@ -644,7 +644,7 @@ class ForestMutableWorldStateTest {
     initialSetOfEntries.add(AccountStorageEntry.forKeyAndValue(UInt256.ONE, UInt256.valueOf(2)));
     initialSetOfEntries.add(
         AccountStorageEntry.forKeyAndValue(UInt256.valueOf(2), UInt256.valueOf(5)));
-    final Map<Bytes32, AccountStorageEntry> initialEntries = new TreeMap<>();
+    final Map<Bytes, AccountStorageEntry> initialEntries = new TreeMap<>();
     initialSetOfEntries.forEach(entry -> initialEntries.put(entry.getKeyHash(), entry));
 
     updater = worldState.updater();
@@ -658,7 +658,7 @@ class ForestMutableWorldStateTest {
         AccountStorageEntry.forKeyAndValue(UInt256.valueOf(2), UInt256.valueOf(5)));
     finalSetOfEntries.add(
         AccountStorageEntry.forKeyAndValue(UInt256.valueOf(3), UInt256.valueOf(6)));
-    final Map<Bytes32, AccountStorageEntry> finalEntries = new TreeMap<>();
+    final Map<Bytes, AccountStorageEntry> finalEntries = new TreeMap<>();
     finalSetOfEntries.forEach(entry -> finalEntries.put(entry.getKeyHash(), entry));
 
     assertThat(account.storageEntriesFrom(Hash.ZERO, 10)).isEqualTo(finalEntries);

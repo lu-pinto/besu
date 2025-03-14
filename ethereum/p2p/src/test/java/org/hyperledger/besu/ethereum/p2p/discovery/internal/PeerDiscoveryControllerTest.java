@@ -1852,7 +1852,7 @@ public class PeerDiscoveryControllerTest {
 
     // Flipping the most significant bit of the keccak256 will place the peer
     // in the last bucket for the corresponding host peer.
-    final Bytes32 keccak256 = host.keccak256();
+    final Bytes keccak256 = host.keccak256();
     final MutableBytes template = MutableBytes.create(keccak256.size());
     byte msb = keccak256.get(0);
     msb ^= MOST_SIGNIFICANT_BIT_MASK;
@@ -1860,9 +1860,9 @@ public class PeerDiscoveryControllerTest {
 
     for (int i = 0; i < n; i++) {
       template.setInt(template.size() - 4, i);
-      final Bytes32 keccak = Bytes32.leftPad(template.copy());
+      final Bytes keccak = template.mutableCopy().leftPad(32);
       final MutableBytes id = MutableBytes.create(64);
-      UInt256.valueOf(i).copyTo(id, id.size() - Bytes32.SIZE);
+      id.set(id.size() - 32, UInt256.valueOf(i));
       final DiscoveryPeer peer =
           spy(
               DiscoveryPeer.fromEnode(

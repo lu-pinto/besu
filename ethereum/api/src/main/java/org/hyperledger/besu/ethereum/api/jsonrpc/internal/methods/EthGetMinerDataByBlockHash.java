@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
-import org.apache.tuweni.units.bigints.BaseUInt256Value;
 
 @Deprecated(since = "24.12.0")
 public class EthGetMinerDataByBlockHash implements JsonRpcMethod {
@@ -102,7 +101,7 @@ public class EthGetMinerDataByBlockHash implements JsonRpcMethod {
                         .getTransaction()
                         .getEffectivePriorityFeePerGas(receipt.getBaseFee())
                         .multiply(receipt.getGasUsed()))
-            .reduce(Wei.ZERO, BaseUInt256Value::add);
+            .reduce(Wei.ZERO, Wei::add);
     final Wei uncleInclusionReward =
         staticBlockReward.multiply(block.getOmmers().size()).divide(32);
     final Wei netBlockReward = staticBlockReward.add(transactionFee).add(uncleInclusionReward);

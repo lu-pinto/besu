@@ -15,8 +15,7 @@
 package org.hyperledger.besu.ethereum.trie;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public interface NodeUpdater {
-  void store(Bytes location, Bytes32 hash, Bytes value);
+  void store(Bytes location, Bytes hash, Bytes value);
 }

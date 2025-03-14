@@ -43,9 +43,9 @@ import org.mockito.InOrder;
 
 public class TrieIteratorTest {
 
-  private static final Bytes32 KEY_HASH1 =
+  private static final Bytes KEY_HASH1 =
       Bytes32.fromHexString("0x5555555555555555555555555555555555555555555555555555555555555555");
-  private static final Bytes32 KEY_HASH2 =
+  private static final Bytes KEY_HASH2 =
       Bytes32.fromHexString("0x5555555555555555555555555555555555555555555555555555555555555556");
 
   private static final Bytes PATH1 = bytesToPath(KEY_HASH1);
@@ -88,7 +88,7 @@ public class TrieIteratorTest {
   @Test
   @SuppressWarnings("unchecked")
   public void shouldVisitEachChildOfABranchNode() {
-    when(leafHandler.onLeaf(any(Bytes32.class), any(Node.class))).thenReturn(State.CONTINUE);
+    when(leafHandler.onLeaf(any(Bytes.class), any(Node.class))).thenReturn(State.CONTINUE);
     final Node<String> root =
         NullNode.<String>instance()
             .accept(new PutVisitor<>(nodeFactory, "Leaf 1"), PATH1)
@@ -104,7 +104,7 @@ public class TrieIteratorTest {
   @Test
   @SuppressWarnings("unchecked")
   public void shouldStopIteratingChildrenOfBranchWhenLeafHandlerReturnsStop() {
-    when(leafHandler.onLeaf(any(Bytes32.class), any(Node.class))).thenReturn(State.STOP);
+    when(leafHandler.onLeaf(any(Bytes.class), any(Node.class))).thenReturn(State.STOP);
     final Node<String> root =
         NullNode.<String>instance()
             .accept(new PutVisitor<>(nodeFactory, "Leaf 1"), PATH1)
@@ -119,15 +119,15 @@ public class TrieIteratorTest {
   @SuppressWarnings({"unchecked", "MathAbsoluteRandom"})
   public void shouldIterateArbitraryStructureAccurately() {
     Node<String> root = NullNode.instance();
-    final NavigableSet<Bytes32> expectedKeyHashes = new TreeSet<>();
+    final NavigableSet<Bytes> expectedKeyHashes = new TreeSet<>();
     final Random random = new Random(-5407159858935967790L);
-    Bytes32 startAtHash = Bytes32.ZERO;
-    Bytes32 stopAtHash = Bytes32.ZERO;
+    Bytes startAtHash = Bytes32.ZERO;
+    Bytes stopAtHash = Bytes32.ZERO;
     final int totalNodes = Math.abs(random.nextInt(1000));
     final int startNodeNumber = random.nextInt(Math.max(1, totalNodes - 1));
     final int stopNodeNumber = random.nextInt(Math.max(1, totalNodes - 1));
     for (int i = 0; i < totalNodes; i++) {
-      final Bytes32 keyHash =
+      final Bytes keyHash =
           Hash.keccak256(UInt256.valueOf(Math.abs(random.nextInt(Integer.MAX_VALUE))));
       root = root.accept(new PutVisitor<>(nodeFactory, "Value"), bytesToPath(keyHash));
       expectedKeyHashes.add(keyHash);
@@ -138,9 +138,9 @@ public class TrieIteratorTest {
       }
     }
 
-    final Bytes32 actualStopAtHash =
+    final Bytes actualStopAtHash =
         stopAtHash.compareTo(startAtHash) >= 0 ? stopAtHash : startAtHash;
-    when(leafHandler.onLeaf(any(Bytes32.class), any(Node.class))).thenReturn(State.CONTINUE);
+    when(leafHandler.onLeaf(any(Bytes.class), any(Node.class))).thenReturn(State.CONTINUE);
     when(leafHandler.onLeaf(eq(actualStopAtHash), any(Node.class))).thenReturn(State.STOP);
     root.accept(iterator, bytesToPath(startAtHash));
     final InOrder inOrder = inOrder(leafHandler);

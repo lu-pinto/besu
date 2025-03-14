@@ -25,7 +25,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /**
@@ -60,7 +59,7 @@ public interface WorldState extends WorldView, AutoCloseable {
    * @return a stream of all the accounts (in no particular order) contained in the world state
    *     represented by the root hash of this object at the time of the call.
    */
-  Stream<StreamableAccount> streamAccounts(Bytes32 startKeyHash, int limit);
+  Stream<StreamableAccount> streamAccounts(Bytes startKeyHash, int limit);
 
   /** The Streamable account. */
   class StreamableAccount implements AccountState {
@@ -123,8 +122,8 @@ public interface WorldState extends WorldView, AutoCloseable {
     }
 
     @Override
-    public NavigableMap<Bytes32, AccountStorageEntry> storageEntriesFrom(
-        final Bytes32 startKeyHash, final int limit) {
+    public NavigableMap<Bytes, AccountStorageEntry> storageEntriesFrom(
+        final Bytes startKeyHash, final int limit) {
       return accountState.storageEntriesFrom(startKeyHash, limit);
     }
   }

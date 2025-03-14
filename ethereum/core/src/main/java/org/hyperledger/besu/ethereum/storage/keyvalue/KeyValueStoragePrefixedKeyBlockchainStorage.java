@@ -117,7 +117,8 @@ public class KeyValueStoragePrefixedKeyBlockchainStorage implements BlockchainSt
 
   @Override
   public Optional<Difficulty> getTotalDifficulty(final Hash blockHash) {
-    return get(TOTAL_DIFFICULTY_PREFIX, blockHash).map(b -> Difficulty.wrap(Bytes32.wrap(b, 0)));
+    return get(TOTAL_DIFFICULTY_PREFIX, blockHash)
+        .map(b -> Difficulty.wrap(Bytes32.fromBytes(b, 0)));
   }
 
   @Override
@@ -137,11 +138,11 @@ public class KeyValueStoragePrefixedKeyBlockchainStorage implements BlockchainSt
   }
 
   private Hash bytesToHash(final Bytes bytes) {
-    return Hash.wrap(Bytes32.wrap(bytes, 0));
+    return Hash.wrap(Bytes32.fromBytes(bytes, 0));
   }
 
   Optional<Bytes> get(final Bytes prefix, final Bytes key) {
-    return blockchainStorage.get(Bytes.concatenate(prefix, key).toArrayUnsafe()).map(Bytes::wrap);
+    return blockchainStorage.get(Bytes.wrap(prefix, key).toArrayUnsafe()).map(Bytes::wrap);
   }
 
   /**
@@ -363,12 +364,11 @@ public class KeyValueStoragePrefixedKeyBlockchainStorage implements BlockchainSt
     }
 
     void set(final Bytes prefix, final Bytes key, final Bytes value) {
-      blockchainTransaction.put(
-          Bytes.concatenate(prefix, key).toArrayUnsafe(), value.toArrayUnsafe());
+      blockchainTransaction.put(Bytes.wrap(prefix, key).toArrayUnsafe(), value.toArrayUnsafe());
     }
 
     private void remove(final Bytes prefix, final Bytes key) {
-      blockchainTransaction.remove(Bytes.concatenate(prefix, key).toArrayUnsafe());
+      blockchainTransaction.remove(Bytes.wrap(prefix, key).toArrayUnsafe());
     }
 
     private Bytes rlpEncode(final List<TransactionReceipt> receipts) {

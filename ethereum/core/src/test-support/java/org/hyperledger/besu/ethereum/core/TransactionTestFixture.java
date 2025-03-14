@@ -218,7 +218,7 @@ public class TransactionTestFixture {
 
     final Hash hash =
         Hash.hash(
-            Bytes.concatenate(
+            Bytes.wrap(
                 org.hyperledger.besu.ethereum.core.CodeDelegation.MAGIC, rlpOutput.encoded()));
 
     final var signature = SIGNATURE_ALGORITHM.get().sign(hash, keys);

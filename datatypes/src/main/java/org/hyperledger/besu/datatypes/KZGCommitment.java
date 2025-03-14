@@ -19,18 +19,18 @@ import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 
 import java.util.Objects;
 
-import org.apache.tuweni.bytes.v2.Bytes48;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** This class contains the data for a KZG commitment. */
 public class KZGCommitment {
-  final Bytes48 data;
+  final Bytes data;
 
   /**
    * Constructor for a KZG commitment.
    *
    * @param data The data for the KZG commitment.
    */
-  public KZGCommitment(final Bytes48 data) {
+  public KZGCommitment(final Bytes data) {
     this.data = data;
   }
 
@@ -41,7 +41,7 @@ public class KZGCommitment {
    * @return The KZG commitment.
    */
   public static KZGCommitment readFrom(final RLPInput input) {
-    final Bytes48 bytes = input.readBytes48();
+    final Bytes bytes = input.readBytes48();
     return new KZGCommitment(bytes);
   }
 
@@ -59,7 +59,7 @@ public class KZGCommitment {
    *
    * @return The data for the KZG commitment.
    */
-  public Bytes48 getData() {
+  public Bytes getData() {
     return data;
   }
 

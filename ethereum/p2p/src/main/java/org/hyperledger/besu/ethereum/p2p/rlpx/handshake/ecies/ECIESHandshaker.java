@@ -15,7 +15,7 @@
 package org.hyperledger.besu.ethereum.p2p.rlpx.handshake.ecies;
 
 import static com.google.common.base.Preconditions.checkState;
-import static org.apache.tuweni.bytes.v2.Bytes.concatenate;
+import static org.apache.tuweni.bytes.v2.Bytes.wrap;
 import static org.hyperledger.besu.crypto.Hash.keccak256;
 
 import org.hyperledger.besu.crypto.KeyPair;
@@ -37,7 +37,6 @@ import com.google.common.annotations.VisibleForTesting;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,8 +74,8 @@ public class ECIESHandshaker implements Handshaker {
   private Bytes responderMsgEnc;
 
   // Nonces.
-  private Bytes32 initiatorNonce;
-  private Bytes32 responderNonce;
+  private Bytes initiatorNonce;
+  private Bytes responderNonce;
 
   // Whether we are the party who initiated this handshake or not.
   private boolean initiator;
@@ -101,7 +100,7 @@ public class ECIESHandshaker implements Handshaker {
     this.nodeKey = nodeKey;
     this.ephKeyPair = signatureAlgorithm.generateKeyPair();
     this.partyPubKey = theirPubKey;
-    this.initiatorNonce = Bytes32.wrap(random(32), 0);
+    this.initiatorNonce = Bytes.random(32);
     LOG.trace(
         "Prepared ECIES handshake with node {}... under INITIATOR role",
         theirPubKey.getEncodedBytes().slice(0, 16));
@@ -117,7 +116,7 @@ public class ECIESHandshaker implements Handshaker {
     this.initiator = false;
     this.nodeKey = nodeKey;
     this.ephKeyPair = signatureAlgorithm.generateKeyPair();
-    this.responderNonce = Bytes32.wrap(random(32), 0);
+    this.responderNonce = Bytes.random(32);
     LOG.trace("Prepared ECIES handshake under RESPONDER role");
   }
 
@@ -129,7 +128,7 @@ public class ECIESHandshaker implements Handshaker {
             Handshaker.HandshakeStatus.PREPARED, Handshaker.HandshakeStatus.IN_PROGRESS),
         "illegal invocation of firstMessage, handshake had already started");
 
-    final Bytes32 staticSharedSecret = nodeKey.calculateECDHKeyAgreement(partyPubKey);
+    final Bytes staticSharedSecret = nodeKey.calculateECDHKeyAgreement(partyPubKey);
     if (version4) {
       initiatorMsg =
           InitiatorHandshakeMessageV4.create(
@@ -152,7 +151,7 @@ public class ECIESHandshaker implements Handshaker {
 
     LOG.trace("First ECIES handshake message under INITIATOR role: {}", initiatorMsg);
 
-    return Unpooled.wrappedBuffer(initiatorMsgEnc.toArray());
+    return Unpooled.wrappedBuffer(initiatorMsgEnc.toArrayUnsafe());
   }
 
   @Override
@@ -183,7 +182,7 @@ public class ECIESHandshaker implements Handshaker {
     final ByteBuf bufferedBytes = buf.readSlice(expectedLength);
     final byte[] encryptedBytes = new byte[bufferedBytes.readableBytes()];
     bufferedBytes.getBytes(0, encryptedBytes);
-    Bytes bytes = Bytes.wrap(encryptedBytes);
+    Bytes bytes = wrap(encryptedBytes);
 
     Bytes encryptedMsg = bytes;
     try {
@@ -196,7 +195,7 @@ public class ECIESHandshaker implements Handshaker {
           final byte[] fullMessage = new byte[size + 2];
           bufferedBytes.readBytes(fullMessage, 0, expectedLength);
           buf.readBytes(fullMessage, expectedLength, size - expectedLength + 2);
-          encryptedMsg = Bytes.wrap(fullMessage);
+          encryptedMsg = wrap(fullMessage);
           bytes = EncryptedMessage.decryptMsgEIP8(encryptedMsg, nodeKey);
           version4 = true;
         } else {
@@ -317,7 +316,7 @@ public class ECIESHandshaker implements Handshaker {
 
     status.set(Handshaker.HandshakeStatus.SUCCESS);
     LOG.trace("Handshake status set to {}", status.get());
-    return nextMsg.map(bv -> Unpooled.wrappedBuffer(bv.toArray()));
+    return nextMsg.map(bv -> Unpooled.wrappedBuffer(bv.toArrayUnsafe()));
   }
 
   /**
@@ -362,25 +361,25 @@ public class ECIESHandshaker implements Handshaker {
         signatureAlgorithm.calculateECDHKeyAgreement(ephKeyPair.getPrivateKey(), partyEphPubKey);
 
     final Bytes sharedSecret =
-        keccak256(
-            concatenate(agreedSecret, keccak256(concatenate(responderNonce, initiatorNonce))));
+        keccak256(wrap(agreedSecret, keccak256(wrap(responderNonce, initiatorNonce))));
 
-    final Bytes32 aesSecret = keccak256(concatenate(agreedSecret, sharedSecret));
-    final Bytes32 macSecret = keccak256(concatenate(agreedSecret, aesSecret));
-    final Bytes32 token = keccak256(sharedSecret);
+    final Bytes aesSecret = keccak256(wrap(agreedSecret, sharedSecret));
+    final Bytes macSecret = keccak256(wrap(agreedSecret, aesSecret));
+    final Bytes token = keccak256(sharedSecret);
 
     final HandshakeSecrets secrets =
-        new HandshakeSecrets(aesSecret.toArray(), macSecret.toArray(), token.toArray());
+        new HandshakeSecrets(
+            aesSecret.toArrayUnsafe(), macSecret.toArrayUnsafe(), token.toArrayUnsafe());
 
-    final Bytes initiatorMac = concatenate(macSecret.xor(responderNonce), initiatorMsgEnc);
-    final Bytes responderMac = concatenate(macSecret.xor(initiatorNonce), responderMsgEnc);
+    final Bytes initiatorMac = wrap(macSecret.mutableCopy().xor(responderNonce), initiatorMsgEnc);
+    final Bytes responderMac = wrap(macSecret.mutableCopy().xor(initiatorNonce), responderMsgEnc);
 
     if (initiator) {
-      secrets.updateEgress(initiatorMac.toArray());
-      secrets.updateIngress(responderMac.toArray());
+      secrets.updateEgress(initiatorMac.toArrayUnsafe());
+      secrets.updateIngress(responderMac.toArrayUnsafe());
     } else {
-      secrets.updateIngress(initiatorMac.toArray());
-      secrets.updateEgress(responderMac.toArray());
+      secrets.updateIngress(initiatorMac.toArrayUnsafe());
+      secrets.updateEgress(responderMac.toArrayUnsafe());
     }
 
     this.secrets = secrets;
@@ -389,7 +388,7 @@ public class ECIESHandshaker implements Handshaker {
   static Bytes random(final int size) {
     final byte[] iv = new byte[size];
     RANDOM.nextBytes(iv);
-    return Bytes.wrap(iv);
+    return wrap(iv);
   }
 
   // ---------------------------------------------
@@ -417,22 +416,22 @@ public class ECIESHandshaker implements Handshaker {
   }
 
   @VisibleForTesting
-  Bytes32 getInitiatorNonce() {
+  Bytes getInitiatorNonce() {
     return initiatorNonce;
   }
 
   @VisibleForTesting
-  void setInitiatorNonce(final Bytes32 initiatorNonce) {
+  void setInitiatorNonce(final Bytes initiatorNonce) {
     this.initiatorNonce = initiatorNonce;
   }
 
   @VisibleForTesting
-  Bytes32 getResponderNonce() {
+  Bytes getResponderNonce() {
     return responderNonce;
   }
 
   @VisibleForTesting
-  void setResponderNonce(final Bytes32 responderNonce) {
+  void setResponderNonce(final Bytes responderNonce) {
     this.responderNonce = responderNonce;
   }
 

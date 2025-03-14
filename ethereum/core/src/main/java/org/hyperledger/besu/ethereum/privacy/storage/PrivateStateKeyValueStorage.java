@@ -50,28 +50,28 @@ public class PrivateStateKeyValueStorage implements PrivateStateStorage {
 
   @Override
   public Optional<PrivateTransactionReceipt> getTransactionReceipt(
-      final Bytes32 blockHash, final Bytes32 pmtHash) {
-    final Bytes blockHashTxHash = Bytes.concatenate(blockHash, pmtHash);
+      final Bytes blockHash, final Bytes pmtHash) {
+    final Bytes blockHashTxHash = Bytes.wrap(blockHash, pmtHash);
     return get(blockHashTxHash, TX_RECEIPT_SUFFIX)
         .map(b -> PrivateTransactionReceipt.readFrom(new BytesValueRLPInput(b, false)));
   }
 
   @Override
   public Optional<PrivateBlockMetadata> getPrivateBlockMetadata(
-      final Bytes32 blockHash, final Bytes32 privacyGroupId) {
-    return get(Bytes.concatenate(blockHash, privacyGroupId), METADATA_KEY_SUFFIX)
+      final Bytes blockHash, final Bytes privacyGroupId) {
+    return get(Bytes.wrap(blockHash, privacyGroupId), METADATA_KEY_SUFFIX)
         .map(this::rlpDecodePrivateBlockMetadata);
   }
 
   @Override
-  public Optional<PrivacyGroupHeadBlockMap> getPrivacyGroupHeadBlockMap(final Bytes32 blockHash) {
+  public Optional<PrivacyGroupHeadBlockMap> getPrivacyGroupHeadBlockMap(final Bytes blockHash) {
     return get(blockHash, PRIVACY_GROUP_HEAD_BLOCK_MAP_SUFFIX)
         .map(b -> PrivacyGroupHeadBlockMap.readFrom(new BytesValueRLPInput(b, false)));
   }
 
   @Override
-  public Optional<Bytes32> getAddDataKey(final Bytes32 privacyGroupId) {
-    return get(privacyGroupId, ADD_DATA_KEY).map(Bytes32::wrap);
+  public Optional<Bytes> getAddDataKey(final Bytes privacyGroupId) {
+    return get(privacyGroupId, ADD_DATA_KEY).map(b -> Bytes32.fromBytes(b, 0));
   }
 
   @Override
@@ -98,7 +98,7 @@ public class PrivateStateKeyValueStorage implements PrivateStateStorage {
   }
 
   private Optional<Bytes> get(final Bytes key, final Bytes keySuffix) {
-    return keyValueStorage.get(Bytes.concatenate(key, keySuffix).toArrayUnsafe()).map(Bytes::wrap);
+    return keyValueStorage.get(Bytes.wrap(key, keySuffix).toArrayUnsafe()).map(Bytes::wrap);
   }
 
   private PrivateBlockMetadata rlpDecodePrivateBlockMetadata(final Bytes bytes) {
@@ -120,21 +120,19 @@ public class PrivateStateKeyValueStorage implements PrivateStateStorage {
 
     @Override
     public PrivateStateStorage.Updater putTransactionReceipt(
-        final Bytes32 blockHash,
-        final Bytes32 transactionHash,
+        final Bytes blockHash,
+        final Bytes transactionHash,
         final PrivateTransactionReceipt receipt) {
-      final Bytes blockHashTxHash = Bytes.concatenate(blockHash, transactionHash);
+      final Bytes blockHashTxHash = Bytes.wrap(blockHash, transactionHash);
       set(blockHashTxHash, TX_RECEIPT_SUFFIX, RLP.encode(receipt::writeTo));
       return this;
     }
 
     @Override
     public PrivateStateStorage.Updater putPrivateBlockMetadata(
-        final Bytes32 blockHash,
-        final Bytes32 privacyGroupId,
-        final PrivateBlockMetadata metadata) {
+        final Bytes blockHash, final Bytes privacyGroupId, final PrivateBlockMetadata metadata) {
       set(
-          Bytes.concatenate(blockHash, privacyGroupId),
+          Bytes.wrap(blockHash, privacyGroupId),
           METADATA_KEY_SUFFIX,
           RLP.encode(metadata::writeTo));
       return this;
@@ -142,7 +140,7 @@ public class PrivateStateKeyValueStorage implements PrivateStateStorage {
 
     @Override
     public PrivateStateStorage.Updater putPrivacyGroupHeadBlockMap(
-        final Bytes32 blockHash, final PrivacyGroupHeadBlockMap map) {
+        final Bytes blockHash, final PrivacyGroupHeadBlockMap map) {
       set(blockHash, PRIVACY_GROUP_HEAD_BLOCK_MAP_SUFFIX, RLP.encode(map::writeTo));
       return this;
     }
@@ -155,7 +153,7 @@ public class PrivateStateKeyValueStorage implements PrivateStateStorage {
 
     @Override
     public PrivateStateStorage.Updater putAddDataKey(
-        final Bytes32 privacyGroupId, final Bytes32 addDataKey) {
+        final Bytes privacyGroupId, final Bytes addDataKey) {
       set(privacyGroupId, ADD_DATA_KEY, addDataKey);
       return this;
     }
@@ -171,12 +169,12 @@ public class PrivateStateKeyValueStorage implements PrivateStateStorage {
     }
 
     private void set(final Bytes key, final Bytes keySuffix, final Bytes value) {
-      transaction.put(Bytes.concatenate(key, keySuffix).toArrayUnsafe(), value.toArrayUnsafe());
+      transaction.put(Bytes.wrap(key, keySuffix).toArrayUnsafe(), value.toArrayUnsafe());
     }
 
     @Override
     public void remove(final Bytes key, final Bytes keySuffix) {
-      transaction.remove(Bytes.concatenate(key, keySuffix).toArrayUnsafe());
+      transaction.remove(Bytes.wrap(key, keySuffix).toArrayUnsafe());
     }
   }
 }

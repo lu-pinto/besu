@@ -84,7 +84,7 @@ public class BonsaiFullFlatDbStrategy extends BonsaiFlatDbStrategy {
         storage
             .get(
                 ACCOUNT_STORAGE_STORAGE,
-                Bytes.concatenate(accountHash, storageSlotKey.getSlotHash()).toArrayUnsafe())
+                Bytes.wrap(accountHash, storageSlotKey.getSlotHash()).toArrayUnsafe())
             .map(Bytes::wrap);
     if (storageFound.isPresent()) {
       getStorageValueFlatDatabaseCounter.inc();

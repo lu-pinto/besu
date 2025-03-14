@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.immutables.value.Value;
 
 public final class GetByteCodesMessage extends AbstractSnapMessageData {
@@ -47,12 +46,12 @@ public final class GetByteCodesMessage extends AbstractSnapMessageData {
     return new GetByteCodesMessage(message.getData());
   }
 
-  public static GetByteCodesMessage create(final List<Bytes32> codeHashes) {
+  public static GetByteCodesMessage create(final List<Bytes> codeHashes) {
     return create(Optional.empty(), codeHashes);
   }
 
   public static GetByteCodesMessage create(
-      final Optional<BigInteger> requestId, final List<Bytes32> codeHashes) {
+      final Optional<BigInteger> requestId, final List<Bytes> codeHashes) {
     final BytesValueRLPOutput tmp = new BytesValueRLPOutput();
     tmp.startList();
     requestId.ifPresent(tmp::writeBigIntegerScalar);
@@ -73,7 +72,7 @@ public final class GetByteCodesMessage extends AbstractSnapMessageData {
   }
 
   public CodeHashes codeHashes(final boolean withRequestId) {
-    final List<Bytes32> hashes = new ArrayList<>();
+    final List<Bytes> hashes = new ArrayList<>();
     final BigInteger responseBytes;
     final RLPInput input = new BytesValueRLPInput(data, false);
     input.enterList();
@@ -91,7 +90,7 @@ public final class GetByteCodesMessage extends AbstractSnapMessageData {
   @Value.Immutable
   public interface CodeHashes {
 
-    List<Bytes32> hashes();
+    List<Bytes> hashes();
 
     BigInteger responseBytes();
   }

@@ -183,8 +183,7 @@ public class FlexiblePrivacyControllerTest {
     assertThat(payload)
         .isNotNull()
         .isEqualTo(
-            Bytes.concatenate(Bytes.fromBase64String(KEY), Bytes.fromBase64String(KEY))
-                .toBase64String());
+            Bytes.wrap(Bytes.fromBase64String(KEY), Bytes.fromBase64String(KEY)).toBase64String());
   }
 
   @Test
@@ -341,8 +340,7 @@ public class FlexiblePrivacyControllerTest {
 
   private void mockingForFindPrivacyGroupByMembers() {
     final PrivacyGroupHeadBlockMap privacyGroupHeadBlockMap =
-        new PrivacyGroupHeadBlockMap(
-            Map.of(Bytes32.wrap(Bytes.fromBase64String(PRIVACY_GROUP_ID)), Hash.ZERO));
+        new PrivacyGroupHeadBlockMap(Map.of(Bytes.fromBase64String(PRIVACY_GROUP_ID), Hash.ZERO));
     when(privateStateStorage.getPrivacyGroupHeadBlockMap(any()))
         .thenReturn(Optional.of(privacyGroupHeadBlockMap));
   }
@@ -364,8 +362,8 @@ public class FlexiblePrivacyControllerTest {
   private void mockingForCreatesPayloadForAdding() {
     final SendResponse key = new SendResponse(KEY);
     when(enclave.send(any(), any(), anyList())).thenReturn(key);
-    final Map<Bytes32, Hash> bytes32HashMap = new HashMap<>();
-    final Bytes32 pgBytes = Bytes32.wrap(Base64.decode(PRIVACY_GROUP_ID));
+    final Map<Bytes, Hash> bytes32HashMap = new HashMap<>();
+    final Bytes pgBytes = Base64.decode(PRIVACY_GROUP_ID);
     bytes32HashMap.put(pgBytes, Hash.ZERO);
     when(blockchain.getChainHeadHash()).thenReturn(Hash.ZERO);
     final Optional<PrivacyGroupHeadBlockMap> privacyGroupHeadBlockMap =

@@ -222,7 +222,7 @@ public class StateBackupService {
         new RollingFileWriter(this::accountFileName, backupStatus.compressed)) {
       this.accountFileWriter = accountFileWriter;
 
-      final StoredMerklePatriciaTrie<Bytes32, Bytes> accountTrie =
+      final StoredMerklePatriciaTrie<Bytes, Bytes> accountTrie =
           new StoredMerklePatriciaTrie<>(
               (location, hash) -> worldStateKeyValueStorage.getAccountStateTrieNode(hash),
               header.get().getStateRoot(),
@@ -233,7 +233,7 @@ public class StateBackupService {
     }
   }
 
-  private TrieIterator.State visitAccount(final Bytes32 nodeKey, final Node<Bytes> node) {
+  private TrieIterator.State visitAccount(final Bytes nodeKey, final Node<Bytes> node) {
     if (node.getValue().isEmpty()) {
       return State.CONTINUE;
     }
@@ -261,7 +261,7 @@ public class StateBackupService {
     }
 
     // storage is written for each leaf, otherwise the whole trie would have to fit in memory
-    final StoredMerklePatriciaTrie<Bytes32, Bytes> storageTrie =
+    final StoredMerklePatriciaTrie<Bytes, Bytes> storageTrie =
         new StoredMerklePatriciaTrie<>(
             (location, hash) -> worldStateKeyValueStorage.getAccountStateTrieNode(hash),
             account.getStorageRoot(),
@@ -317,7 +317,7 @@ public class StateBackupService {
   }
 
   private TrieIterator.State visitAccountStorage(
-      final Bytes32 nodeKey, final Node<Bytes> node, final RollingFileWriter accountFileWriter) {
+      final Bytes nodeKey, final Node<Bytes> node, final RollingFileWriter accountFileWriter) {
     backupStatus.currentStorage = nodeKey;
 
     final BytesValueRLPOutput output = new BytesValueRLPOutput();
@@ -341,8 +341,8 @@ public class StateBackupService {
     long targetBlock;
     long storedBlock;
     boolean compressed;
-    Bytes32 currentAccount;
-    Bytes32 currentStorage;
+    Bytes currentAccount;
+    Bytes currentStorage;
     AtomicLong accountCount = new AtomicLong(0);
     AtomicLong codeSize = new AtomicLong(0);
     AtomicLong storageCount = new AtomicLong(0);

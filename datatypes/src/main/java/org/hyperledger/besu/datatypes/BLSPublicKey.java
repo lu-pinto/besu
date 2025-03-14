@@ -20,11 +20,11 @@ import org.hyperledger.besu.ethereum.rlp.RLPException;
 import org.hyperledger.besu.ethereum.rlp.RLPInput;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import org.apache.tuweni.bytes.v2.DelegatingBytes;
 import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.DelegatingBytes;
 
 /** A BLS public key. */
-public class BLSPublicKey extends DelegatingBytes implements PublicKey {
+public class BLSPublicKey extends DelegatingBytes {
 
   /** The constant SIZE. */
   public static final int SIZE = 48;
@@ -35,7 +35,7 @@ public class BLSPublicKey extends DelegatingBytes implements PublicKey {
    * @param bytes the bytes
    */
   protected BLSPublicKey(final Bytes bytes) {
-    super(bytes);
+    super(bytes, SIZE);
   }
 
   /**

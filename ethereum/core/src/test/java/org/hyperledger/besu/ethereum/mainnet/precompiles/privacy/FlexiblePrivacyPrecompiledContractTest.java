@@ -115,12 +115,11 @@ public class FlexiblePrivacyPrecompiledContractTest {
         .thenReturn(Optional.of(PrivacyGroupHeadBlockMap.empty()));
     when(privateStateStorage.getPrivateBlockMetadata(any(), any())).thenReturn(Optional.empty());
     when(storageUpdater.putPrivateBlockMetadata(
-            nullable(Bytes32.class), nullable(Bytes32.class), any()))
+            nullable(Bytes.class), nullable(Bytes.class), any()))
         .thenReturn(storageUpdater);
-    when(storageUpdater.putPrivacyGroupHeadBlockMap(nullable(Bytes32.class), any()))
+    when(storageUpdater.putPrivacyGroupHeadBlockMap(nullable(Bytes.class), any()))
         .thenReturn(storageUpdater);
-    when(storageUpdater.putTransactionReceipt(
-            nullable(Bytes32.class), nullable(Bytes32.class), any()))
+    when(storageUpdater.putTransactionReceipt(nullable(Bytes.class), nullable(Bytes.class), any()))
         .thenReturn(storageUpdater);
     when(privateStateStorage.updater()).thenReturn(storageUpdater);
 
@@ -308,7 +307,7 @@ public class FlexiblePrivacyPrecompiledContractTest {
   public void testPrivateFromNotMemberOfGroup() {
     // array length too big
     assertThatComputeReturnsEmptyGivenContractMembershipQueryReturns(
-        Bytes.concatenate(
+        Bytes.wrap(
             // offset
             Bytes32.fromHexStringLenient("0x0"),
             // array length
@@ -329,7 +328,7 @@ public class FlexiblePrivacyPrecompiledContractTest {
 
     // array length too big
     assertThatComputeReturnsEmptyGivenContractMembershipQueryReturns(
-        Bytes.concatenate(
+        Bytes.wrap(
             // offset to start of array
             Bytes32.fromHexStringLenient("0x0"),
             // array length

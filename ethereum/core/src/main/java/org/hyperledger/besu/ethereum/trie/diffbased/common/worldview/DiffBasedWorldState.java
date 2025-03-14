@@ -43,7 +43,6 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,12 +80,9 @@ public abstract class DiffBasedWorldState
       final WorldStateConfig worldStateConfig) {
     this.worldStateKeyValueStorage = worldStateKeyValueStorage;
     this.worldStateRootHash =
-        Hash.wrap(
-            Bytes32.wrap(
-                worldStateKeyValueStorage.getWorldStateRootHash().orElse(getEmptyTrieHash())));
+        Hash.wrap(worldStateKeyValueStorage.getWorldStateRootHash().orElse(getEmptyTrieHash()));
     this.worldStateBlockHash =
-        Hash.wrap(
-            Bytes32.wrap(worldStateKeyValueStorage.getWorldStateBlockHash().orElse(Hash.ZERO)));
+        Hash.wrap(worldStateKeyValueStorage.getWorldStateBlockHash().orElse(Hash.ZERO));
     this.cachedWorldStorageManager = cachedWorldStorageManager;
     this.trieLogManager = trieLogManager;
     this.worldStateConfig = worldStateConfig;
@@ -315,7 +311,7 @@ public abstract class DiffBasedWorldState
   }
 
   @Override
-  public Stream<StreamableAccount> streamAccounts(final Bytes32 startKeyHash, final int limit) {
+  public Stream<StreamableAccount> streamAccounts(final Bytes startKeyHash, final int limit) {
     throw new RuntimeException("storage format do not provide account streaming.");
   }
 

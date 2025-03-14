@@ -257,8 +257,8 @@ public class TraceTransactionIntegrationTest {
   private void assertMemoryContainsExactly(
       final TraceFrame frame, final String... memoryEntriesAsHex) {
     assertThat(frame.getMemory()).isPresent();
-    final Bytes32[] memoryEntries =
-        Stream.of(memoryEntriesAsHex).map(Bytes32::fromHexString).toArray(Bytes32[]::new);
+    final Bytes[] memoryEntries =
+        Stream.of(memoryEntriesAsHex).map(Bytes32::fromHexString).toArray(Bytes[]::new);
     assertThat(frame.getMemory().get()).containsExactly(memoryEntries);
   }
 

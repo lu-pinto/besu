@@ -208,7 +208,7 @@ public class TransactionLogBloomCacher {
         throw new InvalidCacheException();
       }
       writer.seek(offset);
-      writer.write(ensureBloomBitsAreCorrectLength(blockHeader.getLogsBloom().toArray()));
+      writer.write(ensureBloomBitsAreCorrectLength(blockHeader.getLogsBloom().toArrayUnsafe()));
 
       // remove invalid logs when there was a reorg
       final long validCacheSize = offset + BLOOM_BITS_LENGTH;
@@ -314,7 +314,7 @@ public class TransactionLogBloomCacher {
 
   private void fillCacheFileWithBlock(final BlockHeader blockHeader, final OutputStream fos)
       throws IOException {
-    fos.write(ensureBloomBitsAreCorrectLength(blockHeader.getLogsBloom().toArray()));
+    fos.write(ensureBloomBitsAreCorrectLength(blockHeader.getLogsBloom().toArrayUnsafe()));
   }
 
   private byte[] ensureBloomBitsAreCorrectLength(final byte[] logs) {

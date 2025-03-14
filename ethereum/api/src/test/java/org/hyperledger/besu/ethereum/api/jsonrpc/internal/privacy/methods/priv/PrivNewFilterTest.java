@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertx.ext.auth.User;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -118,7 +118,7 @@ public class PrivNewFilterTest {
   public void filterWithExpectedQueryIsCreated() {
     final List<Address> addresses = List.of(Address.ZERO);
     final User user = mock(User.class);
-    final List<List<LogTopic>> logTopics = List.of(List.of(LogTopic.of(Bytes32.random())));
+    final List<List<LogTopic>> logTopics = List.of(List.of(LogTopic.of(Bytes.random(32))));
     when(privacyIdProvider.getPrivacyUserId(eq(Optional.of(user)))).thenReturn(ENCLAVE_KEY);
 
     final FilterParameter filter =

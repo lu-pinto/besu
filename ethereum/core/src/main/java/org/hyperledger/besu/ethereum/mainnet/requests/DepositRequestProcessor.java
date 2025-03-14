@@ -57,7 +57,7 @@ public class DepositRequestProcessor implements RequestProcessor {
                 .flatMap(receipt -> receipt.getLogsList().stream())
                 .filter(log -> isDepositEvent(address, log))
                 .map(DepositLogDecoder::decodeFromLog)
-                .reduce(Bytes::concatenate));
+                .reduce(Bytes::wrap));
   }
 
   private boolean isDepositEvent(final Address depositContractAddress, final Log log) {

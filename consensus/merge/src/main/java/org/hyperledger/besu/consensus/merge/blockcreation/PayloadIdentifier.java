@@ -26,7 +26,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt64;
 
 /** The Payload identifier. */
@@ -68,10 +68,10 @@ public class PayloadIdentifier implements Quantity {
   public static PayloadIdentifier forPayloadParams(
       final Hash parentHash,
       final Long timestamp,
-      final Bytes32 prevRandao,
+      final Bytes prevRandao,
       final Address feeRecipient,
       final Optional<List<Withdrawal>> withdrawals,
-      final Optional<Bytes32> parentBeaconBlockRoot) {
+      final Optional<Bytes> parentBeaconBlockRoot) {
 
     return new PayloadIdentifier(
         timestamp

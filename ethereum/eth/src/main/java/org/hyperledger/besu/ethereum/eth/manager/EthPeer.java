@@ -59,7 +59,6 @@ import javax.annotation.Nonnull;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -356,7 +355,7 @@ public class EthPeer implements Comparable<EthPeer> {
   }
 
   public RequestManager.ResponseStream getSnapAccountRange(
-      final Hash stateRoot, final Bytes32 startKeyHash, final Bytes32 endKeyHash)
+      final Hash stateRoot, final Bytes startKeyHash, final Bytes endKeyHash)
       throws PeerNotConnected {
     final GetAccountRangeMessage getAccountRangeMessage =
         GetAccountRangeMessage.create(stateRoot, startKeyHash, endKeyHash);
@@ -368,9 +367,9 @@ public class EthPeer implements Comparable<EthPeer> {
 
   public RequestManager.ResponseStream getSnapStorageRange(
       final Hash stateRoot,
-      final List<Bytes32> accountHashes,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash)
+      final List<Bytes> accountHashes,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash)
       throws PeerNotConnected {
     final GetStorageRangeMessage getStorageRangeMessage =
         GetStorageRangeMessage.create(stateRoot, accountHashes, startKeyHash, endKeyHash);
@@ -381,7 +380,7 @@ public class EthPeer implements Comparable<EthPeer> {
   }
 
   public RequestManager.ResponseStream getSnapBytecode(
-      final Hash stateRoot, final List<Bytes32> codeHashes) throws PeerNotConnected {
+      final Hash stateRoot, final List<Bytes> codeHashes) throws PeerNotConnected {
     final GetByteCodesMessage getByteCodes = GetByteCodesMessage.create(codeHashes);
     getByteCodes.setRootHash(Optional.of(stateRoot));
     return sendRequest(

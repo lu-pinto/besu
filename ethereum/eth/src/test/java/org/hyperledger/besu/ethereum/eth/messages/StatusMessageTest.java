@@ -113,6 +113,6 @@ public class StatusMessageTest {
     final Random random = new Random(seed);
     final byte[] bytes = new byte[32];
     random.nextBytes(bytes);
-    return Hash.wrap(Bytes32.wrap(bytes));
+    return Hash.wrap(Bytes32.fromArray(bytes));
   }
 }

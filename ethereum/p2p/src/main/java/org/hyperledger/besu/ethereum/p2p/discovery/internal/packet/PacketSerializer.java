@@ -106,6 +106,6 @@ public class PacketSerializer {
     // so we write the last byte we know we'll need to make it resize accordingly.
     final int start = buffer.length();
     buffer.setByte(start + size - 1, (byte) 0);
-    encoded.writeEncoded(MutableBytes.wrapBuffer(buffer, start, size));
+    encoded.writeEncoded(MutableBytes.fromBuffer(buffer, start, size));
   }
 }

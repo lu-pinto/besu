@@ -21,23 +21,22 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class TracingUtils {
 
-  public static String dumpMemory(final Optional<Bytes32[]> maybeMemory) {
+  public static String dumpMemory(final Optional<Bytes[]> maybeMemory) {
     return maybeMemory.map(TracingUtils::dumpMemory).orElse("");
   }
 
-  private static String dumpMemory(final Bytes32[] memory) {
+  private static String dumpMemory(final Bytes[] memory) {
     return "0x".concat(dumpMemoryUnprefixed(memory));
   }
 
-  private static String dumpMemoryUnprefixed(final Bytes32[] memory) {
+  private static String dumpMemoryUnprefixed(final Bytes[] memory) {
     return Arrays.stream(memory).map(Bytes::toUnprefixedHexString).collect(Collectors.joining());
   }
 
-  public static String dumpMemoryAndTrimTrailingZeros(final Bytes32[] memory) {
+  public static String dumpMemoryAndTrimTrailingZeros(final Bytes[] memory) {
     final String memoryString = dumpMemoryUnprefixed(memory);
     final Bytes value = Bytes.fromHexString(memoryString);
     return "0x".concat(trimTrailingZeros(value).toUnprefixedHexString());

@@ -27,7 +27,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.Test;
 
 public class StoredMerklePatriciaTrieTest extends AbstractMerklePatriciaTrieTest {
@@ -55,19 +54,19 @@ public class StoredMerklePatriciaTrieTest extends AbstractMerklePatriciaTrieTest
     // Push some values into the trie and commit changes so nodes are persisted
     final String value1 = "value1";
     trie.put(key1, value1);
-    final Bytes32 hash1 = trie.getRootHash();
+    final Bytes hash1 = trie.getRootHash();
     trie.commit(merkleStorage::put);
 
     final String value2 = "value2";
     trie.put(key2, value2);
     final String value3 = "value3";
     trie.put(key3, value3);
-    final Bytes32 hash2 = trie.getRootHash();
+    final Bytes hash2 = trie.getRootHash();
     trie.commit(merkleStorage::put);
 
     final String value4 = "value4";
     trie.put(key1, value4);
-    final Bytes32 hash3 = trie.getRootHash();
+    final Bytes hash3 = trie.getRootHash();
     trie.commit(merkleStorage::put);
 
     // Check the root hashes for 3 tries are all distinct

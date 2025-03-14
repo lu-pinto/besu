@@ -55,7 +55,7 @@ public class CodeDelegationService {
       return;
     }
 
-    account.setCode(Bytes.concatenate(CODE_DELEGATION_PREFIX, codeDelegationAddress));
+    account.setCode(Bytes.wrap(CODE_DELEGATION_PREFIX, codeDelegationAddress));
   }
 
   /**

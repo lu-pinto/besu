@@ -36,7 +36,7 @@ import org.hyperledger.besu.plugin.services.BesuEvents;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /** A concrete implementation of BesuEvents used in Besu plugin framework. */
@@ -154,7 +154,7 @@ public class BesuEventsImpl implements BesuEvents {
   @Override
   public long addLogListener(
       final List<Address> addresses,
-      final List<List<Bytes32>> topics,
+      final List<List<Bytes>> topics,
       final LogListener logListener) {
     final List<List<LogTopic>> besuTopics =
         topics.stream()
@@ -203,7 +203,7 @@ public class BesuEventsImpl implements BesuEvents {
 
       @Override
       public UInt256 getTotalDifficulty() {
-        return totalDifficultySupplier.get().toUInt256();
+        return UInt256.fromBytes(totalDifficultySupplier.get());
       }
     };
   }

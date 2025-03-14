@@ -28,7 +28,7 @@ import org.apache.tuweni.bytes.v2.Bytes32;
  * @param address The Address
  * @param storageKeys List of storage keys
  */
-public record AccessListEntry(Address address, List<Bytes32> storageKeys) {
+public record AccessListEntry(Address address, List<Bytes> storageKeys) {
   /**
    * Create access list entry.
    *

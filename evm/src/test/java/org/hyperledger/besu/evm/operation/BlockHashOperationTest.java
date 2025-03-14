@@ -68,7 +68,7 @@ class BlockHashOperationTest {
 
   private void assertBlockHash(
       final long requestedBlock,
-      final Bytes32 expectedOutput,
+      final Bytes expectedOutput,
       final long currentBlockNumber,
       final BlockHashLookup blockHashLookup,
       final long initialGas) {
@@ -81,8 +81,8 @@ class BlockHashOperationTest {
   }
 
   private void assertBlockHash(
-      final Bytes32 input,
-      final Bytes32 expectedOutput,
+      final Bytes input,
+      final Bytes expectedOutput,
       final long currentBlockNumber,
       final BlockHashLookup blockHashLookup,
       final long initialGas) {
@@ -100,7 +100,7 @@ class BlockHashOperationTest {
   }
 
   private void assertFailure(
-      final Bytes32 input,
+      final Bytes input,
       final ExceptionalHaltReason haltReason,
       final long currentBlockNumber,
       final BlockHashLookup blockHashLookup,

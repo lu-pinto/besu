@@ -89,7 +89,7 @@ class StorageTrieNodeDataRequest extends TrieNodeDataRequest {
               .putStorageValueBySlotHash(
                   accountHash.get(),
                   getSlotHash(location, path),
-                  Bytes32.leftPad(RLP.decodeValue(value)))
+                  RLP.decodeValue(value).mutableCopy().leftPad(32))
               .commit();
         });
 
@@ -112,7 +112,7 @@ class StorageTrieNodeDataRequest extends TrieNodeDataRequest {
 
   private Hash getSlotHash(final Optional<Bytes> location, final Bytes path) {
     return Hash.wrap(
-        Bytes32.wrap(
-            CompactEncoding.pathToBytes(Bytes.concatenate(location.orElse(Bytes.EMPTY), path))));
+        Bytes32.fromBytes(
+            CompactEncoding.pathToBytes(Bytes.wrap(location.orElse(Bytes.EMPTY), path)), 0));
   }
 }

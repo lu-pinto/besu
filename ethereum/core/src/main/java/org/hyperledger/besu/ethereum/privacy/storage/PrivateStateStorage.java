@@ -19,19 +19,18 @@ import org.hyperledger.besu.ethereum.privacy.PrivateTransactionReceipt;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public interface PrivateStateStorage {
 
-  Optional<PrivateTransactionReceipt> getTransactionReceipt(Bytes32 blockHash, Bytes32 txHash);
+  Optional<PrivateTransactionReceipt> getTransactionReceipt(Bytes blockHash, Bytes txHash);
 
-  Optional<PrivateBlockMetadata> getPrivateBlockMetadata(Bytes32 blockHash, Bytes32 privacyGroupId);
+  Optional<PrivateBlockMetadata> getPrivateBlockMetadata(Bytes blockHash, Bytes privacyGroupId);
 
-  Optional<PrivacyGroupHeadBlockMap> getPrivacyGroupHeadBlockMap(Bytes32 blockHash);
+  Optional<PrivacyGroupHeadBlockMap> getPrivacyGroupHeadBlockMap(Bytes blockHash);
 
   int getSchemaVersion();
 
-  Optional<Bytes32> getAddDataKey(Bytes32 privacyGroupId);
+  Optional<Bytes> getAddDataKey(Bytes privacyGroupId);
 
   boolean isEmpty();
 
@@ -40,16 +39,16 @@ public interface PrivateStateStorage {
   interface Updater {
 
     Updater putTransactionReceipt(
-        Bytes32 blockHash, Bytes32 transactionHash, PrivateTransactionReceipt receipt);
+        Bytes blockHash, Bytes transactionHash, PrivateTransactionReceipt receipt);
 
     Updater putPrivateBlockMetadata(
-        Bytes32 blockHash, Bytes32 privacyGroupId, PrivateBlockMetadata metadata);
+        Bytes blockHash, Bytes privacyGroupId, PrivateBlockMetadata metadata);
 
-    Updater putPrivacyGroupHeadBlockMap(Bytes32 blockHash, PrivacyGroupHeadBlockMap map);
+    Updater putPrivacyGroupHeadBlockMap(Bytes blockHash, PrivacyGroupHeadBlockMap map);
 
     Updater putDatabaseVersion(int version);
 
-    Updater putAddDataKey(Bytes32 privacyGroupId, Bytes32 addDataKey);
+    Updater putAddDataKey(Bytes privacyGroupId, Bytes addDataKey);
 
     void commit();
 

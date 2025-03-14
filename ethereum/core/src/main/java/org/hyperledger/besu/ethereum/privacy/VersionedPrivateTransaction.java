@@ -21,11 +21,12 @@ import org.hyperledger.besu.ethereum.rlp.RLPInput;
 
 import java.util.Optional;
 
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class VersionedPrivateTransaction {
   private final PrivateTransaction privateTransaction;
-  private final Bytes32 version;
+  private final Bytes version;
 
   public VersionedPrivateTransaction(
       final PrivateTransaction privateTransaction,
@@ -38,7 +39,7 @@ public class VersionedPrivateTransaction {
   }
 
   public VersionedPrivateTransaction(
-      final PrivateTransaction privateTransaction, final Bytes32 version) {
+      final PrivateTransaction privateTransaction, final Bytes version) {
     this.privateTransaction = privateTransaction;
     this.version = version;
   }
@@ -46,7 +47,7 @@ public class VersionedPrivateTransaction {
   public static VersionedPrivateTransaction readFrom(final RLPInput input) throws RLPException {
     input.enterList();
     final PrivateTransaction privateTransaction = PrivateTransaction.readFrom(input.readAsRlp());
-    final Bytes32 version = input.readBytes32();
+    final Bytes version = input.readBytes();
     input.leaveList();
     return new VersionedPrivateTransaction(privateTransaction, version);
   }
@@ -55,7 +56,7 @@ public class VersionedPrivateTransaction {
     return privateTransaction;
   }
 
-  public Bytes32 getVersion() {
+  public Bytes getVersion() {
     return version;
   }
 

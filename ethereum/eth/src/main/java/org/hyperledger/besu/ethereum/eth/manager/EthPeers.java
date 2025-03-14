@@ -654,7 +654,11 @@ public class EthPeers implements PeerSelector {
   }
 
   private int compareByMaskedNodeId(final PeerConnection a, final PeerConnection b) {
-    return a.getPeer().getId().xor(nodeIdMask).compareTo(b.getPeer().getId().xor(nodeIdMask));
+    return a.getPeer()
+        .getId()
+        .mutableCopy()
+        .xor(nodeIdMask)
+        .compareTo(b.getPeer().getId().mutableCopy().xor(nodeIdMask));
   }
 
   private void enforceRemoteConnectionLimits() {

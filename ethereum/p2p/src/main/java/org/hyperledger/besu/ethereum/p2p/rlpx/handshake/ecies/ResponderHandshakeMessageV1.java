@@ -51,18 +51,18 @@ public final class ResponderHandshakeMessageV1 implements ResponderHandshakeMess
           + ECIESHandshaker.TOKEN_FLAG_LENGTH;
 
   private final SECPPublicKey ephPublicKey; // 64 bytes - uncompressed and no type byte
-  private final Bytes32 nonce; // 32 bytes
+  private final Bytes nonce; // 32 bytes
   private final boolean token; // 1 byte - 0x00 or 0x01
 
   private ResponderHandshakeMessageV1(
-      final SECPPublicKey ephPublicKey, final Bytes32 nonce, final boolean token) {
+      final SECPPublicKey ephPublicKey, final Bytes nonce, final boolean token) {
     this.ephPublicKey = ephPublicKey;
     this.nonce = nonce;
     this.token = token;
   }
 
   public static ResponderHandshakeMessageV1 create(
-      final SECPPublicKey ephPublicKey, final Bytes32 nonce, final boolean token) {
+      final SECPPublicKey ephPublicKey, final Bytes nonce, final boolean token) {
     return new ResponderHandshakeMessageV1(ephPublicKey, nonce, token);
   }
 
@@ -71,8 +71,9 @@ public final class ResponderHandshakeMessageV1 implements ResponderHandshakeMess
 
     final Bytes pubk = bytes.slice(0, ECIESHandshaker.PUBKEY_LENGTH);
     final SECPPublicKey ephPubKey = SignatureAlgorithmFactory.getInstance().createPublicKey(pubk);
-    final Bytes32 nonce =
-        Bytes32.wrap(bytes.slice(ECIESHandshaker.PUBKEY_LENGTH, ECIESHandshaker.NONCE_LENGTH), 0);
+    final Bytes nonce =
+        Bytes32.fromBytes(
+            bytes.slice(ECIESHandshaker.PUBKEY_LENGTH, ECIESHandshaker.NONCE_LENGTH), 0);
     final boolean token =
         bytes.get(ECIESHandshaker.PUBKEY_LENGTH + ECIESHandshaker.NONCE_LENGTH) == 0x01;
     return new ResponderHandshakeMessageV1(ephPubKey, nonce, token);
@@ -81,10 +82,11 @@ public final class ResponderHandshakeMessageV1 implements ResponderHandshakeMess
   @Override
   public Bytes encode() {
     final MutableBytes bytes = MutableBytes.create(MESSAGE_LENGTH);
-    ephPublicKey.getEncodedBytes().copyTo(bytes, 0);
-    nonce.copyTo(bytes, ECIESHandshaker.PUBKEY_LENGTH);
-    Bytes.of((byte) (token ? 0x01 : 0x00))
-        .copyTo(bytes, ECIESHandshaker.PUBKEY_LENGTH + ECIESHandshaker.NONCE_LENGTH);
+    bytes.set(0, ephPublicKey.getEncodedBytes());
+    bytes.set(ECIESHandshaker.PUBKEY_LENGTH, nonce);
+    bytes.set(
+        ECIESHandshaker.PUBKEY_LENGTH + ECIESHandshaker.NONCE_LENGTH,
+        Bytes.of((byte) (token ? 0x01 : 0x00)));
     return bytes;
   }
 
@@ -94,7 +96,7 @@ public final class ResponderHandshakeMessageV1 implements ResponderHandshakeMess
   }
 
   @Override
-  public Bytes32 getNonce() {
+  public Bytes getNonce() {
     return nonce;
   }
 

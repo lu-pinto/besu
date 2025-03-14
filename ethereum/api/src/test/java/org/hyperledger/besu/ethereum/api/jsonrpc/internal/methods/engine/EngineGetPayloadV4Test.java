@@ -54,7 +54,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -108,7 +107,7 @@ public class EngineGetPayloadV4Test extends AbstractEngineGetPayloadTest {
 
     BlockHeader header =
         new BlockHeaderTestFixture()
-            .prevRandao(Bytes32.random())
+            .prevRandao(Bytes.random(32))
             .timestamp(pragueHardfork.milestone() + 1)
             .excessBlobGas(BlobGas.of(10L))
             .buildHeader();
@@ -117,7 +116,7 @@ public class EngineGetPayloadV4Test extends AbstractEngineGetPayloadTest {
         PayloadIdentifier.forPayloadParams(
             Hash.ZERO,
             pragueHardfork.milestone(),
-            Bytes32.random(),
+            Bytes.random(32),
             Address.fromHexString("0x42"),
             Optional.empty(),
             Optional.empty());
@@ -170,9 +169,10 @@ public class EngineGetPayloadV4Test extends AbstractEngineGetPayloadTest {
                   .isEqualTo(header.getHash().toString());
               assertThat(res.getBlockValue()).isEqualTo(Quantity.create(0));
               assertThat(res.getExecutionPayload().getPrevRandao())
-                  .isEqualTo(header.getPrevRandao().map(Bytes32::toString).orElse(""));
+                  .isEqualTo(header.getPrevRandao().map(Bytes::toString).orElse(""));
               // excessBlobGas: QUANTITY, 256 bits
-              String expectedQuantityOf10 = Bytes32.leftPad(Bytes.of(10)).toQuantityHexString();
+              String expectedQuantityOf10 =
+                  Bytes.of(10).mutableCopy().leftPad(32).toQuantityHexString();
               assertThat(res.getExecutionPayload().getExcessBlobGas()).isNotEmpty();
               assertThat(res.getExecutionPayload().getExcessBlobGas())
                   .isEqualTo(expectedQuantityOf10);
@@ -191,7 +191,7 @@ public class EngineGetPayloadV4Test extends AbstractEngineGetPayloadTest {
         PayloadIdentifier.forPayloadParams(
             Hash.ZERO,
             pragueHardfork.milestone(),
-            Bytes32.random(),
+            Bytes.random(32),
             Address.fromHexString("0x42"),
             Optional.empty(),
             Optional.empty());
@@ -215,9 +215,9 @@ public class EngineGetPayloadV4Test extends AbstractEngineGetPayloadTest {
 
     final List<String> expectedRequests =
         List.of(
-            Bytes.concatenate(Bytes.of(RequestType.DEPOSIT.getSerializedType()), Bytes.of(1))
+            Bytes.wrap(Bytes.of(RequestType.DEPOSIT.getSerializedType()), Bytes.of(1))
                 .toHexString(),
-            Bytes.concatenate(Bytes.of(RequestType.CONSOLIDATION.getSerializedType()), Bytes.of(1))
+            Bytes.wrap(Bytes.of(RequestType.CONSOLIDATION.getSerializedType()), Bytes.of(1))
                 .toHexString());
     Optional.of(resp)
         .map(JsonRpcSuccessResponse.class::cast)

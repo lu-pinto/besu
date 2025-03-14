@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +76,7 @@ public class SnapSyncMetricsManager {
 
   private long startSyncTime;
 
-  private final Map<Bytes32, BigInteger> lastRangeIndex = new HashMap<>();
+  private final Map<Bytes, BigInteger> lastRangeIndex = new HashMap<>();
 
   private long lastNotifyTimestamp;
 
@@ -128,8 +128,8 @@ public class SnapSyncMetricsManager {
         nbCodes::get);
   }
 
-  public void initRange(final Map<Bytes32, Bytes32> ranges) {
-    for (Map.Entry<Bytes32, Bytes32> entry : ranges.entrySet()) {
+  public void initRange(final Map<Bytes, Bytes> ranges) {
+    for (Map.Entry<Bytes, Bytes> entry : ranges.entrySet()) {
       this.lastRangeIndex.put(entry.getValue(), entry.getKey().toUnsignedBigInteger());
     }
     this.startSyncTime = System.currentTimeMillis();
@@ -137,7 +137,7 @@ public class SnapSyncMetricsManager {
   }
 
   public void notifyRangeProgress(
-      final Step step, final Bytes32 startKeyHash, final Bytes32 endKeyHash) {
+      final Step step, final Bytes startKeyHash, final Bytes endKeyHash) {
     checkNonEmpty(lastRangeIndex, "snapsync range collection");
     if (lastRangeIndex.containsKey(endKeyHash)) {
       final BigInteger lastPos = lastRangeIndex.get(endKeyHash);

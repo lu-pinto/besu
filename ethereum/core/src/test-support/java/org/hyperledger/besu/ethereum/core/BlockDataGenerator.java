@@ -534,11 +534,11 @@ public class BlockDataGenerator {
   }
 
   private LogTopic logTopic() {
-    return LogTopic.wrap(bytesValue(Bytes32.SIZE));
+    return LogTopic.wrap(bytesValue(32));
   }
 
-  public Bytes32 bytes32() {
-    return Bytes32.wrap(bytes(Bytes32.SIZE));
+  public Bytes bytes32() {
+    return Bytes32.fromArray(bytes(32));
   }
 
   public Bytes bytesValue(final int size) {
@@ -565,7 +565,7 @@ public class BlockDataGenerator {
    */
   private UInt256 uint256(final int maxByteSize) {
     checkArgument(maxByteSize <= 32);
-    return UInt256.fromBytes(Bytes32.wrap(bytes(32, 32 - maxByteSize)));
+    return UInt256.fromBytes(Bytes32.fromArray(bytes(32, 32 - maxByteSize)));
   }
 
   private UInt256 uint256() {
@@ -688,7 +688,7 @@ public class BlockDataGenerator {
       return difficulty.orElse(defaultValue);
     }
 
-    public Bytes getExtraData(final Bytes32 defaultValue) {
+    public Bytes getExtraData(final Bytes defaultValue) {
       return extraData.orElse(defaultValue);
     }
 

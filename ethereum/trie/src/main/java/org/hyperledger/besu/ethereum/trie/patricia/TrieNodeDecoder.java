@@ -32,7 +32,6 @@ import java.util.stream.Stream;
 
 import com.google.common.collect.Streams;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class TrieNodeDecoder {
   private static final StoredNodeFactory<Bytes> emptyNodeFactory =
@@ -96,7 +95,7 @@ public class TrieNodeDecoder {
    * @return A stream non-null nodes in the breadth-first traversal order.
    */
   public static Stream<Node<Bytes>> breadthFirstDecoder(
-      final NodeLoader nodeLoader, final Bytes32 rootHash, final int maxDepth) {
+      final NodeLoader nodeLoader, final Bytes rootHash, final int maxDepth) {
     checkArgument(maxDepth >= 0);
     return Streams.stream(new BreadthFirstIterator(nodeLoader, rootHash, maxDepth));
   }
@@ -110,7 +109,7 @@ public class TrieNodeDecoder {
    * @return A stream non-null nodes in the breadth-first traversal order.
    */
   public static Stream<Node<Bytes>> breadthFirstDecoder(
-      final NodeLoader nodeLoader, final Bytes32 rootHash) {
+      final NodeLoader nodeLoader, final Bytes rootHash) {
     return breadthFirstDecoder(nodeLoader, rootHash, Integer.MAX_VALUE);
   }
 
@@ -123,7 +122,7 @@ public class TrieNodeDecoder {
     private final List<Node<Bytes>> currentNodes = new ArrayList<>();
     private final List<Node<Bytes>> nextNodes = new ArrayList<>();
 
-    BreadthFirstIterator(final NodeLoader nodeLoader, final Bytes32 rootHash, final int maxDepth) {
+    BreadthFirstIterator(final NodeLoader nodeLoader, final Bytes rootHash, final int maxDepth) {
       this.maxDepth = maxDepth;
       this.nodeFactory =
           new StoredNodeFactory<>(nodeLoader, Function.identity(), Function.identity());

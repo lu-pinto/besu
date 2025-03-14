@@ -51,7 +51,7 @@ public class AndOperation extends AbstractFixedCostOperation {
     final Bytes value0 = frame.popStackItem();
     final Bytes value1 = frame.popStackItem();
 
-    final Bytes result = value0.and(value1);
+    final Bytes result = value0.mutableCopy().and(value1);
     frame.pushStackItem(result);
 
     return andSuccess;

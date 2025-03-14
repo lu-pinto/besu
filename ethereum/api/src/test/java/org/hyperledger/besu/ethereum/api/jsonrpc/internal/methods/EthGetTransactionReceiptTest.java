@@ -58,7 +58,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256s;
 import org.junit.jupiter.api.Test;
 
@@ -279,7 +278,7 @@ public class EthGetTransactionReceiptTest {
   @Test
   public void shouldContainBlobGasUsedAndBlobGasPriceWhenBlobTransaction() {
 
-    var hash = Hash.wrap(Bytes32.random());
+    var hash = Hash.wrap(Bytes.random(32));
     mockBlockWithBlobTransaction(hash, 1L);
     when(blockchain.getTxReceipts(hash)).thenReturn(Optional.of(List.of(statusReceipt)));
     // Call the real method to get the transaction receipt by transaction hash
@@ -297,7 +296,7 @@ public class EthGetTransactionReceiptTest {
   }
 
   private void mockBlockWithBlobTransaction(final Hash blockHash, final long blockNumber) {
-    Hash parentHash = Hash.wrap(Bytes32.random());
+    Hash parentHash = Hash.wrap(Bytes.random(32));
     TransactionLocation transactionLocation = mock(TransactionLocation.class);
     Block block = mock(Block.class);
     BlockBody body = mock(BlockBody.class);

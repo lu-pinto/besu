@@ -76,9 +76,9 @@ public class ECIESHandshakeTest {
                         h32("0xd25688cf0ab10afa1a0e2dba7853ed5f1e5bf1c631757ed4e103b593ff3f5620")));
 
     // Nonces.
-    private static final Bytes32 initiatorNonce =
+    private static final Bytes initiatorNonce =
         h32("0xcd26fecb93657d1cd9e9eaf4f8be720b56dd1d39f190c4e1c6b7ec66f077bb11");
-    private static final Bytes32 responderNonce =
+    private static final Bytes responderNonce =
         h32("0xf37ec61d84cea03dcc5e8385db93248584e8af4b4d1c832d8c7453c0089687a7");
 
     // PyEVM
@@ -229,7 +229,7 @@ public class ECIESHandshakeTest {
     return Bytes.fromHexString(hex);
   }
 
-  private static Bytes32 h32(final String hex) {
+  private static Bytes h32(final String hex) {
     return Bytes32.fromHexString(hex);
   }
 }

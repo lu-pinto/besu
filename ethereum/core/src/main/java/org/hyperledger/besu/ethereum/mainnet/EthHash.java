@@ -30,6 +30,7 @@ import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
 import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.units.bigints.UInt256;
 import org.bouncycastle.jcajce.provider.digest.Keccak;
 
 /** Implementation of EthHash. */
@@ -127,8 +128,8 @@ public final class EthHash {
 
     return new PoWSolution(
         nonce,
-        Hash.wrap(Bytes32.wrap(Arrays.copyOf(result, 32))),
-        Bytes32.wrap(result, 32),
+        Hash.wrap(Bytes32.fromArray(Arrays.copyOf(result, 32))),
+        Bytes32.fromArray(result, 32),
         header);
   }
 
@@ -171,7 +172,7 @@ public final class EthHash {
    * @param header Block Header
    * @return Truncated BlockHeader hash
    */
-  public static Bytes32 hashHeader(final SealableBlockHeader header) {
+  public static Bytes hashHeader(final SealableBlockHeader header) {
     final BytesValueRLPOutput out = new BytesValueRLPOutput();
     out.startList();
     out.writeBytes(header.getParentHash());
@@ -181,17 +182,17 @@ public final class EthHash {
     out.writeBytes(header.getTransactionsRoot());
     out.writeBytes(header.getReceiptsRoot());
     out.writeBytes(header.getLogsBloom());
-    out.writeUInt256Scalar(header.getDifficulty());
+    out.writeUInt256Scalar(UInt256.fromBytes(header.getDifficulty()));
     out.writeLongScalar(header.getNumber());
     out.writeLongScalar(header.getGasLimit());
     out.writeLongScalar(header.getGasUsed());
     out.writeLongScalar(header.getTimestamp());
     out.writeBytes(header.getExtraData());
     if (header.getBaseFee().isPresent()) {
-      out.writeUInt256Scalar(header.getBaseFee().get());
+      out.writeUInt256Scalar(UInt256.fromBytes(header.getBaseFee().get()));
     }
     out.endList();
-    return Bytes32.wrap(
+    return Bytes32.fromArray(
         DirectAcyclicGraphSeed.KECCAK_256.get().digest(out.encoded().toArrayUnsafe()));
   }
 

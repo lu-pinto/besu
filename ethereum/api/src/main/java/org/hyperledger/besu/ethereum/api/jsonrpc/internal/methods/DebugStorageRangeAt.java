@@ -41,7 +41,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class DebugStorageRangeAt implements JsonRpcMethod {
 
@@ -176,10 +176,10 @@ public class DebugStorageRangeAt implements JsonRpcMethod {
       final int limit,
       final TraceableState worldState) {
     final Account account = worldState.get(accountAddress);
-    final NavigableMap<Bytes32, AccountStorageEntry> entries =
+    final NavigableMap<Bytes, AccountStorageEntry> entries =
         account.storageEntriesFrom(startKey, limit + 1);
 
-    Bytes32 nextKey = null;
+    Bytes nextKey = null;
     if (entries.size() == limit + 1) {
       nextKey = entries.lastKey();
       entries.remove(nextKey);

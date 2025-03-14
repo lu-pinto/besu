@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class NullNode<V> implements Node<V> {
   @SuppressWarnings("rawtypes")
@@ -73,7 +72,7 @@ public class NullNode<V> implements Node<V> {
   }
 
   @Override
-  public Bytes32 getHash() {
+  public Bytes getHash() {
     return MerkleTrie.EMPTY_TRIE_NODE_HASH;
   }
 

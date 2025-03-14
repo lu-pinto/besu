@@ -41,7 +41,7 @@ public final class RangeManagerTest {
 
   @Test
   public void testRemainingRangesEqualToOneWhenFirstRangeContainsMoreThanHalf() {
-    TreeMap<Bytes32, Bytes> items = new TreeMap<>();
+    TreeMap<Bytes, Bytes> items = new TreeMap<>();
     items.put(Bytes32.fromHexString("bb".repeat(32)), Bytes.wrap(new byte[] {0x03}));
     int nbRanges =
         RangeManager.getRangeCount(RangeManager.MIN_RANGE, RangeManager.MAX_RANGE, items);
@@ -50,7 +50,7 @@ public final class RangeManagerTest {
 
   @Test
   public void testRemainingRangesEqualToOneWhenFirstRangeContainsLessThanHalf() {
-    TreeMap<Bytes32, Bytes> items = new TreeMap<>();
+    TreeMap<Bytes, Bytes> items = new TreeMap<>();
     items.put(Bytes32.fromHexString("77".repeat(32)), Bytes.wrap(new byte[] {0x03}));
     int nbRanges =
         RangeManager.getRangeCount(RangeManager.MIN_RANGE, RangeManager.MAX_RANGE, items);
@@ -59,19 +59,19 @@ public final class RangeManagerTest {
 
   @Test
   public void testGenerateAllRangesWithSize1() {
-    final Map<Bytes32, Bytes32> expectedResult = new HashMap<>();
+    final Map<Bytes, Bytes> expectedResult = new HashMap<>();
     expectedResult.put(
         Bytes32.fromHexString("0x0000000000000000000000000000000000000000000000000000000000000000"),
         Bytes32.fromHexString(
             "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"));
-    final Map<Bytes32, Bytes32> ranges = RangeManager.generateAllRanges(1);
+    final Map<Bytes, Bytes> ranges = RangeManager.generateAllRanges(1);
     assertThat(ranges.size()).isEqualTo(1);
     assertThat(ranges).isEqualTo(expectedResult);
   }
 
   @Test
   public void testGenerateAllRangesWithSize3() {
-    final Map<Bytes32, Bytes32> expectedResult = new HashMap<>();
+    final Map<Bytes, Bytes> expectedResult = new HashMap<>();
     expectedResult.put(
         Bytes32.fromHexString("0x0000000000000000000000000000000000000000000000000000000000000000"),
         Bytes32.fromHexString(
@@ -84,14 +84,14 @@ public final class RangeManagerTest {
         Bytes32.fromHexString("0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac"),
         Bytes32.fromHexString(
             "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"));
-    final Map<Bytes32, Bytes32> ranges = RangeManager.generateAllRanges(3);
+    final Map<Bytes, Bytes> ranges = RangeManager.generateAllRanges(3);
     assertThat(ranges.size()).isEqualTo(3);
     assertThat(ranges).isEqualTo(expectedResult);
   }
 
   @Test
   public void testGenerateRangesWithSize3() {
-    final Map<Bytes32, Bytes32> expectedResult = new HashMap<>();
+    final Map<Bytes, Bytes> expectedResult = new HashMap<>();
     expectedResult.put(
         Bytes32.fromHexString("0x0000000000000000000000000000000000000000000000000000000000000000"),
         Bytes32.fromHexString(
@@ -104,7 +104,7 @@ public final class RangeManagerTest {
         Bytes32.fromHexString("0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac"),
         Bytes32.fromHexString(
             "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"));
-    final Map<Bytes32, Bytes32> ranges =
+    final Map<Bytes, Bytes> ranges =
         RangeManager.generateRanges(
             Bytes32.fromHexString(
                 "0x0000000000000000000000000000000000000000000000000000000000000000"),
@@ -131,8 +131,8 @@ public final class RangeManagerTest {
         RangeStorageEntriesCollector.createCollector(
             Hash.ZERO, RangeManager.MAX_RANGE, 10, Integer.MAX_VALUE);
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> accounts =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> accounts =
+        (TreeMap<Bytes, Bytes>)
             accountStateTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -149,12 +149,12 @@ public final class RangeManagerTest {
         worldStateProofProvider.getAccountProofRelatedNodes(
             Hash.wrap(accountStateTrie.getRootHash()), accounts.lastKey()));
 
-    final Optional<Bytes32> newBeginElementInRange =
+    final Optional<Bytes> newBeginElementInRange =
         RangeManager.findNewBeginElementInRange(
             accountStateTrie.getRootHash(), proofs, accounts, RangeManager.MAX_RANGE);
 
     assertThat(newBeginElementInRange)
-        .contains(Bytes32.leftPad(Bytes.wrap(Bytes.ofUnsignedShort(0x0b))));
+        .contains(Bytes.ofUnsignedShort(0x0b).mutableCopy().leftPad(32));
   }
 
   @Test
@@ -172,8 +172,8 @@ public final class RangeManagerTest {
         RangeStorageEntriesCollector.createCollector(
             Hash.ZERO, RangeManager.MAX_RANGE, 15, Integer.MAX_VALUE);
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
-    final TreeMap<Bytes32, Bytes> accounts =
-        (TreeMap<Bytes32, Bytes>)
+    final TreeMap<Bytes, Bytes> accounts =
+        (TreeMap<Bytes, Bytes>)
             accountStateTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
@@ -190,7 +190,7 @@ public final class RangeManagerTest {
         worldStateProofProvider.getAccountProofRelatedNodes(
             Hash.wrap(accountStateTrie.getRootHash()), accounts.lastKey()));
 
-    final Optional<Bytes32> newBeginElementInRange =
+    final Optional<Bytes> newBeginElementInRange =
         RangeManager.findNewBeginElementInRange(
             accountStateTrie.getRootHash(), proofs, accounts, RangeManager.MAX_RANGE);
 

@@ -25,22 +25,22 @@ import org.junit.jupiter.api.Test;
 public class MemoryTest {
 
   private final Memory memory = new Memory();
-  private static final Bytes32 WORD1 = fillBytes32(1);
-  private static final Bytes32 WORD2 = fillBytes32(2);
-  private static final Bytes32 WORD3 = fillBytes32(3);
-  private static final Bytes32 WORD4 = fillBytes32(4);
+  private static final Bytes WORD1 = fillBytes(1);
+  private static final Bytes WORD2 = fillBytes(2);
+  private static final Bytes WORD3 = fillBytes(3);
+  private static final Bytes WORD4 = fillBytes(4);
 
   @Test
   public void shouldSetAndGetMemoryByWord() {
     final int index = 20;
-    final Bytes32 value = Bytes32.fromHexString("0xABCDEF");
+    final Bytes value = Bytes32.fromHexString("0xABCDEF");
     memory.setWord(index, value);
     assertThat(memory.getWord(index)).isEqualTo(value);
   }
 
   @Test
   public void shouldSetMemoryWhenLengthEqualToSourceLength() {
-    final Bytes value = Bytes.concatenate(WORD1, WORD2, WORD3);
+    final Bytes value = Bytes.wrap(WORD1, WORD2, WORD3);
     memory.setBytes(0, value.size(), value);
     assertThat(memory.getWord(0)).isEqualTo(WORD1);
     assertThat(memory.getWord(32)).isEqualTo(WORD2);
@@ -49,7 +49,7 @@ public class MemoryTest {
 
   @Test
   public void shouldSetMemoryWhenLengthLessThanSourceLength() {
-    final Bytes value = Bytes.concatenate(WORD1, WORD2, WORD3);
+    final Bytes value = Bytes.wrap(WORD1, WORD2, WORD3);
     memory.setBytes(0, 64, value);
     assertThat(memory.getWord(0)).isEqualTo(WORD1);
     assertThat(memory.getWord(32)).isEqualTo(WORD2);
@@ -58,7 +58,7 @@ public class MemoryTest {
 
   @Test
   public void shouldSetMemoryWhenLengthGreaterThanSourceLength() {
-    final Bytes value = Bytes.concatenate(WORD1, WORD2);
+    final Bytes value = Bytes.wrap(WORD1, WORD2);
     memory.setBytes(0, 96, value);
     assertThat(memory.getWord(0)).isEqualTo(WORD1);
     assertThat(memory.getWord(32)).isEqualTo(WORD2);
@@ -67,17 +67,17 @@ public class MemoryTest {
 
   @Test
   public void shouldNotIncreaseActiveWordsIfGetBytesWithoutGrowth() {
-    final Bytes value = Bytes.concatenate(WORD1, WORD2);
+    final Bytes value = Bytes.wrap(WORD1, WORD2);
     memory.setBytes(0, value.size(), value);
     final int initialActiveWords = memory.getActiveWords();
 
-    assertThat(memory.getBytesWithoutGrowth(64, Bytes32.SIZE)).isEqualTo((Bytes32.ZERO));
+    assertThat(memory.getBytesWithoutGrowth(64, 32)).isEqualTo((Bytes32.ZERO));
     assertThat(memory.getActiveWords()).isEqualTo(initialActiveWords);
 
-    assertThat(memory.getBytes(32, Bytes32.SIZE)).isEqualTo((WORD2));
+    assertThat(memory.getBytes(32, 32)).isEqualTo((WORD2));
     assertThat(memory.getActiveWords()).isEqualTo(initialActiveWords);
 
-    assertThat(memory.getBytes(64, Bytes32.SIZE)).isEqualTo((Bytes32.ZERO));
+    assertThat(memory.getBytes(64, 32)).isEqualTo((Bytes32.ZERO));
     assertThat(memory.getActiveWords()).isEqualTo(initialActiveWords + 1);
   }
 
@@ -88,7 +88,7 @@ public class MemoryTest {
     assertThat(memory.getWord(64)).isEqualTo(WORD3);
     assertThat(memory.getWord(96)).isEqualTo(WORD4);
 
-    final Bytes value = Bytes.concatenate(WORD1, WORD2);
+    final Bytes value = Bytes.wrap(WORD1, WORD2);
     memory.setBytes(0, 96, value);
     assertThat(memory.getWord(0)).isEqualTo(WORD1);
     assertThat(memory.getWord(32)).isEqualTo(WORD2);
@@ -103,7 +103,7 @@ public class MemoryTest {
     assertThat(memory.getWord(64)).isEqualTo(WORD3);
     assertThat(memory.getWord(96)).isEqualTo(WORD4);
 
-    final Bytes value = Bytes.concatenate(WORD1, WORD2);
+    final Bytes value = Bytes.wrap(WORD1, WORD2);
     memory.setBytes(10, 96, value);
     assertThat(memory.getWord(10)).isEqualTo(WORD1);
     assertThat(memory.getWord(42)).isEqualTo(WORD2);
@@ -120,7 +120,7 @@ public class MemoryTest {
     memory.setWord(64, WORD3);
     assertThat(memory.getWord(64)).isEqualTo(WORD3);
 
-    final Bytes value = Bytes.concatenate(WORD1, WORD2);
+    final Bytes value = Bytes.wrap(WORD1, WORD2);
     memory.setBytes(0, 32, 64, value);
     assertThat(memory.getWord(0)).isEqualTo(WORD2);
     assertThat(memory.getWord(32)).isEqualTo(Bytes32.ZERO);
@@ -132,7 +132,7 @@ public class MemoryTest {
     memory.setWord(64, WORD3);
     assertThat(memory.getWord(64)).isEqualTo(WORD3);
 
-    final Bytes value = Bytes.concatenate(WORD1, WORD2);
+    final Bytes value = Bytes.wrap(WORD1, WORD2);
     memory.setBytes(0, 94, 64, value);
     assertThat(memory.getWord(0)).isEqualTo(Bytes32.ZERO);
     assertThat(memory.getWord(32)).isEqualTo(Bytes32.ZERO);
@@ -163,13 +163,13 @@ public class MemoryTest {
     assertThat(memory.getWord(64)).isEqualTo(Bytes32.ZERO);
   }
 
-  private static Bytes32 fillBytes32(final long value) {
+  private static Bytes fillBytes(final long value) {
     return Bytes32.fromHexString(Long.toString(value).repeat(64));
   }
 
   @Test
   public void shouldSetMemoryRightAlignedWhenLengthEqualToSourceLength() {
-    final Bytes value = Bytes.concatenate(WORD1, WORD2, WORD3);
+    final Bytes value = Bytes.wrap(WORD1, WORD2, WORD3);
     memory.setBytesRightAligned(0, value.size(), value);
     assertThat(memory.getWord(0)).isEqualTo(WORD1);
     assertThat(memory.getWord(32)).isEqualTo(WORD2);
@@ -178,7 +178,7 @@ public class MemoryTest {
 
   @Test
   public void shouldSetMemoryRightAlignedWhenLengthLessThanSourceLength() {
-    final Bytes value = Bytes.concatenate(WORD1, WORD2, WORD3);
+    final Bytes value = Bytes.wrap(WORD1, WORD2, WORD3);
     memory.setBytesRightAligned(0, 64, value);
     assertThat(memory.getWord(0)).isEqualTo(WORD1);
     assertThat(memory.getWord(32)).isEqualTo(WORD2);
@@ -187,7 +187,7 @@ public class MemoryTest {
 
   @Test
   public void shouldSetMemoryRightAlignedWhenLengthGreaterThanSourceLength() {
-    final Bytes value = Bytes.concatenate(WORD1, WORD2);
+    final Bytes value = Bytes.wrap(WORD1, WORD2);
     memory.setBytesRightAligned(0, 96, value);
     assertThat(memory.getWord(0)).isEqualTo(Bytes32.ZERO);
     assertThat(memory.getWord(32)).isEqualTo(WORD1);
@@ -201,7 +201,7 @@ public class MemoryTest {
     assertThat(memory.getWord(64)).isEqualTo(WORD3);
     assertThat(memory.getWord(96)).isEqualTo(WORD4);
 
-    final Bytes value = Bytes.concatenate(WORD1, WORD2);
+    final Bytes value = Bytes.wrap(WORD1, WORD2);
     memory.setBytesRightAligned(0, 96, value);
     assertThat(memory.getWord(0)).isEqualTo(Bytes32.ZERO);
     assertThat(memory.getWord(32)).isEqualTo(WORD1);
@@ -217,7 +217,7 @@ public class MemoryTest {
     assertThat(memory.getWord(64)).isEqualTo(WORD3);
     assertThat(memory.getWord(96)).isEqualTo(WORD4);
 
-    final Bytes value = Bytes.concatenate(WORD1, WORD2);
+    final Bytes value = Bytes.wrap(WORD1, WORD2);
     memory.setBytesRightAligned(10, 96, value);
     assertThat(memory.getWord(10)).isEqualTo(Bytes32.ZERO);
     assertThat(memory.getWord(42)).isEqualTo(WORD1);

@@ -20,7 +20,6 @@ import org.hyperledger.besu.datatypes.Wei;
 import java.util.Map;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /**
@@ -39,4 +38,4 @@ public record GenesisAccount(
     Wei balance,
     Bytes code,
     Map<UInt256, UInt256> storage,
-    Bytes32 privateKey) {}
+    Bytes privateKey) {}

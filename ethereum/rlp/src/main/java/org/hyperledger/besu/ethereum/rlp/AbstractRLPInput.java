@@ -23,10 +23,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
-import org.apache.tuweni.bytes.v2.Bytes48;
 import org.apache.tuweni.bytes.v2.MutableBytes;
-import org.apache.tuweni.bytes.v2.MutableBytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.apache.tuweni.units.bigints.UInt64;
 
@@ -98,9 +95,9 @@ abstract class AbstractRLPInput implements RLPInput {
 
   protected abstract Bytes inputSlice(long offset, int length);
 
-  protected abstract Bytes32 inputSlice32(long offset);
+  protected abstract Bytes inputSlice32(long offset);
 
-  protected abstract Bytes48 inputSlice48(long offset);
+  protected abstract Bytes inputSlice48(long offset);
 
   protected abstract String inputHex(long offset, int length);
 
@@ -343,7 +340,7 @@ abstract class AbstractRLPInput implements RLPInput {
   private Bytes readBytes8Scalar() {
     checkScalar("8-bytes scalar", 8);
     final MutableBytes res = MutableBytes.create(8);
-    payloadSlice().copyTo(res, res.size() - currentPayloadSize);
+    res.set(res.size() - currentPayloadSize, payloadSlice());
     setTo(nextItem());
     return res;
   }
@@ -353,10 +350,10 @@ abstract class AbstractRLPInput implements RLPInput {
     return UInt64.fromBytes(readBytes8Scalar());
   }
 
-  private Bytes32 readBytes32Scalar() {
+  private Bytes readBytes32Scalar() {
     checkScalar("32-bytes scalar", 32);
-    final MutableBytes32 res = MutableBytes32.create();
-    payloadSlice().copyTo(res, res.size() - currentPayloadSize);
+    final MutableBytes res = MutableBytes.create(32);
+    res.set(res.size() - currentPayloadSize, payloadSlice());
     setTo(nextItem());
     return res;
   }
@@ -428,17 +425,17 @@ abstract class AbstractRLPInput implements RLPInput {
   }
 
   @Override
-  public Bytes32 readBytes32() {
+  public Bytes readBytes32() {
     checkElt("32 bytes value", 32);
-    final Bytes32 res = inputSlice32(currentPayloadOffset);
+    final Bytes res = inputSlice32(currentPayloadOffset);
     setTo(nextItem());
     return res;
   }
 
   @Override
-  public Bytes48 readBytes48() {
+  public Bytes readBytes48() {
     checkElt("48 bytes value", 48);
-    final Bytes48 res = inputSlice48(currentPayloadOffset);
+    final Bytes res = inputSlice48(currentPayloadOffset);
     setTo(nextItem());
     return res;
   }
@@ -590,7 +587,7 @@ abstract class AbstractRLPInput implements RLPInput {
 
     final MutableBytes scratch = MutableBytes.create(currentPayloadSize + 10);
     final int headerSize = RLPEncodingHelpers.writeListHeader(currentPayloadSize, scratch, 0);
-    payloadSlice().copyTo(scratch, headerSize);
+    scratch.set(headerSize, payloadSlice());
     final Bytes res = scratch.slice(0, currentPayloadSize + headerSize);
 
     setTo(nextItem());

@@ -16,8 +16,8 @@ package org.hyperledger.besu.ethereum.privacy;
 
 import org.hyperledger.besu.datatypes.Address;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public interface PrivateNonceProvider {
-  long getNonce(Address sender, Bytes32 privacyGroupId);
+  long getNonce(Address sender, Bytes privacyGroupId);
 }

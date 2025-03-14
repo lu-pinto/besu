@@ -103,8 +103,8 @@ public class DebugTraceTransactionTest {
         new JsonRpcRequestContext(new JsonRpcRequest("2.0", "debug_traceTransaction", params));
     final TransactionProcessingResult result = mock(TransactionProcessingResult.class);
 
-    final Bytes32[] stackBytes =
-        new Bytes32[] {
+    final Bytes[] stackBytes =
+        new Bytes[] {
           Bytes32.fromHexString(
               "0x0000000000000000000000000000000000000000000000000000000000000001")
         };

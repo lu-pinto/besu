@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class GetProofResult {
 
@@ -36,20 +35,20 @@ public class GetProofResult {
 
   private final Wei balance;
 
-  private final Bytes32 codeHash;
+  private final Bytes codeHash;
 
   private final long nonce;
 
-  private final Bytes32 storageHash;
+  private final Bytes storageHash;
 
   private final List<StorageEntryProof> storageEntries;
 
   public GetProofResult(
       final Address address,
       final Wei balance,
-      final Bytes32 codeHash,
+      final Bytes codeHash,
       final long nonce,
-      final Bytes32 storageHash,
+      final Bytes storageHash,
       final List<Bytes> accountProof,
       final List<StorageEntryProof> storageEntries) {
     this.address = address;

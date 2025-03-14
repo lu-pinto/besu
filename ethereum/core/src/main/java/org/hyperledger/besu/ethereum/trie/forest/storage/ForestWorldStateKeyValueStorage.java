@@ -32,7 +32,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class ForestWorldStateKeyValueStorage implements WorldStateKeyValueStorage {
 
@@ -57,15 +56,15 @@ public class ForestWorldStateKeyValueStorage implements WorldStateKeyValueStorag
     }
   }
 
-  public Optional<Bytes> getAccountStateTrieNode(final Bytes32 nodeHash) {
+  public Optional<Bytes> getAccountStateTrieNode(final Bytes nodeHash) {
     return getTrieNode(nodeHash);
   }
 
-  public Optional<Bytes> getAccountStorageTrieNode(final Bytes32 nodeHash) {
+  public Optional<Bytes> getAccountStorageTrieNode(final Bytes nodeHash) {
     return getTrieNode(nodeHash);
   }
 
-  private Optional<Bytes> getTrieNode(final Bytes32 nodeHash) {
+  private Optional<Bytes> getTrieNode(final Bytes nodeHash) {
     if (nodeHash.equals(MerkleTrie.EMPTY_TRIE_NODE_HASH)) {
       return Optional.of(MerkleTrie.EMPTY_TRIE_NODE);
     } else {
@@ -73,12 +72,12 @@ public class ForestWorldStateKeyValueStorage implements WorldStateKeyValueStorag
     }
   }
 
-  public boolean contains(final Bytes32 hash) {
+  public boolean contains(final Bytes hash) {
     // we don't have location info
     return getNodeData(hash).isPresent();
   }
 
-  public Optional<Bytes> getNodeData(final Bytes32 hash) {
+  public Optional<Bytes> getNodeData(final Bytes hash) {
     if (hash.equals(MerkleTrie.EMPTY_TRIE_NODE_HASH)) {
       return Optional.of(MerkleTrie.EMPTY_TRIE_NODE);
     } else if (hash.equals(Hash.EMPTY)) {
@@ -88,7 +87,7 @@ public class ForestWorldStateKeyValueStorage implements WorldStateKeyValueStorag
     }
   }
 
-  public boolean isWorldStateAvailable(final Bytes32 rootHash) {
+  public boolean isWorldStateAvailable(final Bytes rootHash) {
     return getAccountStateTrieNode(rootHash).isPresent();
   }
 
@@ -133,7 +132,7 @@ public class ForestWorldStateKeyValueStorage implements WorldStateKeyValueStorag
 
     private final KeyValueStorageTransaction transaction;
     private final Subscribers<NodesAddedListener> nodeAddedListeners;
-    private final Set<Bytes32> addedNodes = new HashSet<>();
+    private final Set<Bytes> addedNodes = new HashSet<>();
     private final Lock lock;
 
     public Updater(
@@ -151,7 +150,7 @@ public class ForestWorldStateKeyValueStorage implements WorldStateKeyValueStorag
       return putCode(codeHash, code);
     }
 
-    public Updater putCode(final Bytes32 codeHash, final Bytes code) {
+    public Updater putCode(final Bytes codeHash, final Bytes code) {
       if (code.size() == 0) {
         // Don't save empty values
         return this;
@@ -162,11 +161,11 @@ public class ForestWorldStateKeyValueStorage implements WorldStateKeyValueStorag
       return this;
     }
 
-    public Updater saveWorldState(final Bytes32 nodeHash, final Bytes node) {
+    public Updater saveWorldState(final Bytes nodeHash, final Bytes node) {
       return putAccountStateTrieNode(nodeHash, node);
     }
 
-    public Updater putAccountStateTrieNode(final Bytes32 nodeHash, final Bytes node) {
+    public Updater putAccountStateTrieNode(final Bytes nodeHash, final Bytes node) {
       if (nodeHash.equals(MerkleTrie.EMPTY_TRIE_NODE_HASH)) {
         // Don't save empty nodes
         return this;
@@ -176,12 +175,12 @@ public class ForestWorldStateKeyValueStorage implements WorldStateKeyValueStorag
       return this;
     }
 
-    public WorldStateKeyValueStorage.Updater removeAccountStateTrieNode(final Bytes32 nodeHash) {
+    public WorldStateKeyValueStorage.Updater removeAccountStateTrieNode(final Bytes nodeHash) {
       transaction.remove(nodeHash.toArrayUnsafe());
       return this;
     }
 
-    public Updater putAccountStorageTrieNode(final Bytes32 nodeHash, final Bytes node) {
+    public Updater putAccountStorageTrieNode(final Bytes nodeHash, final Bytes node) {
       if (nodeHash.equals(MerkleTrie.EMPTY_TRIE_NODE_HASH)) {
         // Don't save empty nodes
         return this;

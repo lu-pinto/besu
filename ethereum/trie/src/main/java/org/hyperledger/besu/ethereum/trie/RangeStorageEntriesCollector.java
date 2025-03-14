@@ -18,17 +18,16 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class RangeStorageEntriesCollector extends StorageEntriesCollector<Bytes> {
 
   private int currentSize = 0;
-  private final Optional<Bytes32> endKeyHash;
+  private final Optional<Bytes> endKeyHash;
   private final Integer maxResponseBytes;
 
   public RangeStorageEntriesCollector(
-      final Bytes32 startKeyHash,
-      final Optional<Bytes32> endKeyHash,
+      final Bytes startKeyHash,
+      final Optional<Bytes> endKeyHash,
       final int limit,
       final int maxResponseBytes) {
     super(startKeyHash, limit);
@@ -37,8 +36,8 @@ public class RangeStorageEntriesCollector extends StorageEntriesCollector<Bytes>
   }
 
   public static RangeStorageEntriesCollector createCollector(
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash,
       final int limit,
       final int maxResponseBytes) {
     return new RangeStorageEntriesCollector(
@@ -46,7 +45,7 @@ public class RangeStorageEntriesCollector extends StorageEntriesCollector<Bytes>
   }
 
   public static RangeStorageEntriesCollector createCollector(
-      final Bytes32 startKeyHash, final int limit, final int maxResponseBytes) {
+      final Bytes startKeyHash, final int limit, final int maxResponseBytes) {
     return new RangeStorageEntriesCollector(
         startKeyHash, Optional.empty(), limit, maxResponseBytes);
   }
@@ -55,21 +54,21 @@ public class RangeStorageEntriesCollector extends StorageEntriesCollector<Bytes>
     return new TrieIterator<>(collector, false);
   }
 
-  public static Map<Bytes32, Bytes> collectEntries(
+  public static Map<Bytes, Bytes> collectEntries(
       final RangeStorageEntriesCollector collector,
       final TrieIterator<Bytes> visitor,
       final Node<Bytes> root,
-      final Bytes32 startKeyHash) {
+      final Bytes startKeyHash) {
     root.accept(visitor, CompactEncoding.bytesToPath(startKeyHash));
     return collector.getValues();
   }
 
   @Override
-  public TrieIterator.State onLeaf(final Bytes32 keyHash, final Node<Bytes> node) {
+  public TrieIterator.State onLeaf(final Bytes keyHash, final Node<Bytes> node) {
     if (keyHash.compareTo(startKeyHash) >= 0) {
       if (node.getValue().isPresent()) {
         final Bytes value = node.getValue().get();
-        currentSize += Bytes32.SIZE + value.size();
+        currentSize += 32 + value.size();
         if (currentSize > maxResponseBytes) {
           return TrieIterator.State.STOP;
         }

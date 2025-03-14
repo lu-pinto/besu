@@ -72,7 +72,7 @@ public class Framer {
                 out.writeNull();
                 out.endList();
               })
-          .toArray();
+          .toArrayUnsafe();
 
   private final HandshakeSecrets secrets;
   private static final SnappyCompressor compressor = new SnappyCompressor();
@@ -377,7 +377,7 @@ public class Framer {
     f.set(0, bv.get(0));
 
     // Zero-padded to 16-byte boundary.
-    message.getData().copyTo(f, 1);
+    f.set(1, message.getData());
     encryptor.processBytes(f.toArrayUnsafe(), 0, f.size(), f.toArrayUnsafe(), 0);
 
     // Calculate the frame MAC.

@@ -19,7 +19,6 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.math.ec.ECPoint;
 
@@ -53,7 +52,7 @@ public interface SignatureAlgorithm {
    * @param keyPair the key pair
    * @return the secp signature
    */
-  SECPSignature sign(final Bytes32 dataHash, final KeyPair keyPair);
+  SECPSignature sign(final Bytes dataHash, final KeyPair keyPair);
 
   /**
    * Verify given data.
@@ -93,7 +92,7 @@ public interface SignatureAlgorithm {
       final BigInteger nativeR,
       final BigInteger nativeS,
       final SECPPublicKey publicKey,
-      final Bytes32 dataHash);
+      final Bytes dataHash);
 
   /**
    * Calculate ecdh key agreement as bytes32.
@@ -102,7 +101,7 @@ public interface SignatureAlgorithm {
    * @param theirPubKey the public key
    * @return the bytes 32
    */
-  Bytes32 calculateECDHKeyAgreement(final SECPPrivateKey privKey, final SECPPublicKey theirPubKey);
+  Bytes calculateECDHKeyAgreement(final SECPPrivateKey privKey, final SECPPublicKey theirPubKey);
 
   /**
    * Gets half curve order.
@@ -146,7 +145,7 @@ public interface SignatureAlgorithm {
    * @param key the key
    * @return the secp private key
    */
-  SECPPrivateKey createPrivateKey(final Bytes32 key);
+  SECPPrivateKey createPrivateKey(final Bytes key);
 
   /**
    * Create secp public key.
@@ -180,7 +179,7 @@ public interface SignatureAlgorithm {
    * @return the optional public key
    */
   Optional<SECPPublicKey> recoverPublicKeyFromSignature(
-      final Bytes32 dataHash, final SECPSignature signature);
+      final Bytes dataHash, final SECPSignature signature);
 
   /**
    * Public key as EcPoint.

@@ -76,7 +76,7 @@ public class ChainDataPrunerStorage {
   }
 
   private Optional<Bytes> get(final Bytes prefix, final Bytes key) {
-    return storage.get(Bytes.concatenate(prefix, key).toArrayUnsafe()).map(Bytes::wrap);
+    return storage.get(Bytes.wrap(prefix, key).toArrayUnsafe()).map(Bytes::wrap);
   }
 
   private void set(
@@ -84,15 +84,15 @@ public class ChainDataPrunerStorage {
       final Bytes prefix,
       final Bytes key,
       final Bytes value) {
-    transaction.put(Bytes.concatenate(prefix, key).toArrayUnsafe(), value.toArrayUnsafe());
+    transaction.put(Bytes.wrap(prefix, key).toArrayUnsafe(), value.toArrayUnsafe());
   }
 
   private void remove(
       final KeyValueStorageTransaction transaction, final Bytes prefix, final Bytes key) {
-    transaction.remove(Bytes.concatenate(prefix, key).toArrayUnsafe());
+    transaction.remove(Bytes.wrap(prefix, key).toArrayUnsafe());
   }
 
   private Hash bytesToHash(final Bytes bytes) {
-    return Hash.wrap(Bytes32.wrap(bytes, 0));
+    return Hash.wrap(Bytes32.fromBytes(bytes, 0));
   }
 }

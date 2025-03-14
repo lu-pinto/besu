@@ -67,8 +67,8 @@ public class PrivateTransactionDataFixture {
                       new BigInteger(
                           "8f2a55949038a9610f50fb23b5883af3b4ecb3c3bb792cbcefbd1542c692be63", 16)));
 
-  public static final Bytes32 VALID_BASE64_ENCLAVE_KEY =
-      Bytes32.wrap(Bytes.fromBase64String("A1aVtMxLCUHmBVHXoZzzBgPbW/wj5axDpW9X8l91SGo="));
+  public static final Bytes VALID_BASE64_ENCLAVE_KEY =
+      Bytes.fromBase64String("A1aVtMxLCUHmBVHXoZzzBgPbW/wj5axDpW9X8l91SGo=");
 
   public static final Bytes VALID_CONTRACT_DEPLOYMENT_PAYLOAD =
       Bytes.fromHexString(
@@ -95,7 +95,7 @@ public class PrivateTransactionDataFixture {
 
   public static Transaction privateMarkerTransactionOnchainAdd() {
     return privateMarkerTransaction(
-        Bytes.concatenate(VALID_BASE64_ENCLAVE_KEY, VALID_BASE64_ENCLAVE_KEY), FLEXIBLE_PRIVACY);
+        Bytes.wrap(VALID_BASE64_ENCLAVE_KEY, VALID_BASE64_ENCLAVE_KEY), FLEXIBLE_PRIVACY);
   }
 
   private static Transaction privateMarkerTransaction(
@@ -205,7 +205,7 @@ public class PrivateTransactionDataFixture {
   }
 
   public static PrivateTransactionMetadata generatePrivateTransactionMetadata() {
-    return new PrivateTransactionMetadata(Hash.hash(Bytes32.random()), Hash.hash(Bytes32.random()));
+    return new PrivateTransactionMetadata(Hash.hash(Bytes.random(32)), Hash.hash(Bytes.random(32)));
   }
 
   public static List<PrivateTransactionMetadata> generatePrivateTransactionMetadataList(
@@ -220,7 +220,7 @@ public class PrivateTransactionDataFixture {
   }
 
   public static Bytes encodePrivateTransaction(
-      final PrivateTransaction privateTransaction, final Optional<Bytes32> version) {
+      final PrivateTransaction privateTransaction, final Optional<Bytes> version) {
     final BytesValueRLPOutput output = new BytesValueRLPOutput();
     if (version.isEmpty()) {
       privateTransaction.writeTo(output);

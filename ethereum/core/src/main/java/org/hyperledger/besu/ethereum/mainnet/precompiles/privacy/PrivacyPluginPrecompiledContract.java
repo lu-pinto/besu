@@ -32,7 +32,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +68,7 @@ public class PrivacyPluginPrecompiledContract extends PrivacyPrecompiledContract
     final PrivateTransaction privateTransaction =
         PrivateTransaction.readFrom(pluginPrivateTransaction.get());
 
-    final Bytes32 privacyGroupId = privateTransaction.determinePrivacyGroupId();
+    final Bytes privacyGroupId = privateTransaction.determinePrivacyGroupId();
     final Hash pmtHash = messageFrame.getContextVariable(PrivateStateUtils.KEY_TRANSACTION_HASH);
 
     LOG.debug(

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * The AccessListEntryAdapter class extends the AdapterBase class. It provides methods to get the
@@ -47,7 +47,7 @@ public class AccessListEntryAdapter extends AdapterBase {
    *
    * @return a list of storage keys
    */
-  public List<Bytes32> getStorageKeys() {
+  public List<Bytes> getStorageKeys() {
     final var storage = accessListEntry.storageKeys();
     return new ArrayList<>(storage);
   }

@@ -24,7 +24,7 @@ import org.hyperledger.besu.plugin.services.MetricsSystem;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class RetryingGetAccountRangeFromPeerTask
     extends AbstractRetryingSwitchingPeerTask<AccountRangeMessage.AccountRangeData> {
@@ -32,15 +32,15 @@ public class RetryingGetAccountRangeFromPeerTask
   public static final int MAX_RETRIES = 4;
 
   private final EthContext ethContext;
-  private final Bytes32 startKeyHash;
-  private final Bytes32 endKeyHash;
+  private final Bytes startKeyHash;
+  private final Bytes endKeyHash;
   private final BlockHeader blockHeader;
   private final MetricsSystem metricsSystem;
 
   private RetryingGetAccountRangeFromPeerTask(
       final EthContext ethContext,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash,
       final BlockHeader blockHeader,
       final MetricsSystem metricsSystem) {
     super(
@@ -57,8 +57,8 @@ public class RetryingGetAccountRangeFromPeerTask
 
   public static EthTask<AccountRangeMessage.AccountRangeData> forAccountRange(
       final EthContext ethContext,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash,
       final BlockHeader blockHeader,
       final MetricsSystem metricsSystem) {
     return new RetryingGetAccountRangeFromPeerTask(

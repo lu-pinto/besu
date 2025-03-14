@@ -21,7 +21,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 @JsonPropertyOrder({
   "parentHash",
@@ -69,7 +69,7 @@ public class EngineGetPayloadResultV1 {
     this.timestamp = Quantity.create(header.getTimestamp());
     this.transactions = transactions;
     this.feeRecipient = header.getCoinbase().toString();
-    this.prevRandao = header.getPrevRandao().map(Bytes32::toHexString).orElse(null);
+    this.prevRandao = header.getPrevRandao().map(Bytes::toHexString).orElse(null);
   }
 
   @JsonGetter(value = "blockNumber")

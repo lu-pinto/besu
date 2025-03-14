@@ -49,7 +49,7 @@ public class EnclaveModule {
   private static final Bytes ENCLAVE_PUBLIC_KEY =
       Bytes.fromBase64String("A1aVtMxLCUHmBVHXoZzzBgPbW/wj5axDpW9X8l91SGo=");
 
-  private static final Bytes32 PRIVACY_GROUP_BYTES32 =
+  private static final Bytes PRIVACY_GROUP_BYTES32 =
       Bytes32.fromHexString("0xf250d523ae9164722b06ca25cfa2a7f3c45df96b09e215236f886c876f715bfa");
 
   private static final Bytes MOCK_PAYLOAD =

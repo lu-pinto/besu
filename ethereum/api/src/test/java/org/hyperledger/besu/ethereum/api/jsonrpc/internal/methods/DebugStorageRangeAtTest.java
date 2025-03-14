@@ -53,6 +53,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Function;
 
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +64,7 @@ import org.mockito.invocation.InvocationOnMock;
 public class DebugStorageRangeAtTest {
 
   private static final int TRANSACTION_INDEX = 2;
-  private static final Bytes32 START_KEY_HASH = Bytes32.fromHexString("0x22");
+  private static final Bytes START_KEY_HASH = Bytes32.fromHexString("0x22");
   private final Blockchain blockchain = mock(Blockchain.class);
   private final BlockchainQueries blockchainQueries = mock(BlockchainQueries.class);
   private final BlockReplay blockReplay = mock(BlockReplay.class, Answers.RETURNS_DEEP_STUBS);
@@ -141,7 +142,7 @@ public class DebugStorageRangeAtTest {
     entries.add(
         AccountStorageEntry.create(
             UInt256.valueOf(7), Hash.hash(Bytes32.fromHexString("0x45")), Optional.empty()));
-    final NavigableMap<Bytes32, AccountStorageEntry> rawEntries = new TreeMap<>();
+    final NavigableMap<Bytes, AccountStorageEntry> rawEntries = new TreeMap<>();
     entries.forEach(e -> rawEntries.put(e.getKeyHash(), e));
 
     when(account.storageEntriesFrom(START_KEY_HASH, 11)).thenReturn(rawEntries);

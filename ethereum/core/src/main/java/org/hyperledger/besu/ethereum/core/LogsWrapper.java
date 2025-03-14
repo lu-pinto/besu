@@ -20,7 +20,6 @@ import org.hyperledger.besu.evm.log.Log;
 import java.util.List;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class LogsWrapper implements org.hyperledger.besu.plugin.data.Log {
 
@@ -36,7 +35,7 @@ public class LogsWrapper implements org.hyperledger.besu.plugin.data.Log {
   }
 
   @Override
-  public List<? extends Bytes32> getTopics() {
+  public List<? extends Bytes> getTopics() {
     return delegate.getTopics();
   }
 

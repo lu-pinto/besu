@@ -17,6 +17,7 @@ package org.hyperledger.besu.evm.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.junit.jupiter.api.Test;
@@ -86,7 +87,7 @@ class OperandStackTest {
   @Test
   void set_NegativeOffset() {
     final OperandStack stack = new OperandStack(1);
-    final Bytes32 operand = Bytes32.fromHexString("0x01");
+    final Bytes operand = Bytes32.fromHexString("0x01");
     assertThatThrownBy(() -> stack.set(-1, operand)).isInstanceOf(UnderflowException.class);
   }
 
@@ -94,7 +95,7 @@ class OperandStackTest {
   void set_IndexGreaterThanSize() {
     final OperandStack stack = new OperandStack(1);
     stack.push(UInt256.fromHexString("0x01"));
-    final Bytes32 operand = Bytes32.fromHexString("0x01");
+    final Bytes operand = Bytes32.fromHexString("0x01");
     assertThatThrownBy(() -> stack.set(2, operand)).isInstanceOf(OverflowException.class);
   }
 
@@ -102,7 +103,7 @@ class OperandStackTest {
   void set_IndexGreaterThanCurrentSize() {
     final OperandStack stack = new OperandStack(1024);
     stack.push(UInt256.fromHexString("0x01"));
-    final Bytes32 operand = Bytes32.fromHexString("0x01");
+    final Bytes operand = Bytes32.fromHexString("0x01");
     assertThatThrownBy(() -> stack.set(2, operand)).isInstanceOf(OverflowException.class);
   }
 

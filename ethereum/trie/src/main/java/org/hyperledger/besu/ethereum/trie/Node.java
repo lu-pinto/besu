@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public interface Node<V> {
 
@@ -53,7 +52,7 @@ public interface Node<V> {
     return getEncodedBytes().size() >= 32;
   }
 
-  Bytes32 getHash();
+  Bytes getHash();
 
   Node<V> replacePath(Bytes path);
 

@@ -48,7 +48,6 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.auth.User;
 import io.vertx.ext.auth.impl.UserImpl;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -79,7 +78,7 @@ public class PrivGetTransactionReceiptTest {
   public void setUp() {
     final PrivateTransactionReceipt receipt =
         new PrivateTransactionReceipt(1, Collections.emptyList(), Bytes.EMPTY, Optional.empty());
-    when(privateStateStorage.getTransactionReceipt(any(Bytes32.class), any(Bytes32.class)))
+    when(privateStateStorage.getTransactionReceipt(any(Bytes.class), any(Bytes.class)))
         .thenReturn(Optional.of(receipt));
 
     privGetTransactionReceipt =
@@ -168,7 +167,7 @@ public class PrivGetTransactionReceiptTest {
             Collections.emptyList(),
             Bytes.EMPTY,
             Optional.of(Bytes.wrap(new byte[] {(byte) 0x01})));
-    when(privateStateStorage.getTransactionReceipt(any(Bytes32.class), any(Bytes32.class)))
+    when(privateStateStorage.getTransactionReceipt(any(Bytes.class), any(Bytes.class)))
         .thenReturn(Optional.of(privateTransactionReceiptWithRevertReason));
 
     final JsonRpcRequestContext request = requestContext(pmt.getHash());

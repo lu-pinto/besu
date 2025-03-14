@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertx.core.Vertx;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.units.bigints.UInt64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -84,9 +84,9 @@ public class EngineGetPayloadBodiesByRangeV1Test {
   @Test
   public void shouldReturnPayloadForKnownNumber() {
     final SignatureAlgorithm sig = SignatureAlgorithmFactory.getInstance();
-    final Hash blockHash1 = Hash.wrap(Bytes32.random());
-    final Hash blockHash2 = Hash.wrap(Bytes32.random());
-    final Hash blockHash3 = Hash.wrap(Bytes32.random());
+    final Hash blockHash1 = Hash.wrap(Bytes.random(32));
+    final Hash blockHash2 = Hash.wrap(Bytes.random(32));
+    final Hash blockHash3 = Hash.wrap(Bytes.random(32));
     final BlockBody blockBody1 =
         new BlockBody(
             List.of(new TransactionTestFixture().createTransaction(sig.generateKeyPair())),
@@ -134,8 +134,8 @@ public class EngineGetPayloadBodiesByRangeV1Test {
   @Test
   public void shouldReturnNullForUnknownNumberAndPayloadForKnownNumber() {
     final SignatureAlgorithm sig = SignatureAlgorithmFactory.getInstance();
-    final Hash blockHash1 = Hash.wrap(Bytes32.random());
-    final Hash blockHash3 = Hash.wrap(Bytes32.random());
+    final Hash blockHash1 = Hash.wrap(Bytes.random(32));
+    final Hash blockHash3 = Hash.wrap(Bytes.random(32));
     final BlockBody blockBody1 =
         new BlockBody(
             List.of(new TransactionTestFixture().createTransaction(sig.generateKeyPair())),
@@ -164,8 +164,8 @@ public class EngineGetPayloadBodiesByRangeV1Test {
   @Test
   public void shouldReturnNullForWithdrawalsWhenBlockIsPreShanghai() {
     final SignatureAlgorithm sig = SignatureAlgorithmFactory.getInstance();
-    final Hash blockHash1 = Hash.wrap(Bytes32.random());
-    final Hash blockHash2 = Hash.wrap(Bytes32.random());
+    final Hash blockHash1 = Hash.wrap(Bytes.random(32));
+    final Hash blockHash2 = Hash.wrap(Bytes.random(32));
 
     final BlockBody preShanghaiBlockBody =
         new BlockBody(
@@ -199,8 +199,8 @@ public class EngineGetPayloadBodiesByRangeV1Test {
   @Test
   public void shouldReturnWithdrawalsWhenBlockIsPostShanghai() {
     final SignatureAlgorithm sig = SignatureAlgorithmFactory.getInstance();
-    final Hash blockHash1 = Hash.wrap(Bytes32.random());
-    final Hash blockHash2 = Hash.wrap(Bytes32.random());
+    final Hash blockHash1 = Hash.wrap(Bytes.random(32));
+    final Hash blockHash2 = Hash.wrap(Bytes.random(32));
     final Withdrawal withdrawal =
         new Withdrawal(UInt64.ONE, UInt64.ONE, Address.fromHexString("0x1"), GWei.ONE);
     final Withdrawal withdrawal2 =
@@ -238,7 +238,7 @@ public class EngineGetPayloadBodiesByRangeV1Test {
   @Test
   public void shouldNotContainTrailingNullForBlocksPastTheCurrentHead() {
     final SignatureAlgorithm sig = SignatureAlgorithmFactory.getInstance();
-    final Hash blockHash1 = Hash.wrap(Bytes32.random());
+    final Hash blockHash1 = Hash.wrap(Bytes.random(32));
     final Withdrawal withdrawal =
         new Withdrawal(UInt64.ONE, UInt64.ONE, Address.fromHexString("0x1"), GWei.ONE);
 
@@ -262,9 +262,9 @@ public class EngineGetPayloadBodiesByRangeV1Test {
   @Test
   public void shouldReturnUpUntilHeadWhenStartBlockPlusCountEqualsHeadNumber() {
     final SignatureAlgorithm sig = SignatureAlgorithmFactory.getInstance();
-    final Hash blockHash1 = Hash.wrap(Bytes32.random());
-    final Hash blockHash2 = Hash.wrap(Bytes32.random());
-    final Hash blockHash3 = Hash.wrap(Bytes32.random());
+    final Hash blockHash1 = Hash.wrap(Bytes.random(32));
+    final Hash blockHash2 = Hash.wrap(Bytes.random(32));
+    final Hash blockHash3 = Hash.wrap(Bytes.random(32));
     final Withdrawal withdrawal =
         new Withdrawal(UInt64.ONE, UInt64.ONE, Address.fromHexString("0x1"), GWei.ONE);
 

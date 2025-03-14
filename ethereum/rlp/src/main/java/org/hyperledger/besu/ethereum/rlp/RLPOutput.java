@@ -21,8 +21,8 @@ import java.util.function.Consumer;
 
 import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.MutableBytes;
-import org.apache.tuweni.units.bigints.UInt256Value;
-import org.apache.tuweni.units.bigints.UInt64Value;
+import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.units.bigints.UInt64;
 
 /**
  * An output used to encode data in RLP encoding.
@@ -77,8 +77,8 @@ public interface RLPOutput {
    *
    * @param v unsigned 64 bit integer value
    */
-  default void writeUInt64Scalar(final UInt64Value<?> v) {
-    writeBytes(v.toBytes().trimLeadingZeros());
+  default void writeUInt64Scalar(final UInt64 v) {
+    writeBytes(v.trimLeadingZeros());
   }
 
   /**
@@ -86,7 +86,7 @@ public interface RLPOutput {
    *
    * @param v The scalar to write.
    */
-  default void writeUInt256Scalar(final UInt256Value<?> v) {
+  default void writeUInt256Scalar(final UInt256 v) {
     writeBytes(v.trimLeadingZeros());
   }
 

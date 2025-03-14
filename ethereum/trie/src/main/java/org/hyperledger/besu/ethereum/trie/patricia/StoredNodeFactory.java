@@ -35,7 +35,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class StoredNodeFactory<V> implements NodeFactory<V> {
   @SuppressWarnings("rawtypes")
@@ -101,7 +100,7 @@ public class StoredNodeFactory<V> implements NodeFactory<V> {
   }
 
   @Override
-  public Optional<Node<V>> retrieve(final Bytes location, final Bytes32 hash)
+  public Optional<Node<V>> retrieve(final Bytes location, final Bytes hash)
       throws MerkleTrieException {
     return nodeLoader
         .getNode(location, hash)
@@ -177,13 +176,12 @@ public class StoredNodeFactory<V> implements NodeFactory<V> {
     final RLPInput childRlp = valueRlp.readAsRlp();
     if (childRlp.nextIsList()) {
       final Node<V> childNode =
-          decode(location == null ? null : Bytes.concatenate(location, path), childRlp, errMessage);
+          decode(location == null ? null : Bytes.wrap(location, path), childRlp, errMessage);
       return new ExtensionNode<>(location, path, childNode, this);
     } else {
-      final Bytes32 childHash = childRlp.readBytes32();
+      final Bytes childHash = childRlp.readBytes32();
       final StoredNode<V> childNode =
-          new StoredNode<>(
-              this, location == null ? null : Bytes.concatenate(location, path), childHash);
+          new StoredNode<>(this, location == null ? null : Bytes.wrap(location, path), childHash);
       return new ExtensionNode<>(location, path, childNode, this);
     }
   }
@@ -199,16 +197,16 @@ public class StoredNodeFactory<V> implements NodeFactory<V> {
       } else if (nodeRLPs.nextIsList()) {
         final Node<V> child =
             decode(
-                location == null ? null : Bytes.concatenate(location, Bytes.of((byte) i)),
+                location == null ? null : Bytes.wrap(location, Bytes.of((byte) i)),
                 nodeRLPs,
                 errMessage);
         children.add(child);
       } else {
-        final Bytes32 childHash = nodeRLPs.readBytes32();
+        final Bytes childHash = nodeRLPs.readBytes32();
         children.add(
             new StoredNode<>(
                 this,
-                location == null ? null : Bytes.concatenate(location, Bytes.of((byte) i)),
+                location == null ? null : Bytes.wrap(location, Bytes.of((byte) i)),
                 childHash));
       }
     }

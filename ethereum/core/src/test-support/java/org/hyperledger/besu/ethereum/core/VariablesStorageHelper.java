@@ -78,7 +78,7 @@ public class VariablesStorageHelper {
         (k, v) ->
             assertThat(
                     kvStorage.get(
-                        Bytes.concatenate(
+                        Bytes.wrap(
                                 (NOT_PREFIXED_KEYS.contains(k) ? Bytes.EMPTY : prefix),
                                 k.getBytes())
                             .toArrayUnsafe()))
@@ -144,10 +144,10 @@ public class VariablesStorageHelper {
 
   public static void putVariable(
       final KeyValueStorageTransaction tx, final Bytes prefix, final Keys key, final Bytes value) {
-    tx.put(Bytes.concatenate(prefix, key.getBytes()).toArrayUnsafe(), value.toArrayUnsafe());
+    tx.put(Bytes.wrap(prefix, key.getBytes()).toArrayUnsafe(), value.toArrayUnsafe());
   }
 
   public static Hash bytesToHash(final Bytes bytes) {
-    return Hash.wrap(Bytes32.wrap(bytes, 0));
+    return Hash.wrap(Bytes32.fromBytes(bytes, 0));
   }
 }

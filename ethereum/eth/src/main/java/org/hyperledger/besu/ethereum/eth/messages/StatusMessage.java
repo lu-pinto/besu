@@ -27,7 +27,7 @@ import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 import java.math.BigInteger;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.units.bigints.UInt256;
 
 public final class StatusMessage extends AbstractMessageData {
 
@@ -124,7 +124,7 @@ public final class StatusMessage extends AbstractMessageData {
    *
    * @return The hash of the genesis block of the network the associated node is participating in.
    */
-  public Bytes32 genesisHash() {
+  public Bytes genesisHash() {
     return status().genesisHash;
   }
 
@@ -187,7 +187,7 @@ public final class StatusMessage extends AbstractMessageData {
 
       out.writeIntScalar(protocolVersion);
       out.writeBigIntegerScalar(networkId);
-      out.writeUInt256Scalar(totalDifficulty);
+      out.writeUInt256Scalar(UInt256.fromBytes(totalDifficulty));
       out.writeBytes(bestHash);
       out.writeBytes(genesisHash);
       if (forkId != null) {

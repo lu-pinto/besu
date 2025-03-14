@@ -28,7 +28,6 @@ import javax.annotation.Nullable;
 
 import kotlin.collections.ArrayDeque;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.immutables.value.Value;
 
 public final class GetStorageRangeMessage extends AbstractSnapMessageData {
@@ -51,18 +50,18 @@ public final class GetStorageRangeMessage extends AbstractSnapMessageData {
 
   public static GetStorageRangeMessage create(
       final Hash worldStateRootHash,
-      final List<Bytes32> accountHashes,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash) {
+      final List<Bytes> accountHashes,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash) {
     return create(Optional.empty(), worldStateRootHash, accountHashes, startKeyHash, endKeyHash);
   }
 
   public static GetStorageRangeMessage create(
       final Optional<BigInteger> requestId,
       final Hash worldStateRootHash,
-      final List<Bytes32> accountHashes,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash) {
+      final List<Bytes> accountHashes,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash) {
     final BytesValueRLPOutput tmp = new BytesValueRLPOutput();
     tmp.startList();
     requestId.ifPresent(tmp::writeBigIntegerScalar);
@@ -93,11 +92,11 @@ public final class GetStorageRangeMessage extends AbstractSnapMessageData {
   }
 
   public StorageRange range(final boolean withRequestId) {
-    final ArrayDeque<Bytes32> hashes = new ArrayDeque<>();
+    final ArrayDeque<Bytes> hashes = new ArrayDeque<>();
     final RLPInput input = new BytesValueRLPInput(data, false);
     input.enterList();
     if (withRequestId) input.skipNext();
-    final Hash worldStateRootHash = Hash.wrap(Bytes32.wrap(input.readBytes32()));
+    final Hash worldStateRootHash = Hash.wrap(input.readBytes32());
     final ImmutableStorageRange.Builder range =
         ImmutableStorageRange.builder()
             .worldStateRootHash(getRootHash().orElse(worldStateRootHash));
@@ -112,13 +111,13 @@ public final class GetStorageRangeMessage extends AbstractSnapMessageData {
       input.skipNext();
       range.startKeyHash(Hash.ZERO);
     } else {
-      range.startKeyHash(Hash.wrap(Bytes32.wrap(input.readBytes32())));
+      range.startKeyHash(Hash.wrap(input.readBytes32()));
     }
     if (input.nextIsNull()) {
       input.skipNext();
       range.endKeyHash(Hash.LAST);
     } else {
-      range.endKeyHash(Hash.wrap(Bytes32.wrap(input.readBytes32())));
+      range.endKeyHash(Hash.wrap(input.readBytes32()));
     }
     range.responseBytes(input.readBigIntegerScalar());
     input.leaveList();
@@ -130,7 +129,7 @@ public final class GetStorageRangeMessage extends AbstractSnapMessageData {
 
     Hash worldStateRootHash();
 
-    ArrayDeque<Bytes32> hashes();
+    ArrayDeque<Bytes> hashes();
 
     Hash startKeyHash();
 

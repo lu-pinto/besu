@@ -599,9 +599,7 @@ public class T8nExecutor {
     if (maybeExcessBlobGas.isPresent()) {
       resultObject.put(
           "currentExcessBlobGas",
-          calculateExcessBlobGasForParent(protocolSpec, blockHeader)
-              .toBytes()
-              .toQuantityHexString());
+          calculateExcessBlobGasForParent(protocolSpec, blockHeader).toQuantityHexString());
       resultObject.put("blobGasUsed", Bytes.ofUnsignedLong(blobGasUsed).toQuantityHexString());
     }
 

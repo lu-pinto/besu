@@ -22,17 +22,17 @@ import java.util.Set;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class GasAndAccessedState {
   final long gas;
   final Set<Address> accessListAddressSet;
-  final Multimap<Address, Bytes32> accessListStorageByAddress;
+  final Multimap<Address, Bytes> accessListStorageByAddress;
 
   public GasAndAccessedState(
       final long gas,
       final Set<Address> accessListAddressSet,
-      final Multimap<Address, Bytes32> accessedStorage) {
+      final Multimap<Address, Bytes> accessedStorage) {
     this.gas = gas;
     this.accessListAddressSet = accessListAddressSet;
     this.accessListStorageByAddress = accessedStorage;
@@ -52,7 +52,7 @@ public class GasAndAccessedState {
     return accessListAddressSet;
   }
 
-  public Multimap<Address, Bytes32> getAccessListStorageByAddress() {
+  public Multimap<Address, Bytes> getAccessListStorageByAddress() {
     return accessListStorageByAddress;
   }
 }

@@ -25,7 +25,6 @@ import org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.Quantity;
 import org.hyperledger.besu.ethereum.api.query.BlockchainQueries;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -39,13 +38,13 @@ public class EthGetTransactionByBlockHashAndIndexTest {
   @Test
   public void shouldReturnNullWhenBlockHashDoesNotExist() {
     method = new EthGetTransactionByBlockHashAndIndex(blockchain);
-    final Bytes32 hash = Hash.keccak256(Bytes.wrap("horse".getBytes(UTF_8)));
+    final Bytes hash = Hash.keccak256(Bytes.wrap("horse".getBytes(UTF_8)));
     final JsonRpcSuccessResponse response =
         (JsonRpcSuccessResponse) method.response(request(hash, 1));
     assertThat(response.getResult()).isEqualTo(null);
   }
 
-  private JsonRpcRequestContext request(final Bytes32 hash, final long index) {
+  private JsonRpcRequestContext request(final Bytes hash, final long index) {
     return new JsonRpcRequestContext(
         new JsonRpcRequest(
             "2.0",

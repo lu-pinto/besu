@@ -28,7 +28,6 @@ import java.util.TreeMap;
 
 import kotlin.collections.ArrayDeque;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.immutables.value.Value;
 
 public final class StorageRangeMessage extends AbstractSnapMessageData {
@@ -50,13 +49,13 @@ public final class StorageRangeMessage extends AbstractSnapMessageData {
   }
 
   public static StorageRangeMessage create(
-      final ArrayDeque<NavigableMap<Bytes32, Bytes>> slots, final List<Bytes> proof) {
+      final ArrayDeque<NavigableMap<Bytes, Bytes>> slots, final List<Bytes> proof) {
     return create(Optional.empty(), slots, proof);
   }
 
   public static StorageRangeMessage create(
       final Optional<BigInteger> requestId,
-      final ArrayDeque<NavigableMap<Bytes32, Bytes>> slots,
+      final ArrayDeque<NavigableMap<Bytes, Bytes>> slots,
       final List<Bytes> proof) {
     final BytesValueRLPOutput tmp = new BytesValueRLPOutput();
     tmp.startList();
@@ -89,7 +88,7 @@ public final class StorageRangeMessage extends AbstractSnapMessageData {
   }
 
   public SlotRangeData slotsData(final boolean withRequestId) {
-    final ArrayDeque<NavigableMap<Bytes32, Bytes>> slots = new ArrayDeque<>();
+    final ArrayDeque<NavigableMap<Bytes, Bytes>> slots = new ArrayDeque<>();
     final ArrayDeque<Bytes> proofs = new ArrayDeque<>();
     final RLPInput input = new BytesValueRLPInput(data, false);
     input.enterList();
@@ -121,7 +120,7 @@ public final class StorageRangeMessage extends AbstractSnapMessageData {
   @Value.Immutable
   public interface SlotRangeData {
 
-    ArrayDeque<NavigableMap<Bytes32, Bytes>> slots();
+    ArrayDeque<NavigableMap<Bytes, Bytes>> slots();
 
     ArrayDeque<Bytes> proofs();
   }

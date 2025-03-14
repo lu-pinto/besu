@@ -22,26 +22,25 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class KeyValueMerkleStorage implements MerkleStorage {
 
   private final KeyValueStorage keyValueStorage;
-  private final Map<Bytes32, Bytes> pendingUpdates = new HashMap<>();
+  private final Map<Bytes, Bytes> pendingUpdates = new HashMap<>();
 
   public KeyValueMerkleStorage(final KeyValueStorage keyValueStorage) {
     this.keyValueStorage = keyValueStorage;
   }
 
   @Override
-  public Optional<Bytes> get(final Bytes location, final Bytes32 hash) {
+  public Optional<Bytes> get(final Bytes location, final Bytes hash) {
     return pendingUpdates.containsKey(hash)
         ? Optional.of(pendingUpdates.get(hash))
         : keyValueStorage.get(hash.toArrayUnsafe()).map(Bytes::wrap);
   }
 
   @Override
-  public void put(final Bytes location, final Bytes32 hash, final Bytes value) {
+  public void put(final Bytes location, final Bytes hash, final Bytes value) {
     pendingUpdates.put(hash, value);
   }
 
@@ -52,7 +51,7 @@ public class KeyValueMerkleStorage implements MerkleStorage {
       return;
     }
     final KeyValueStorageTransaction kvTx = keyValueStorage.startTransaction();
-    for (final Map.Entry<Bytes32, Bytes> entry : pendingUpdates.entrySet()) {
+    for (final Map.Entry<Bytes, Bytes> entry : pendingUpdates.entrySet()) {
       kvTx.put(entry.getKey().toArrayUnsafe(), entry.getValue().toArrayUnsafe());
     }
     kvTx.commit();

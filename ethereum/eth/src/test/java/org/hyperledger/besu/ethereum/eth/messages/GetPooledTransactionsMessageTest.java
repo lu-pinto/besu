@@ -24,14 +24,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.Test;
 
 public class GetPooledTransactionsMessageTest {
 
   @Test
   public void roundTripGetPooledTransactionsMessage() {
-    List<Hash> hashes = Arrays.asList(Hash.wrap(Bytes32.random()));
+    List<Hash> hashes = Arrays.asList(Hash.wrap(Bytes.random(32)));
     final GetPooledTransactionsMessage msg = GetPooledTransactionsMessage.create(hashes);
     assertThat(msg.getCode()).isEqualTo(EthPV65.GET_POOLED_TRANSACTIONS);
     assertThat(msg.pooledTransactions()).isEqualTo(hashes);

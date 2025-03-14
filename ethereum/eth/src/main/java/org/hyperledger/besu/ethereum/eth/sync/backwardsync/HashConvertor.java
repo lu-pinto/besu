@@ -21,7 +21,7 @@ import org.apache.tuweni.bytes.v2.Bytes32;
 public class HashConvertor implements ValueConvertor<Hash> {
   @Override
   public Hash fromBytes(final byte[] bytes) {
-    return Hash.wrap(Bytes32.wrap(bytes));
+    return Hash.wrap(Bytes32.fromArray(bytes));
   }
 
   @Override

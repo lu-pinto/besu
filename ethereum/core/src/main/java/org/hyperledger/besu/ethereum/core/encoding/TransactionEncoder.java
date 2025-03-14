@@ -100,7 +100,7 @@ public class TransactionEncoder {
           .ifPresentOrElse(
               (rawRlp) ->
                   out.writeRLPBytes(
-                      Bytes.concatenate(Bytes.of(transactionType.getSerializedType()), rawRlp)),
+                      Bytes.wrap(Bytes.of(transactionType.getSerializedType()), rawRlp)),
               () -> {
                 out.writeByte(transaction.getType().getSerializedType());
                 encoder.encode(transaction, out);

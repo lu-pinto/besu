@@ -25,7 +25,6 @@ import java.util.Optional;
 
 import graphql.schema.DataFetchingEnvironment;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /**
@@ -135,20 +134,18 @@ public class AccountAdapter extends AdapterBase {
    * @param environment the DataFetchingEnvironment
    * @return the storage of the account
    */
-  public Bytes32 getStorage(final DataFetchingEnvironment environment) {
+  public Bytes getStorage(final DataFetchingEnvironment environment) {
     final BlockchainQueries query = getBlockchainQueries(environment);
-    final Bytes32 slot = environment.getArgument("slot");
+    final Bytes slot = environment.getArgument("slot");
 
     if (account.get() instanceof BonsaiAccount) {
       return query
           .getAndMapWorldState(
               blockNumber.orElse(query.headBlockNumber()),
-              ws -> Optional.of((Bytes32) ws.get(address).getStorageValue(UInt256.fromBytes(slot))))
+              ws -> Optional.of(ws.get(address).getStorageValue(UInt256.fromBytes(slot))))
           .get();
     } else {
-      return account
-          .map(a -> (Bytes32) a.getStorageValue(UInt256.fromBytes(slot)))
-          .orElse(Bytes32.ZERO);
+      return account.map(a -> a.getStorageValue(UInt256.fromBytes(slot))).orElse(UInt256.ZERO);
     }
   }
 }

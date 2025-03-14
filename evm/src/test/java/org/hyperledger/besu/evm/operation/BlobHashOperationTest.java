@@ -98,7 +98,7 @@ class BlobHashOperationTest {
     List<VersionedHash> versionedHashes = Arrays.asList(version0Hash);
     BlobHashOperation getHash = new BlobHashOperation(new CancunGasCalculator());
     MessageFrame frame = mock(MessageFrame.class);
-    when(frame.popStackItem()).thenReturn(Bytes32.repeat((byte) 0x2C));
+    when(frame.popStackItem()).thenReturn(Bytes32.fromByte((byte) 0x2C));
     when(frame.getVersionedHashes()).thenReturn(Optional.of(versionedHashes));
     EVM fakeEVM = mock(EVM.class);
     Operation.OperationResult r = getHash.execute(frame, fakeEVM);

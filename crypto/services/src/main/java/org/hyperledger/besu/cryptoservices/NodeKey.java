@@ -22,7 +22,7 @@ import org.hyperledger.besu.crypto.SignatureAlgorithmFactory;
 import org.hyperledger.besu.plugin.services.securitymodule.SecurityModule;
 import org.hyperledger.besu.plugin.services.securitymodule.data.Signature;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /** The Node key. */
 public class NodeKey {
@@ -45,7 +45,7 @@ public class NodeKey {
    * @param dataHash the data hash
    * @return the secp signature
    */
-  public SECPSignature sign(final Bytes32 dataHash) {
+  public SECPSignature sign(final Bytes dataHash) {
     final Signature signature = securityModule.sign(dataHash);
 
     return signatureAlgorithm.normaliseSignature(
@@ -68,7 +68,7 @@ public class NodeKey {
    * @param partyKey the party key
    * @return the bytes32
    */
-  public Bytes32 calculateECDHKeyAgreement(final SECPPublicKey partyKey) {
+  public Bytes calculateECDHKeyAgreement(final SECPPublicKey partyKey) {
     return securityModule.calculateECDHKeyAgreement(
         () -> ECPointUtil.fromBouncyCastleECPoint(signatureAlgorithm.publicKeyAsEcPoint(partyKey)));
   }

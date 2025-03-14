@@ -24,6 +24,7 @@ import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 import java.util.List;
 
 import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.units.bigints.UInt256;
 
 public class CodeDelegationTransactionEncoder {
 
@@ -58,7 +59,7 @@ public class CodeDelegationTransactionEncoder {
   private static void encodeAuthorizationDetails(
       final CodeDelegation payload, final RLPOutput rlpOutput) {
     rlpOutput.writeBigIntegerScalar(payload.chainId());
-    rlpOutput.writeBytes(payload.address().copy());
+    rlpOutput.writeBytes(payload.address());
     rlpOutput.writeLongScalar(payload.nonce());
   }
 
@@ -66,11 +67,12 @@ public class CodeDelegationTransactionEncoder {
     out.startList();
     out.writeBigIntegerScalar(transaction.getChainId().orElseThrow());
     out.writeLongScalar(transaction.getNonce());
-    out.writeUInt256Scalar(transaction.getMaxPriorityFeePerGas().orElseThrow());
-    out.writeUInt256Scalar(transaction.getMaxFeePerGas().orElseThrow());
+    out.writeUInt256Scalar(
+        transaction.getMaxPriorityFeePerGas().map(UInt256::fromBytes).orElseThrow());
+    out.writeUInt256Scalar(transaction.getMaxFeePerGas().map(UInt256::fromBytes).orElseThrow());
     out.writeLongScalar(transaction.getGasLimit());
-    out.writeBytes(transaction.getTo().map(Bytes::copy).orElse(Bytes.EMPTY));
-    out.writeUInt256Scalar(transaction.getValue());
+    out.writeBytes(transaction.getTo().map(b -> (Bytes) b).orElse(Bytes.EMPTY));
+    out.writeUInt256Scalar(UInt256.fromBytes(transaction.getValue()));
     out.writeBytes(transaction.getPayload());
     writeAccessList(out, transaction.getAccessList());
     encodeCodeDelegationInner(

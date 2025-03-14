@@ -37,7 +37,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,7 +152,7 @@ public class PrivateStorageMigration {
   private boolean isResultingPrivateStateRootAtHeadValid() {
     final Optional<PrivacyGroupHeadBlockMap> privacyGroupHeadBlockMap =
         privateStateStorage.getPrivacyGroupHeadBlockMap(blockchain.getChainHeadHash());
-    final Set<Bytes32> privacyGroupIds =
+    final Set<Bytes> privacyGroupIds =
         privacyGroupHeadBlockMap.orElseThrow(PrivateStorageMigrationException::new).keySet();
 
     privacyGroupIds.forEach(

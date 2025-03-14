@@ -37,7 +37,7 @@ public class CalculatedDifficultyValidationRule implements AttachedBlockHeaderVa
   public boolean validate(
       final BlockHeader header, final BlockHeader parent, final ProtocolContext context) {
 
-    final BigInteger actualDifficulty = new BigInteger(1, header.getDifficulty().toArray());
+    final BigInteger actualDifficulty = new BigInteger(1, header.getDifficulty().toArrayUnsafe());
     final BigInteger expectedDifficulty =
         difficultyCalculator.nextDifficulty(header.getTimestamp(), parent);
 

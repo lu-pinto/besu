@@ -19,8 +19,7 @@ import java.nio.ByteOrder;
 import java.util.Objects;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
-import org.apache.tuweni.bytes.v2.MutableBytes32;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 public class Element {
@@ -54,8 +53,8 @@ public class Element {
   }
 
   public static Element random() {
-    UInt256 value = UInt256.fromBytes(Bytes32.random());
-    UInt256 divisor = UInt256.fromBytes(Bytes32.rightPad(Q_MODULUS.value.slice(8)));
+    UInt256 value = UInt256.fromBytes(Bytes.random(32));
+    UInt256 divisor = UInt256.fromBytes(Q_MODULUS.value.slice(8).mutableCopy().rightPad(32));
     value = value.mod(divisor);
 
     if (value.greaterThan(Q_MODULUS.value)) {
@@ -72,7 +71,7 @@ public class Element {
 
   public static Element fromBytes(final Bytes data, final ByteOrder byteOrder) {
     return new Element(
-        UInt256.fromBytes(byteOrder == ByteOrder.BIG_ENDIAN ? data : data.reverse()));
+        UInt256.fromBytes(byteOrder == ByteOrder.BIG_ENDIAN ? data : data.mutableCopy().reverse()));
   }
 
   public boolean biggerModulus() {
@@ -172,11 +171,11 @@ public class Element {
   }
 
   private UInt256 limb(final UInt256 value, final int index) {
-    return UInt256.fromBytes(Bytes32.leftPad(value.slice(32 - (index + 1) * 8, 8)));
+    return UInt256.fromBytes(value.slice(32 - (index + 1) * 8, 8).mutableCopy().leftPad(32));
   }
 
   private UInt256 setLimb(final UInt256 value, final UInt256 limb, final int index) {
-    MutableBytes32 mutable = value.toBytes().mutableCopy();
+    MutableBytes mutable = value.toBytes().mutableCopy();
     mutable.set(32 - (index + 1) * 8, limb.slice(24, 8));
     return UInt256.fromBytes(mutable);
   }
@@ -419,20 +418,20 @@ public class Element {
     return value.greaterThan((Q_MODULUS.value.subtract(1)).divide(2));
   }
 
-  public Bytes32 getValue(final ByteOrder byteOrder) {
+  public Bytes getValue(final ByteOrder byteOrder) {
     if (byteOrder == ByteOrder.BIG_ENDIAN) {
       return this.value;
     } else {
-      return (Bytes32) this.value.reverse();
+      return this.value.mutableCopy().reverse();
     }
   }
 
-  public Bytes32 getBytes(final ByteOrder byteOrder) {
+  public Bytes getBytes(final ByteOrder byteOrder) {
     Element toRegular = fromMontgomery();
     if (byteOrder == ByteOrder.BIG_ENDIAN) {
       return toRegular.value;
     } else {
-      return (Bytes32) toRegular.value.reverse();
+      return toRegular.value.mutableCopy().reverse();
     }
   }
 

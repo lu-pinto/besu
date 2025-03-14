@@ -23,7 +23,6 @@ import org.hyperledger.besu.evm.log.LogsBloomFilter;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /** A block header capable of being sealed. */
 public class SealableBlockHeader extends ProcessableBlockHeader {
@@ -64,11 +63,11 @@ public class SealableBlockHeader extends ProcessableBlockHeader {
       final long timestamp,
       final Bytes extraData,
       final Wei baseFee,
-      final Bytes32 mixHashOrPrevRandao,
+      final Bytes mixHashOrPrevRandao,
       final Hash withdrawalsRoot,
       final Long blobGasUsed,
       final BlobGas excessBlobGas,
-      final Bytes32 parentBeaconBlockRoot,
+      final Bytes parentBeaconBlockRoot,
       final Hash requestsHash) {
     super(
         parentHash,

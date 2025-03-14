@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +32,7 @@ public final class BytecodeMessageTest {
     final List<Bytes> codes = new ArrayList<>();
     final int hashCount = 20;
     for (int i = 0; i < hashCount; ++i) {
-      codes.add(Bytes32.random());
+      codes.add(Bytes.random(32));
     }
 
     // Perform round-trip transformation

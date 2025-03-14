@@ -36,7 +36,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.immutables.value.Value;
 
 /**
@@ -48,22 +47,19 @@ import org.immutables.value.Value;
  */
 public class StackTrie {
 
-  private final Bytes32 rootHash;
+  private final Bytes rootHash;
   private final AtomicInteger nbSegments;
   private final int maxSegments;
-  private final Bytes32 startKeyHash;
-  private Map<Bytes32, TaskElement> elements;
+  private final Bytes startKeyHash;
+  private Map<Bytes, TaskElement> elements;
   private AtomicLong elementsCount;
 
-  public StackTrie(final Hash rootHash, final Bytes32 startKeyHash) {
+  public StackTrie(final Hash rootHash, final Bytes startKeyHash) {
     this(rootHash, 1, 1, startKeyHash);
   }
 
   public StackTrie(
-      final Hash rootHash,
-      final int nbSegments,
-      final int maxSegments,
-      final Bytes32 startKeyHash) {
+      final Hash rootHash, final int nbSegments, final int maxSegments, final Bytes startKeyHash) {
     this.rootHash = rootHash;
     this.nbSegments = new AtomicInteger(nbSegments);
     this.maxSegments = maxSegments;
@@ -73,21 +69,19 @@ public class StackTrie {
   }
 
   public void addElement(
-      final Bytes32 taskIdentifier,
-      final List<Bytes> proofs,
-      final NavigableMap<Bytes32, Bytes> keys) {
+      final Bytes taskIdentifier, final List<Bytes> proofs, final NavigableMap<Bytes, Bytes> keys) {
     this.elementsCount.addAndGet(keys.size());
     this.elements.put(
         taskIdentifier, ImmutableTaskElement.builder().proofs(proofs).keys(keys).build());
   }
 
-  public void removeElement(final Bytes32 taskIdentifier) {
+  public void removeElement(final Bytes taskIdentifier) {
     if (this.elements.containsKey(taskIdentifier)) {
       this.elementsCount.addAndGet(-this.elements.remove(taskIdentifier).keys().size());
     }
   }
 
-  public TaskElement getElement(final Bytes32 taskIdentifier) {
+  public TaskElement getElement(final Bytes taskIdentifier) {
     return this.elements.get(taskIdentifier);
   }
 
@@ -104,7 +98,7 @@ public class StackTrie {
     if (nbSegments.decrementAndGet() <= 0 && !elements.isEmpty()) {
 
       final List<Bytes> proofs = new ArrayList<>();
-      final TreeMap<Bytes32, Bytes> keys = new TreeMap<>();
+      final TreeMap<Bytes, Bytes> keys = new TreeMap<>();
 
       elements
           .values()
@@ -118,7 +112,7 @@ public class StackTrie {
         return; // empty range we can ignore it
       }
 
-      final Map<Bytes32, Bytes> proofsEntries = new HashMap<>();
+      final Map<Bytes, Bytes> proofsEntries = new HashMap<>();
       for (Bytes proof : proofs) {
         proofsEntries.put(Hash.hash(proof), proof);
       }
@@ -138,7 +132,7 @@ public class StackTrie {
                 snapStoredNodeFactory,
                 proofs.isEmpty() ? MerkleTrie.EMPTY_TRIE_NODE_HASH : rootHash);
 
-        for (Map.Entry<Bytes32, Bytes> entry : keys.entrySet()) {
+        for (Map.Entry<Bytes, Bytes> entry : keys.entrySet()) {
           trie.put(entry.getKey(), entry.getValue());
         }
 
@@ -181,7 +175,7 @@ public class StackTrie {
       return (key, value) -> {};
     }
 
-    void update(final Bytes32 key, final Bytes value);
+    void update(final Bytes key, final Bytes value);
   }
 
   @Value.Immutable
@@ -193,7 +187,7 @@ public class StackTrie {
     }
 
     @Value.Default
-    public NavigableMap<Bytes32, Bytes> keys() {
+    public NavigableMap<Bytes, Bytes> keys() {
       return new TreeMap<>();
     }
   }

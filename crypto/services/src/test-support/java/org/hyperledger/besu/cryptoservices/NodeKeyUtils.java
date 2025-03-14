@@ -18,7 +18,7 @@ import org.hyperledger.besu.crypto.KeyPair;
 import org.hyperledger.besu.crypto.SignatureAlgorithm;
 import org.hyperledger.besu.crypto.SignatureAlgorithmFactory;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class NodeKeyUtils {
 
@@ -26,7 +26,7 @@ public class NodeKeyUtils {
     return new NodeKey(new KeyPairSecurityModule(keyPair));
   }
 
-  public static NodeKey createFrom(final Bytes32 privateKey) {
+  public static NodeKey createFrom(final Bytes privateKey) {
     final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithmFactory.getInstance();
     final KeyPair keyPair =
         signatureAlgorithm.createKeyPair(signatureAlgorithm.createPrivateKey(privateKey));

@@ -21,8 +21,8 @@ import java.security.InvalidParameterException;
 import java.util.List;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.bytes.v2.Bytes48;
+import org.apache.tuweni.bytes.v2.MutableBytes;
 import org.junit.jupiter.api.Test;
 
 public class BlobsWithCommitmentsTest {
@@ -65,7 +65,8 @@ public class BlobsWithCommitmentsTest {
                         List.of(),
                         List.of(new Blob(Bytes.EMPTY)),
                         List.of(new KZGProof(Bytes48.ZERO)),
-                        List.of(new VersionedHash(Bytes32.rightPad(Bytes.fromHexString("0x01"))))))
+                        List.of(
+                            new VersionedHash(MutableBytes.fromHexString("0x01").rightPad(32)))))
             .getMessage();
     final String expectedMessage =
         "There must be an equal number of blobs, commitments, proofs, and versioned hashes";
@@ -82,7 +83,8 @@ public class BlobsWithCommitmentsTest {
                         List.of(new KZGCommitment(Bytes48.fromHexStringLenient("1"))),
                         List.of(new Blob(Bytes.EMPTY)),
                         List.of(),
-                        List.of(new VersionedHash(Bytes32.rightPad(Bytes.fromHexString("0x01"))))))
+                        List.of(
+                            new VersionedHash(MutableBytes.fromHexString("0x01").rightPad(32)))))
             .getMessage();
     final String expectedMessage =
         "There must be an equal number of blobs, commitments, proofs, and versioned hashes";

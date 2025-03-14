@@ -33,8 +33,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MessageFrameTest {
 
-  private static final Bytes32 WORD1 = Bytes32.fromHexString(Long.toString(1).repeat(64));
-  private static final Bytes32 WORD2 = Bytes32.fromHexString(Long.toString(2).repeat(64));
+  private static final Bytes WORD1 = Bytes32.fromHexString(Long.toString(1).repeat(64));
+  private static final Bytes WORD2 = Bytes32.fromHexString(Long.toString(2).repeat(64));
 
   private MessageFrame.Builder messageFrameBuilder;
 
@@ -65,16 +65,16 @@ class MessageFrameTest {
   void shouldNotExpandMemory() {
     final MessageFrame messageFrame = messageFrameBuilder.build();
 
-    final Bytes value = Bytes.concatenate(WORD1, WORD2);
+    final Bytes value = Bytes.wrap(WORD1, WORD2);
     messageFrame.writeMemory(0, value.size(), value);
     int initialActiveWords = messageFrame.memoryWordSize();
 
     // Fully in bounds read
-    assertThat(messageFrame.shadowReadMemory(64, Bytes32.SIZE)).isEqualTo(Bytes32.ZERO);
+    assertThat(messageFrame.shadowReadMemory(64, 32)).isEqualTo(Bytes32.ZERO);
     assertThat(messageFrame.memoryWordSize()).isEqualTo(initialActiveWords);
 
     // Straddling read
-    final Bytes straddlingRead = messageFrame.shadowReadMemory(50, Bytes32.SIZE);
+    final Bytes straddlingRead = messageFrame.shadowReadMemory(50, 32);
     assertThat(messageFrame.memoryWordSize()).isEqualTo(initialActiveWords);
     assertThat(straddlingRead.get(0)).isEqualTo((byte) 0x22); // Still in WORD2
     assertThat(straddlingRead.get(13)).isEqualTo((byte) 0x22); // Just before uninitialized memory
@@ -82,10 +82,10 @@ class MessageFrameTest {
     assertThat(straddlingRead.get(20)).isEqualTo((byte) 0); // In uninitialized memory
 
     // Fully out of bounds read
-    assertThat(messageFrame.shadowReadMemory(64, Bytes32.SIZE)).isEqualTo(Bytes32.ZERO);
+    assertThat(messageFrame.shadowReadMemory(64, 32)).isEqualTo(Bytes32.ZERO);
     assertThat(messageFrame.memoryWordSize()).isEqualTo(initialActiveWords);
 
-    assertThat(messageFrame.shadowReadMemory(32, Bytes32.SIZE)).isEqualTo(WORD2);
+    assertThat(messageFrame.shadowReadMemory(32, 32)).isEqualTo(WORD2);
     assertThat(messageFrame.memoryWordSize()).isEqualTo(initialActiveWords);
   }
 }

@@ -22,7 +22,7 @@ import org.hyperledger.besu.ethereum.trie.RangeManager;
 
 import java.util.List;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -30,8 +30,8 @@ public final class GetStorageRangeMessageTest {
 
   @Test
   public void roundTripTest() {
-    final Hash rootHash = Hash.wrap(Bytes32.random());
-    final List<Bytes32> accountKeys = List.of(Bytes32.random());
+    final Hash rootHash = Hash.wrap(Bytes.random(32));
+    final List<Bytes> accountKeys = List.of(Bytes.random(32));
     final Hash startKeyHash = RangeManager.MIN_RANGE;
     final Hash endKeyHash = RangeManager.MAX_RANGE;
 

@@ -21,7 +21,7 @@ import org.hyperledger.besu.ethereum.core.BlockHeader;
 import org.hyperledger.besu.ethereum.worldstate.WorldStateArchive;
 import org.hyperledger.besu.evm.account.Account;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 public class ChainHeadPrivateNonceProvider implements PrivateNonceProvider {
   private final Blockchain blockchain;
@@ -38,7 +38,7 @@ public class ChainHeadPrivateNonceProvider implements PrivateNonceProvider {
   }
 
   @Override
-  public long getNonce(final Address sender, final Bytes32 privacyGroupId) {
+  public long getNonce(final Address sender, final Bytes privacyGroupId) {
     final BlockHeader chainHeadHeader = blockchain.getChainHeadHeader();
     final Hash chainHeadHash = chainHeadHeader.getHash();
     final Hash stateRoot =

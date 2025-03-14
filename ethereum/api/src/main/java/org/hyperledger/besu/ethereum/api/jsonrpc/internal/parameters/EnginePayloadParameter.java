@@ -24,6 +24,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class EnginePayloadParameter {
@@ -32,7 +33,7 @@ public class EnginePayloadParameter {
   private final Address feeRecipient;
   private final Hash stateRoot;
   private final long blockNumber;
-  private final Bytes32 prevRandao;
+  private final Bytes prevRandao;
   private final Wei baseFeePerGas;
   private final long gasLimit;
   private final long gasUsed;
@@ -152,7 +153,7 @@ public class EnginePayloadParameter {
     return logsBloom;
   }
 
-  public Bytes32 getPrevRandao() {
+  public Bytes getPrevRandao() {
     return prevRandao;
   }
 

@@ -26,7 +26,6 @@ import java.util.Optional;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class BlockOverridesParameter extends BlockOverrides {
   /**
@@ -50,7 +49,7 @@ public class BlockOverridesParameter extends BlockOverrides {
       @JsonProperty("time") final Optional<UnsignedLongParameter> timestamp,
       @JsonProperty("number") final Optional<UnsignedLongParameter> blockNumber,
       @JsonProperty("hash") final Optional<Hash> blockHash,
-      @JsonProperty("prevRandao") final Optional<Bytes32> prevRandao,
+      @JsonProperty("prevRandao") final Optional<Bytes> prevRandao,
       @JsonProperty("gasLimit") final Optional<UnsignedLongParameter> gasLimit,
       @JsonProperty("feeRecipient") final Optional<Address> feeRecipient,
       @JsonProperty("baseFeePerGas") final Optional<Wei> baseFeePerGas,

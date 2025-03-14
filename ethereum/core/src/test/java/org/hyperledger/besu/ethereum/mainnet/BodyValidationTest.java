@@ -37,7 +37,7 @@ public final class BodyValidationTest {
     for (final int block : Arrays.asList(300006, 4400002)) {
       final BlockHeader header = ValidationTestUtils.readHeader(block);
       final BlockBody body = ValidationTestUtils.readBody(block);
-      final Bytes32 transactionRoot = BodyValidation.transactionsRoot(body.getTransactions());
+      final Bytes transactionRoot = BodyValidation.transactionsRoot(body.getTransactions());
       Assertions.assertThat(transactionRoot).isEqualTo(header.getTransactionsRoot());
     }
   }
@@ -47,7 +47,7 @@ public final class BodyValidationTest {
     for (final int block : Arrays.asList(300006, 4400002)) {
       final BlockHeader header = ValidationTestUtils.readHeader(block);
       final BlockBody body = ValidationTestUtils.readBody(block);
-      final Bytes32 ommersHash = BodyValidation.ommersHash(body.getOmmers());
+      final Bytes ommersHash = BodyValidation.ommersHash(body.getOmmers());
       Assertions.assertThat(header.getOmmersHash()).isEqualTo(ommersHash);
     }
   }
@@ -57,7 +57,7 @@ public final class BodyValidationTest {
     for (final int block : Arrays.asList(4156, 12691)) {
       final BlockHeader header = ValidationTestUtils.readHeader(block);
       final BlockBody body = ValidationTestUtils.readBody(block);
-      final Bytes32 withdrawalsRoot = BodyValidation.withdrawalsRoot(body.getWithdrawals().get());
+      final Bytes withdrawalsRoot = BodyValidation.withdrawalsRoot(body.getWithdrawals().get());
       Assertions.assertThat(header.getWithdrawalsRoot()).hasValue(Hash.wrap(withdrawalsRoot));
     }
   }
@@ -79,7 +79,7 @@ public final class BodyValidationTest {
                 Bytes.fromHexString(
                     "0x8a0a19589531694250d570040a0c4b74576919b8000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001")));
 
-    Bytes32 requestHash = BodyValidation.requestsHash(requests);
+    Bytes requestHash = BodyValidation.requestsHash(requests);
     Assertions.assertThat(requestHash)
         .isEqualTo(
             Bytes32.fromHexString(

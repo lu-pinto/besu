@@ -19,11 +19,10 @@ import org.hyperledger.besu.crypto.Hash;
 import java.util.Objects;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class DefaultPeerId implements PeerId {
   protected final Bytes id;
-  private Bytes32 keccak256;
+  private Bytes keccak256;
 
   public DefaultPeerId(final Bytes id) {
     this.id = id;
@@ -40,7 +39,7 @@ public class DefaultPeerId implements PeerId {
   }
 
   @Override
-  public Bytes32 keccak256() {
+  public Bytes keccak256() {
     if (keccak256 == null) {
       keccak256 = Hash.keccak256(getId());
     }

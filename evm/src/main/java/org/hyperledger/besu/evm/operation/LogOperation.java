@@ -14,7 +14,6 @@
  */
 package org.hyperledger.besu.evm.operation;
 
-import static org.apache.tuweni.bytes.v2.Bytes32.leftPad;
 import static org.hyperledger.besu.evm.internal.Words.clampedToLong;
 
 import org.hyperledger.besu.datatypes.Address;
@@ -63,7 +62,7 @@ public class LogOperation extends AbstractOperation {
     final ImmutableList.Builder<LogTopic> builder =
         ImmutableList.builderWithExpectedSize(numTopics);
     for (int i = 0; i < numTopics; i++) {
-      builder.add(LogTopic.create(leftPad(frame.popStackItem())));
+      builder.add(LogTopic.create(frame.popStackItem().mutableCopy().leftPad(32)));
     }
 
     frame.addLog(new Log(address, data, builder.build()));

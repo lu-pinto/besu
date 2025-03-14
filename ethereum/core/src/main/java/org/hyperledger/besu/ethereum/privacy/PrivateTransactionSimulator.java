@@ -114,7 +114,7 @@ public class PrivateTransactionSimulator {
     }
 
     // get the last world state root hash or create a new one
-    final Bytes32 privacyGroupId = Bytes32.wrap(Bytes.fromBase64String(privacyGroupIdString));
+    final Bytes privacyGroupId = Bytes32.fromBytes(Bytes.fromBase64String(privacyGroupIdString), 0);
     final Hash lastRootHash =
         privateStateRootResolver.resolveLastStateRoot(privacyGroupId, header.getHash());
 

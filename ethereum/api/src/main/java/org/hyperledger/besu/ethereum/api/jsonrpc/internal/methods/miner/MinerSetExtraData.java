@@ -58,7 +58,7 @@ public class MinerSetExtraData implements JsonRpcMethod {
           .setMessage("set extra data, raw=[{}] parsed=[{}], UTF-8=[{}]")
           .addArgument(rawParam)
           .addArgument(extraData::toHexString)
-          .addArgument(() -> new String(extraData.toArray(), StandardCharsets.UTF_8))
+          .addArgument(() -> new String(extraData.toArrayUnsafe(), StandardCharsets.UTF_8))
           .log();
       return new JsonRpcSuccessResponse(requestContext.getRequest().getId(), true);
     } catch (IllegalArgumentException | JsonRpcParameterException e) {

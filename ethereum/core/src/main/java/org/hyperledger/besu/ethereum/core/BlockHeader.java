@@ -28,7 +28,8 @@ import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.units.bigints.UInt64;
 
 /** A mined Ethereum block header. */
 public class BlockHeader extends SealableBlockHeader
@@ -61,12 +62,12 @@ public class BlockHeader extends SealableBlockHeader
       final long timestamp,
       final Bytes extraData,
       final Wei baseFee,
-      final Bytes32 mixHashOrPrevRandao,
+      final Bytes mixHashOrPrevRandao,
       final long nonce,
       final Hash withdrawalsRoot,
       final Long blobGasUsed,
       final BlobGas excessBlobGas,
-      final Bytes32 parentBeaconBlockRoot,
+      final Bytes parentBeaconBlockRoot,
       final Hash requestsHash,
       final BlockHeaderFunctions blockHeaderFunctions) {
     this(
@@ -110,12 +111,12 @@ public class BlockHeader extends SealableBlockHeader
       final long timestamp,
       final Bytes extraData,
       final Wei baseFee,
-      final Bytes32 mixHashOrPrevRandao,
+      final Bytes mixHashOrPrevRandao,
       final long nonce,
       final Hash withdrawalsRoot,
       final Long blobGasUsed,
       final BlobGas excessBlobGas,
-      final Bytes32 parentBeaconBlockRoot,
+      final Bytes parentBeaconBlockRoot,
       final Hash requestsHash,
       final BlockHeaderFunctions blockHeaderFunctions,
       final Optional<Bytes> rawRlp) {
@@ -220,7 +221,7 @@ public class BlockHeader extends SealableBlockHeader
           out.writeBytes(transactionsRoot);
           out.writeBytes(receiptsRoot);
           out.writeBytes(logsBloom);
-          out.writeUInt256Scalar(difficulty);
+          out.writeUInt256Scalar(UInt256.fromBytes(difficulty.getImpl()));
           out.writeLongScalar(number);
           out.writeLongScalar(gasLimit);
           out.writeLongScalar(gasUsed);
@@ -230,14 +231,14 @@ public class BlockHeader extends SealableBlockHeader
           out.writeLong(nonce);
           do {
             if (baseFee == null) break;
-            out.writeUInt256Scalar(baseFee);
+            out.writeUInt256Scalar(UInt256.fromBytes(baseFee.getImpl()));
 
             if (withdrawalsRoot == null) break;
             out.writeBytes(withdrawalsRoot);
 
             if (excessBlobGas == null || blobGasUsed == null) break;
             out.writeLongScalar(blobGasUsed);
-            out.writeUInt64Scalar(excessBlobGas);
+            out.writeUInt64Scalar(UInt64.fromBytes(excessBlobGas.getImpl()));
 
             if (parentBeaconBlockRoot == null) break;
             out.writeBytes(parentBeaconBlockRoot);
@@ -266,7 +267,7 @@ public class BlockHeader extends SealableBlockHeader
     final long gasUsed = headerRlp.readLongScalar();
     final long timestamp = headerRlp.readLongScalar();
     final Bytes extraData = headerRlp.readBytes();
-    final Bytes32 mixHashOrPrevRandao = headerRlp.readBytes32();
+    final Bytes mixHashOrPrevRandao = headerRlp.readBytes32();
     final long nonce = headerRlp.readLong();
     final Wei baseFee =
         !headerRlp.isEndOfCurrentList() ? Wei.of(headerRlp.readUInt256Scalar()) : null;
@@ -277,7 +278,7 @@ public class BlockHeader extends SealableBlockHeader
     final Long blobGasUsed = !headerRlp.isEndOfCurrentList() ? headerRlp.readLongScalar() : null;
     final BlobGas excessBlobGas =
         !headerRlp.isEndOfCurrentList() ? BlobGas.of(headerRlp.readUInt64Scalar()) : null;
-    final Bytes32 parentBeaconBlockRoot =
+    final Bytes parentBeaconBlockRoot =
         !headerRlp.isEndOfCurrentList() ? headerRlp.readBytes32() : null;
     final Hash requestsHash =
         !headerRlp.isEndOfCurrentList() ? Hash.wrap(headerRlp.readBytes32()) : null;

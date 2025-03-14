@@ -24,7 +24,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class WorldStateStorageCoordinator {
   private final WorldStateKeyValueStorage worldStateKeyValueStorage;
@@ -37,7 +36,7 @@ public class WorldStateStorageCoordinator {
     return worldStateKeyValueStorage.getDataStorageFormat();
   }
 
-  public boolean isWorldStateAvailable(final Bytes32 nodeHash, final Hash blockHash) {
+  public boolean isWorldStateAvailable(final Bytes nodeHash, final Hash blockHash) {
     return applyForStrategy(
         bonsai -> bonsai.isWorldStateAvailable(nodeHash, blockHash),
         forest -> forest.isWorldStateAvailable(nodeHash));
@@ -45,18 +44,17 @@ public class WorldStateStorageCoordinator {
 
   public Optional<Bytes> getTrieNodeUnsafe(final Bytes key) {
     return applyForStrategy(
-        bonsai -> bonsai.getTrieNodeUnsafe(key),
-        forest -> forest.getAccountStateTrieNode(Bytes32.wrap(key)));
+        bonsai -> bonsai.getTrieNodeUnsafe(key), forest -> forest.getAccountStateTrieNode(key));
   }
 
-  public Optional<Bytes> getAccountStateTrieNode(final Bytes location, final Bytes32 nodeHash) {
+  public Optional<Bytes> getAccountStateTrieNode(final Bytes location, final Bytes nodeHash) {
     return applyForStrategy(
         bonsai -> bonsai.getAccountStateTrieNode(location, nodeHash),
         forest -> forest.getAccountStateTrieNode(nodeHash));
   }
 
   public Optional<Bytes> getAccountStorageTrieNode(
-      final Hash accountHash, final Bytes location, final Bytes32 nodeHash) {
+      final Hash accountHash, final Bytes location, final Bytes nodeHash) {
     return applyForStrategy(
         bonsai -> bonsai.getAccountStorageTrieNode(accountHash, location, nodeHash),
         forest -> forest.getAccountStorageTrieNode(nodeHash));

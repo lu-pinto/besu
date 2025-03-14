@@ -72,8 +72,8 @@ public abstract class Hash {
    * @param input The input bytes to produce the digest for.
    * @return A digest.
    */
-  public static Bytes32 sha256(final Bytes input) {
-    return Bytes32.wrap(digestUsingAlgorithm(input, SHA256_SUPPLIER));
+  public static Bytes sha256(final Bytes input) {
+    return Bytes32.fromArray(digestUsingAlgorithm(input, SHA256_SUPPLIER));
   }
 
   /**
@@ -82,8 +82,8 @@ public abstract class Hash {
    * @param input The input bytes to produce the digest for.
    * @return A digest.
    */
-  public static Bytes32 keccak256(final Bytes input) {
-    return Bytes32.wrap(digestUsingAlgorithm(input, KECCAK256_SUPPLIER));
+  public static Bytes keccak256(final Bytes input) {
+    return Bytes32.fromArray(digestUsingAlgorithm(input, KECCAK256_SUPPLIER));
   }
 
   /**

@@ -19,11 +19,10 @@ import org.hyperledger.besu.datatypes.Hash;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public interface PeerTrieNodeFinder {
 
-  Optional<Bytes> getAccountStateTrieNode(final Bytes location, final Bytes32 nodeHash);
+  Optional<Bytes> getAccountStateTrieNode(final Bytes location, final Bytes nodeHash);
 
-  Optional<Bytes> getAccountStorageTrieNode(Hash accountHash, Bytes location, Bytes32 nodeHash);
+  Optional<Bytes> getAccountStorageTrieNode(Hash accountHash, Bytes location, Bytes nodeHash);
 }

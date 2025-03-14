@@ -28,7 +28,6 @@ import org.hyperledger.besu.ethereum.worldstate.WorldStateStorageCoordinator;
 import java.util.stream.Stream;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 
 /** Returns a list of bytecodes */
@@ -36,13 +35,12 @@ public class BytecodeRequest extends SnapDataRequest {
 
   private static final Logger LOG = getLogger(BytecodeRequest.class);
 
-  private final Bytes32 accountHash;
-  private final Bytes32 codeHash;
+  private final Bytes accountHash;
+  private final Bytes codeHash;
 
   private Bytes code;
 
-  protected BytecodeRequest(
-      final Hash rootHash, final Bytes32 accountHash, final Bytes32 codeHash) {
+  protected BytecodeRequest(final Hash rootHash, final Bytes accountHash, final Bytes codeHash) {
     super(BYTECODES, rootHash);
     LOG.trace("create get bytecode data request for {} with root hash={}", accountHash, rootHash);
     this.accountHash = accountHash;
@@ -93,7 +91,7 @@ public class BytecodeRequest extends SnapDataRequest {
     return Stream.empty();
   }
 
-  public Bytes32 getAccountHash() {
+  public Bytes getAccountHash() {
     return accountHash;
   }
 
@@ -102,7 +100,7 @@ public class BytecodeRequest extends SnapDataRequest {
     setCode(Bytes.EMPTY);
   }
 
-  public Bytes32 getCodeHash() {
+  public Bytes getCodeHash() {
     return codeHash;
   }
 

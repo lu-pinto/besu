@@ -36,7 +36,7 @@ class PrevRanDaoOperationTest {
     PrevRanDaoOperation op = new PrevRanDaoOperation(new LondonGasCalculator());
     MessageFrame messageFrame = mock(MessageFrame.class);
     BlockValues blockHeader = mock(BlockValues.class);
-    Bytes32 prevRandao = Bytes32.fromHexString("0xb0b0face");
+    Bytes prevRandao = Bytes32.fromHexString("0xb0b0face");
     when(blockHeader.getDifficultyBytes()).thenReturn(UInt256.ZERO);
     when(blockHeader.getMixHashOrPrevRandao()).thenReturn(prevRandao);
     when(messageFrame.getBlockValues()).thenReturn(blockHeader);
@@ -51,7 +51,7 @@ class PrevRanDaoOperationTest {
     PrevRanDaoOperation op = new PrevRanDaoOperation(new LondonGasCalculator());
     MessageFrame messageFrame = mock(MessageFrame.class);
     BlockValues blockHeader = mock(BlockValues.class);
-    Bytes32 prevRandao = Bytes32.fromHexString("0xb0b0face");
+    Bytes prevRandao = Bytes32.fromHexString("0xb0b0face");
     Bytes difficulty = Bytes.random(32);
     when(blockHeader.getDifficultyBytes()).thenReturn(difficulty);
     when(blockHeader.getMixHashOrPrevRandao()).thenReturn(prevRandao);

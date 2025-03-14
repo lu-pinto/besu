@@ -26,7 +26,6 @@ import java.util.Optional;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.immutables.value.Value;
 
 public final class GetAccountRangeMessage extends AbstractSnapMessageData {
@@ -48,15 +47,15 @@ public final class GetAccountRangeMessage extends AbstractSnapMessageData {
   }
 
   public static GetAccountRangeMessage create(
-      final Hash worldStateRootHash, final Bytes32 startKeyHash, final Bytes32 endKeyHash) {
+      final Hash worldStateRootHash, final Bytes startKeyHash, final Bytes endKeyHash) {
     return create(worldStateRootHash, startKeyHash, endKeyHash, SIZE_REQUEST);
   }
 
   @VisibleForTesting
   public static GetAccountRangeMessage create(
       final Hash worldStateRootHash,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash,
       final BigInteger sizeRequest) {
     final BytesValueRLPOutput tmp = new BytesValueRLPOutput();
     tmp.startList();
@@ -91,12 +90,12 @@ public final class GetAccountRangeMessage extends AbstractSnapMessageData {
     final RLPInput input = new BytesValueRLPInput(data, false);
     input.enterList();
     if (withRequestId) input.skipNext();
-    final Hash worldStateRootHash = Hash.wrap(Bytes32.wrap(input.readBytes32()));
+    final Hash worldStateRootHash = Hash.wrap(input.readBytes32());
     final ImmutableRange range =
         ImmutableRange.builder()
             .worldStateRootHash(getRootHash().orElse(worldStateRootHash))
-            .startKeyHash(Hash.wrap(Bytes32.wrap(input.readBytes32())))
-            .endKeyHash(Hash.wrap(Bytes32.wrap(input.readBytes32())))
+            .startKeyHash(Hash.wrap(input.readBytes32()))
+            .endKeyHash(Hash.wrap(input.readBytes32()))
             .responseBytes(input.readBigIntegerScalar())
             .build();
     input.leaveList();

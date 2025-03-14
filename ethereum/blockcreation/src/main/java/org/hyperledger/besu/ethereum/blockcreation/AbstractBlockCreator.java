@@ -65,7 +65,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.google.common.collect.Lists;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,8 +180,8 @@ public abstract class AbstractBlockCreator implements AsyncBlockCreator {
       final Optional<List<Transaction>> maybeTransactions,
       final Optional<List<BlockHeader>> maybeOmmers,
       final Optional<List<Withdrawal>> maybeWithdrawals,
-      final Optional<Bytes32> maybePrevRandao,
-      final Optional<Bytes32> maybeParentBeaconBlockRoot,
+      final Optional<Bytes> maybePrevRandao,
+      final Optional<Bytes> maybeParentBeaconBlockRoot,
       final long timestamp,
       boolean rewardCoinbase,
       final BlockHeader parentHeader) {

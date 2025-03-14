@@ -295,7 +295,7 @@ public class MergeCoordinatorTest implements MergeGenesisConfigHelper {
               .when(beingSpiedOn)
               .createBlock(
                   any(),
-                  any(Bytes32.class),
+                  any(Bytes.class),
                   anyLong(),
                   eq(Optional.empty()),
                   eq(Optional.empty()),
@@ -334,7 +334,7 @@ public class MergeCoordinatorTest implements MergeGenesisConfigHelper {
         willThrow.preparePayload(
             genesisState.getBlock().getHeader(),
             System.currentTimeMillis() / 1000,
-            Bytes32.random(),
+            Bytes.random(32),
             suggestedFeeRecipient,
             Optional.empty(),
             Optional.empty());

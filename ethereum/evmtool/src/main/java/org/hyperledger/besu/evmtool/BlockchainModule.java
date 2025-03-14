@@ -37,7 +37,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 
 /**
  * This class is a Dagger module that provides dependencies related to the blockchain. It includes
@@ -63,7 +63,7 @@ public class BlockchainModule {
   @Provides
   @Singleton
   MutableWorldState getMutableWorldState(
-      @Named("StateRoot") final Bytes32 stateRoot,
+      @Named("StateRoot") final Bytes stateRoot,
       final WorldStateStorageCoordinator worldStateStorageCoordinator,
       final WorldStatePreimageStorage worldStatePreimageStorage,
       final GenesisState genesisState,
@@ -109,7 +109,7 @@ public class BlockchainModule {
   @Provides
   @Named("StateRoot")
   @Singleton
-  Bytes32 provideStateRoot(final BlockParameter blockParameter, final Blockchain blockchain) {
+  Bytes provideStateRoot(final BlockParameter blockParameter, final Blockchain blockchain) {
     if (blockParameter.isEarliest()) {
       return blockchain.getBlockHeader(0).orElseThrow().getStateRoot();
     } else if (blockParameter.isLatest() || blockParameter.isPending()) {

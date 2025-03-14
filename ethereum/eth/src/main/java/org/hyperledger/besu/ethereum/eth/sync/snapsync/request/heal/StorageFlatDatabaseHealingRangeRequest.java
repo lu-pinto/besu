@@ -43,7 +43,6 @@ import java.util.stream.Stream;
 
 import kotlin.collections.ArrayDeque;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.rlp.RLP;
 
 /**
@@ -54,18 +53,18 @@ import org.apache.tuweni.rlp.RLP;
 public class StorageFlatDatabaseHealingRangeRequest extends SnapDataRequest {
 
   private final Hash accountHash;
-  private final Bytes32 storageRoot;
-  private final Bytes32 startKeyHash;
-  private final Bytes32 endKeyHash;
-  private NavigableMap<Bytes32, Bytes> slots;
+  private final Bytes storageRoot;
+  private final Bytes startKeyHash;
+  private final Bytes endKeyHash;
+  private NavigableMap<Bytes, Bytes> slots;
   private boolean isProofValid;
 
   public StorageFlatDatabaseHealingRangeRequest(
       final Hash rootHash,
-      final Bytes32 accountHash,
-      final Bytes32 storageRoot,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash) {
+      final Bytes accountHash,
+      final Bytes storageRoot,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash) {
     super(STORAGE_RANGE, rootHash);
     this.accountHash = Hash.wrap(accountHash);
     this.storageRoot = storageRoot;
@@ -102,15 +101,15 @@ public class StorageFlatDatabaseHealingRangeRequest extends SnapDataRequest {
     return accountHash;
   }
 
-  public Bytes32 getStorageRoot() {
+  public Bytes getStorageRoot() {
     return storageRoot;
   }
 
-  public Bytes32 getStartKeyHash() {
+  public Bytes getStartKeyHash() {
     return startKeyHash;
   }
 
-  public Bytes32 getEndKeyHash() {
+  public Bytes getEndKeyHash() {
     return endKeyHash;
   }
 
@@ -121,7 +120,7 @@ public class StorageFlatDatabaseHealingRangeRequest extends SnapDataRequest {
 
   public void addLocalData(
       final WorldStateProofProvider worldStateProofProvider,
-      final NavigableMap<Bytes32, Bytes> slots,
+      final NavigableMap<Bytes, Bytes> slots,
       final ArrayDeque<Bytes> proofs) {
     if (!slots.isEmpty() && !proofs.isEmpty()) {
       // verify proof in order to check if the local flat database is valid or not
@@ -155,7 +154,7 @@ public class StorageFlatDatabaseHealingRangeRequest extends SnapDataRequest {
               Function.identity(),
               Function.identity());
 
-      Map<Bytes32, Bytes> flatDbSlots = new TreeMap<>(slots);
+      Map<Bytes, Bytes> flatDbSlots = new TreeMap<>(slots);
 
       // Retrieve the data from the trie in order to know what needs to be fixed in the flat
       // database
@@ -169,7 +168,7 @@ public class StorageFlatDatabaseHealingRangeRequest extends SnapDataRequest {
               Integer.MAX_VALUE);
       final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
       slots =
-          (TreeMap<Bytes32, Bytes>)
+          (TreeMap<Bytes, Bytes>)
               storageTrie.entriesFrom(
                   root ->
                       RangeStorageEntriesCollector.collectEntries(
@@ -185,7 +184,7 @@ public class StorageFlatDatabaseHealingRangeRequest extends SnapDataRequest {
             if (!value.equals(flatDbEntry)) {
               // Update the storage value
               bonsaiUpdater.putStorageValueBySlotHash(
-                  accountHash, Hash.wrap(key), Bytes32.leftPad(RLP.decodeValue(value)));
+                  accountHash, Hash.wrap(key), RLP.decodeValue(value).mutableCopy().leftPad(32));
             }
           });
       // For each remaining key, remove the storage value

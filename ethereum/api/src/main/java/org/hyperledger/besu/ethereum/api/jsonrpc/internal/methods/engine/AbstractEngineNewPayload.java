@@ -140,7 +140,7 @@ public abstract class AbstractEngineNewPayload extends ExecutionEngineJsonRpcMet
           RpcErrorType.INVALID_PARENT_BEACON_BLOCK_ROOT_PARAMS,
           e);
     }
-    final Optional<Bytes32> maybeParentBeaconBlockRoot =
+    final Optional<Bytes> maybeParentBeaconBlockRoot =
         maybeParentBeaconBlockRootParam.map(Bytes32::fromHexString);
 
     final Optional<List<String>> maybeRequestsParam;

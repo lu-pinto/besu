@@ -91,7 +91,7 @@ public abstract class BonsaiFlatDbStrategy extends FlatDbStrategy {
       final Bytes storage) {
     transaction.put(
         ACCOUNT_STORAGE_STORAGE,
-        Bytes.concatenate(accountHash, slotHash).toArrayUnsafe(),
+        Bytes.wrap(accountHash, slotHash).toArrayUnsafe(),
         storage.toArrayUnsafe());
   }
 
@@ -100,8 +100,7 @@ public abstract class BonsaiFlatDbStrategy extends FlatDbStrategy {
       final SegmentedKeyValueStorageTransaction transaction,
       final Hash accountHash,
       final Hash slotHash) {
-    transaction.remove(
-        ACCOUNT_STORAGE_STORAGE, Bytes.concatenate(accountHash, slotHash).toArrayUnsafe());
+    transaction.remove(ACCOUNT_STORAGE_STORAGE, Bytes.wrap(accountHash, slotHash).toArrayUnsafe());
   }
 
   @Override
@@ -118,7 +117,7 @@ public abstract class BonsaiFlatDbStrategy extends FlatDbStrategy {
   }
 
   @Override
-  protected Stream<Pair<Bytes32, Bytes>> storageToPairStream(
+  protected Stream<Pair<Bytes, Bytes>> storageToPairStream(
       final SegmentedKeyValueStorage storage,
       final Hash accountHash,
       final Bytes startKeyHash,
@@ -126,48 +125,48 @@ public abstract class BonsaiFlatDbStrategy extends FlatDbStrategy {
 
     return storage
         .streamFromKey(
-            ACCOUNT_STORAGE_STORAGE, Bytes.concatenate(accountHash, startKeyHash).toArrayUnsafe())
-        .takeWhile(pair -> Bytes.wrap(pair.getKey()).slice(0, Hash.SIZE).equals(accountHash))
+            ACCOUNT_STORAGE_STORAGE, Bytes.wrap(accountHash, startKeyHash).toArrayUnsafe())
+        .takeWhile(pair -> Bytes.wrap(pair.getKey()).slice(0, 32).equals(accountHash))
         .map(
             pair ->
                 new Pair<>(
-                    Bytes32.wrap(Bytes.wrap(pair.getKey()).slice(Hash.SIZE)),
+                    Bytes.wrap(pair.getKey()).slice(32),
                     valueMapper.apply(Bytes.wrap(pair.getValue()).trimLeadingZeros())));
   }
 
   @Override
-  protected Stream<Pair<Bytes32, Bytes>> storageToPairStream(
+  protected Stream<Pair<Bytes, Bytes>> storageToPairStream(
       final SegmentedKeyValueStorage storage,
       final Hash accountHash,
       final Bytes startKeyHash,
-      final Bytes32 endKeyHash,
+      final Bytes endKeyHash,
       final Function<Bytes, Bytes> valueMapper) {
 
     return storage
         .streamFromKey(
             ACCOUNT_STORAGE_STORAGE,
-            Bytes.concatenate(accountHash, startKeyHash).toArrayUnsafe(),
-            Bytes.concatenate(accountHash, endKeyHash).toArrayUnsafe())
+            Bytes.wrap(accountHash, startKeyHash).toArrayUnsafe(),
+            Bytes.wrap(accountHash, endKeyHash).toArrayUnsafe())
         .map(
             pair ->
                 new Pair<>(
-                    Bytes32.wrap(Bytes.wrap(pair.getKey()).slice(Hash.SIZE)),
+                    Bytes.wrap(pair.getKey()).slice(32),
                     valueMapper.apply(Bytes.wrap(pair.getValue()).trimLeadingZeros())));
   }
 
   @Override
-  protected Stream<Pair<Bytes32, Bytes>> accountsToPairStream(
-      final SegmentedKeyValueStorage storage, final Bytes startKeyHash, final Bytes32 endKeyHash) {
+  protected Stream<Pair<Bytes, Bytes>> accountsToPairStream(
+      final SegmentedKeyValueStorage storage, final Bytes startKeyHash, final Bytes endKeyHash) {
     return storage
         .streamFromKey(ACCOUNT_INFO_STATE, startKeyHash.toArrayUnsafe(), endKeyHash.toArrayUnsafe())
-        .map(pair -> new Pair<>(Bytes32.wrap(pair.getKey()), Bytes.wrap(pair.getValue())));
+        .map(pair -> new Pair<>(Bytes32.fromArray(pair.getKey()), Bytes.wrap(pair.getValue())));
   }
 
   @Override
-  protected Stream<Pair<Bytes32, Bytes>> accountsToPairStream(
+  protected Stream<Pair<Bytes, Bytes>> accountsToPairStream(
       final SegmentedKeyValueStorage storage, final Bytes startKeyHash) {
     return storage
         .streamFromKey(ACCOUNT_INFO_STATE, startKeyHash.toArrayUnsafe())
-        .map(pair -> new Pair<>(Bytes32.wrap(pair.getKey()), Bytes.wrap(pair.getValue())));
+        .map(pair -> new Pair<>(Bytes32.fromArray(pair.getKey()), Bytes.wrap(pair.getValue())));
   }
 }

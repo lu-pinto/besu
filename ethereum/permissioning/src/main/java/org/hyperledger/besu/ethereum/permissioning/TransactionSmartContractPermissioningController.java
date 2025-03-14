@@ -31,8 +31,7 @@ import org.hyperledger.besu.plugin.services.metrics.Counter;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
-import org.apache.tuweni.units.bigints.BaseUInt256Value;
+import org.apache.tuweni.units.bigints.UInt256;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -189,15 +188,15 @@ public class TransactionSmartContractPermissioningController
   }
 
   public static Bytes createPayload(final Bytes signature, final Transaction transaction) {
-    return Bytes.concatenate(signature, encodeTransaction(transaction));
+    return Bytes.wrap(signature, encodeTransaction(transaction));
   }
 
   private static Bytes encodeTransaction(final Transaction transaction) {
-    return Bytes.concatenate(
+    return Bytes.wrap(
         encodeAddress(transaction.getSender()),
         encodeAddress(transaction.getTo()),
         transaction.getValue(),
-        transaction.getGasPrice().map(BaseUInt256Value::toBytes).orElse(Bytes32.ZERO),
+        transaction.getGasPrice().map(UInt256::fromBytes).orElse(UInt256.ZERO),
         encodeLong(transaction.getGasLimit()),
         encodeBytes(transaction.getPayload()));
   }
@@ -209,7 +208,7 @@ public class TransactionSmartContractPermissioningController
 
   // Address is the 20 bytes of value left padded by 12 bytes.
   private static Bytes encodeAddress(final Address address) {
-    return Bytes.concatenate(Bytes.wrap(new byte[12]), address);
+    return Bytes.wrap(Bytes.wrap(new byte[12]), address);
   }
 
   // long to uint256, 8 bytes big endian, so left padded by 24 bytes
@@ -219,7 +218,7 @@ public class TransactionSmartContractPermissioningController
     for (int i = 0; i < 8; i++) {
       longBytes[i] = (byte) ((l >> ((7 - i) * 8)) & 0xFF);
     }
-    return Bytes.concatenate(Bytes.wrap(new byte[24]), Bytes.wrap(longBytes));
+    return Bytes.wrap(Bytes.wrap(new byte[24]), Bytes.wrap(longBytes));
   }
 
   // A bytes array is a uint256 of its length, then the bytes that make up its value, then pad to
@@ -229,6 +228,6 @@ public class TransactionSmartContractPermissioningController
     final Bytes dynamicParameterOffset = encodeLong(192);
     final Bytes length = encodeLong(value.size());
     final Bytes padding = Bytes.wrap(new byte[(32 - (value.size() % 32))]);
-    return Bytes.concatenate(dynamicParameterOffset, length, value, padding);
+    return Bytes.wrap(dynamicParameterOffset, length, value, padding);
   }
 }

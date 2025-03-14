@@ -224,7 +224,7 @@ public class SnapWorldDownloadStateTest {
     downloadState.pendingAccountRequests.add(
         SnapDataRequest.createAccountDataRequest(
             Hash.EMPTY_TRIE_HASH,
-            Hash.wrap(Bytes32.random()),
+            Hash.wrap(Bytes.random(32)),
             RangeManager.MIN_RANGE,
             RangeManager.MAX_RANGE));
 
@@ -244,7 +244,7 @@ public class SnapWorldDownloadStateTest {
     when(snapSyncState.isHealTrieInProgress()).thenReturn(false);
     downloadState.pendingStorageRequests.add(
         SnapDataRequest.createStorageTrieNodeDataRequest(
-            Hash.EMPTY_TRIE_HASH, Hash.wrap(Bytes32.random()), Hash.EMPTY_TRIE_HASH, Bytes.EMPTY));
+            Hash.EMPTY_TRIE_HASH, Hash.wrap(Bytes.random(32)), Hash.EMPTY_TRIE_HASH, Bytes.EMPTY));
 
     downloadState.checkCompletion(header);
 
@@ -255,7 +255,7 @@ public class SnapWorldDownloadStateTest {
 
     downloadState.pendingLargeStorageRequests.add(
         SnapDataRequest.createStorageTrieNodeDataRequest(
-            Hash.EMPTY_TRIE_HASH, Hash.wrap(Bytes32.random()), Hash.EMPTY_TRIE_HASH, Bytes.EMPTY));
+            Hash.EMPTY_TRIE_HASH, Hash.wrap(Bytes.random(32)), Hash.EMPTY_TRIE_HASH, Bytes.EMPTY));
 
     downloadState.checkCompletion(header);
 
@@ -273,7 +273,7 @@ public class SnapWorldDownloadStateTest {
     when(snapSyncState.isHealTrieInProgress()).thenReturn(true);
     downloadState.pendingTrieNodeRequests.add(
         SnapDataRequest.createAccountTrieNodeDataRequest(
-            Hash.wrap(Bytes32.random()), Bytes.EMPTY, new HashSet<>()));
+            Hash.wrap(Bytes.random(32)), Bytes.EMPTY, new HashSet<>()));
 
     downloadState.checkCompletion(header);
 
@@ -292,7 +292,7 @@ public class SnapWorldDownloadStateTest {
     when(snapSyncState.isHealFlatDatabaseInProgress()).thenReturn(true);
     downloadState.pendingAccountFlatDatabaseHealingRequests.add(
         SnapDataRequest.createAccountFlatHealingRangeRequest(
-            Hash.wrap(Bytes32.random()), Bytes32.ZERO, Bytes32.ZERO));
+            Hash.wrap(Bytes.random(32)), Bytes32.ZERO, Bytes32.ZERO));
 
     downloadState.checkCompletion(header);
 
@@ -315,12 +315,12 @@ public class SnapWorldDownloadStateTest {
     downloadState.pendingAccountRequests.add(
         SnapDataRequest.createAccountDataRequest(
             Hash.EMPTY_TRIE_HASH,
-            Hash.wrap(Bytes32.random()),
+            Hash.wrap(Bytes.random(32)),
             RangeManager.MIN_RANGE,
             RangeManager.MAX_RANGE));
     downloadState.pendingStorageRequests.add(
         SnapDataRequest.createStorageTrieNodeDataRequest(
-            Hash.EMPTY_TRIE_HASH, Hash.wrap(Bytes32.random()), Hash.EMPTY_TRIE_HASH, Bytes.EMPTY));
+            Hash.EMPTY_TRIE_HASH, Hash.wrap(Bytes.random(32)), Hash.EMPTY_TRIE_HASH, Bytes.EMPTY));
     downloadState.setWorldStateDownloadProcess(worldStateDownloadProcess);
 
     future.cancel(true);

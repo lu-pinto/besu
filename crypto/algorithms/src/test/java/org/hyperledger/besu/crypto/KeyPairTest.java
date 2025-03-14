@@ -61,7 +61,8 @@ public class KeyPairTest {
 
   @Test
   public void createKeyPair_PrivateKeyNull() {
-    final SECPPrivateKey privateKey = SECPPrivateKey.create(Bytes32.wrap(new byte[32]), ALGORITHM);
+    final SECPPrivateKey privateKey =
+        SECPPrivateKey.create(Bytes32.fromArray(new byte[32]), ALGORITHM);
     assertThatThrownBy(() -> new KeyPair(privateKey, null))
         .isInstanceOf(NullPointerException.class);
   }

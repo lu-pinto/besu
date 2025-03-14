@@ -34,7 +34,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 public class BonsaiCachedMerkleTrieLoader implements StorageSubscriber {
 
@@ -101,7 +100,7 @@ public class BonsaiCachedMerkleTrieLoader implements StorageSubscriber {
     final long storageSubscriberId = worldStateKeyValueStorage.subscribe(this);
     try {
       worldStateKeyValueStorage
-          .getStateTrieNode(Bytes.concatenate(accountHash, Bytes.EMPTY))
+          .getStateTrieNode(Bytes.wrap(accountHash, Bytes.EMPTY))
           .ifPresent(
               storageRoot -> {
                 try {
@@ -130,7 +129,7 @@ public class BonsaiCachedMerkleTrieLoader implements StorageSubscriber {
   public Optional<Bytes> getAccountStateTrieNode(
       final BonsaiWorldStateKeyValueStorage worldStateKeyValueStorage,
       final Bytes location,
-      final Bytes32 nodeHash) {
+      final Bytes nodeHash) {
     if (nodeHash.equals(MerkleTrie.EMPTY_TRIE_NODE_HASH)) {
       return Optional.of(MerkleTrie.EMPTY_TRIE_NODE);
     } else {
@@ -143,7 +142,7 @@ public class BonsaiCachedMerkleTrieLoader implements StorageSubscriber {
       final BonsaiWorldStateKeyValueStorage worldStateKeyValueStorage,
       final Hash accountHash,
       final Bytes location,
-      final Bytes32 nodeHash) {
+      final Bytes nodeHash) {
     if (nodeHash.equals(MerkleTrie.EMPTY_TRIE_NODE_HASH)) {
       return Optional.of(MerkleTrie.EMPTY_TRIE_NODE);
     } else {

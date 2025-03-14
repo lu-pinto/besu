@@ -46,7 +46,6 @@ import java.util.stream.Stream;
 import com.google.common.annotations.VisibleForTesting;
 import kotlin.collections.ArrayDeque;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.rlp.RLP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,19 +56,19 @@ public class StorageRangeDataRequest extends SnapDataRequest {
   private static final Logger LOG = LoggerFactory.getLogger(StorageRangeDataRequest.class);
 
   private final Hash accountHash;
-  private final Bytes32 storageRoot;
-  private final Bytes32 startKeyHash;
-  private final Bytes32 endKeyHash;
+  private final Bytes storageRoot;
+  private final Bytes startKeyHash;
+  private final Bytes endKeyHash;
 
   private final StackTrie stackTrie;
   private Optional<Boolean> isProofValid;
 
   protected StorageRangeDataRequest(
       final Hash rootHash,
-      final Bytes32 accountHash,
-      final Bytes32 storageRoot,
-      final Bytes32 startKeyHash,
-      final Bytes32 endKeyHash) {
+      final Bytes accountHash,
+      final Bytes storageRoot,
+      final Bytes startKeyHash,
+      final Bytes endKeyHash) {
     super(STORAGE_RANGE, rootHash);
     this.accountHash = Hash.wrap(accountHash);
     this.storageRoot = storageRoot;
@@ -115,7 +114,9 @@ public class StorageRangeDataRequest extends SnapDataRequest {
               (key, value) ->
                   ((BonsaiWorldStateKeyValueStorage.Updater) updater)
                       .putStorageValueBySlotHash(
-                          accountHash, Hash.wrap(key), Bytes32.leftPad(RLP.decodeValue(value))));
+                          accountHash,
+                          Hash.wrap(key),
+                          RLP.decodeValue(value).mutableCopy().leftPad(32)));
         });
 
     stackTrie.commit(flatDatabaseUpdater.get(), nodeUpdater);
@@ -128,7 +129,7 @@ public class StorageRangeDataRequest extends SnapDataRequest {
   public void addResponse(
       final SnapWorldDownloadState downloadState,
       final WorldStateProofProvider worldStateProofProvider,
-      final NavigableMap<Bytes32, Bytes> slots,
+      final NavigableMap<Bytes, Bytes> slots,
       final ArrayDeque<Bytes> proofs) {
     if (!slots.isEmpty() || !proofs.isEmpty()) {
       if (!worldStateProofProvider.isValidRangeProof(
@@ -205,23 +206,23 @@ public class StorageRangeDataRequest extends SnapDataRequest {
     return childRequests.stream();
   }
 
-  public Bytes32 getAccountHash() {
+  public Bytes getAccountHash() {
     return accountHash;
   }
 
-  public Bytes32 getStorageRoot() {
+  public Bytes getStorageRoot() {
     return storageRoot;
   }
 
-  public NavigableMap<Bytes32, Bytes> getSlots() {
+  public NavigableMap<Bytes, Bytes> getSlots() {
     return stackTrie.getElement(startKeyHash).keys();
   }
 
-  public Bytes32 getStartKeyHash() {
+  public Bytes getStartKeyHash() {
     return startKeyHash;
   }
 
-  public Bytes32 getEndKeyHash() {
+  public Bytes getEndKeyHash() {
     return endKeyHash;
   }
 

@@ -29,6 +29,7 @@ import org.hyperledger.besu.ethereum.privacy.storage.PrivateTransactionMetadata;
 
 import java.util.Optional;
 
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ public class PrivateMetadataUpdaterTest {
   private BlockHeader blockHeader;
   private PrivateStateStorage privateStateStorage;
   private Hash hashBlockOne;
-  private Bytes32 privacyGroupId;
+  private Bytes privacyGroupId;
   private Hash stateRoot;
   private Hash pmtHash;
 

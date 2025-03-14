@@ -18,21 +18,21 @@ import org.hyperledger.besu.datatypes.Quantity;
 
 import java.math.BigInteger;
 
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.apache.tuweni.bytes.v2.Bytes32;
-import org.apache.tuweni.units.bigints.BaseUInt256Value;
+import org.apache.tuweni.bytes.v2.DelegatingBytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
-/** A particular quantity of difficulty, the block difficulty to create new blocks. */
-public final class Difficulty extends BaseUInt256Value<Difficulty> implements Quantity {
+public final class Difficulty extends DelegatingBytes implements Quantity {
 
   public static final Difficulty ZERO = of(0);
 
   public static final Difficulty ONE = of(1);
 
-  public static final Difficulty MAX_VALUE = wrap(Bytes32.ZERO.not());
+  public static final Difficulty MAX_VALUE = wrap(Bytes32.ZERO.mutableCopy().not());
 
   Difficulty(final UInt256 value) {
-    super(value, Difficulty::new);
+    super(value, 32);
   }
 
   private Difficulty(final long v) {
@@ -59,7 +59,7 @@ public final class Difficulty extends BaseUInt256Value<Difficulty> implements Qu
     return new Difficulty(value);
   }
 
-  public static Difficulty wrap(final Bytes32 value) {
+  public static Difficulty wrap(final Bytes value) {
     return new Difficulty(UInt256.fromBytes(value));
   }
 
@@ -81,10 +81,6 @@ public final class Difficulty extends BaseUInt256Value<Difficulty> implements Qu
     return toBigInteger();
   }
 
-  public Bytes32 getAsBytes32() {
-    return this;
-  }
-
   @Override
   public String toHexString() {
     return super.toHexString();
@@ -95,8 +91,32 @@ public final class Difficulty extends BaseUInt256Value<Difficulty> implements Qu
     return super.isZero() ? "0x0" : super.toShortHexString();
   }
 
-  @Override
-  public Difficulty copy() {
-    return super.copy();
+  public Difficulty add(final Difficulty value) {
+    return new Difficulty(
+        UInt256.fromBytes(this.getImpl()).add(UInt256.fromBytes(value.getImpl())));
+  }
+
+  public boolean greaterOrEqualThan(final Difficulty value) {
+    return UInt256.fromBytes(this.getImpl()).greaterOrEqualThan(UInt256.fromBytes(value));
+  }
+
+  public boolean lessThan(final Difficulty value) {
+    return UInt256.fromBytes(this.getImpl()).lessThan(UInt256.fromBytes(value.getImpl()));
+  }
+
+  public Difficulty subtract(final Difficulty value) {
+    return new Difficulty(UInt256.fromBytes(this.getImpl()).subtract(UInt256.fromBytes(value)));
+  }
+
+  public boolean greaterThan(final Difficulty value) {
+    return UInt256.fromBytes(this.getImpl()).greaterThan(UInt256.fromBytes(value.getImpl()));
+  }
+
+  public boolean lessOrEqualThan(final Difficulty value) {
+    return UInt256.fromBytes(value.getImpl()).lessOrEqualThan(UInt256.fromBytes(value));
+  }
+
+  public Bytes toMinimalBytes() {
+    return UInt256.fromBytes(this.getImpl()).toMinimalBytes();
   }
 }

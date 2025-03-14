@@ -63,7 +63,7 @@ public class EmptyAccountAdapter extends AccountAdapter {
   }
 
   @Override
-  public Bytes32 getStorage(final DataFetchingEnvironment environment) {
+  public Bytes getStorage(final DataFetchingEnvironment environment) {
     return Bytes32.ZERO;
   }
 }

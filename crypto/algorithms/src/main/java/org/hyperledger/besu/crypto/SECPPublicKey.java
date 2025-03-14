@@ -93,7 +93,7 @@ public class SECPPublicKey implements java.security.PublicKey {
       return Bytes.wrap(backing, backing.length - BYTE_LENGTH, BYTE_LENGTH);
     } else {
       final MutableBytes res = MutableBytes.create(BYTE_LENGTH);
-      Bytes.wrap(backing).copyTo(res, BYTE_LENGTH - backing.length);
+      res.set(BYTE_LENGTH - backing.length, backing);
       return res;
     }
   }
@@ -119,17 +119,16 @@ public class SECPPublicKey implements java.security.PublicKey {
    */
   public ECPoint asEcPoint(final ECDomainParameters curve) {
     // 0x04 is the prefix for uncompressed keys.
-    final Bytes val = Bytes.concatenate(Bytes.of(0x04), encoded);
+    final Bytes val = Bytes.wrap(Bytes.of(0x04), encoded);
     return curve.getCurve().decodePoint(val.toArrayUnsafe());
   }
 
   @Override
   public boolean equals(final Object other) {
-    if (!(other instanceof SECPPublicKey)) {
+    if (!(other instanceof SECPPublicKey that)) {
       return false;
     }
 
-    final SECPPublicKey that = (SECPPublicKey) other;
     return this.encoded.equals(that.encoded) && this.algorithm.equals(that.algorithm);
   }
 

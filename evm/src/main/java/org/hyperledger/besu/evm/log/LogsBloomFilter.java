@@ -22,8 +22,8 @@ import org.hyperledger.besu.ethereum.rlp.RLPInput;
 
 import java.util.Collection;
 
-import org.apache.tuweni.bytes.v2.DelegatingBytes;
 import org.apache.tuweni.bytes.v2.Bytes;
+import org.apache.tuweni.bytes.v2.DelegatingBytes;
 import org.apache.tuweni.bytes.v2.MutableBytes;
 
 /**
@@ -46,16 +46,7 @@ public class LogsBloomFilter extends DelegatingBytes {
 
   /** Instantiates a new Logs bloom filter. */
   public LogsBloomFilter() {
-    super(Bytes.wrap(new byte[BYTE_SIZE]));
-  }
-
-  /**
-   * Instantiates a new Logs bloom filter.
-   *
-   * @param data the data
-   */
-  public LogsBloomFilter(final MutableBytes data) {
-    this(data.copy());
+    super(Bytes.wrap(new byte[BYTE_SIZE]), BYTE_SIZE);
   }
 
   /**
@@ -64,7 +55,7 @@ public class LogsBloomFilter extends DelegatingBytes {
    * @param data the data
    */
   public LogsBloomFilter(final Bytes data) {
-    super(data);
+    super(data, BYTE_SIZE);
     checkArgument(
         data.size() == BYTE_SIZE,
         "Invalid size for bloom filter backing array: expected %s but got %s",

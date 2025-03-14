@@ -24,7 +24,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /**
  * A noop {@link MerkleTrie}.
@@ -76,7 +75,7 @@ public class NoOpMerkleTrie<K extends Bytes, V> implements MerkleTrie<K, V> {
   }
 
   @Override
-  public Bytes32 getRootHash() {
+  public Bytes getRootHash() {
     return EMPTY_TRIE_NODE_HASH;
   }
 
@@ -96,12 +95,12 @@ public class NoOpMerkleTrie<K extends Bytes, V> implements MerkleTrie<K, V> {
   }
 
   @Override
-  public Map<Bytes32, V> entriesFrom(final Bytes32 startKeyHash, final int limit) {
+  public Map<Bytes, V> entriesFrom(final Bytes startKeyHash, final int limit) {
     return new HashMap<>();
   }
 
   @Override
-  public Map<Bytes32, V> entriesFrom(final Function<Node<V>, Map<Bytes32, V>> handler) {
+  public Map<Bytes, V> entriesFrom(final Function<Node<V>, Map<Bytes, V>> handler) {
     return new HashMap<>();
   }
 

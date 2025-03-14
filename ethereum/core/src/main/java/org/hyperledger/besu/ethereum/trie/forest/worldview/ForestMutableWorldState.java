@@ -48,7 +48,6 @@ import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 public class ForestMutableWorldState implements MutableWorldState {
@@ -57,11 +56,11 @@ public class ForestMutableWorldState implements MutableWorldState {
   private final ForestWorldStateKeyValueStorage worldStateKeyValueStorage;
   private final WorldStatePreimageStorage preimageStorage;
 
-  private final MerkleTrie<Bytes32, Bytes> accountStateTrie;
-  private final Map<Address, MerkleTrie<Bytes32, Bytes>> updatedStorageTries = new HashMap<>();
+  private final MerkleTrie<Bytes, Bytes> accountStateTrie;
+  private final Map<Address, MerkleTrie<Bytes, Bytes>> updatedStorageTries = new HashMap<>();
   private final Map<Address, Bytes> updatedAccountCode = new HashMap<>();
-  private final Map<Bytes32, UInt256> newStorageKeyPreimages = new HashMap<>();
-  private final Map<Bytes32, Address> newAccountKeyPreimages = new HashMap<>();
+  private final Map<Bytes, UInt256> newStorageKeyPreimages = new HashMap<>();
+  private final Map<Bytes, Address> newAccountKeyPreimages = new HashMap<>();
 
   public ForestMutableWorldState(
       final WorldStateKeyValueStorage worldStateKeyValueStorage,
@@ -75,7 +74,7 @@ public class ForestMutableWorldState implements MutableWorldState {
   }
 
   public ForestMutableWorldState(
-      final Bytes32 rootHash,
+      final Bytes rootHash,
       final WorldStateKeyValueStorage worldStateKeyValueStorage,
       final WorldStatePreimageStorage preimageStorage,
       final EvmConfiguration evmConfiguration) {
@@ -99,7 +98,7 @@ public class ForestMutableWorldState implements MutableWorldState {
     this.evmConfiguration = evmConfiguration;
   }
 
-  private MerkleTrie<Bytes32, Bytes> newAccountStateTrie(final Bytes32 rootHash) {
+  private MerkleTrie<Bytes, Bytes> newAccountStateTrie(final Bytes rootHash) {
     return new StoredMerklePatriciaTrie<>(
         (location, hash) -> worldStateKeyValueStorage.getAccountStateTrieNode(hash),
         rootHash,
@@ -107,7 +106,7 @@ public class ForestMutableWorldState implements MutableWorldState {
         b -> b);
   }
 
-  private MerkleTrie<Bytes32, Bytes> newAccountStorageTrie(final Bytes32 rootHash) {
+  private MerkleTrie<Bytes, Bytes> newAccountStorageTrie(final Bytes rootHash) {
     return new StoredMerklePatriciaTrie<>(
         (location, hash) -> worldStateKeyValueStorage.getAccountStorageTrieNode(hash),
         rootHash,
@@ -147,7 +146,7 @@ public class ForestMutableWorldState implements MutableWorldState {
   }
 
   @Override
-  public Stream<StreamableAccount> streamAccounts(final Bytes32 startKeyHash, final int limit) {
+  public Stream<StreamableAccount> streamAccounts(final Bytes startKeyHash, final int limit) {
     return accountStateTrie.entriesFrom(startKeyHash, limit).entrySet().stream()
         .map(
             entry -> {
@@ -182,7 +181,7 @@ public class ForestMutableWorldState implements MutableWorldState {
       stateUpdater.putCode(code);
     }
     // Commit account storage tries
-    for (final MerkleTrie<Bytes32, Bytes> updatedStorage : updatedStorageTries.values()) {
+    for (final var updatedStorage : updatedStorageTries.values()) {
       updatedStorage.commit(
           (location, hash, value) -> stateUpdater.putAccountStorageTrieNode(hash, value));
     }
@@ -212,7 +211,7 @@ public class ForestMutableWorldState implements MutableWorldState {
     return in.readUInt256Scalar();
   }
 
-  private Optional<Address> getAccountTrieKeyPreimage(final Bytes32 trieKey) {
+  private Optional<Address> getAccountTrieKeyPreimage(final Bytes trieKey) {
     return Optional.ofNullable(newAccountKeyPreimages.get(trieKey))
         .or(() -> preimageStorage.getAccountTrieKeyPreimage(trieKey));
   }
@@ -227,7 +226,7 @@ public class ForestMutableWorldState implements MutableWorldState {
     final PmtStateTrieAccountValue accountValue;
 
     // Lazily initialized since we don't always access storage.
-    private volatile MerkleTrie<Bytes32, Bytes> storageTrie;
+    private volatile MerkleTrie<Bytes, Bytes> storageTrie;
 
     private WorldStateAccount(
         final Address address,
@@ -239,8 +238,8 @@ public class ForestMutableWorldState implements MutableWorldState {
       this.accountValue = accountValue;
     }
 
-    private MerkleTrie<Bytes32, Bytes> storageTrie() {
-      final MerkleTrie<Bytes32, Bytes> updatedTrie = updatedStorageTries.get(address);
+    private MerkleTrie<Bytes, Bytes> storageTrie() {
+      final MerkleTrie<Bytes, Bytes> updatedTrie = updatedStorageTries.get(address);
       if (updatedTrie != null) {
         storageTrie = updatedTrie;
       }
@@ -312,9 +311,9 @@ public class ForestMutableWorldState implements MutableWorldState {
     }
 
     @Override
-    public NavigableMap<Bytes32, AccountStorageEntry> storageEntriesFrom(
-        final Bytes32 startKeyHash, final int limit) {
-      final NavigableMap<Bytes32, AccountStorageEntry> storageEntries = new TreeMap<>();
+    public NavigableMap<Bytes, AccountStorageEntry> storageEntriesFrom(
+        final Bytes startKeyHash, final int limit) {
+      final NavigableMap<Bytes, AccountStorageEntry> storageEntries = new TreeMap<>();
       storageTrie()
           .entriesFrom(startKeyHash, limit)
           .forEach(
@@ -351,7 +350,7 @@ public class ForestMutableWorldState implements MutableWorldState {
       return builder.append("}").toString();
     }
 
-    private Optional<UInt256> getStorageTrieKeyPreimage(final Bytes32 trieKey) {
+    private Optional<UInt256> getStorageTrieKeyPreimage(final Bytes trieKey) {
       return Optional.ofNullable(newStorageKeyPreimages.get(trieKey))
           .or(() -> preimageStorage.getStorageTrieKeyPreimage(trieKey));
     }
@@ -420,7 +419,7 @@ public class ForestMutableWorldState implements MutableWorldState {
         final Map<UInt256, UInt256> updatedStorage = updated.getUpdatedStorage();
         if (!updatedStorage.isEmpty()) {
           // Apply any storage updates
-          final MerkleTrie<Bytes32, Bytes> storageTrie =
+          final MerkleTrie<Bytes, Bytes> storageTrie =
               freshState
                   ? wrapped.newAccountStorageTrie(Hash.EMPTY_TRIE_HASH)
                   : origin.storageTrie();

@@ -84,7 +84,7 @@ public class PlainHandshaker implements Handshaker {
 
     LOG.trace("First plain handshake message under INITIATOR role");
 
-    return Unpooled.wrappedBuffer(initiatorMsg.toArray());
+    return Unpooled.wrappedBuffer(initiatorMsg.toArrayUnsafe());
   }
 
   @Override
@@ -135,12 +135,12 @@ public class PlainHandshaker implements Handshaker {
           partyPubKey.getEncodedBytes().slice(0, 16),
           responderMsg);
 
-      nextMsg = Optional.of(Bytes.wrap(responderMsg.toArray()));
+      nextMsg = Optional.of(Bytes.wrap(responderMsg.toArrayUnsafe()));
     }
 
     status.set(Handshaker.HandshakeStatus.SUCCESS);
     LOG.trace("Handshake status set to {}", status.get());
-    return nextMsg.map(bv -> Unpooled.wrappedBuffer(bv.toArray()));
+    return nextMsg.map(bv -> Unpooled.wrappedBuffer(bv.toArrayUnsafe()));
   }
 
   void computeSecrets() {}

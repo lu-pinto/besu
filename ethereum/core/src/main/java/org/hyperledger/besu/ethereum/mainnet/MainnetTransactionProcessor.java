@@ -57,7 +57,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -339,12 +338,12 @@ public class MainnetTransactionProcessor {
       final List<AccessListEntry> accessListEntries = transaction.getAccessList().orElse(List.of());
       // we need to keep a separate hash set of addresses in case they specify no storage.
       // No-storage is a common pattern, especially for Externally Owned Accounts
-      final Multimap<Address, Bytes32> storageList = HashMultimap.create();
+      final Multimap<Address, Bytes> storageList = HashMultimap.create();
       int accessListStorageCount = 0;
       for (final var entry : accessListEntries) {
         final Address address = entry.address();
         warmAddressList.add(address);
-        final List<Bytes32> storageKeys = entry.storageKeys();
+        final List<Bytes> storageKeys = entry.storageKeys();
         storageList.putAll(address, storageKeys);
         accessListStorageCount += storageKeys.size();
       }

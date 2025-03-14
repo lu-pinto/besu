@@ -29,7 +29,6 @@ import java.math.BigInteger;
 import java.security.spec.ECPoint;
 
 import org.apache.tuweni.bytes.v2.Bytes;
-import org.apache.tuweni.bytes.v2.Bytes32;
 
 /**
  * Implementation of SecurityModule wrapping SECP256K1.KeyPair and performing cryptographic
@@ -61,7 +60,7 @@ public class KeyPairSecurityModule implements SecurityModule {
   }
 
   @Override
-  public Signature sign(final Bytes32 dataHash) throws SecurityModuleException {
+  public Signature sign(final Bytes dataHash) throws SecurityModuleException {
     try {
       final SECPSignature signature = signatureAlgorithm.sign(dataHash, keyPair);
       return new SignatureImpl(signature);
@@ -76,8 +75,7 @@ public class KeyPairSecurityModule implements SecurityModule {
   }
 
   @Override
-  public Bytes32 calculateECDHKeyAgreement(final PublicKey partyKey)
-      throws SecurityModuleException {
+  public Bytes calculateECDHKeyAgreement(final PublicKey partyKey) throws SecurityModuleException {
     try {
       final Bytes encodedECPoint = ECPointUtil.getEncodedBytes(partyKey.getW());
       final SECPPublicKey secp256KPartyKey = signatureAlgorithm.createPublicKey(encodedECPoint);

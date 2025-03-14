@@ -21,7 +21,7 @@ import org.hyperledger.besu.ethereum.p2p.rlpx.wire.RawMessage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuweni.bytes.v2.Bytes32;
+import org.apache.tuweni.bytes.v2.Bytes;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -30,10 +30,10 @@ public final class GetBytecodeMessageTest {
   @Test
   public void roundTripTest() {
 
-    final List<Bytes32> hashes = new ArrayList<>();
+    final List<Bytes> hashes = new ArrayList<>();
     final int hashCount = 20;
     for (int i = 0; i < hashCount; ++i) {
-      hashes.add(Bytes32.random());
+      hashes.add(Bytes.random(32));
     }
 
     // Perform round-trip transformation
