@@ -28,7 +28,7 @@ public class TraceJsonRpcHttpBySpecTest extends AbstractJsonRpcHttpBySpecTest {
   @Override
   @BeforeEach
   public void setup() throws Exception {
-    setupBonsaiBlockchain();
+    getBlockchainSetupUtil(DataStorageFormat.VERKLE).importAllBlocks();
     startService();
   }
 

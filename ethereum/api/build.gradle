@@ -136,12 +136,13 @@ tasks.register('generateTestBlockchain') {
   dependsOn(configurations.testResourceGeneration)
   dependsOn(processTestResources)
   doLast {
-    if(!dataPath.exists()) {
+    // if(!dataPath.exists()) {
       mkdir(dataPath)
 
       javaexec {
         main = 'org.hyperledger.besu.Besu'
         classpath = configurations.testResourceGeneration
+        // jvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005"]
         args = [
           "--logging=ERROR",
           "--data-path=$dataPath",
@@ -167,7 +168,7 @@ tasks.register('generateTestBlockchain') {
           "--to=$blocksBin"
         ]
       }
-    }
+    // }
   }
 }
 test.dependsOn(generateTestBlockchain)
