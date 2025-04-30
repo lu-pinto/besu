@@ -117,88 +117,45 @@ public class EOFReferenceTestTools {
                   "No Expected exception, actual exception - container_size_above_limit "
                       + code.size())
           .isEqualTo(expected.result());
-      if (name.contains("eip7692")) {
-        // if the test is from EEST, validate the exception name.
-        assertThat("container_size_above_limit")
-            .withFailMessage(
-                () ->
-                    "Expected exception: %s actual exception: %s %d"
-                        .formatted(
-                            expected.exception(), "container_size_above_limit ", code.size()))
-            .containsIgnoringCase(expected.exception().replace("EOFException.", ""));
-      }
+    }
+    EOFLayout layout = EOFLayout.parseEOF(code);
 
-    } else {
-      EOFLayout layout = EOFLayout.parseEOF(code);
-
-      if (layout.isValid()) {
-        Code parsedCode;
-        if ("INITCODE".equals(containerKind)) {
-          parsedCode = evm.getCodeForCreation(code);
-        } else {
-          parsedCode = evm.getCodeUncached(code);
-        }
-
-        if (expected.result()) {
-          assertThat(parsedCode.isValid())
-              .withFailMessage(
-                  () -> "Valid code failed with " + ((CodeInvalid) parsedCode).getInvalidReason())
-              .isTrue();
-        } else if (parsedCode.isValid()) {
-          if (parsedCode instanceof CodeV1 codeV1
-              && expected.exception().contains("EOF_IncompatibleContainerKind")) {
-            // one last container type check
-            var parsedMode = codeV1.getEofLayout().containerMode().get();
-            String actual = parsedMode == null ? "RUNTIME" : parsedMode.toString();
-            String expectedContainerKind = containerKind == null ? "RUNTIME" : containerKind;
-            assertThat(actual)
-                .withFailMessage("EOF_IncompatibleContainerKind expected")
-                .isNotEqualTo(expectedContainerKind);
-          } else {
-            fail("Invalid code expected " + expected.exception() + " but was valid");
-          }
-        } else if (name.contains("eip7692")) {
-          // if the test is from EEST, validate the exception name.
-          assertThat(((CodeInvalid) parsedCode).getInvalidReason())
-              .withFailMessage(
-                  () ->
-                      "Expected exception :%s actual exception: %s"
-                          .formatted(
-                              expected.exception(),
-                              (parsedCode.isValid()
-                                  ? null
-                                  : ((CodeInvalid) parsedCode).getInvalidReason())))
-              .containsIgnoringCase(expected.exception().replace("EOFException.", ""));
-        }
+    if (layout.isValid()) {
+      Code parsedCode;
+      if ("INITCODE".equals(containerKind)) {
+        parsedCode = evm.getCodeForCreation(code);
       } else {
-        assertThat(false)
-            .withFailMessage(
-                () ->
-                    "Expected exception - "
-                        + expected.exception()
-                        + " actual exception - "
-                        + (layout.isValid() ? null : layout.invalidReason()))
-            .isEqualTo(expected.result());
-        if (name.contains("eip7692")) {
-          // if the test is from EEST, validate the exception name.
-          boolean exceptionMatched = false;
-          for (String e : Splitter.on('|').split(expected.exception())) {
-            if (layout
-                .invalidReason()
-                .toLowerCase(Locale.ROOT)
-                .contains(e.replace("EOFException.", "").toLowerCase(Locale.ROOT))) {
-              exceptionMatched = true;
-              break;
-            }
-          }
-          assertThat(exceptionMatched)
-              .withFailMessage(
-                  () ->
-                      "Expected exception :%s actual exception: %s"
-                          .formatted(expected.exception(), layout.invalidReason()))
-              .isTrue();
+        parsedCode = evm.getCodeUncached(code);
+      }
+
+      if (expected.result()) {
+        assertThat(parsedCode.isValid())
+          .withFailMessage(
+            () -> "Valid code failed with " + ((CodeInvalid) parsedCode).getInvalidReason())
+          .isTrue();
+      } else if (parsedCode.isValid()) {
+        if (parsedCode instanceof CodeV1 codeV1
+          && expected.exception().contains("EOF_IncompatibleContainerKind")) {
+          // one last container type check
+          var parsedMode = codeV1.getEofLayout().containerMode().get();
+          String actual = parsedMode == null ? "RUNTIME" : parsedMode.toString();
+          String expectedContainerKind = containerKind == null ? "RUNTIME" : containerKind;
+          assertThat(actual)
+            .withFailMessage("EOF_IncompatibleContainerKind expected")
+            .isNotEqualTo(expectedContainerKind);
+        } else {
+          fail("Invalid code expected " + expected.exception() + " but was valid");
         }
       }
+    } else {
+      assertThat(false)
+        .withFailMessage(
+          () ->
+            "Expected exception - "
+              + expected.exception()
+              + " actual exception - "
+              + (layout.isValid() ? null : layout.invalidReason()))
+        .isEqualTo(expected.result());
     }
   }
 }
