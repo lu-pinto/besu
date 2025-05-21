@@ -79,7 +79,7 @@ public interface MainnetPrecompiledContracts {
     populateForFrontier(registry, gasCalculator);
     registry.put(
         Address.MODEXP,
-        BigIntegerModularExponentiationPrecompiledContract.byzantium(gasCalculator));
+        new BigIntegerModularExponentiationPrecompiledContract(gasCalculator, Long.MAX_VALUE));
     registry.put(Address.ALTBN128_ADD, AltBN128AddPrecompiledContract.byzantium(gasCalculator));
     registry.put(Address.ALTBN128_MUL, AltBN128MulPrecompiledContract.byzantium(gasCalculator));
     registry.put(
@@ -195,8 +195,8 @@ public interface MainnetPrecompiledContracts {
     populateForPrague(registry, gasCalculator);
 
     // EIP-7823 - Set upper bounds for MODEXP
-    registry.put(
-        Address.MODEXP, BigIntegerModularExponentiationPrecompiledContract.osaka(gasCalculator));
+    registry.put(Address.MODEXP,
+      new BigIntegerModularExponentiationPrecompiledContract(gasCalculator, 1024L));
   }
 
   /**
