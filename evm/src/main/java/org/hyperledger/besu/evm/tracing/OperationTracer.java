@@ -28,12 +28,31 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** The interface Operation tracer. */
 public interface OperationTracer {
 
+  static OperationTracer getTracer() {
+    return new OperationTracer() {
+      private static final Logger LOG = LoggerFactory.getLogger("STACK_TRACER");
+      private int maxStackSize;
+
+      @Override
+      public void tracePreExecution(final MessageFrame messageFrame) {
+        maxStackSize = Math.max(messageFrame.stackSize(), maxStackSize);
+      }
+      @Override
+      public void traceContextExit(final MessageFrame messageFrame) {
+        LOG.info("Maximum stack size: {}", maxStackSize);
+        maxStackSize = 0;
+      }
+    };
+  }
+
   /** The constant NO_TRACING. */
-  OperationTracer NO_TRACING = new OperationTracer() {};
+  OperationTracer NO_TRACING = getTracer();
 
   /**
    * Trace pre execution.

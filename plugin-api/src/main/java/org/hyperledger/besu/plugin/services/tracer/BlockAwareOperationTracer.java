@@ -14,8 +14,14 @@
  */
 package org.hyperledger.besu.plugin.services.tracer;
 
+import javax.annotation.Nonnull;
+
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Transaction;
+import org.hyperledger.besu.evm.frame.MessageFrame;
+import org.hyperledger.besu.evm.operation.Operation;
 import org.hyperledger.besu.evm.tracing.OperationTracer;
+import org.hyperledger.besu.evm.worldstate.WorldView;
 import org.hyperledger.besu.plugin.data.BlockBody;
 import org.hyperledger.besu.plugin.data.BlockHeader;
 import org.hyperledger.besu.plugin.data.ProcessableBlockHeader;
@@ -31,7 +37,18 @@ public interface BlockAwareOperationTracer extends OperationTracer {
    * BlockAwareOperationTracer object with no tracing functionality. This serves as a default for
    * scenarios where no specific tracing operation is required.
    */
-  BlockAwareOperationTracer NO_TRACING = new BlockAwareOperationTracer() {};
+  BlockAwareOperationTracer NO_TRACING = new BlockAwareOperationTracer() {
+    final OperationTracer tracer = OperationTracer.getTracer();
+    @Override
+    public void tracePreExecution(final MessageFrame frame) {
+      tracer.tracePreExecution(frame);
+    }
+
+    @Override
+    public void traceContextExit(final MessageFrame frame) {
+      tracer.traceContextExit(frame);
+    }
+  };
 
   /**
    * Trace the start of a block.
