@@ -90,10 +90,14 @@ public class SystemCallProcessor {
       throw new RuntimeException("System call did not execute to completion - opcode invalid");
     }
 
+    context.getOperationTracer().traceSystemCall(callAddress, inputData);
+
     Deque<MessageFrame> stack = frame.getMessageFrameStack();
     while (!stack.isEmpty()) {
       processor.process(stack.peekFirst(), context.getOperationTracer());
     }
+
+    context.getOperationTracer().traceEndSystemCall(frame, updater);
 
     if (frame.getState() == MessageFrame.State.COMPLETED_SUCCESS) {
       updater.commit();

@@ -38,15 +38,47 @@ public interface OperationTracer {
     return new OperationTracer() {
       private static final Logger LOG = LoggerFactory.getLogger("STACK_TRACER");
       private int maxStackSize;
+      private int maxCallDepth = 0;
 
       @Override
       public void tracePreExecution(final MessageFrame messageFrame) {
         maxStackSize = Math.max(messageFrame.stackSize(), maxStackSize);
       }
+
+      @Override
+      public void traceContextEnter(final MessageFrame messageFrame) {
+        maxCallDepth = Math.max(messageFrame.getDepth(), maxCallDepth);
+      }
+
+      @Override
+      public void traceSystemCall(final Address callAddress, final Bytes inputData) {
+        maxCallDepth = 0;
+      }
+
+      @Override
+      public void traceEndSystemCall(final MessageFrame frame, final WorldView worldView) {
+        LOG.info("Maximum system call depth: {}", maxCallDepth);
+        maxCallDepth = 0;
+      }
+
       @Override
       public void traceContextExit(final MessageFrame messageFrame) {
         LOG.info("Maximum stack size: {}", maxStackSize);
         maxStackSize = 0;
+      }
+
+      @Override
+      public void traceEndTransaction(
+          final WorldView worldView,
+          final Transaction tx,
+          final boolean status,
+          final Bytes output,
+          final List<Log> logs,
+          final long gasUsed,
+          final Set<Address> selfDestructs,
+          final long timeNs) {
+        LOG.info("Maximum call depth: {}", maxCallDepth);
+        maxCallDepth = 1;
       }
     };
   }
@@ -137,6 +169,10 @@ public interface OperationTracer {
       final long gasUsed,
       final Set<Address> selfDestructs,
       final long timeNs) {}
+
+  default void traceSystemCall(final Address callAddress, final Bytes inputData) {}
+
+  default void traceEndSystemCall(final MessageFrame frame, final WorldView worldView) {}
 
   /**
    * Trace the entering of a new context

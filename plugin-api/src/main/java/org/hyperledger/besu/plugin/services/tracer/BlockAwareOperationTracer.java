@@ -14,17 +14,20 @@
  */
 package org.hyperledger.besu.plugin.services.tracer;
 
-import javax.annotation.Nonnull;
-
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Transaction;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.operation.Operation;
+import org.hyperledger.besu.evm.log.Log;
 import org.hyperledger.besu.evm.tracing.OperationTracer;
 import org.hyperledger.besu.evm.worldstate.WorldView;
 import org.hyperledger.besu.plugin.data.BlockBody;
 import org.hyperledger.besu.plugin.data.BlockHeader;
 import org.hyperledger.besu.plugin.data.ProcessableBlockHeader;
+
+import java.util.List;
+import java.util.Set;
+
+import org.apache.tuweni.bytes.Bytes;
 
 /**
  * An extended operation tracer that can trace the start and end of a block.
@@ -37,18 +40,49 @@ public interface BlockAwareOperationTracer extends OperationTracer {
    * BlockAwareOperationTracer object with no tracing functionality. This serves as a default for
    * scenarios where no specific tracing operation is required.
    */
-  BlockAwareOperationTracer NO_TRACING = new BlockAwareOperationTracer() {
-    final OperationTracer tracer = OperationTracer.getTracer();
-    @Override
-    public void tracePreExecution(final MessageFrame frame) {
-      tracer.tracePreExecution(frame);
-    }
+  BlockAwareOperationTracer NO_TRACING =
+      new BlockAwareOperationTracer() {
+        final OperationTracer tracer = OperationTracer.getTracer();
 
-    @Override
-    public void traceContextExit(final MessageFrame frame) {
-      tracer.traceContextExit(frame);
-    }
-  };
+        @Override
+        public void tracePreExecution(final MessageFrame frame) {
+          tracer.tracePreExecution(frame);
+        }
+
+        @Override
+        public void traceContextEnter(final MessageFrame frame) {
+          tracer.traceContextEnter(frame);
+        }
+
+        @Override
+        public void traceContextExit(final MessageFrame frame) {
+          tracer.traceContextExit(frame);
+        }
+
+        @Override
+        public void traceEndTransaction(
+            final WorldView worldView,
+            final Transaction tx,
+            final boolean status,
+            final Bytes output,
+            final List<Log> logs,
+            final long gasUsed,
+            final Set<Address> selfDestructs,
+            final long timeNs) {
+          tracer.traceEndTransaction(
+              worldView, tx, status, output, logs, gasUsed, selfDestructs, timeNs);
+        }
+
+        @Override
+        public void traceSystemCall(final Address callAddress, final Bytes inputData) {
+          tracer.traceSystemCall(callAddress, inputData);
+        }
+
+        @Override
+        public void traceEndSystemCall(final MessageFrame frame, final WorldView worldView) {
+          tracer.traceEndSystemCall(frame, worldView);
+        }
+      };
 
   /**
    * Trace the start of a block.
