@@ -35,6 +35,7 @@ dependencies {
   api 'org.slf4j:slf4j-api'
 
   implementation project(':crypto:algorithms')
+  implementation 'org.hyperledger.besu:secp256r1'
   implementation project(':datatypes')
   implementation project(':ethereum:rlp')
 
