@@ -136,6 +136,7 @@ import org.hyperledger.besu.evm.precompile.AbstractBLS12PrecompiledContract;
 import org.hyperledger.besu.evm.precompile.AbstractPrecompiledContract;
 import org.hyperledger.besu.evm.precompile.BigIntegerModularExponentiationPrecompiledContract;
 import org.hyperledger.besu.evm.precompile.KZGPointEvalPrecompiledContract;
+import org.hyperledger.besu.evm.precompile.WarmupPrecompile;
 import org.hyperledger.besu.metrics.BesuMetricCategory;
 import org.hyperledger.besu.metrics.MetricCategoryRegistryImpl;
 import org.hyperledger.besu.metrics.MetricsProtocol;
@@ -877,6 +878,8 @@ public class BesuCommand implements DefaultCommandValues, Runnable {
       if (enablePrecompileCaching) {
         configurePrecompileCaching();
       }
+      WarmupPrecompile.warmupModExp();
+      WarmupPrecompile.warmupEcRecover();
 
       besuController = buildController();
 
