@@ -59,25 +59,6 @@ public class Benchmarks {
           .worldUpdater(new SimpleWorld())
           .build();
 
-  private static void benchSecp256k1Recover() {
-    final Map<String, Bytes> testCases = new LinkedHashMap<>();
-    testCases.put(
-        "0x0c65a9d9ffc02c7c99e36e32ce0f950c7804ceda",
-        Bytes.fromHexString(
-            "0x0049872459827432342344987245982743234234498724598274323423429943000000000000000000000000000000000000000000000000000000000000001be8359c341771db7f9ea3a662a1741d27775ce277961470028e054ed3285aab8e31f63eaac35c4e6178abbc2a1073040ac9bbb0b67f2bc89a2e9593ba9abe8c53"));
-
-    final SECP256K1 signatureAlgorithm = new SECP256K1();
-
-    final ECRECPrecompiledContract contract =
-        new ECRECPrecompiledContract(new IstanbulGasCalculator(), signatureAlgorithm);
-
-    for (final Map.Entry<String, Bytes> testCase : testCases.entrySet()) {
-      final long timePerCallInNs = runBenchmark(testCase.getValue(), contract);
-      long gasRequirement = contract.gasRequirement(testCase.getValue());
-      logPerformance("Secp256k1 signature recovery", gasRequirement, timePerCallInNs);
-    }
-  }
-
   public static void benchSha256() {
     final SHA256PrecompiledContract contract =
         new SHA256PrecompiledContract(new IstanbulGasCalculator());
@@ -415,7 +396,6 @@ public class Benchmarks {
 
   public static void main(final String[] args) {
     logHeader();
-    benchSecp256k1Recover();
     benchSha256();
     benchKeccak256();
     benchRipeMD();
