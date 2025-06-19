@@ -134,7 +134,7 @@ public abstract class BenchmarkExecutor {
     this.precompileTableHeader =
         () ->
             output.printf(
-                "%-30s | %12s | %12s | %15s | %15s%n",
+                "%-50s | %12s | %12s | %15s | %15s%n",
                 "", "Actual cost", "Derived Cost", "Iteration time", "Throughput");
     this.config = benchmarkConfig;
     assert warmIterations <= 0;
@@ -216,7 +216,7 @@ public abstract class BenchmarkExecutor {
 
     precompileTableHeader.run();
     output.printf(
-        "%-30s | %,8d gas | %,8.0f gas | %,12.1f ns | %,10.2f MGps%n",
+        "%-50s | %,8d gas | %,8.0f gas | %,12.1f ns | %,10.2f MGps%n",
         testCase, gasCost, derivedGas, execTime * 1_000_000_000, gasCost / execTime / 1_000_000);
     precompileTableHeader = () -> {};
   }

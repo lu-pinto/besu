@@ -204,7 +204,7 @@ public class P256VerifyPrecompiledContract extends AbstractPrecompiledContract {
   }
 
   public interface P256VerifyLib extends Library {
-    P256VerifyLib INSTANCE = Native.load("/Users/garyschulte/dev/besu-native/boringssl/boringssl_jni/libp256verify.dylib", P256VerifyLib.class);
+    P256VerifyLib INSTANCE = Native.load("/Users/lpinto/repos/hyperledger/besu-native-reviews/boringssl/boringssl_jni/libp256verify.dylib", P256VerifyLib.class);
 
     VerifyResultByValue p256_verify_malleable_signature(
         byte[] dataHash, int dataHashLength,
