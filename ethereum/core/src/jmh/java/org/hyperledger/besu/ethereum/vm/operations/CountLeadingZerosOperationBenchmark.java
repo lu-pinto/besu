@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
+import org.hyperledger.besu.ProfiledBenchmark;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
@@ -23,7 +24,7 @@ import org.openjdk.jmh.annotations.State;
 
 @State(Scope.Thread)
 @OutputTimeUnit(value = TimeUnit.MILLISECONDS)
-public class CountLeadingZerosOperationBenchmark {
+public class CountLeadingZerosOperationBenchmark extends ProfiledBenchmark {
 
   @Param({
     "true",
@@ -33,10 +34,10 @@ public class CountLeadingZerosOperationBenchmark {
 
   @Param({
     "0x23",
-    "0x2323232323232323232323232323232323232323232323232323232323232323",
+//    "0x2323232323232323232323232323232323232323232323232323232323232323",
 //    "0x23232323232323232323232323232323232323232323232323232323232323",
 //    "0x2323232323232323232323232323232323232323232323",
-    "0x232323232323232323232323232323",
+//    "0x232323232323232323232323232323",
   })
   public String bytesHex;
 
@@ -78,4 +79,8 @@ public class CountLeadingZerosOperationBenchmark {
     }
   }
 
+  @Override
+  public int getWarmupIterations() {
+    return 1;
+  }
 }

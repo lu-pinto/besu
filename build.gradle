@@ -643,6 +643,7 @@ subprojects {
 
     dependencies {
       jmhAnnotationProcessor(platform(project(':platform')))
+      jmhImplementation 'tools.profiler:async-profiler:3.0'
     }
   }
 
