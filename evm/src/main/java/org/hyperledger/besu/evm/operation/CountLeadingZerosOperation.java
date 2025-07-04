@@ -60,7 +60,10 @@ public class CountLeadingZerosOperation extends AbstractFixedCostOperation {
     if (!useAlternativeImpl) {
       numberOfLeadingZeros = UInt256.fromBytes(value).numberOfLeadingZeros();
     } else {
-      numberOfLeadingZeros = value.numberOfLeadingZeros() + Bytes32.SIZE - value.size();
+      if (value.size() > Bytes32.SIZE) {
+        throw new IllegalStateException("value " + value + " should be atmost 32 bytes");
+      }
+      numberOfLeadingZeros = value.numberOfLeadingZeros() + (Bytes32.SIZE - value.size()) * 8;
     }
     frame.pushStackItem(Words.intBytes(numberOfLeadingZeros));
     return clzSuccess;
