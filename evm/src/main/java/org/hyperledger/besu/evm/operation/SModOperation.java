@@ -50,11 +50,13 @@ public class SModOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes value0 = frame.popStackItem();
-    final Bytes value1 = frame.popStackItem();
+    frame.getStack().checkStackDepth(2);
+
+    final Bytes value0 = frame.getStack().popUnsafe();
+    final Bytes value1 = frame.getStack().popUnsafe();
 
     if (value1.isZero()) {
-      frame.pushStackItem(Bytes.EMPTY);
+      frame.getStack().pushUnsafe(Bytes.EMPTY);
     } else {
       final BigInteger b1 =
           value0.size() < 32
@@ -77,7 +79,7 @@ public class SModOperation extends AbstractFixedCostOperation {
       final byte[] padding = new byte[32 - resultBytes.size()];
       Arrays.fill(padding, result.signum() < 0 ? (byte) 0xFF : 0x00);
 
-      frame.pushStackItem(Bytes.concatenate(Bytes.wrap(padding), resultBytes));
+      frame.getStack().pushUnsafe(Bytes.concatenate(Bytes.wrap(padding), resultBytes));
     }
 
     return smodSuccess;

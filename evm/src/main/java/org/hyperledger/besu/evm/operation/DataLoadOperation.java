@@ -45,7 +45,7 @@ public class DataLoadOperation extends AbstractFixedCostOperation {
     final int sourceOffset = clampedToInt(frame.popStackItem());
 
     final Bytes data = code.getData(sourceOffset, 32);
-    frame.pushStackItem(data);
+    frame.getStack().pushUnsafe(data);
 
     return successResponse;
   }

@@ -53,7 +53,7 @@ public class NotOperation extends AbstractFixedCostOperation {
 
     final Bytes result = value.not();
 
-    frame.pushStackItem(result);
+    frame.getStack().pushUnsafe(result);
 
     return notSuccess;
   }

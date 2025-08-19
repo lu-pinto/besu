@@ -93,7 +93,7 @@ public class ExtCodeSizeOperation extends AbstractOperation {
             codeSize = Words.intBytes(code.size());
           }
         }
-        frame.pushStackItem(codeSize);
+        frame.getStack().pushUnsafe(codeSize);
         return new OperationResult(cost, null);
       }
     } catch (final UnderflowException ufe) {

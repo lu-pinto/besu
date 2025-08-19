@@ -50,7 +50,7 @@ public class IsZeroOperation extends AbstractFixedCostOperation {
   public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes value = frame.popStackItem().trimLeadingZeros();
 
-    frame.pushStackItem((value.size() == 0) ? BYTES_ONE : Bytes.EMPTY);
+    frame.getStack().pushUnsafe(value.isEmpty() ? BYTES_ONE : Bytes.EMPTY);
 
     return isZeroSuccess;
   }

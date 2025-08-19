@@ -62,7 +62,7 @@ public class BalanceOperation extends AbstractOperation {
         return new OperationResult(cost, ExceptionalHaltReason.INSUFFICIENT_GAS);
       } else {
         final Account account = frame.getWorldUpdater().get(address);
-        frame.pushStackItem(account == null ? Bytes.EMPTY : account.getBalance());
+        frame.getStack().pushUnsafe(account == null ? Bytes.EMPTY : account.getBalance());
         return new OperationResult(cost, null);
       }
     } catch (final UnderflowException ufe) {

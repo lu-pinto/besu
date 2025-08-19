@@ -61,7 +61,7 @@ public class SLoadOperation extends AbstractOperation {
       if (frame.getRemainingGas() < cost) {
         return new OperationResult(cost, ExceptionalHaltReason.INSUFFICIENT_GAS);
       } else {
-        frame.pushStackItem(account.getStorageValue(UInt256.fromBytes(key)));
+        frame.getStack().pushUnsafe(account.getStorageValue(UInt256.fromBytes(key)));
 
         return slotIsWarm ? warmSuccess : coldSuccess;
       }

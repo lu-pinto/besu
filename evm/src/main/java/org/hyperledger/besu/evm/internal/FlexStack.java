@@ -90,6 +90,12 @@ public class FlexStack<T> {
     return entries[top - offset];
   }
 
+  public void checkStackDepth(final int minStackDepth) {
+    if (top + 1 < minStackDepth) {
+      throw new UnderflowException();
+    }
+  }
+
   /**
    * Pop operand.
    *
@@ -99,10 +105,11 @@ public class FlexStack<T> {
     if (top < 0) {
       throw new UnderflowException();
     }
+    return popUnsafe();
+  }
 
-    final T removed = entries[top];
-    entries[top--] = null;
-    return removed;
+  public T popUnsafe() {
+    return entries[top--];
   }
 
   /**
@@ -186,8 +193,11 @@ public class FlexStack<T> {
       final int newCapacity = newLength(currentCapacity, currentCapacity >> 1);
       expandEntries(newCapacity);
     }
-    entries[nextTop] = operand;
-    top = nextTop;
+    pushUnsafe(operand);
+  }
+
+  public void pushUnsafe(final T operand) {
+    entries[++top] = operand;
   }
 
   private int newLength(final int oldCapacity, final int prefGrowth) {

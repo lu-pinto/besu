@@ -63,9 +63,9 @@ public class SStoreOperation extends AbstractOperation {
 
   @Override
   public OperationResult execute(final MessageFrame frame, final EVM evm) {
-
-    final UInt256 key = UInt256.fromBytes(frame.popStackItem());
-    final UInt256 newValue = UInt256.fromBytes(frame.popStackItem());
+    frame.getStack().checkStackDepth(2);
+    final UInt256 key = UInt256.fromBytes(frame.getStack().popUnsafe());
+    final UInt256 newValue = UInt256.fromBytes(frame.getStack().popUnsafe());
 
     final MutableAccount account = frame.getWorldUpdater().getAccount(frame.getRecipientAddress());
     if (account == null) {

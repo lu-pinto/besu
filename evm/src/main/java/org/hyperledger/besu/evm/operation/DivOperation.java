@@ -50,12 +50,13 @@ public class DivOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
+    frame.getStack().checkStackDepth(2);
 
-    final Bytes value0 = frame.popStackItem();
-    final Bytes value1 = frame.popStackItem();
+    final Bytes value0 = frame.getStack().popUnsafe();
+    final Bytes value1 = frame.getStack().popUnsafe();
 
     if (value1.isZero()) {
-      frame.pushStackItem(Bytes.EMPTY);
+      frame.getStack().pushUnsafe(Bytes.EMPTY);
     } else {
       BigInteger b1 = new BigInteger(1, value0.toArrayUnsafe());
       BigInteger b2 = new BigInteger(1, value1.toArrayUnsafe());
@@ -66,9 +67,9 @@ public class DivOperation extends AbstractFixedCostOperation {
       byte[] resultArray = result.toByteArray();
       int length = resultArray.length;
       if (length > 32) {
-        frame.pushStackItem(Bytes.wrap(resultArray, length - 32, 32));
+        frame.getStack().pushUnsafe(Bytes.wrap(resultArray, length - 32, 32));
       } else {
-        frame.pushStackItem(Bytes.wrap(resultArray));
+        frame.getStack().pushUnsafe(Bytes.wrap(resultArray));
       }
     }
 

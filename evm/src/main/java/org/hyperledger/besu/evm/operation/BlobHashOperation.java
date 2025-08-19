@@ -53,18 +53,18 @@ public class BlobHashOperation extends AbstractOperation {
       Bytes trimmedIndex = versionedHashIndexParam.trimLeadingZeros();
       if (trimmedIndex.size() > 4) {
         // won't fit in an int
-        frame.pushStackItem(Bytes.EMPTY);
+        frame.getStack().pushUnsafe(Bytes.EMPTY);
         return new OperationResult(3, null);
       }
       int versionedHashIndex = trimmedIndex.toInt();
       if (versionedHashIndex < versionedHashes.size() && versionedHashIndex >= 0) {
         VersionedHash requested = versionedHashes.get(versionedHashIndex);
-        frame.pushStackItem(requested.toBytes());
+        frame.getStack().pushUnsafe(requested.toBytes());
       } else {
-        frame.pushStackItem(Bytes.EMPTY);
+        frame.getStack().pushUnsafe(Bytes.EMPTY);
       }
     } else {
-      frame.pushStackItem(Bytes.EMPTY);
+      frame.getStack().pushUnsafe(Bytes.EMPTY);
     }
     return new OperationResult(3, null);
   }

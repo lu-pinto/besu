@@ -55,9 +55,10 @@ public class DataCopyOperation extends AbstractOperation {
     if (code.getEofVersion() == 0) {
       return InvalidOperation.INVALID_RESULT;
     }
-    final int memOffset = clampedToInt(frame.popStackItem());
-    final int sourceOffset = clampedToInt(frame.popStackItem());
-    final int length = clampedToInt(frame.popStackItem());
+    frame.getStack().checkStackDepth(3);
+    final int memOffset = clampedToInt(frame.getStack().popUnsafe());
+    final int sourceOffset = clampedToInt(frame.getStack().popUnsafe());
+    final int length = clampedToInt(frame.getStack().popUnsafe());
     final long cost = cost(frame, memOffset, length);
     if (cost > frame.getRemainingGas()) {
       return new OperationResult(cost, ExceptionalHaltReason.INSUFFICIENT_GAS);

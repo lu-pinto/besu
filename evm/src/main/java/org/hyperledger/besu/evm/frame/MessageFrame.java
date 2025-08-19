@@ -448,6 +448,11 @@ public class MessageFrame {
     return stack.get(offset);
   }
 
+
+  public OperandStack getStack() {
+    return stack;
+  }
+
   /**
    * Removes the item at the top of the stack.
    *

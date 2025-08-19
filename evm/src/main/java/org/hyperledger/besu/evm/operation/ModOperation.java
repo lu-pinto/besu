@@ -51,10 +51,12 @@ public class ModOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes value0 = frame.popStackItem();
-    final Bytes value1 = frame.popStackItem();
+    frame.getStack().checkStackDepth(2);
+
+    final Bytes value0 = frame.getStack().popUnsafe();
+    final Bytes value1 = frame.getStack().popUnsafe();
     if (value1.isZero()) {
-      frame.pushStackItem(Bytes32.ZERO);
+      frame.getStack().pushUnsafe(Bytes32.ZERO);
     } else {
       BigInteger b1 = new BigInteger(1, value0.toArrayUnsafe());
       BigInteger b2 = new BigInteger(1, value1.toArrayUnsafe());
@@ -68,7 +70,7 @@ public class ModOperation extends AbstractFixedCostOperation {
       final byte[] padding = new byte[32 - resultBytes.size()];
       Arrays.fill(padding, result.signum() < 0 ? (byte) 0xFF : 0x00);
 
-      frame.pushStackItem(Bytes.concatenate(Bytes.wrap(padding), resultBytes));
+      frame.getStack().pushUnsafe(Bytes.concatenate(Bytes.wrap(padding), resultBytes));
     }
 
     return modSuccess;

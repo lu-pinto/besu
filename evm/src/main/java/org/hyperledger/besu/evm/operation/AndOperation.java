@@ -48,11 +48,12 @@ public class AndOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes value0 = frame.popStackItem();
-    final Bytes value1 = frame.popStackItem();
+    frame.getStack().checkStackDepth(2);
+    final Bytes value0 = frame.getStack().popUnsafe();
+    final Bytes value1 = frame.getStack().popUnsafe();
 
     final Bytes result = value0.and(value1);
-    frame.pushStackItem(result);
+    frame.getStack().pushUnsafe(result);
 
     return andSuccess;
   }

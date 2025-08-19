@@ -83,17 +83,17 @@ public class ExtCodeHashOperation extends AbstractOperation {
       final Account account = frame.getWorldUpdater().get(address);
 
       if (account == null || account.isEmpty()) {
-        frame.pushStackItem(Bytes.EMPTY);
+        frame.getStack().pushUnsafe(Bytes.EMPTY);
       } else {
         if (enableEIP3540) {
           final Bytes code = account.getCode();
           if (code.size() >= 2 && code.get(0) == EOFLayout.EOF_PREFIX_BYTE && code.get(1) == 0) {
-            frame.pushStackItem(EOF_REPLACEMENT_HASH);
+            frame.getStack().pushUnsafe(EOF_REPLACEMENT_HASH);
           } else {
-            frame.pushStackItem(account.getCodeHash());
+            frame.getStack().pushUnsafe(account.getCodeHash());
           }
         } else {
-          frame.pushStackItem(account.getCodeHash());
+          frame.getStack().pushUnsafe(account.getCodeHash());
         }
       }
       return new OperationResult(cost, null);

@@ -43,13 +43,13 @@ public class CallDataLoadOperation extends AbstractFixedCostOperation {
     // returned
     // word should be zero.
     if (startWord.size() > 4) {
-      frame.pushStackItem(Bytes.EMPTY);
+      frame.getStack().pushUnsafe(Bytes.EMPTY);
       return successResponse;
     }
 
     final int offset = startWord.toInt();
     if (offset < 0) {
-      frame.pushStackItem(Bytes.EMPTY);
+      frame.getStack().pushUnsafe(Bytes.EMPTY);
       return successResponse;
     }
     final Bytes data = frame.getInputData();
@@ -57,9 +57,9 @@ public class CallDataLoadOperation extends AbstractFixedCostOperation {
     if (offset < data.size()) {
       final Bytes toCopy = data.slice(offset, Math.min(Bytes32.SIZE, data.size() - offset));
       toCopy.copyTo(res, 0);
-      frame.pushStackItem(res.copy());
+      frame.getStack().pushUnsafe(res.copy());
     } else {
-      frame.pushStackItem(Bytes.EMPTY);
+      frame.getStack().pushUnsafe(Bytes.EMPTY);
     }
 
     return successResponse;

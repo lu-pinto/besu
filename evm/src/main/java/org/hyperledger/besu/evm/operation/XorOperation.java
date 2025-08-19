@@ -48,12 +48,14 @@ public class XorOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
+    frame.getStack().checkStackDepth(2);
+
     final Bytes value0 = frame.popStackItem();
     final Bytes value1 = frame.popStackItem();
 
     final Bytes result = value0.xor(value1);
 
-    frame.pushStackItem(result);
+    frame.getStack().pushUnsafe(result);
 
     return xorSuccess;
   }

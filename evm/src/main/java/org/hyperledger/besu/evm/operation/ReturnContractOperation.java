@@ -51,8 +51,10 @@ public class ReturnContractOperation extends AbstractOperation {
     int pc = frame.getPC();
     int index = code.readU8(pc + 1);
 
-    final long from = clampedToLong(frame.popStackItem());
-    final long length = clampedToLong(frame.popStackItem());
+    frame.getStack().checkStackDepth(2);
+
+    final long from = clampedToLong(frame.getStack().popUnsafe());
+    final long length = clampedToLong(frame.getStack().popUnsafe());
 
     final long cost = gasCalculator().memoryExpansionGasCost(frame, from, length);
     if (frame.getRemainingGas() < cost) {

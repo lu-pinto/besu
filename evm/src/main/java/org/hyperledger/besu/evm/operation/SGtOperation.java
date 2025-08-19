@@ -50,8 +50,10 @@ public class SGtOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes value0 = frame.popStackItem();
-    final Bytes value1 = frame.popStackItem();
+    frame.getStack().checkStackDepth(2);
+
+    final Bytes value0 = frame.getStack().popUnsafe();
+    final Bytes value1 = frame.getStack().popUnsafe();
 
     final BigInteger b0 =
         value0.size() < 32
@@ -64,7 +66,7 @@ public class SGtOperation extends AbstractFixedCostOperation {
 
     final Bytes result = b0.compareTo(b1) > 0 ? BYTES_ONE : Bytes.EMPTY;
 
-    frame.pushStackItem(result);
+    frame.getStack().pushUnsafe(result);
 
     return sgtSuccess;
   }

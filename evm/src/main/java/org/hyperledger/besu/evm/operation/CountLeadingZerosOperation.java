@@ -56,7 +56,7 @@ public class CountLeadingZerosOperation extends AbstractFixedCostOperation {
       value = value.slice(value.size() - Bytes32.SIZE, Bytes32.SIZE);
     }
     numberOfLeadingZeros = value.numberOfLeadingZeros() + (Bytes32.SIZE - value.size()) * 8;
-    frame.pushStackItem(Words.intBytes(numberOfLeadingZeros));
+    frame.getStack().pushUnsafe(Words.intBytes(numberOfLeadingZeros));
     return clzSuccess;
   }
 }

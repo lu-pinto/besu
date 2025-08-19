@@ -50,8 +50,9 @@ public class MulOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    BigInteger a = new BigInteger(1, frame.popStackItem().toArrayUnsafe());
-    BigInteger b = new BigInteger(1, frame.popStackItem().toArrayUnsafe());
+    frame.getStack().checkStackDepth(2);
+    BigInteger a = new BigInteger(1, frame.getStack().popUnsafe().toArrayUnsafe());
+    BigInteger b = new BigInteger(1, frame.getStack().popUnsafe().toArrayUnsafe());
     BigInteger c = a.multiply(b);
     byte[] cBytes = c.toByteArray();
     Bytes result = Bytes.wrap(cBytes);
@@ -59,7 +60,7 @@ public class MulOperation extends AbstractFixedCostOperation {
       result = result.slice(cBytes.length - 32, 32);
     }
 
-    frame.pushStackItem(result);
+    frame.getStack().pushUnsafe(result);
     return mulSuccess;
   }
 }

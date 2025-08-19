@@ -48,7 +48,7 @@ public class BlockHashOperation extends AbstractOperation {
     // Make sure we can convert to long
     final Bytes blockArg = frame.popStackItem().trimLeadingZeros();
     if (blockArg.size() > MAX_BLOCK_ARG_SIZE) {
-      frame.pushStackItem(Hash.ZERO);
+      frame.getStack().pushUnsafe(Hash.ZERO);
       return new OperationResult(cost, null);
     }
 
@@ -62,10 +62,10 @@ public class BlockHashOperation extends AbstractOperation {
     if (soughtBlock < 0
         || soughtBlock >= currentBlockNumber
         || soughtBlock < (currentBlockNumber - blockHashLookup.getLookback())) {
-      frame.pushStackItem(Bytes32.ZERO);
+      frame.getStack().pushUnsafe(Bytes32.ZERO);
     } else {
       final Hash blockHash = blockHashLookup.apply(frame, soughtBlock);
-      frame.pushStackItem(blockHash);
+      frame.getStack().pushUnsafe(blockHash);
     }
 
     return new OperationResult(cost, null);

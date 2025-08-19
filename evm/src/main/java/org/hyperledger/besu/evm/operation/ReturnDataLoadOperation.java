@@ -56,7 +56,7 @@ public class ReturnDataLoadOperation extends AbstractOperation {
       value = returnData.slice(offset, 32);
     }
 
-    frame.pushStackItem(value);
+    frame.getStack().pushUnsafe(value);
     return new OperationResult(3L, null);
   }
 }

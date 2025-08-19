@@ -43,7 +43,7 @@ public class TLoadOperation extends AbstractOperation {
       if (frame.getRemainingGas() < cost) {
         return new OperationResult(cost, ExceptionalHaltReason.INSUFFICIENT_GAS);
       } else {
-        frame.pushStackItem(frame.getTransientStorageValue(frame.getRecipientAddress(), slot));
+        frame.getStack().pushUnsafe(frame.getTransientStorageValue(frame.getRecipientAddress(), slot));
 
         return new OperationResult(cost, null);
       }
