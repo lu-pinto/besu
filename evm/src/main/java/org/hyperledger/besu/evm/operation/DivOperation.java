@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.UInt256New;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
@@ -57,19 +58,9 @@ public class DivOperation extends AbstractFixedCostOperation {
     if (value1.isZero()) {
       frame.pushStackItem(Bytes.EMPTY);
     } else {
-      BigInteger b1 = new BigInteger(1, value0.toArrayUnsafe());
-      BigInteger b2 = new BigInteger(1, value1.toArrayUnsafe());
-      final BigInteger result = b1.divide(b2);
-
-      // because it's unsigned there is a change a 33 byte result will occur
-      // there is no toByteArrayUnsigned so we have to check and trim
-      byte[] resultArray = result.toByteArray();
-      int length = resultArray.length;
-      if (length > 32) {
-        frame.pushStackItem(Bytes.wrap(resultArray, length - 32, 32));
-      } else {
-        frame.pushStackItem(Bytes.wrap(resultArray));
-      }
+      UInt256New b1 = (UInt256New) value0;
+      UInt256New b2 = (UInt256New) value1;
+      frame.pushStackItem(b1.divide(b2));
     }
 
     return divSuccess;

@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.UInt256New;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
@@ -61,20 +62,9 @@ public class ExpOperation extends AbstractOperation {
       return new OperationResult(cost, ExceptionalHaltReason.INSUFFICIENT_GAS);
     }
 
-    byte[] numberBytes = number.toArrayUnsafe();
-    BigInteger numBI = numberBytes.length > 0 ? new BigInteger(1, numberBytes) : BigInteger.ZERO;
-    byte[] powBytes = power.toArrayUnsafe();
-    BigInteger powBI = powBytes.length > 0 ? new BigInteger(1, powBytes) : BigInteger.ZERO;
-
-    final BigInteger result = numBI.modPow(powBI, MOD_BASE);
-
-    byte[] resultArray = result.toByteArray();
-    int length = resultArray.length;
-    if (length > 32) {
-      frame.pushStackItem(Bytes.wrap(resultArray, length - 32, 32));
-    } else {
-      frame.pushStackItem(Bytes.wrap(resultArray));
-    }
+    final UInt256New n = (UInt256New) number;
+    final UInt256New p = (UInt256New) power;
+    frame.pushStackItem(n.exp(p));
     return new OperationResult(cost, null);
   }
 }

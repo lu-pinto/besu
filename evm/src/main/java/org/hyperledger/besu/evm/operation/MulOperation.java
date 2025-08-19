@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.UInt256New;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
@@ -50,16 +51,9 @@ public class MulOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    BigInteger a = new BigInteger(1, frame.popStackItem().toArrayUnsafe());
-    BigInteger b = new BigInteger(1, frame.popStackItem().toArrayUnsafe());
-    BigInteger c = a.multiply(b);
-    byte[] cBytes = c.toByteArray();
-    Bytes result = Bytes.wrap(cBytes);
-    if (cBytes.length > 32) {
-      result = result.slice(cBytes.length - 32, 32);
-    }
-
-    frame.pushStackItem(result);
+    UInt256New a = (UInt256New) frame.popStackItem();
+    UInt256New b = (UInt256New) frame.popStackItem();
+    frame.pushStackItem(a.mul(b));
     return mulSuccess;
   }
 }

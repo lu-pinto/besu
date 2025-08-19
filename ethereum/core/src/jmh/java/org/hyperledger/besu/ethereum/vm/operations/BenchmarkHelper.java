@@ -18,6 +18,7 @@ import static org.mockito.Mockito.mock;
 
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
+import org.hyperledger.besu.datatypes.UInt256New;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.code.CodeV0;
 import org.hyperledger.besu.evm.frame.BlockValues;
@@ -71,8 +72,8 @@ public class BenchmarkHelper {
       random.nextBytes(a);
       random.nextBytes(b);
 
-      aPool[i] = Bytes.wrap(a);
-      bPool[i] = Bytes.wrap(b);
+      aPool[i] = UInt256New.fromArray(a);
+      bPool[i] = UInt256New.fromArray(b);
     }
   }
 }
