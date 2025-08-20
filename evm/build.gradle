@@ -51,6 +51,7 @@ dependencies {
   implementation 'org.hyperledger.besu:gnark'
   implementation 'org.hyperledger.besu:boringssl'
   implementation 'io.consensys.protocols:jc-kzg-4844'
+  implementation 'it.unich.jgmp:jgmp:1.0.1'
 
   compileOnly 'com.fasterxml.jackson.core:jackson-databind'
   compileOnly 'io.vertx:vertx-core'

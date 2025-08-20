@@ -18,7 +18,9 @@ import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
-import java.math.BigInteger;
+import it.unich.jgmp.MPZ;
+
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import org.apache.tuweni.bytes.Bytes;
@@ -51,26 +53,50 @@ public class ModOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes value0 = frame.popStackItem();
-    final Bytes value1 = frame.popStackItem();
-    if (value1.isZero()) {
+    final Bytes aBytes = frame.popStackItem();
+    final Bytes bBytes = frame.popStackItem();
+    if (bBytes.isZero()) {
       frame.pushStackItem(Bytes32.ZERO);
     } else {
-      BigInteger b1 = new BigInteger(1, value0.toArrayUnsafe());
-      BigInteger b2 = new BigInteger(1, value1.toArrayUnsafe());
-      final BigInteger result = b1.mod(b2);
+      // Wrap as ByteBuffer for bufferImport
+      ByteBuffer aBuf = ByteBuffer.wrap(aBytes.toArrayUnsafe());
+      ByteBuffer bBuf = ByteBuffer.wrap(bBytes.toArrayUnsafe());
 
-      Bytes resultBytes = Bytes.wrap(result.toByteArray());
-      if (resultBytes.size() > 32) {
-        resultBytes = resultBytes.slice(resultBytes.size() - 32, 32);
+      // ---- Import 256-bit unsigned big-endian values into MPZ ----
+      // order=1 (most-significant word first), size=1 (word size = 1 byte),
+      // endian=1 (big-endian within words), nails=0
+      final MPZ a = MPZ.bufferImport(/*order=*/1, /*size=*/1, /*endian=*/1, /*nails=*/0, aBuf);
+      final MPZ b = MPZ.bufferImport(1, 1, 1, 0, bBuf);
+
+      // ---- Compute a mod b (unsigned semantics, result 0 <= r < b) ----
+      MPZ r = a.mod(b); // equivalent to mpz_mod
+
+      // ---- Export back to big-endian bytes, fit to 32 bytes ----
+      ByteBuffer outBuf = r.bufferExport(1, 1, 1, 0);
+
+      // Read the exported bytes from the ByteBuffer
+      byte[] raw;
+      if (outBuf.hasArray()) {
+        int offset = outBuf.arrayOffset() + outBuf.position();
+        int len = outBuf.remaining();
+        raw = Arrays.copyOfRange(outBuf.array(), offset, offset + len);
+        outBuf.position(outBuf.limit());
+      } else {
+        raw = new byte[outBuf.remaining()];
+        outBuf.get(raw);
       }
 
-      final byte[] padding = new byte[32 - resultBytes.size()];
-      Arrays.fill(padding, result.signum() < 0 ? (byte) 0xFF : 0x00);
+      // Keep least-significant 32 bytes if longer
+      if (raw.length > 32) {
+        raw = Arrays.copyOfRange(raw, raw.length - 32, raw.length);
+      }
 
-      frame.pushStackItem(Bytes.concatenate(Bytes.wrap(padding), resultBytes));
+      // Left-pad with zeros to 32 bytes
+      byte[] out = new byte[32];
+      System.arraycopy(raw, 0, out, 32 - raw.length, raw.length);
+
+      frame.pushStackItem(Bytes32.wrap(out));
     }
-
     return modSuccess;
   }
 }
