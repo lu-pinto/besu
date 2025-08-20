@@ -2,6 +2,7 @@ package org.hyperledger.besu.datatypes;
 
 import java.math.BigInteger;
 
+import it.unich.jgmp.MPZ;
 import org.apache.tuweni.bytes.AbstractBytes;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.MutableBytes;
@@ -37,19 +38,29 @@ public class UInt256New extends AbstractBytes {
   }
 
   public UInt256New mod(final UInt256New y) {
-    return new UInt256New(value.mod(y.value));
+    final MPZ op1 = new MPZ(value);
+    final MPZ op2 = new MPZ(y.value);
+    return new UInt256New(op1.mod(op2).getBigInteger());
   }
 
   public UInt256New mul(final UInt256New y) {
-    return new UInt256New(value.multiply(y.value));
+    final MPZ op1 = new MPZ(value);
+    final MPZ op2 = new MPZ(y.value);
+    return new UInt256New(op1.mul(op2).getBigInteger());
   }
 
   public UInt256New exp(final UInt256New y) {
-    return new UInt256New(value.modPow(y.value, MOD_BASE));
+    final MPZ op = new MPZ(value);
+    final MPZ exp = new MPZ(y.value);
+    final MPZ mod = new MPZ(MOD_BASE);
+
+    return new UInt256New(op.powmAssign(exp, mod).getBigInteger());
   }
 
   public Bytes divide(final UInt256New y) {
-    return new UInt256New(value.divide(y.value));
+    final MPZ op1 = new MPZ(value);
+    final MPZ op2 = new MPZ(y.value);
+    return new UInt256New(op1.divexact(op2).getBigInteger());
   }
 
   @Override

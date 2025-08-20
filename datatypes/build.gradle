@@ -38,6 +38,7 @@ dependencies {
   implementation 'com.google.guava:guava'
   implementation 'io.consensys.tuweni:tuweni-bytes'
   implementation 'io.consensys.tuweni:tuweni-units'
+  implementation 'it.unich.jgmp:jgmp'
 
   testImplementation 'org.assertj:assertj-core'
   testImplementation 'org.junit.jupiter:junit-jupiter'

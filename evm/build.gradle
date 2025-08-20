@@ -52,7 +52,9 @@ dependencies {
   implementation 'org.hyperledger.besu:boringssl'
   implementation 'io.consensys.protocols:jc-kzg-4844'
 
-  compileOnly 'com.fasterxml.jackson.core:jackson-databind'
+  implementation 'it.unich.jgmp:jgmp'
+
+compileOnly 'com.fasterxml.jackson.core:jackson-databind'
   compileOnly 'io.vertx:vertx-core'
 
   testImplementation 'com.fasterxml.jackson.core:jackson-databind'
