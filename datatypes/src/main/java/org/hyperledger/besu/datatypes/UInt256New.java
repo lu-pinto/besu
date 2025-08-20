@@ -1,8 +1,14 @@
 package org.hyperledger.besu.datatypes;
 
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 
+import com.sun.jna.Pointer;
 import it.unich.jgmp.MPZ;
+import it.unich.jgmp.nativelib.LibGmp;
+import it.unich.jgmp.nativelib.MpzT;
+import it.unich.jgmp.nativelib.SizeT;
+import it.unich.jgmp.nativelib.SizeTByReference;
 import org.apache.tuweni.bytes.AbstractBytes;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.MutableBytes;
@@ -38,29 +44,77 @@ public class UInt256New extends AbstractBytes {
   }
 
   public UInt256New mod(final UInt256New y) {
-    final MPZ op1 = new MPZ(value);
-    final MPZ op2 = new MPZ(y.value);
-    return new UInt256New(op1.mod(op2).getBigInteger());
+    final MpzT op1 = getMpzt(value);
+    final MpzT op2 = getMpzt(y.value);
+    final MpzT res = new MpzT();
+    LibGmp.mpz_init(res);
+    LibGmp.mpz_mod(res, op1, op2);
+    final BigInteger result;
+    if (LibGmp.mpz_sgn(res) == 0) {
+      result = BigInteger.ZERO;
+    } else {
+      result = toBigInteger(res);
+    }
+    cleanupMpzt(op1);
+    cleanupMpzt(op2);
+    cleanupMpzt(res);
+    return new UInt256New(result);
   }
 
   public UInt256New mul(final UInt256New y) {
-    final MPZ op1 = new MPZ(value);
-    final MPZ op2 = new MPZ(y.value);
-    return new UInt256New(op1.mul(op2).getBigInteger());
+    final MpzT op1 = getMpzt(value);
+    final MpzT op2 = getMpzt(y.value);
+    final MpzT res = new MpzT();
+    LibGmp.mpz_init(res);
+    LibGmp.mpz_mul(res, op1, op2);
+    final BigInteger result;
+    if (LibGmp.mpz_sgn(res) == 0) {
+      result = BigInteger.ZERO;
+    } else {
+      result = toBigInteger(res);
+    }
+    cleanupMpzt(op1);
+    cleanupMpzt(op2);
+    cleanupMpzt(res);
+    return new UInt256New(result);
   }
 
   public UInt256New exp(final UInt256New y) {
-    final MPZ op = new MPZ(value);
-    final MPZ exp = new MPZ(y.value);
-    final MPZ mod = new MPZ(MOD_BASE);
-
-    return new UInt256New(op.powmAssign(exp, mod).getBigInteger());
+    final MpzT op1 = getMpzt(value);
+    final MpzT op2 = getMpzt(y.value);
+    final MpzT op3 = getMpzt(MOD_BASE);
+    final MpzT res = new MpzT();
+    LibGmp.mpz_init(res);
+    LibGmp.mpz_powm(res, op1, op2, op3);
+    final BigInteger result;
+    if (LibGmp.mpz_sgn(res) == 0) {
+      result = BigInteger.ZERO;
+    } else {
+      result = toBigInteger(res);
+    }
+    cleanupMpzt(op1);
+    cleanupMpzt(op2);
+    cleanupMpzt(op3);
+    cleanupMpzt(res);
+    return new UInt256New(result);
   }
 
   public Bytes divide(final UInt256New y) {
-    final MPZ op1 = new MPZ(value);
-    final MPZ op2 = new MPZ(y.value);
-    return new UInt256New(op1.divexact(op2).getBigInteger());
+    final MpzT op1 = getMpzt(value);
+    final MpzT op2 = getMpzt(y.value);
+    final MpzT res = new MpzT();
+    LibGmp.mpz_init(res);
+    LibGmp.mpz_divexact(res, op1, op2);
+    final BigInteger result;
+    if (LibGmp.mpz_sgn(res) == 0) {
+      result = BigInteger.ZERO;
+    } else {
+      result = toBigInteger(res);
+    }
+    cleanupMpzt(op1);
+    cleanupMpzt(op2);
+    cleanupMpzt(res);
+    return new UInt256New(result);
   }
 
   @Override
@@ -96,5 +150,33 @@ public class UInt256New extends AbstractBytes {
   @Override
   public int bitLength() {
     return value.bitLength();
+  }
+
+  private static MpzT getMpzt(final BigInteger number) {
+    final MpzT mpzNative = new MpzT();
+    LibGmp.mpz_init(mpzNative);
+    ByteBuffer buffer = ByteBuffer.wrap(number.abs().toByteArray());
+    LibGmp.mpz_import(mpzNative, new SizeT(buffer.capacity()), 1, new SizeT(1L), 0, new SizeT(0L), buffer);
+    if (number.signum() < 0) {
+      LibGmp.mpz_neg(mpzNative, mpzNative);
+    }
+    return mpzNative;
+  }
+
+  private static BigInteger toBigInteger(final MpzT mpzNative) {
+    ByteBuffer buffer = bufferExport(mpzNative, 1, 1, 0, 0L);
+    byte[] bytes = new byte[buffer.remaining()];
+    buffer.get(bytes);
+    return new BigInteger(LibGmp.mpz_sgn(mpzNative), bytes);
+  }
+
+  private static void cleanupMpzt(final MpzT mpztNative) {
+    LibGmp.__gmpz_clear(mpztNative.getPointer());
+  }
+
+  public static ByteBuffer bufferExport(final MpzT mpzNative, final int order, final int size, final int endian, final long nails) {
+    SizeTByReference count = new SizeTByReference();
+    Pointer p = LibGmp.mpz_export(null, count, order, new SizeT(size), endian, new SizeT(nails), mpzNative);
+    return p.getByteBuffer(0L, count.getValue().longValue());
   }
 }
