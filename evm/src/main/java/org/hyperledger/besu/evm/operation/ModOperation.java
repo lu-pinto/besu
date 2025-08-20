@@ -14,11 +14,14 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import it.unich.jgmp.nativelib.LibGmp;
+import it.unich.jgmp.nativelib.SizeT;
+import it.unich.jgmp.nativelib.SizeTByReference;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
-import it.unich.jgmp.MPZ;
+import it.unich.jgmp.nativelib.MpzT;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -30,6 +33,21 @@ import org.apache.tuweni.bytes.Bytes32;
 public class ModOperation extends AbstractFixedCostOperation {
 
   private static final OperationResult modSuccess = new OperationResult(5, null);
+  static final MpzT op1 = new MpzT();
+  static final MpzT op2 = new MpzT();
+  static final MpzT res = new MpzT();
+  static final SizeT one = new SizeT(1);
+  static final SizeT zero = new SizeT(0);
+  static final ByteBuffer inA = ByteBuffer.allocateDirect(32);
+  static final ByteBuffer inB = ByteBuffer.allocateDirect(32);
+  static final ByteBuffer out = ByteBuffer.allocateDirect(32);
+  static final SizeTByReference count = new SizeTByReference();
+
+  static {
+    LibGmp.mpz_init(op1);
+    LibGmp.mpz_init(op2);
+    LibGmp.mpz_init(res);
+  }
 
   /**
    * Instantiates a new Mod operation.
@@ -59,31 +77,39 @@ public class ModOperation extends AbstractFixedCostOperation {
       frame.pushStackItem(Bytes32.ZERO);
     } else {
       // Wrap as ByteBuffer for bufferImport
-      ByteBuffer aBuf = ByteBuffer.wrap(aBytes.toArrayUnsafe());
-      ByteBuffer bBuf = ByteBuffer.wrap(bBytes.toArrayUnsafe());
+      inA.clear();
+      inA.put(aBytes.toArrayUnsafe()).flip();
+      inB.clear();
+      inB.put(bBytes.toArrayUnsafe()).flip();
 
       // ---- Import 256-bit unsigned big-endian values into MPZ ----
       // order=1 (most-significant word first), size=1 (word size = 1 byte),
       // endian=1 (big-endian within words), nails=0
-      final MPZ a = MPZ.bufferImport(/*order=*/1, /*size=*/1, /*endian=*/1, /*nails=*/0, aBuf);
-      final MPZ b = MPZ.bufferImport(1, 1, 1, 0, bBuf);
+      LibGmp.mpz_import(op1, new SizeT(32), 1, one, 1, zero, inA);
+      LibGmp.mpz_import(op2, new SizeT(32), 1, one, 1, zero, inB);
 
       // ---- Compute a mod b (unsigned semantics, result 0 <= r < b) ----
-      MPZ r = a.mod(b); // equivalent to mpz_mod
+      LibGmp.mpz_mod(res, op1, op2);
+
+      if (LibGmp.mpz_sgn(res) == 0) {
+        frame.pushStackItem(Bytes32.ZERO);
+        return modSuccess;
+      }
 
       // ---- Export back to big-endian bytes, fit to 32 bytes ----
-      ByteBuffer outBuf = r.bufferExport(1, 1, 1, 0);
+      out.clear();
+      LibGmp.mpz_export(out, count, 1, one, 1, zero, res);
 
       // Read the exported bytes from the ByteBuffer
       byte[] raw;
-      if (outBuf.hasArray()) {
-        int offset = outBuf.arrayOffset() + outBuf.position();
-        int len = outBuf.remaining();
-        raw = Arrays.copyOfRange(outBuf.array(), offset, offset + len);
-        outBuf.position(outBuf.limit());
+      if (out.hasArray()) {
+        int offset = out.arrayOffset() + out.position();
+        int len = out.remaining();
+        raw = Arrays.copyOfRange(out.array(), offset, offset + len);
+        out.position(out.limit());
       } else {
-        raw = new byte[outBuf.remaining()];
-        outBuf.get(raw);
+        raw = new byte[out.remaining()];
+        out.get(raw);
       }
 
       // Keep least-significant 32 bytes if longer
