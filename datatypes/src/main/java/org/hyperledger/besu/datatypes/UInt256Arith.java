@@ -17,6 +17,7 @@ package org.hyperledger.besu.datatypes;
 import java.util.Arrays;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /** This class implement UInt256 arithmetics required by EVM opcodes. */
@@ -25,6 +26,54 @@ public final class UInt256Arith {
   private static final long LONG_MASK = 0xffffffffL;
 
   private UInt256Arith() {}
+
+  public static Bytes modulo(final boolean signed, final Bytes numerator, final Bytes denominator) {
+    if (denominator.isZero()) {
+      throw new ArithmeticException("divide by zero");
+    }
+
+    byte[] numArray =
+      numerator.size() > UInt256.SIZE
+        ? numerator.slice(numerator.size() - UInt256.SIZE).toArrayUnsafe()
+        : numerator.toArrayUnsafe();
+    byte[] denomArray =
+      denominator.size() > UInt256.SIZE
+        ? denominator.slice(denominator.size() - UInt256.SIZE).toArrayUnsafe()
+        : denominator.toArrayUnsafe();
+
+    boolean isNumeratorNegative = false;
+    boolean isDenominatorNegative = false;
+    if (signed) {
+      isNumeratorNegative = (numArray.length == UInt256.SIZE && (numArray[0] >> 7 == -1));
+      numArray = makePositive(numArray, isNumeratorNegative);
+      isDenominatorNegative = (denomArray.length == UInt256.SIZE && denomArray[0] >> 7 == -1);
+      denomArray = makePositive(denomArray, isDenominatorNegative);
+    }
+
+    final int numeratorOffset = numberOfLeadingZeros(numArray);
+    final int denominatorOffset = numberOfLeadingZeros(denomArray);
+
+    final int cmp = compare(numArray, numeratorOffset, denomArray, denominatorOffset);
+
+    if (cmp < 0) {
+      if (signed && isNumeratorNegative) {
+        return Bytes.wrap(makeNegative(numArray));
+      }
+      return Bytes32.leftPad(Bytes.wrap(numArray));
+    }
+
+    if (cmp == 0) {
+      return UInt256.ZERO;
+    }
+
+    final int[] intResult =
+      modulusKnuth(
+        toIntLimbs(numArray, numeratorOffset), toIntLimbs(denomArray, denominatorOffset));
+    if (signed) {
+      return Bytes.wrap(fromIntLimbs(intResult, isNumeratorNegative));
+    }
+    return Bytes.wrap(fromIntLimbsUnsigned(intResult));
+  }
 
   /**
    * Divide two values stored as Bytes instances in Big Endian form. It can do signed or unsigned
@@ -86,7 +135,7 @@ public final class UInt256Arith {
   }
 
   private static byte[] makePositive(final byte[] value, final boolean isNegative) {
-    if (value.length == 0 || value[0] >= 0 || !isNegative) {
+    if (value.length == 0 || !isNegative) {
       return value;
     }
 
@@ -105,6 +154,36 @@ public final class UInt256Arith {
         break; // no more carry
       }
     }
+    return newValue;
+  }
+
+  private static byte[] makeNegative(final byte[] value) {
+    if (value.length == 0) {
+      return value;
+    }
+
+    final byte[] newValue = new byte[UInt256.SIZE];
+
+    // fill in two complement at start
+    int fillIndex = 0;
+    for (; fillIndex < UInt256.SIZE - value.length; fillIndex++) {
+      newValue[fillIndex] = -1;
+    }
+
+    // invert all values before
+    for (int i = 0; i < value.length; i++) {
+      newValue[fillIndex + i] = (byte) ~value[i];
+    }
+
+    // add 1 to the number to get signed value
+    for (int i = newValue.length - 1; i >= 0; i--) {
+      int aux = (newValue[i] & 0xFF) + 1;
+      newValue[i] = (byte) aux;
+      if ((aux & 0x100) == 0) {
+        break; // no more carry
+      }
+    }
+
     return newValue;
   }
 
@@ -286,6 +365,181 @@ public final class UInt256Arith {
     return normalize(quotient);
   }
 
+  private static int[] modulusKnuth(final int[] num, final int[] denom) {
+    if (denom.length == 1) {
+      return new int[] {modulusOneWord(num, denom[0])};
+    }
+
+    // assert div.intLen > 1
+    // D1 normalize the divisor
+    int shift = Integer.numberOfLeadingZeros(denom[0]);
+    // Copy divisor value to protect divisor
+    final int dlen = denom.length;
+    int[] divisor;
+    int[] rem; // Remainder starts as dividend with space for a leading zero
+    if (shift > 0) {
+      divisor = new int[dlen];
+      primitiveLeftShift(denom, shift, divisor, 0);
+      if (Integer.numberOfLeadingZeros(num[0]) >= shift) {
+        rem = new int[num.length + 1];
+        primitiveLeftShift(num, shift, rem, 1);
+      } else {
+        rem = new int[num.length + 2];
+        int rFrom = 0;
+        int c = 0;
+        int n2 = 32 - shift;
+        for (int i = 1; i < num.length + 1; i++, rFrom++) {
+          int b = c;
+          c = num[rFrom];
+          rem[i] = (b << shift) | (c >>> n2);
+        }
+        rem[num.length + 1] = c << shift;
+      }
+    } else {
+      divisor = Arrays.copyOfRange(denom, 0, denom.length);
+      rem = new int[num.length + 1];
+      System.arraycopy(num, 0, rem, 1, num.length);
+    }
+
+    int nlen = rem.length - 1;
+
+    // Set the quotient size
+    final int limit = nlen - dlen + 1;
+
+    // Insert leading 0 in rem
+    rem[0] = 0;
+
+    int dh = divisor[0];
+    long dhLong = dh & LONG_MASK;
+    int dl = divisor[1];
+
+    // D2 Initialize j
+    for (int j=0; j < limit-1; j++) {
+      // D3 Calculate qhat
+      // estimate qhat
+      int qhat = 0;
+      int qrem = 0;
+      boolean skipCorrection = false;
+      int nh = rem[j];
+      int nh2 = nh + 0x80000000;
+      int nm = rem[j+1];
+
+      if (nh == dh) {
+        qhat = ~0;
+        qrem = nh + nm;
+        skipCorrection = qrem + 0x80000000 < nh2;
+      } else {
+        long nChunk = (((long)nh) << 32) | (nm & LONG_MASK);
+        qhat = (int) Long.divideUnsigned(nChunk, dhLong);
+        qrem = (int) Long.remainderUnsigned(nChunk, dhLong);
+      }
+
+      if (qhat == 0)
+        continue;
+
+      if (!skipCorrection) { // Correct qhat
+        long nl = rem[j+2] & LONG_MASK;
+        long rs = ((qrem & LONG_MASK) << 32) | nl;
+        long estProduct = (dl & LONG_MASK) * (qhat & LONG_MASK);
+
+        if (unsignedLongCompare(estProduct, rs)) {
+          qhat--;
+          qrem = (int)((qrem & LONG_MASK) + dhLong);
+          if ((qrem & LONG_MASK) >=  dhLong) {
+            estProduct -= (dl & LONG_MASK);
+            rs = ((qrem & LONG_MASK) << 32) | nl;
+            if (unsignedLongCompare(estProduct, rs))
+              qhat--;
+          }
+        }
+      }
+
+      // D4 Multiply and subtract
+      rem[j] = 0;
+      int borrow = mulsub(rem, divisor, qhat, dlen, j);
+
+      // D5 Test remainder
+      if (borrow + 0x80000000 > nh2) {
+        // D6 Add back
+        divadd(divisor, rem, j+1);
+      }
+
+    } // D7 loop on j
+    // D3 Calculate qhat
+    // estimate qhat
+    int qhat = 0;
+    int qrem = 0;
+    boolean skipCorrection = false;
+    int nh = rem[limit - 1];
+    int nh2 = nh + 0x80000000;
+    int nm = rem[limit];
+
+    if (nh == dh) {
+      qhat = ~0;
+      qrem = nh + nm;
+      skipCorrection = qrem + 0x80000000 < nh2;
+    } else {
+      long nChunk = (((long) nh) << 32) | (nm & LONG_MASK);
+      qhat = (int) Long.divideUnsigned(nChunk, dhLong);
+      qrem = (int) Long.remainderUnsigned(nChunk, dhLong);
+    }
+    if (qhat != 0) {
+      if (!skipCorrection) { // Correct qhat
+        long nl = rem[limit + 1] & LONG_MASK;
+        long rs = ((qrem & LONG_MASK) << 32) | nl;
+        long estProduct = (dl & LONG_MASK) * (qhat & LONG_MASK);
+
+        if (unsignedLongCompare(estProduct, rs)) {
+          qhat--;
+          qrem = (int) ((qrem & LONG_MASK) + dhLong);
+          if ((qrem & LONG_MASK) >= dhLong) {
+            estProduct -= (dl & LONG_MASK);
+            rs = ((qrem & LONG_MASK) << 32) | nl;
+            if (unsignedLongCompare(estProduct, rs))
+              qhat--;
+          }
+        }
+      }
+
+      // D4 Multiply and subtract
+      int borrow;
+      rem[limit - 1] = 0;
+      borrow = mulsub(rem, divisor, qhat, dlen, limit - 1);
+
+      // D5 Test remainder
+      if (borrow + 0x80000000 > nh2) {
+        // D6 Add back
+        divadd(divisor, rem, limit - 1 + 1);
+      }
+    }
+
+    rem = normalize(rem);
+    // D8 Unnormalize
+    if (shift > 0) {
+      rem = rightShift(rem, shift);
+    }
+
+    return rem;
+  }
+
+  private static int modulusOneWord(final int[] numerator, final int denominator) {
+    long divisorLong = denominator & LONG_MASK;
+
+    // Special case of one word dividend
+    if (numerator.length == 1) {
+      return Integer.remainderUnsigned(numerator[0], denominator);
+    }
+
+    long rem = 0;
+    for (int xlen = numerator.length; xlen > 0; xlen--) {
+      long dividendEstimate = (rem << 32) |
+        (numerator[numerator.length - xlen] & LONG_MASK);
+      rem = Long.remainderUnsigned(dividendEstimate, divisorLong);
+    }
+
+    return (int) rem;
+  }
+
   private static int[] divideOneWord(final int[] numerator, final int denominator) {
     long divisorLong = denominator & LONG_MASK;
 
@@ -412,15 +666,53 @@ public final class UInt256Arith {
 
   private static void primitiveLeftShift(
       final int[] value, final int n, final int[] result, final int resFrom) {
+    final int[] val = value;
     int n2 = 32 - n;
     final int m = value.length - 1;
-    int b = value[0];
+    int b = val[0];
     for (int i = 0; i < m; i++) {
-      int c = value[i + 1];
+      int c = val[i + 1];
       result[resFrom + i] = (b << n) | (c >>> n2);
       b = c;
     }
     result[resFrom + m] = b << n;
+  }
+
+  private static void primitiveRightShift(final int[] value, final int n, final int[] result, final int resFrom) {
+    final int[] val = value;
+    int n2 = 32 - n;
+
+    int b = val[0];
+    result[resFrom] = b >>> n;
+    for (int i = 1; i < value.length; i++) {
+      int c = b;
+      b = val[i];
+      result[resFrom + i] = (c << n2) | (b >>> n);
+    }
+  }
+
+  private static int[] rightShift(final int[] value, final int n) {
+    if (value.length == 0)
+      return value;
+    int intLen = value.length;
+    int nInts = n >>> 5;
+    int nBits = n & 0x1F;
+    intLen -= nInts;
+    if (nBits == 0) {
+      final int[] result = new int[intLen];
+      System.arraycopy(value, value.length - intLen, result, 0, intLen);
+      return result;
+    }
+    int bitsInHighWord = 32 - Integer.numberOfLeadingZeros(value[0]);
+    if (nBits >= bitsInHighWord) {
+      primitiveLeftShift(value, 32 - nBits, value, 0);
+      intLen--;
+    } else {
+      primitiveRightShift(value, nBits, value, 0);
+    }
+    final int[] result = new int[intLen];
+    System.arraycopy(value, 0, result, 0, intLen);
+    return result;
   }
 
   private static boolean unsignedLongCompare(final long one, final long two) {
