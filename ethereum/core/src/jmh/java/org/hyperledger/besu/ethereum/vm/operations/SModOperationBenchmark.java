@@ -18,7 +18,7 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.operation.Operation;
 import org.hyperledger.besu.evm.operation.SModOperation;
 
-public class SModOperationBenchmark extends BinaryOperationBenchmark {
+public class SModOperationBenchmark extends ModOperationBenchmark {
 
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
