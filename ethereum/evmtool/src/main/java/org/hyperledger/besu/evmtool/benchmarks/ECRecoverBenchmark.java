@@ -19,7 +19,6 @@ import org.hyperledger.besu.crypto.SignatureAlgorithmFactory;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.evm.EvmSpecVersion;
 import org.hyperledger.besu.evm.fluent.EvmSpec;
-import org.hyperledger.besu.evm.precompile.ECRECPrecompiledContract;
 import org.hyperledger.besu.evm.precompile.PrecompiledContract;
 
 import java.io.PrintStream;
@@ -456,7 +455,6 @@ public class ECRecoverBenchmark extends BenchmarkExecutor {
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithmFactory.getInstance();
     if (attemptNative != null && (!attemptNative || !signatureAlgorithm.maybeEnableNative())) {
       signatureAlgorithm.disableNative();
-      ECRECPrecompiledContract.disableNative();
     }
     output.println(
         signatureAlgorithm.isNative() ? "Native LibSecp256k1JNI EcRecover" : "Java EcRecover");
@@ -464,9 +462,6 @@ public class ECRecoverBenchmark extends BenchmarkExecutor {
     final PrecompiledContract contract =
         EvmSpec.evmSpec(evmSpecVersion).getPrecompileContractRegistry().get(Address.ECREC);
 
-    // TODO SLD
-    // warmIterations = warmIterations / testCases.size();
-    // execIterations = execIterations / testCases.size();
     double execTime = Double.MIN_VALUE; // a way to dodge divide by zero
     long gasCost = 0;
     for (final Map.Entry<String, Bytes> testCase : testCases.entrySet()) {

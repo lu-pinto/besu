@@ -15,6 +15,7 @@
 package org.hyperledger.besu.evm.precompile;
 
 import org.hyperledger.besu.crypto.Hash;
+import org.hyperledger.besu.crypto.SECP256K1;
 import org.hyperledger.besu.crypto.SECPPublicKey;
 import org.hyperledger.besu.crypto.SECPSignature;
 import org.hyperledger.besu.crypto.SignatureAlgorithm;
@@ -25,6 +26,7 @@ import org.hyperledger.besu.nativelib.secp256k1.LibSecp256k1;
 import org.hyperledger.besu.nativelib.secp256k1.LibSecp256k1JNI;
 
 import java.math.BigInteger;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import com.github.benmanes.caffeine.cache.Cache;
@@ -46,47 +48,6 @@ public class ECRECPrecompiledContract extends AbstractPrecompiledContract {
   private static final String PRECOMPILE_NAME = "ECREC";
   private static final Cache<Integer, PrecompileInputResultTuple> ecrecCache =
       Caffeine.newBuilder().maximumSize(1000).build();
-
-  /** The constant useNative. */
-  // use the BoringSSL native library implementation, if it is available
-  private static boolean useNative;
-
-  static {
-    maybeEnableNative();
-  }
-
-  /**
-   * Attempt to enable the LibSecp256k1JNI native library for ecrecover contract. Note, if
-   * LibSecp256k1JNI is disabled, then native SECP256R1 may still be enabled
-   *
-   * @return true if the native library was enabled.
-   */
-  public static boolean maybeEnableNative() {
-    try {
-      // LibSecp256k1 must load before LibSecp256k1JNI
-      useNative = LibSecp256k1.CONTEXT != null && LibSecp256k1JNI.ENABLED;
-    } catch (UnsatisfiedLinkError | NoClassDefFoundError ule) {
-      LOG.info(
-          "LibSecp256k1 or LibSecp256k1JNI ecrecover native precompile not available: {}",
-          ule.getMessage());
-      useNative = false;
-    }
-    return useNative;
-  }
-
-  /** Disable native. Note SECP256K1 must additionally be disabled to fully disable native */
-  public static void disableNative() {
-    useNative = false;
-  }
-
-  /**
-   * Is native boolean.
-   *
-   * @return the boolean
-   */
-  public static boolean isNative() {
-    return useNative;
-  }
 
   /**
    * Instantiates a new ECREC precompiled contract with the default signature algorithm.
@@ -154,8 +115,8 @@ public class ECRECPrecompiledContract extends AbstractPrecompiledContract {
     }
 
     Bytes resultBytes;
-    if (useNative) {
-      resultBytes = computeNative(safeInput);
+    if (signatureAlgorithm.isNative() && isK1PrecompileSpecificNativeAvailable()) {
+      resultBytes = computeK1Native(safeInput);
     } else {
       resultBytes = computeDefault(safeInput);
     }
@@ -170,8 +131,22 @@ public class ECRECPrecompiledContract extends AbstractPrecompiledContract {
     return res.cachedResult();
   }
 
+  private boolean isK1PrecompileSpecificNativeAvailable() {
+    if (!SECP256K1.CURVE_NAME.equals(signatureAlgorithm.getCurveName())) {
+      return false;
+    }
+
+    try {
+      // LibSecp256k1 must load before LibSecp256k1JNI
+      return LibSecp256k1.CONTEXT != null && LibSecp256k1JNI.ENABLED;
+    } catch (UnsatisfiedLinkError | NoClassDefFoundError ule) {
+      LOG.info("ecrecover precompile-specific native lib not available: {}", ule.getMessage());
+      return false;
+    }
+  }
+
   @NotNull
-  private Bytes computeNative(final Bytes safeInput) {
+  private Bytes computeK1Native(final Bytes safeInput) {
     try {
       final Bytes32 messageHash = Bytes32.wrap(safeInput, 0);
       final int recId = safeInput.get(63) - V_BASE;
@@ -183,12 +158,11 @@ public class ECRECPrecompiledContract extends AbstractPrecompiledContract {
         return Bytes.EMPTY;
       }
 
-      // TODO SLD how to handle empty public key?
       final Bytes32 hashed = Hash.keccak256(Bytes.wrap(ecres.publicKey().orElseThrow()));
       final MutableBytes32 result = MutableBytes32.create();
       hashed.slice(12).copyTo(result, 12);
       return result;
-    } catch (final IllegalArgumentException e) {
+    } catch (final IllegalArgumentException | NoSuchElementException e) {
       return Bytes.EMPTY;
     }
   }
