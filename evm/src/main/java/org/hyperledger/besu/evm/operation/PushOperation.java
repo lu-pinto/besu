@@ -71,11 +71,7 @@ public class PushOperation extends AbstractFixedCostOperation {
     if (code.length <= copyStart) {
       frame.pushStackItem(UInt256.ZERO);
     } else {
-      final int copyLength = Math.min(pushSize, code.length - pc - 1);
-      // Build a byte array of exactly pushSize, right-padded with zeros
-      final byte[] pushBytes = new byte[pushSize];
-      System.arraycopy(code, copyStart, pushBytes, 0, copyLength);
-      frame.pushStackItem(UInt256.fromBytesBE(pushBytes));
+      frame.pushStackItem(UInt256.fromBytesBE(code, copyStart, pushSize));
     }
     frame.setPC(pc + pushSize);
     return pushSuccess;

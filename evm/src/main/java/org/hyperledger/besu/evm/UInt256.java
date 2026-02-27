@@ -98,6 +98,30 @@ public record UInt256(long u3, long u2, long u1, long u0) {
     return new UInt256(u3, u2, u1, u0);
   }
 
+  public static UInt256 fromBytesBE(final byte[] bytes, final int start, final int length) {
+    if (length == 0) return ZERO;
+    // Clamp end to array bounds so we zero-pad if code is truncated
+    final int end = Math.min(start + length, bytes.length);
+    long u3 = 0;
+    long u2 = 0;
+    long u1 = 0;
+    long u0 = 0;
+    int b = end - 1; // walk backwards (least-significant byte first)
+    for (int shift = 0; shift < 64 && b >= start; b--, shift += 8) {
+      u0 |= ((bytes[b] & 0xFFL) << shift);
+    }
+    for (int shift = 0; shift < 64 && b >= start; b--, shift += 8) {
+      u1 |= ((bytes[b] & 0xFFL) << shift);
+    }
+    for (int shift = 0; shift < 64 && b >= start; b--, shift += 8) {
+      u2 |= ((bytes[b] & 0xFFL) << shift);
+    }
+    for (int shift = 0; shift < 64 && b >= start; b--, shift += 8) {
+      u3 |= ((bytes[b] & 0xFFL) << shift);
+    }
+    return new UInt256(u3, u2, u1, u0);
+  }
+
   /**
    * Converts a Tuweni UInt256 to a native UInt256.
    *
