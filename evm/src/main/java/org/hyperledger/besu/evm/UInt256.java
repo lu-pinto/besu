@@ -1225,9 +1225,13 @@ public record UInt256(long u3, long u2, long u1, long u0) {
       long z0 = v0 + u0;
       long carry = u0 - 1 + ((Long.compareUnsigned(v0, z0) <= 0) ? 1 : 0);
 
-      long z1 = v1 + u1 - carry;
-      // q = MAX may still be 1 too high; check if result >= modulus (i.e. negative wrapped)
-      if (Long.compareUnsigned(z1, u1) > 0 || (z1 == u1 && Long.compareUnsigned(z0, u0) >= 0)) {
+      long t1 = v1 + u1;
+      long z1 = t1 - carry;
+
+      long borrow =
+          ((Long.compareUnsigned(t1, z1) < 0) ? 1L : 0L)
+        - ((Long.compareUnsigned(t1, v1) < 0) ? 1L : 0L);
+      if (borrow > 0) {
         return addBack(z1, z0);
       }
       return new UInt128(z1, z0);
@@ -1411,11 +1415,14 @@ public record UInt256(long u3, long u2, long u1, long u0) {
       // Propagate overflows (borrows)
       long t2 = v2 - carry;
       long z2 = t2 - borrow;
+
       borrow =
           ((Long.compareUnsigned(v2, t2) < 0) ? 1 : 0)
               | ((Long.compareUnsigned(t2, z2) < 0) ? 1 : 0);
-
-      if (borrow != 0) return addBack(z2, z1, z0); // unlikely
+      if (borrow != 0) {
+        // unlikely
+        return addBack(z2, z1, z0);
+      }
       return new UInt192(z2, z1, z0);
     }
 
@@ -1430,12 +1437,16 @@ public record UInt256(long u3, long u2, long u1, long u0) {
       long borrow = (Long.compareUnsigned(res, z1) <= 0) ? 1 : 0;
       carry = u1 - 1 + ((Long.compareUnsigned(v1, res) < 0) ? 1 : 0);
 
-      long z2 = v2 - carry + u2 - borrow;
-      // q = MAX may still be 1 too high; check if result >= modulus (i.e. negative wrapped)
-      if (Long.compareUnsigned(z2, u2) > 0
-          || (z2 == u2
-              && (Long.compareUnsigned(z1, u1) > 0
-                  || (z1 == u1 && Long.compareUnsigned(z0, u0) >= 0)))) {
+      long t1 = v2 + u2;
+      long t2 = t1 - carry;
+      long z2 = t2 - borrow;
+
+      borrow =
+          ((Long.compareUnsigned(t1, t2) < 0) ? 1L : 0L)
+        + ((Long.compareUnsigned(t2, z2) < 0) ? 1L : 0L)
+        - ((Long.compareUnsigned(t1, v2) < 0) ? 1L : 0L);
+      if (borrow > 0) {
+        // unlikely
         return addBack(z2, z1, z0);
       }
       return new UInt192(z2, z1, z0);
@@ -1670,14 +1681,16 @@ public record UInt256(long u3, long u2, long u1, long u0) {
       borrow = (Long.compareUnsigned(res, z2) <= 0) ? 1 : 0;
       carry = u2 - 1 + ((Long.compareUnsigned(v2, res) < 0) ? 1 : 0);
 
-      long z3 = v3 + u3 - carry - borrow;
-      // q = MAX may still be 1 too high; check if result >= modulus (i.e. negative wrapped)
-      if (Long.compareUnsigned(z3, u3) > 0
-          || (z3 == u3
-              && (Long.compareUnsigned(z2, u2) > 0
-                  || (z2 == u2
-                      && (Long.compareUnsigned(z1, u1) > 0
-                          || (z1 == u1 && Long.compareUnsigned(z0, u0) >= 0)))))) {
+      long t1 = v3 + u3;
+      long t2 = t1 - carry;
+      long z3 = t2 - borrow;
+
+      borrow =
+          ((Long.compareUnsigned(t1, t2) < 0) ? 1L : 0L)
+        + ((Long.compareUnsigned(t2, z3) < 0) ? 1L : 0L)
+        - ((Long.compareUnsigned(t1, v3) < 0) ? 1L : 0L);
+      if (borrow > 0) {
+        // unlikely
         return addBack(z3, z2, z1, z0);
       }
       return new UInt256(z3, z2, z1, z0);
