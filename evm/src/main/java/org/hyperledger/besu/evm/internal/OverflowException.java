@@ -15,7 +15,7 @@
 package org.hyperledger.besu.evm.internal;
 
 /**
- * Overflow exception for {@link FixedStack} and {@link FlexStack}. The main need for a separate
+ * Overflow exception for {@link FixedStack} and {@link OperandStack}. The main need for a separate
  * class is to remove the stack trace generation as the exception is not used to signal a debuggable
  * failure but instead an expected edge case the EVM should handle.
  */
