@@ -19,6 +19,7 @@ import static picocli.CommandLine.ScopeType.INHERIT;
 
 import org.hyperledger.besu.config.NetworkDefinition;
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.LogsBloomFilter;
 import org.hyperledger.besu.datatypes.Wei;
@@ -593,7 +594,7 @@ public class EvmToolCommand implements Runnable {
   public static void dumpWorldState(final MutableWorldState worldState, final PrintWriter out) {
     out.println("{");
     worldState
-        .streamAccounts(Bytes32.ZERO, Integer.MAX_VALUE)
+        .streamAccounts(Bytes32Helper.ZERO_BYTES32, Integer.MAX_VALUE)
         .sorted(
             Comparator.comparing(o -> o.getAddress().orElse(Address.ZERO).getBytes().toHexString()))
         .forEach(
@@ -604,11 +605,11 @@ public class EvmToolCommand implements Runnable {
                 out.println("  \"code\": \"" + account.getCode().toHexString() + "\",");
               }
               var storageEntries =
-                  account.storageEntriesFrom(Bytes32.ZERO, Integer.MAX_VALUE).values().stream()
+                  account.storageEntriesFrom(Bytes32Helper.ZERO_BYTES32, Integer.MAX_VALUE).values().stream()
                       .map(
                           e ->
                               Map.entry(
-                                  e.getKey().orElse(Bytes32.ZERO),
+                                  e.getKey().orElse(Bytes32Helper.ZERO_BYTES32),
                                   account.getStorageValue(e.getKey().get())))
                       .filter(e -> !e.getValue().isZero())
                       .sorted(Map.Entry.comparingByKey())

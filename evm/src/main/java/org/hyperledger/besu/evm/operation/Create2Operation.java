@@ -20,6 +20,7 @@ import static org.hyperledger.besu.evm.internal.Words.clampedToInt;
 import static org.hyperledger.besu.evm.internal.Words.clampedToLong;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
@@ -59,7 +60,7 @@ public class Create2Operation extends AbstractCreateOperation {
   @Override
   public Address generateTargetContractAddress(final MessageFrame frame, final Code initcode) {
     final Address sender = frame.getRecipientAddress();
-    final Bytes32 salt = Bytes32.leftPad(frame.getStackItem(3));
+    final Bytes32 salt = frame.getStackItem(3);
     final Bytes32 hash =
         keccak256(
             Bytes.concatenate(PREFIX, sender.getBytes(), salt, initcode.getCodeHash().getBytes()));

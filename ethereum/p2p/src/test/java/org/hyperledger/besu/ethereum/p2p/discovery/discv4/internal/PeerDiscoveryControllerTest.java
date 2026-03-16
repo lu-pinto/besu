@@ -80,6 +80,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.net.InetAddresses;
 import jakarta.validation.constraints.NotNull;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.bytes.MutableBytes;
@@ -1859,7 +1861,7 @@ public class PeerDiscoveryControllerTest {
 
     for (int i = 0; i < n; i++) {
       template.setInt(template.size() - 4, i);
-      final Bytes32 keccak = Bytes32.leftPad(template);
+      final Bytes32 keccak = Bytes32Helper.leftPad(template);
       final MutableBytes id = MutableBytes.create(64);
       UInt256.valueOf(i).copyTo(id, id.size() - Bytes32.SIZE);
       final DiscoveryPeerV4 peer =

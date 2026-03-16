@@ -15,6 +15,7 @@
 package org.hyperledger.besu.evm.fluent;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.ModificationNotAllowedException;
@@ -125,7 +126,7 @@ public class SimpleAccount implements MutableAccount {
     if (parent != null) {
       return parent.getStorageValue(key);
     } else {
-      return Bytes32.ZERO;
+      return Bytes32Helper.ZERO_BYTES32;
     }
   }
 

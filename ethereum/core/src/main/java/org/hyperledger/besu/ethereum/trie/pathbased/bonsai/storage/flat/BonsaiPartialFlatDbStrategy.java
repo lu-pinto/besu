@@ -19,6 +19,7 @@ import static org.hyperledger.besu.ethereum.storage.keyvalue.KeyValueSegmentIden
 
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.StorageSlotKey;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.trie.NodeLoader;
 import org.hyperledger.besu.ethereum.trie.pathbased.common.storage.flat.CodeStorageStrategy;
 import org.hyperledger.besu.ethereum.trie.patricia.StoredMerklePatriciaTrie;
@@ -136,7 +137,7 @@ public class BonsaiPartialFlatDbStrategy extends BonsaiFlatDbStrategy {
                     new StoredNodeFactory<>(nodeLoader, Function.identity(), Function.identity()),
                     Bytes32.wrap(storageRoot.get().getBytes()))
                 .get(storageSlotKey.getSlotHash().getBytes())
-                .map(bytes -> Bytes32.leftPad(RLP.decodeValue(bytes)));
+                .map(bytes -> Bytes32Helper.leftPad(RLP.decodeValue(bytes)));
         if (response.isEmpty()) getStorageValueMissingMerkleTrieCounter.inc();
         else getStorageValueMerkleTrieCounter.inc();
       }

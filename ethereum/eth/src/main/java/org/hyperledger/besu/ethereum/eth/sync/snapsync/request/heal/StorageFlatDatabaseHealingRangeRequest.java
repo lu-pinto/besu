@@ -18,6 +18,7 @@ import static org.hyperledger.besu.ethereum.eth.sync.snapsync.RequestType.STORAG
 import static org.hyperledger.besu.ethereum.trie.RangeManager.getRangeCount;
 
 import org.hyperledger.besu.datatypes.Hash;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.eth.sync.snapsync.SnapSyncConfiguration;
 import org.hyperledger.besu.ethereum.eth.sync.snapsync.SnapSyncProcessState;
 import org.hyperledger.besu.ethereum.eth.sync.snapsync.SnapWorldDownloadState;
@@ -189,7 +190,7 @@ public class StorageFlatDatabaseHealingRangeRequest extends SnapDataRequest {
             if (!value.equals(flatDbEntry)) {
               // Update the storage value
               bonsaiUpdater.putStorageValueBySlotHash(
-                  accountHash, Hash.wrap(key), Bytes32.leftPad(RLP.decodeValue(value)));
+                  accountHash, Hash.wrap(key), Bytes32Helper.leftPad(RLP.decodeValue(value)));
             }
           });
       // For each remaining key, remove the storage value

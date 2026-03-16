@@ -20,8 +20,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.bytes.MutableBytes;
-import org.apache.tuweni.units.bigints.UInt256Value;
 import org.apache.tuweni.units.bigints.UInt64Value;
 
 /**
@@ -86,7 +86,7 @@ public interface RLPOutput {
    *
    * @param v The scalar to write.
    */
-  default void writeUInt256Scalar(final UInt256Value<?> v) {
+  default void writeBytes32(final Bytes32 v) {
     writeBytes(v.trimLeadingZeros());
   }
 

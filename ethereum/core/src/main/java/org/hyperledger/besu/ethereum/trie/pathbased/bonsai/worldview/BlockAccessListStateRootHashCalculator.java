@@ -15,6 +15,7 @@
 package org.hyperledger.besu.ethereum.trie.pathbased.bonsai.worldview;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.ProtocolContext;
@@ -115,7 +116,7 @@ public class BlockAccessListStateRootHashCalculator {
           if (maybeKey.isPresent()) {
             final Bytes32 key = maybeKey.get();
             final Bytes32 value = change.newValue();
-            account.setStorageValue(key, value == null ? Bytes32.ZERO : value);
+            account.setStorageValue(key, value == null ? Bytes32Helper.ZERO_BYTES32 : value);
           }
         }
       }

@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.bytes.MutableBytes;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 
 /** Static utility methods to work with VM words (that is, {@link Bytes32} values). */
 public interface Words {
@@ -32,7 +33,7 @@ public interface Words {
    *     (Appendix H. of the Yellow paper)).
    */
   static Bytes32 fromAddress(final Address address) {
-    return Bytes32.leftPad(address.getBytes());
+    return Bytes32Helper.leftPad(address.getBytes());
   }
 
   /**
@@ -42,19 +43,8 @@ public interface Words {
    * @return An address build from the right-most 160-bits of the {@code bytes} (as according to the
    *     VM specification (Appendix H. of the Yellow paper)).
    */
-  static Address toAddress(final Bytes bytes) {
-    final int size = bytes.size();
-    if (size < 20) {
-      final MutableBytes result = MutableBytes.create(20);
-      bytes.copyTo(result, 20 - size);
-      // Addresses get hashed alot in calls, and mutable bytes don't cache the `hashCode`
-      // so always return an immutable copy
-      return Address.wrap(result.copy());
-    } else if (size == 20) {
-      return Address.wrap(bytes);
-    } else {
-      return Address.wrap(bytes.slice(size - Address.SIZE, Address.SIZE));
-    }
+  static Address toAddress(final Bytes32 bytes) {
+    return Address.wrap(bytes.slice(bytes.size() - Address.SIZE, Address.SIZE));
   }
 
   /**
@@ -228,9 +218,13 @@ public interface Words {
    * @param value the int value
    * @return a Bytes object of the value, Big Endian order
    */
-  static Bytes intBytes(final int value) {
-    return Bytes.of(
-        (byte) (value >>> 24), (byte) (value >>> 16), (byte) (value >>> 8), (byte) value);
+  static Bytes32 intBytes(final int value) {
+    final byte[] bytes = new byte[32];
+    bytes[31] = (byte) value;
+    bytes[30] = (byte) (value >>> 8);
+    bytes[29] = (byte) (value >>> 16);
+    bytes[28] = (byte) (value >>> 24);
+    return Bytes32.wrap(bytes);
   }
 
   /**
@@ -239,16 +233,17 @@ public interface Words {
    * @param value the long value
    * @return a Bytes object of the value, Big Endian order
    */
-  static Bytes longBytes(final long value) {
-    return Bytes.of(
-        (byte) (value >>> 56),
-        (byte) (value >>> 48),
-        (byte) (value >>> 40),
-        (byte) (value >>> 32),
-        (byte) (value >>> 24),
-        (byte) (value >>> 16),
-        (byte) (value >>> 8),
-        (byte) value);
+  static Bytes32 longBytes(final long value) {
+    final byte[] bytes = new byte[32];
+    bytes[31] = (byte) value;
+    bytes[30] = (byte) (value >>> 8);
+    bytes[29] = (byte) (value >>> 16);
+    bytes[28] = (byte) (value >>> 24);
+    bytes[27] = (byte) (value >>> 32);
+    bytes[26] = (byte) (value >>> 40);
+    bytes[25] = (byte) (value >>> 48);
+    bytes[24] = (byte) (value >>> 56);
+    return Bytes32.wrap(bytes);
   }
 
   /**

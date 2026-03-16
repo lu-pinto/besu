@@ -23,6 +23,8 @@ import org.hyperledger.besu.evm.internal.EvmConfiguration;
 
 import java.math.BigInteger;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,7 @@ public class EvmSpecTest {
   @SuppressWarnings({"removal", "InlineMeInliner"})
   @Test
   void defaultChainIdAPIs() {
-    Bytes32 defaultChainId = Bytes32.leftPad(Bytes.of(1));
+    Bytes32 defaultChainId = Bytes32Helper.leftPad(Bytes.of(1));
 
     EvmSpec istanbulEVM = EvmSpec.istanbul(EvmConfiguration.DEFAULT);
     assertThat(istanbulEVM.getChainId()).contains(defaultChainId);

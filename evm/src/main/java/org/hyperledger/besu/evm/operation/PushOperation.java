@@ -18,6 +18,8 @@ import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
@@ -72,17 +74,17 @@ public class PushOperation extends AbstractFixedCostOperation {
     final int copyStart = pc + 1;
     Bytes32 push;
     if (code.length <= copyStart) {
-      push = Bytes32.ZERO;
+      push = Bytes32Helper.ZERO_BYTES32;
     } else {
-      final int copyLength = Math.min(pushSize, code.length - pc - 1);
+      final int copyLength = Math.min(pushSize, code.length - copyStart);
       final int rightPad = pushSize - copyLength;
       if (rightPad == 0) {
-        push = Bytes32.leftPad(Bytes.wrap(code, copyStart, copyLength));
+        push = Bytes32Helper.leftPad(Bytes.wrap(code, copyStart, copyLength));
       } else {
         // Right Pad the push with 0s up to pushSize if greater than the copyLength
         var bytecodeLocal = new byte[pushSize];
         System.arraycopy(code, copyStart, bytecodeLocal, 0, copyLength);
-        push = Bytes32.leftPad(Bytes.wrap(bytecodeLocal));
+        push = Bytes32Helper.leftPad(Bytes.wrap(bytecodeLocal));
       }
     }
     frame.pushStackItem(push);

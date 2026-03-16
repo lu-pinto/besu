@@ -17,6 +17,7 @@ package org.hyperledger.besu.ethereum.trie.pathbased.bonsai.worldview;
 import static org.hyperledger.besu.ethereum.trie.pathbased.common.worldview.PathBasedWorldView.encodeTrieValue;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.StorageSlotKey;
 import org.hyperledger.besu.ethereum.core.MutableWorldState;
@@ -261,7 +262,7 @@ public class BonsaiWorldState extends PathBasedWorldState {
         try {
 
           if (!storageUpdate.getValue().isUnchanged()) {
-            if (updatedStorage == null || updatedStorage.equals(Bytes32.ZERO)) {
+            if (updatedStorage == null || updatedStorage.equals(Bytes32Helper.ZERO_BYTES32)) {
               maybeStateUpdater.ifPresent(
                   bonsaiUpdater ->
                       bonsaiUpdater.removeStorageValueBySlotHash(updatedAddressHash, slotHash));
@@ -323,7 +324,7 @@ public class BonsaiWorldState extends PathBasedWorldState {
               Bytes32.wrap(oldAccount.getStorageRoot().getBytes()));
       try {
         StorageConsumingMap<StorageSlotKey, PathBasedValue<Bytes32>> storageToDelete = null;
-        Map<Bytes32, Bytes> entriesToDelete = storageTrie.entriesFrom(Bytes32.ZERO, 256);
+        Map<Bytes32, Bytes> entriesToDelete = storageTrie.entriesFrom(Bytes32Helper.ZERO_BYTES32, 256);
         while (!entriesToDelete.isEmpty()) {
           if (storageToDelete == null) {
             storageToDelete =
@@ -341,7 +342,7 @@ public class BonsaiWorldState extends PathBasedWorldState {
             final StorageSlotKey storageSlotKey =
                 new StorageSlotKey(Hash.wrap(slot.getKey()), Optional.empty());
             final Bytes32 slotValue =
-                Bytes32.leftPad(RLP.decodeValue(slot.getValue()));
+                Bytes32Helper.leftPad(RLP.decodeValue(slot.getValue()));
             maybeStateUpdater.ifPresent(
                 bonsaiUpdater ->
                     bonsaiUpdater.removeStorageValueBySlotHash(
@@ -352,7 +353,7 @@ public class BonsaiWorldState extends PathBasedWorldState {
           }
           entriesToDelete.keySet().forEach(storageTrie::remove);
           if (entriesToDelete.size() == 256) {
-            entriesToDelete = storageTrie.entriesFrom(Bytes32.ZERO, 256);
+            entriesToDelete = storageTrie.entriesFrom(Bytes32Helper.ZERO_BYTES32, 256);
           } else {
             break;
           }
@@ -406,7 +407,7 @@ public class BonsaiWorldState extends PathBasedWorldState {
   @Override
   public Bytes32 getStorageValue(final Address address, final Bytes32 storageKey) {
     return getStorageValueByStorageSlotKey(address, new StorageSlotKey(storageKey))
-        .orElse(Bytes32.ZERO);
+        .orElse(Bytes32Helper.ZERO_BYTES32);
   }
 
   @Override
@@ -437,7 +438,7 @@ public class BonsaiWorldState extends PathBasedWorldState {
         createTrie(
             (location, key) -> getStorageTrieNode(address.addressHash(), location, key),
             Bytes32.wrap(rootHash.getBytes()));
-    return storageTrie.entriesFrom(Bytes32.ZERO, Integer.MAX_VALUE);
+    return storageTrie.entriesFrom(Bytes32Helper.ZERO_BYTES32, Integer.MAX_VALUE);
   }
 
   @Override

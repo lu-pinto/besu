@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.p2p.rlpx.wire.MessageData;
 import org.hyperledger.besu.ethereum.p2p.rlpx.wire.RawMessage;
 import org.hyperledger.besu.ethereum.rlp.BytesValueRLPOutput;
@@ -41,7 +42,7 @@ public final class AccountRangeMessageTest {
     final Map<Bytes32, Bytes> keys = new HashMap<>();
     final PmtStateTrieAccountValue accountValue =
         new PmtStateTrieAccountValue(1L, Wei.of(2L), Hash.EMPTY_TRIE_HASH, Hash.EMPTY);
-    keys.put(Bytes32.leftPad(Bytes.of(1)), RLP.encode(accountValue::writeTo));
+    keys.put(Bytes32Helper.leftPad(Bytes.of(1)), RLP.encode(accountValue::writeTo));
 
     final List<Bytes> proofs = new ArrayList<>();
     proofs.add(Bytes32.random());

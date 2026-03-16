@@ -131,7 +131,7 @@ public class TrieLogFactoryImpl implements TrieLogFactory {
           output.startList();
           // do not write slotKey, it is not used in mainnet bonsai trielogs
           output.writeBytes(storageChangeEntry.getKey().getSlotHash().getBytes());
-          writeInnerRlp(storageChangeEntry.getValue(), output, (o, v) -> o.writeUInt256Scalar(UInt256.fromBytes(v)));
+          writeInnerRlp(storageChangeEntry.getValue(), output, RLPOutput::writeBytes32);
           output.endList();
         }
         output.endList();

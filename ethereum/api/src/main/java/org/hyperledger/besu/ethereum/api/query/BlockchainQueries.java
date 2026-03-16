@@ -20,6 +20,7 @@ import static org.hyperledger.besu.ethereum.mainnet.feemarket.ExcessBlobGasCalcu
 import static org.hyperledger.besu.ethereum.trie.pathbased.common.provider.WorldStateQueryParams.withBlockHeaderAndNoUpdateNodeHead;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.LogsBloomFilter;
 import org.hyperledger.besu.datatypes.Wei;
@@ -66,7 +67,6 @@ import java.util.stream.Stream;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
 import org.apache.tuweni.units.bigints.UInt256s;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -235,7 +235,7 @@ public class BlockchainQueries {
   public Optional<Bytes32> storageAt(
       final Address address, final Bytes32 storageIndex, final Hash blockHash) {
     return fromAccount(
-        address, blockHash, account -> account.getStorageValue(storageIndex), Bytes32.ZERO);
+        address, blockHash, account -> account.getStorageValue(storageIndex), Bytes32Helper.ZERO_BYTES32);
   }
 
   /**

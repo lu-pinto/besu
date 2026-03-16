@@ -15,6 +15,7 @@
 package org.hyperledger.besu.ethereum.trie.forest.worldview;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.core.MutableWorldState;
@@ -319,7 +320,7 @@ public class ForestMutableWorldState implements MutableWorldState {
       return storageTrie()
           .get(Bytes32.wrap(Hash.hash(key).getBytes()))
           .map(ForestMutableWorldState::convertToBytes32)
-          .orElse(Bytes32.ZERO);
+          .orElse(Bytes32Helper.ZERO_BYTES32);
     }
 
     @Override

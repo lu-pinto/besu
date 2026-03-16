@@ -19,6 +19,7 @@ import static org.hyperledger.besu.evm.frame.MessageFrame.DEFAULT_MAX_STACK_SIZE
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
 import org.hyperledger.besu.evm.frame.BlockValues;
@@ -162,12 +163,12 @@ public class TestMessageFrameBuilder {
             .completer(c -> {})
             .miningBeneficiary(Address.ZERO)
             .blockHashLookup(
-                blockHashLookup.orElse((__, number) -> Hash.hash(Words.longBytes(number))))
+                blockHashLookup.orElse((__, number) -> Hash.hash(Words.longBytes(number).trimLeadingZeros())))
             .maxStackSize(maxStackSize)
             .isStatic(isStatic)
             .build();
     frame.setPC(pc);
-    stackItems.forEach(item -> frame.pushStackItem(Bytes32.leftPad(item)));
+    stackItems.forEach(item -> frame.pushStackItem(Bytes32Helper.leftPad(item)));
     frame.writeMemory(0, memory.size(), memory);
     return frame;
   }

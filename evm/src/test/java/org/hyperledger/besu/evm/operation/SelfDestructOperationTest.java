@@ -23,6 +23,7 @@ import static org.mockito.Mockito.when;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.MainnetEVMs;
@@ -91,7 +92,7 @@ public class SelfDestructOperationTest {
             .initialGas(100_000L)
             .worldUpdater(worldUpdater)
             .build();
-    messageFrame.pushStackItem(Bytes32.leftPad(Bytes.fromHexString(beneficiary)));
+    messageFrame.pushStackItem(Bytes32Helper.leftPad(Bytes.fromHexString(beneficiary)));
     if (newContract) {
       messageFrame.addCreate(originatorAddress);
     }

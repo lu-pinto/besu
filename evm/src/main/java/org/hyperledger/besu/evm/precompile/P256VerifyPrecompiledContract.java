@@ -29,6 +29,8 @@ import java.math.BigInteger;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import jakarta.validation.constraints.NotNull;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
@@ -40,7 +42,7 @@ import org.slf4j.LoggerFactory;
 public class P256VerifyPrecompiledContract extends AbstractPrecompiledContract {
   private static final Logger LOG = LoggerFactory.getLogger(P256VerifyPrecompiledContract.class);
   private static final String PRECOMPILE_NAME = "P256VERIFY";
-  private static final Bytes32 VALID = Bytes32.leftPad(Bytes.of(1), (byte) 0);
+  private static final Bytes32 VALID = Bytes32Helper.leftPad(Bytes.of(1), (byte) 0);
   private static final Bytes INVALID = Bytes.EMPTY;
   private static final int SECP256R1_INPUT_LENGTH = 160;
   private static final SignatureAlgorithm SECP256R1_SIGNATURE_ALGORITHM_INSTANCE;

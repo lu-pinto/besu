@@ -30,6 +30,8 @@ import net.jqwik.api.Arbitrary;
 import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.Provide;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
@@ -78,11 +80,11 @@ public class ShiftOperationsPropertyBasedTest {
     final Bytes originalResult = runShlOperation(shift, value);
     final Bytes optimizedResult = runShlOperationOptimized(shift, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as(
             "SHL mismatch for shift=%s, value=%s",
-            shift.toHexString(), Bytes32.leftPad(value).toHexString())
-        .isEqualTo(Bytes32.leftPad(originalResult));
+            shift.toHexString(), Bytes32Helper.leftPad(value).toHexString())
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   @Property(tries = 5000)
@@ -95,9 +97,9 @@ public class ShiftOperationsPropertyBasedTest {
     final Bytes originalResult = runShlOperation(shiftBytes, value);
     final Bytes optimizedResult = runShlOperationOptimized(shiftBytes, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as("SHL mismatch for shift=%d", shift)
-        .isEqualTo(Bytes32.leftPad(originalResult));
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   @Property(tries = 1000)
@@ -110,9 +112,9 @@ public class ShiftOperationsPropertyBasedTest {
     final Bytes originalResult = runShlOperation(shiftBytes, value);
     final Bytes optimizedResult = runShlOperationOptimized(shiftBytes, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as("SHL overflow mismatch for shift=%d", shift)
-        .isEqualTo(Bytes32.leftPad(originalResult));
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   // endregion
@@ -130,11 +132,11 @@ public class ShiftOperationsPropertyBasedTest {
     final Bytes originalResult = runShrOperation(shift, value);
     final Bytes optimizedResult = runShrOperationOptimized(shift, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as(
             "SHR mismatch for shift=%s, value=%s",
-            shift.toHexString(), Bytes32.leftPad(value).toHexString())
-        .isEqualTo(Bytes32.leftPad(originalResult));
+            shift.toHexString(), Bytes32Helper.leftPad(value).toHexString())
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   @Property(tries = 5000)
@@ -147,9 +149,9 @@ public class ShiftOperationsPropertyBasedTest {
     final Bytes originalResult = runShrOperation(shiftBytes, value);
     final Bytes optimizedResult = runShrOperationOptimized(shiftBytes, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as("SHR mismatch for shift=%d", shift)
-        .isEqualTo(Bytes32.leftPad(originalResult));
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   @Property(tries = 1000)
@@ -162,9 +164,9 @@ public class ShiftOperationsPropertyBasedTest {
     final Bytes originalResult = runShrOperation(shiftBytes, value);
     final Bytes optimizedResult = runShrOperationOptimized(shiftBytes, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as("SHR overflow mismatch for shift=%d", shift)
-        .isEqualTo(Bytes32.leftPad(originalResult));
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   // endregion
@@ -181,8 +183,8 @@ public class ShiftOperationsPropertyBasedTest {
     final Bytes originalResult = runShlOperation(shift, value);
     final Bytes optimizedResult = runShlOperationOptimized(shift, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult)).isEqualTo(Bytes32.leftPad(value));
-    assertThat(Bytes32.leftPad(originalResult)).isEqualTo(Bytes32.leftPad(value));
+    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32Helper.leftPad(value));
+    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32Helper.leftPad(value));
   }
 
   @Property(tries = 1000)
@@ -195,8 +197,8 @@ public class ShiftOperationsPropertyBasedTest {
     final Bytes originalResult = runShrOperation(shift, value);
     final Bytes optimizedResult = runShrOperationOptimized(shift, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult)).isEqualTo(Bytes32.leftPad(value));
-    assertThat(Bytes32.leftPad(originalResult)).isEqualTo(Bytes32.leftPad(value));
+    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32Helper.leftPad(value));
+    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32Helper.leftPad(value));
   }
 
   @Property(tries = 500)
@@ -208,8 +210,8 @@ public class ShiftOperationsPropertyBasedTest {
     final Bytes originalResult = runShlOperation(largeShift, value);
     final Bytes optimizedResult = runShlOperationOptimized(largeShift, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult)).isEqualTo(Bytes32.ZERO);
-    assertThat(Bytes32.leftPad(originalResult)).isEqualTo(Bytes32.ZERO);
+    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32.ZERO);
+    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32.ZERO);
   }
 
   @Property(tries = 500)
@@ -221,8 +223,8 @@ public class ShiftOperationsPropertyBasedTest {
     final Bytes originalResult = runShrOperation(largeShift, value);
     final Bytes optimizedResult = runShrOperationOptimized(largeShift, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult)).isEqualTo(Bytes32.ZERO);
-    assertThat(Bytes32.leftPad(originalResult)).isEqualTo(Bytes32.ZERO);
+    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32.ZERO);
+    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32.ZERO);
   }
 
   // endregion
@@ -254,8 +256,8 @@ public class ShiftOperationsPropertyBasedTest {
       final Bytes shift, final Bytes value, final OperationExecutor executor) {
     final MessageFrame frame = mock(MessageFrame.class);
     final Deque<Bytes32> stack = new ArrayDeque<>();
-    stack.push(Bytes32.leftPad(value));
-    stack.push(Bytes32.leftPad(shift));
+    stack.push(Bytes32Helper.leftPad(value));
+    stack.push(Bytes32Helper.leftPad(shift));
 
     when(frame.popStackItem()).thenAnswer(invocation -> stack.pop());
 

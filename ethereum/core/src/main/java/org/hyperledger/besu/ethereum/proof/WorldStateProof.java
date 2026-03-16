@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.proof;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.rlp.RLP;
 import org.hyperledger.besu.ethereum.trie.Proof;
 import org.hyperledger.besu.ethereum.trie.common.PmtStateTrieAccountValue;
@@ -66,7 +67,7 @@ public class WorldStateProof {
   public Bytes32 getStorageValue(final Bytes32 key) {
     Optional<Bytes> value = storageProofs.get(key).getValue();
     if (value.isEmpty()) {
-      return Bytes32.ZERO;
+      return Bytes32Helper.ZERO_BYTES32;
     } else {
       return RLP.input(value.get()).readUInt256Scalar();
     }

@@ -20,6 +20,7 @@ import org.hyperledger.besu.crypto.SECP256K1;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.TransactionType;
 import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.core.Transaction;
 import org.hyperledger.besu.tests.acceptance.dsl.AcceptanceTestBase;
 import org.hyperledger.besu.tests.acceptance.dsl.WaitUtils;
@@ -143,17 +144,17 @@ public class EIP7708TransferLogAcceptanceTest extends AcceptanceTestBase {
 
     // Verify sender address (zero-padded to 32 bytes)
     final Address senderAddress = Address.fromHexStringStrict(sender.getAddress());
-    final String expectedSenderTopic = Bytes32.leftPad(senderAddress.getBytes()).toHexString();
+    final String expectedSenderTopic = Bytes32Helper.leftPad(senderAddress.getBytes()).toHexString();
     assertThat(transferLog.getTopics().get(1)).isEqualToIgnoringCase(expectedSenderTopic);
 
     // Verify recipient address (zero-padded to 32 bytes)
     final Address recipientAddress = Address.fromHexStringStrict(recipient.getAddress());
     final String expectedRecipientTopic =
-        Bytes32.leftPad(recipientAddress.getBytes()).toHexString();
+        Bytes32Helper.leftPad(recipientAddress.getBytes()).toHexString();
     assertThat(transferLog.getTopics().get(2)).isEqualToIgnoringCase(expectedRecipientTopic);
 
     // Verify the data contains the transfer amount (big-endian uint256)
-    final String expectedData = Bytes32.leftPad(transferAmount).toHexString();
+    final String expectedData = Bytes32Helper.leftPad(transferAmount).toHexString();
     assertThat(transferLog.getData()).isEqualToIgnoringCase(expectedData);
   }
 
@@ -209,7 +210,7 @@ public class EIP7708TransferLogAcceptanceTest extends AcceptanceTestBase {
 
     // Calldata is the recipient address left-padded to 32 bytes
     final Address recipientAddress = Address.fromHexStringStrict(recipient.getAddress());
-    final Bytes callData = Bytes32.leftPad(recipientAddress.getBytes());
+    final Bytes callData = Bytes32Helper.leftPad(recipientAddress.getBytes());
 
     final Transaction tx =
         Transaction.builder()
@@ -252,10 +253,10 @@ public class EIP7708TransferLogAcceptanceTest extends AcceptanceTestBase {
     assertThat(log1.getTopics().get(0)).isEqualToIgnoringCase(TRANSFER_TOPIC);
     final Address senderAddress = Address.fromHexStringStrict(sender.getAddress());
     assertThat(log1.getTopics().get(1))
-        .isEqualToIgnoringCase(Bytes32.leftPad(senderAddress.getBytes()).toHexString());
+        .isEqualToIgnoringCase(Bytes32Helper.leftPad(senderAddress.getBytes()).toHexString());
     assertThat(log1.getTopics().get(2))
-        .isEqualToIgnoringCase(Bytes32.leftPad(forwarderContract.getBytes()).toHexString());
-    assertThat(log1.getData()).isEqualToIgnoringCase(Bytes32.leftPad(transferAmount).toHexString());
+        .isEqualToIgnoringCase(Bytes32Helper.leftPad(forwarderContract.getBytes()).toHexString());
+    assertThat(log1.getData()).isEqualToIgnoringCase(Bytes32Helper.leftPad(transferAmount).toHexString());
 
     // Log 2: forwarder contract -> recipient (via internal CALL)
     final Log log2 = logs.get(1);
@@ -263,11 +264,11 @@ public class EIP7708TransferLogAcceptanceTest extends AcceptanceTestBase {
     assertThat(log2.getTopics()).hasSize(3);
     assertThat(log2.getTopics().get(0)).isEqualToIgnoringCase(TRANSFER_TOPIC);
     assertThat(log2.getTopics().get(1))
-        .isEqualToIgnoringCase(Bytes32.leftPad(forwarderContract.getBytes()).toHexString());
+        .isEqualToIgnoringCase(Bytes32Helper.leftPad(forwarderContract.getBytes()).toHexString());
     assertThat(log2.getTopics().get(2))
-        .isEqualToIgnoringCase(Bytes32.leftPad(recipientAddress.getBytes()).toHexString());
+        .isEqualToIgnoringCase(Bytes32Helper.leftPad(recipientAddress.getBytes()).toHexString());
     // The contract forwards its entire balance (which is the transfer amount)
-    assertThat(log2.getData()).isEqualToIgnoringCase(Bytes32.leftPad(transferAmount).toHexString());
+    assertThat(log2.getData()).isEqualToIgnoringCase(Bytes32Helper.leftPad(transferAmount).toHexString());
   }
 
   /**
@@ -286,7 +287,7 @@ public class EIP7708TransferLogAcceptanceTest extends AcceptanceTestBase {
 
     // Calldata is the beneficiary address left-padded to 32 bytes
     final Address beneficiary = Address.fromHexStringStrict(recipient.getAddress());
-    final Bytes callData = Bytes32.leftPad(beneficiary.getBytes());
+    final Bytes callData = Bytes32Helper.leftPad(beneficiary.getBytes());
 
     final Transaction tx =
         Transaction.builder()
@@ -328,11 +329,11 @@ public class EIP7708TransferLogAcceptanceTest extends AcceptanceTestBase {
     assertThat(transferLog.getTopics()).hasSize(3);
     assertThat(transferLog.getTopics().get(0)).isEqualToIgnoringCase(TRANSFER_TOPIC);
     assertThat(transferLog.getTopics().get(1))
-        .isEqualToIgnoringCase(Bytes32.leftPad(selfDestructContract.getBytes()).toHexString());
+        .isEqualToIgnoringCase(Bytes32Helper.leftPad(selfDestructContract.getBytes()).toHexString());
     assertThat(transferLog.getTopics().get(2))
-        .isEqualToIgnoringCase(Bytes32.leftPad(beneficiary.getBytes()).toHexString());
+        .isEqualToIgnoringCase(Bytes32Helper.leftPad(beneficiary.getBytes()).toHexString());
     assertThat(transferLog.getData())
-        .isEqualToIgnoringCase(Bytes32.leftPad(contractBalance).toHexString());
+        .isEqualToIgnoringCase(Bytes32Helper.leftPad(contractBalance).toHexString());
   }
 
   /**
@@ -567,7 +568,7 @@ public class EIP7708TransferLogAcceptanceTest extends AcceptanceTestBase {
     final Log selfdestructLog = selfdestructLogs.getFirst();
     assertThat(selfdestructLog.getAddress()).isEqualToIgnoringCase(EIP7708_SYSTEM_ADDRESS);
     assertThat(selfdestructLog.getData())
-        .isEqualToIgnoringCase(Bytes32.leftPad(contractBalance).toHexString());
+        .isEqualToIgnoringCase(Bytes32Helper.leftPad(contractBalance).toHexString());
 
     // There should also be a Transfer log for the CREATE value transfer (factory -> child)
     final boolean hasTransferLog =

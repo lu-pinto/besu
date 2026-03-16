@@ -96,7 +96,7 @@ public enum EvmSpecVersion {
       Limits.MAX_CODE_SIZE_AMSTERDAM,
       Limits.MAX_INITCODE_SIZE_AMSTERDAM);
 
-  /** Constants for contract size limits */
+  /** Bytes32Helper for contract size limits */
   private interface Limits {
     /** Maximum deployed code size: 24KiB (EIP-170, Spurious Dragon through Osaka). */
     int MAX_CODE_SIZE_SPURIOUS_DRAGON = 0x6000;

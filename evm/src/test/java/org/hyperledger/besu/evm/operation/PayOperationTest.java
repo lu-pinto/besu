@@ -19,6 +19,7 @@ import static org.mockito.Mockito.mock;
 
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.account.MutableAccount;
@@ -59,7 +60,7 @@ public class PayOperationTest {
             99,
             100,
             ExceptionalHaltReason.INSUFFICIENT_GAS,
-            Bytes32.leftPad(RECIPIENT_ADDRESS.getBytes()),
+            Bytes32Helper.leftPad(RECIPIENT_ADDRESS.getBytes()),
             true),
         Arguments.of(
             "enough gas",
@@ -148,7 +149,7 @@ public class PayOperationTest {
             5000,
             9100,
             ExceptionalHaltReason.INSUFFICIENT_GAS,
-            Bytes32.leftPad(RECIPIENT_ADDRESS.getBytes()),
+            Bytes32Helper.leftPad(RECIPIENT_ADDRESS.getBytes()),
             Wei.of(1000),
             Wei.of(2000),
             Wei.of(2000),
@@ -299,7 +300,7 @@ public class PayOperationTest {
             101,
             0,
             ExceptionalHaltReason.ILLEGAL_STATE_CHANGE,
-            Bytes32.leftPad(RECIPIENT_ADDRESS.getBytes()),
+            Bytes32Helper.leftPad(RECIPIENT_ADDRESS.getBytes()),
             Wei.of(0),
             Wei.of(2000),
             Wei.of(2000),
@@ -311,7 +312,7 @@ public class PayOperationTest {
             10000,
             0,
             ExceptionalHaltReason.ILLEGAL_STATE_CHANGE,
-            Bytes32.leftPad(RECIPIENT_ADDRESS.getBytes()),
+            Bytes32Helper.leftPad(RECIPIENT_ADDRESS.getBytes()),
             Wei.of(1000),
             Wei.of(2000),
             Wei.of(2000),
@@ -323,7 +324,7 @@ public class PayOperationTest {
             9200,
             0,
             ExceptionalHaltReason.ILLEGAL_STATE_CHANGE,
-            Bytes32.leftPad(RECIPIENT_ADDRESS.getBytes()),
+            Bytes32Helper.leftPad(RECIPIENT_ADDRESS.getBytes()),
             Wei.of(1000),
             Wei.of(2000),
             Wei.of(2000),
@@ -335,7 +336,7 @@ public class PayOperationTest {
             9200,
             0,
             ExceptionalHaltReason.ILLEGAL_STATE_CHANGE,
-            Bytes32.leftPad(RECIPIENT_ADDRESS.getBytes()),
+            Bytes32Helper.leftPad(RECIPIENT_ADDRESS.getBytes()),
             Wei.ZERO,
             Wei.of(2000),
             Wei.of(2000),
@@ -347,7 +348,7 @@ public class PayOperationTest {
             9000,
             0,
             ExceptionalHaltReason.ILLEGAL_STATE_CHANGE,
-            Bytes32.leftPad(RECIPIENT_ADDRESS.getBytes()),
+            Bytes32Helper.leftPad(RECIPIENT_ADDRESS.getBytes()),
             Wei.of(1),
             Wei.of(2000),
             Wei.of(2000),
@@ -425,7 +426,7 @@ public class PayOperationTest {
             "exact 21 bytes address",
             Bytes.fromHexString("0x341a2e456a2c23ca9a8c7d765521bcee2188d66a76"),
             ExceptionalHaltReason.ADDRESS_OUT_OF_RANGE,
-            Bytes32.leftPad(Bytes.fromHexString("0x341a2e456a2c23ca9a8c7d765521bcee2188d66a76")),
+            Bytes32Helper.leftPad(Bytes.fromHexString("0x341a2e456a2c23ca9a8c7d765521bcee2188d66a76")),
             0),
         Arguments.of(
             "20 bytes address padded to 32 bytes",

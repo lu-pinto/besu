@@ -30,6 +30,8 @@ import net.jqwik.api.Arbitrary;
 import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.Provide;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
@@ -107,11 +109,11 @@ public class SarOperationPropertyBasedTest {
     final Bytes originalResult = runSarOperation(shift, value);
     final Bytes optimizedResult = runSarOperationOptimized(shift, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as(
             "SAR mismatch for shift=%s, value=%s",
-            shift.toHexString(), Bytes32.leftPad(value).toHexString())
-        .isEqualTo(Bytes32.leftPad(originalResult));
+            shift.toHexString(), Bytes32Helper.leftPad(value).toHexString())
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   @Property(tries = 5000)
@@ -124,9 +126,9 @@ public class SarOperationPropertyBasedTest {
     final Bytes originalResult = runSarOperation(shiftBytes, value);
     final Bytes optimizedResult = runSarOperationOptimized(shiftBytes, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as("SAR mismatch for shift=%d", shift)
-        .isEqualTo(Bytes32.leftPad(originalResult));
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   @Property(tries = 1000)
@@ -139,9 +141,9 @@ public class SarOperationPropertyBasedTest {
     final Bytes originalResult = runSarOperation(shiftBytes, value);
     final Bytes optimizedResult = runSarOperationOptimized(shiftBytes, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as("SAR overflow mismatch for shift=%d", shift)
-        .isEqualTo(Bytes32.leftPad(originalResult));
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   // endregion
@@ -158,9 +160,9 @@ public class SarOperationPropertyBasedTest {
     final Bytes originalResult = runSarOperation(shiftBytes, value);
     final Bytes optimizedResult = runSarOperationOptimized(shiftBytes, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as("SAR negative mismatch for shift=%d, value=%s", shift, value.toHexString())
-        .isEqualTo(Bytes32.leftPad(originalResult));
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   @Property(tries = 1000)
@@ -175,9 +177,9 @@ public class SarOperationPropertyBasedTest {
     final Bytes optimizedResult = runSarOperationOptimized(shiftBytes, value);
 
     // For negative values with overflow shift, result should be all ones
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as("SAR negative overflow mismatch for shift=%d", shift)
-        .isEqualTo(Bytes32.leftPad(originalResult));
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   // endregion
@@ -194,9 +196,9 @@ public class SarOperationPropertyBasedTest {
     final Bytes originalResult = runSarOperation(shiftBytes, value);
     final Bytes optimizedResult = runSarOperationOptimized(shiftBytes, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as("SAR positive mismatch for shift=%d, value=%s", shift, value.toHexString())
-        .isEqualTo(Bytes32.leftPad(originalResult));
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   @Property(tries = 1000)
@@ -211,9 +213,9 @@ public class SarOperationPropertyBasedTest {
     final Bytes optimizedResult = runSarOperationOptimized(shiftBytes, value);
 
     // For positive values with overflow shift, result should be all zeros
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as("SAR positive overflow mismatch for shift=%d", shift)
-        .isEqualTo(Bytes32.leftPad(originalResult));
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   // endregion
@@ -230,8 +232,8 @@ public class SarOperationPropertyBasedTest {
     final Bytes originalResult = runSarOperation(shift, value);
     final Bytes optimizedResult = runSarOperationOptimized(shift, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult)).isEqualTo(Bytes32.leftPad(value));
-    assertThat(Bytes32.leftPad(originalResult)).isEqualTo(Bytes32.leftPad(value));
+    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32Helper.leftPad(value));
+    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32Helper.leftPad(value));
   }
 
   @Property(tries = 500)
@@ -247,8 +249,8 @@ public class SarOperationPropertyBasedTest {
     // Both should return all ones for negative value with large shift
     final Bytes32 allOnes =
         Bytes32.fromHexString("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-    assertThat(Bytes32.leftPad(optimizedResult)).isEqualTo(allOnes);
-    assertThat(Bytes32.leftPad(originalResult)).isEqualTo(allOnes);
+    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(allOnes);
+    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(allOnes);
   }
 
   @Property(tries = 500)
@@ -262,8 +264,8 @@ public class SarOperationPropertyBasedTest {
     final Bytes optimizedResult = runSarOperationOptimized(largeShift, value);
 
     // Both should return zero for positive value with large shift
-    assertThat(Bytes32.leftPad(optimizedResult)).isEqualTo(Bytes32.ZERO);
-    assertThat(Bytes32.leftPad(originalResult)).isEqualTo(Bytes32.ZERO);
+    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32.ZERO);
+    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32.ZERO);
   }
 
   @Property(tries = 500)
@@ -278,8 +280,8 @@ public class SarOperationPropertyBasedTest {
     final Bytes optimizedResult = runSarOperationOptimized(shiftBytes, value);
 
     // SAR of -1 by any amount should still be -1 (all ones)
-    assertThat(Bytes32.leftPad(optimizedResult)).isEqualTo(Bytes32.leftPad(value));
-    assertThat(Bytes32.leftPad(originalResult)).isEqualTo(Bytes32.leftPad(value));
+    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32Helper.leftPad(value));
+    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32Helper.leftPad(value));
   }
 
   @Property(tries = 500)
@@ -296,8 +298,8 @@ public class SarOperationPropertyBasedTest {
     // SAR of MIN_VALUE by 255 should be all ones (-1)
     final Bytes32 allOnes =
         Bytes32.fromHexString("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-    assertThat(Bytes32.leftPad(optimizedResult)).isEqualTo(allOnes);
-    assertThat(Bytes32.leftPad(originalResult)).isEqualTo(allOnes);
+    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(allOnes);
+    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(allOnes);
   }
 
   @Property(tries = 500)
@@ -312,8 +314,8 @@ public class SarOperationPropertyBasedTest {
     final Bytes optimizedResult = runSarOperationOptimized(shift, value);
 
     // SAR of MAX_VALUE by 255 should be 0
-    assertThat(Bytes32.leftPad(optimizedResult)).isEqualTo(Bytes32.ZERO);
-    assertThat(Bytes32.leftPad(originalResult)).isEqualTo(Bytes32.ZERO);
+    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32.ZERO);
+    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32.ZERO);
   }
 
   @Property(tries = 3000)
@@ -326,9 +328,9 @@ public class SarOperationPropertyBasedTest {
     final Bytes originalResult = runSarOperation(shift, value);
     final Bytes optimizedResult = runSarOperationOptimized(shift, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as("SAR negative shift=255 mismatch for value=%s", value.toHexString())
-        .isEqualTo(Bytes32.leftPad(originalResult));
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   @Property(tries = 3000)
@@ -341,9 +343,9 @@ public class SarOperationPropertyBasedTest {
     final Bytes originalResult = runSarOperation(shift, value);
     final Bytes optimizedResult = runSarOperationOptimized(shift, value);
 
-    assertThat(Bytes32.leftPad(optimizedResult))
+    assertThat(Bytes32Helper.leftPad(optimizedResult))
         .as("SAR positive shift=255 mismatch for value=%s", value.toHexString())
-        .isEqualTo(Bytes32.leftPad(originalResult));
+        .isEqualTo(Bytes32Helper.leftPad(originalResult));
   }
 
   // endregion
@@ -367,8 +369,8 @@ public class SarOperationPropertyBasedTest {
       final Bytes shift, final Bytes value, final OperationExecutor executor) {
     final MessageFrame frame = mock(MessageFrame.class);
     final Deque<Bytes32> stack = new ArrayDeque<>();
-    stack.push(Bytes32.leftPad(value));
-    stack.push(Bytes32.leftPad(shift));
+    stack.push(Bytes32Helper.leftPad(value));
+    stack.push(Bytes32Helper.leftPad(shift));
 
     when(frame.popStackItem()).thenAnswer(invocation -> stack.pop());
 

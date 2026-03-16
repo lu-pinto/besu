@@ -20,6 +20,8 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import java.math.BigInteger;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
@@ -59,7 +61,7 @@ public class MulOperation extends AbstractFixedCostOperation {
     if (cBytes.length > 32) {
       result = Bytes32.wrap(cBytes, cBytes.length - 32);
     } else {
-      result = Bytes32.leftPad(Bytes.wrap(cBytes));
+      result = Bytes32Helper.leftPad(Bytes.wrap(cBytes));
     }
 
     frame.pushStackItem(result);

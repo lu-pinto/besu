@@ -25,6 +25,7 @@ import static org.mockito.Mockito.verify;
 
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.eth.manager.EthMessages;
 import org.hyperledger.besu.ethereum.eth.messages.snap.AccountRangeMessage;
 import org.hyperledger.besu.ethereum.eth.messages.snap.ByteCodesMessage;
@@ -379,7 +380,7 @@ public class SnapServerTest {
   public void assertPartialStorageLimitHashBetweenSlots(final FlatDbMode flatDbMode) {
     setup(flatDbMode);
     Bytes accountShortHash = Bytes.fromHexStringLenient("0x40");
-    Hash accountFullHash = Hash.wrap(Bytes32.leftPad(accountShortHash));
+    Hash accountFullHash = Hash.wrap(Bytes32Helper.leftPad(accountShortHash));
     SnapTestAccount testAccount = createTestContractAccount(accountFullHash, 2, inMemoryStorage);
 
     Hash startHash = Hash.wrap(Bytes32.rightPad(Bytes.fromHexString("12"))); // slot 2
@@ -676,7 +677,7 @@ public class SnapServerTest {
   public void assertStorageTrieShortAccountHashPathRequest(final FlatDbMode flatDbMode) {
     setup(flatDbMode);
     Bytes accountShortHash = Bytes.fromHexStringLenient("0x40");
-    Hash accountFullHash = Hash.wrap(Bytes32.leftPad(accountShortHash));
+    Hash accountFullHash = Hash.wrap(Bytes32Helper.leftPad(accountShortHash));
     SnapTestAccount testAccount = createTestContractAccount(accountFullHash, 1, inMemoryStorage);
     insertTestAccounts(testAccount);
     var pathToSlot11 = CompactEncoding.encode(Bytes.fromHexStringLenient("0x0101"));

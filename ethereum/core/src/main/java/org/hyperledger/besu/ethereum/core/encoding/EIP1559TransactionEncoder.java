@@ -29,12 +29,12 @@ public class EIP1559TransactionEncoder {
     out.startList();
     out.writeBigIntegerScalar(transaction.getChainId().orElseThrow());
     out.writeLongScalar(transaction.getNonce());
-    out.writeUInt256Scalar(transaction.getMaxPriorityFeePerGas().orElseThrow());
-    out.writeUInt256Scalar(transaction.getMaxFeePerGas().orElseThrow());
+    out.writeBytes32(transaction.getMaxPriorityFeePerGas().orElseThrow());
+    out.writeBytes32(transaction.getMaxFeePerGas().orElseThrow());
     out.writeLongScalar(transaction.getGasLimit());
     out.writeBytes(
         transaction.getTo().map(BytesHolder::getBytes).map(Bytes::copy).orElse(Bytes.EMPTY));
-    out.writeUInt256Scalar(transaction.getValue());
+    out.writeBytes32(transaction.getValue());
     out.writeBytes(transaction.getPayload());
     writeAccessList(out, transaction.getAccessList());
     writeSignatureAndRecoveryId(transaction, out);

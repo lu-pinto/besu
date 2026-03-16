@@ -29,6 +29,8 @@ import graphql.schema.CoercingParseLiteralException;
 import graphql.schema.CoercingParseValueException;
 import graphql.schema.CoercingSerializeException;
 import graphql.schema.GraphQLScalarType;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
@@ -90,7 +92,7 @@ public class Bytes32ScalarTest {
                     Bytes.fromHexString("0x01"),
                     GraphQLContext.newContext().build(),
                     Locale.ENGLISH))
-        .isEqualTo(Bytes32.leftPad(Bytes.fromHexString("0x01")).toString());
+        .isEqualTo(Bytes32Helper.leftPad(Bytes.fromHexString("0x01")).toString());
   }
 
   @Test

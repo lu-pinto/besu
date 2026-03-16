@@ -15,6 +15,7 @@
 package org.hyperledger.besu.ethereum.core.encoding;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.StorageSlotKey;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.mainnet.block.access.list.BlockAccessList;
@@ -52,13 +53,13 @@ public final class BlockAccessListDecoder {
           acctIn.readList(
               scIn -> {
                 scIn.enterList();
-                StorageSlotKey slot = new StorageSlotKey(Bytes32.leftPad(scIn.readBytes()));
+                StorageSlotKey slot = new StorageSlotKey(Bytes32Helper.leftPad(scIn.readBytes()));
                 List<StorageChange> changes =
                     scIn.readList(
                         changeIn -> {
                           changeIn.enterList();
                           int txIndex = changeIn.readIntScalar();
-                          Bytes32 newVal = Bytes32.leftPad(changeIn.readBytes());
+                          Bytes32 newVal = Bytes32Helper.leftPad(changeIn.readBytes());
                           changeIn.leaveList();
                           return new StorageChange(txIndex, newVal);
                         });
@@ -67,7 +68,7 @@ public final class BlockAccessListDecoder {
               });
 
       List<SlotRead> reads =
-          acctIn.readList(r -> new SlotRead(new StorageSlotKey(Bytes32.leftPad(r.readBytes()))));
+          acctIn.readList(r -> new SlotRead(new StorageSlotKey(Bytes32Helper.leftPad(r.readBytes()))));
 
       List<BalanceChange> balances =
           acctIn.readList(

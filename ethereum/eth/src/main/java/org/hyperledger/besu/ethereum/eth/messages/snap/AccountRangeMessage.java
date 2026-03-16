@@ -126,7 +126,7 @@ public final class AccountRangeMessage extends AbstractSnapMessageData {
     final BytesValueRLPOutput rlpOutput = new BytesValueRLPOutput();
     rlpOutput.startList();
     rlpOutput.writeLongScalar(accountValue.getNonce()); // nonce
-    rlpOutput.writeUInt256Scalar(accountValue.getBalance()); // balance
+    rlpOutput.writeBytes32(accountValue.getBalance()); // balance
     rlpOutput.writeBytes(accountValue.getStorageRoot().getBytes());
     rlpOutput.writeBytes(accountValue.getCodeHash().getBytes());
     rlpOutput.endList();
@@ -139,7 +139,7 @@ public final class AccountRangeMessage extends AbstractSnapMessageData {
     var rlpOutput = new BytesValueRLPOutput();
     rlpOutput.startList();
     rlpOutput.writeLongScalar(accountValue.getNonce());
-    rlpOutput.writeUInt256Scalar(accountValue.getBalance());
+    rlpOutput.writeBytes32(accountValue.getBalance());
     if (accountValue.getStorageRoot().equals(Hash.EMPTY_TRIE_HASH)) {
       rlpOutput.writeNull();
     } else {

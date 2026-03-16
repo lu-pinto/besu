@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.tracing.diff;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.processor.TransactionTrace;
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.tracing.TracingUtils;
 import org.hyperledger.besu.ethereum.mainnet.block.access.list.AccessLocationTracker;
@@ -135,7 +136,7 @@ public class StateTraceGenerator {
                         if (rootAccount == null) {
                           // Case 1: The account did not exist before this transaction.
                           // In diff mode, include only non-zero storage writes.
-                          if (!Bytes32.ZERO.equals(newValue)) {
+                          if (!Bytes32Helper.ZERO_BYTES32.equals(newValue)) {
                             storageDiff.put(
                                 key.toHexString(), new DiffNode(null, newValue.toHexString()));
                           }

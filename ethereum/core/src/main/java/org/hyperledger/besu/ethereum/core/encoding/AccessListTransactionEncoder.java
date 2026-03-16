@@ -65,10 +65,10 @@ public class AccessListTransactionEncoder {
       final RLPOutput rlpOutput) {
     rlpOutput.writeBigIntegerScalar(chainId.orElseThrow());
     rlpOutput.writeLongScalar(nonce);
-    rlpOutput.writeUInt256Scalar(gasPrice);
+    rlpOutput.writeBytes32(gasPrice);
     rlpOutput.writeLongScalar(gasLimit);
     rlpOutput.writeBytes(to.map(BytesHolder::getBytes).map(Bytes::copy).orElse(Bytes.EMPTY));
-    rlpOutput.writeUInt256Scalar(value);
+    rlpOutput.writeBytes32(value);
     rlpOutput.writeBytes(payload);
     /*
     Access List encoding should look like this

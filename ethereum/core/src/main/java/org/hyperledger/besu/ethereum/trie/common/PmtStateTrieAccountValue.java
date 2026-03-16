@@ -70,7 +70,7 @@ public class PmtStateTrieAccountValue extends AbstractStateTrieAccountValue
     out.startList();
 
     out.writeLongScalar(nonce);
-    out.writeUInt256Scalar(balance);
+    out.writeBytes32(balance);
     out.writeBytes(storageRoot.getBytes());
     out.writeBytes(codeHash.getBytes());
     out.endList();

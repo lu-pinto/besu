@@ -20,6 +20,8 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import java.math.BigInteger;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
@@ -68,7 +70,7 @@ public class SModOperation extends AbstractFixedCostOperation {
         resultBytes = resultBytes.slice(resultBytes.size() - 32, 32);
       }
 
-      frame.pushStackItem(Bytes32.leftPad(resultBytes, result.signum() < 0 ? (byte) 0xFF : 0x00));
+      frame.pushStackItem(Bytes32Helper.leftPad(resultBytes, result.signum() < 0 ? (byte) 0xFF : 0x00));
     }
 
     return smodSuccess;

@@ -26,11 +26,11 @@ public class FrontierTransactionEncoder {
   public static void encode(final Transaction transaction, final RLPOutput out) {
     out.startList();
     out.writeLongScalar(transaction.getNonce());
-    out.writeUInt256Scalar(transaction.getGasPrice().orElseThrow());
+    out.writeBytes32(transaction.getGasPrice().orElseThrow());
     out.writeLongScalar(transaction.getGasLimit());
     out.writeBytes(
         transaction.getTo().map(BytesHolder::getBytes).map(Bytes::copy).orElse(Bytes.EMPTY));
-    out.writeUInt256Scalar(transaction.getValue());
+    out.writeBytes32(transaction.getValue());
     out.writeBytes(transaction.getPayload());
     writeSignatureAndV(transaction, out);
     out.endList();

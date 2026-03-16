@@ -18,6 +18,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
 
 import org.hyperledger.besu.datatypes.Hash;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.ProtocolContext;
 import org.hyperledger.besu.ethereum.core.BlockchainSetupUtil;
 import org.hyperledger.besu.ethereum.core.Synchronizer;
@@ -399,7 +400,7 @@ public class SnapServerGetAccountRangeTest {
   private Bytes32 hashAdd(final Bytes32 hash, final int value) {
     var result = Hash.wrap(hash).getBytes().toBigInteger().add(BigInteger.valueOf(value));
     Bytes resultBytes = Bytes.wrap(result.toByteArray());
-    return Bytes32.leftPad(resultBytes);
+    return Bytes32Helper.leftPad(resultBytes);
   }
 
   public static class AccountRangeRequestParams {

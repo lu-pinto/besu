@@ -19,6 +19,8 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes32;
 
 /** The SLOTNUM operation (EIP-7843). */
@@ -37,7 +39,7 @@ public class SlotNumOperation extends AbstractFixedCostOperation {
   public Operation.OperationResult executeFixedCostOperation(
       final MessageFrame frame, final EVM evm) {
     final long slotNumber = frame.getBlockValues().getSlotNumber();
-    frame.pushStackItem(Bytes32.leftPad(Words.longBytes(slotNumber)));
+    frame.pushStackItem(Words.longBytes(slotNumber));
 
     return successResponse;
   }

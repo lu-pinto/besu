@@ -28,6 +28,7 @@ import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Log;
 import org.hyperledger.besu.datatypes.LogTopic;
 import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
@@ -79,13 +80,13 @@ class EIP7708TransferLogEmitterTest {
     assertThat(topics.get(0)).isEqualTo(LogTopic.create(TRANSFER_TOPIC));
 
     // Second topic is the sender address (zero-padded to 32 bytes)
-    assertThat(topics.get(1)).isEqualTo(LogTopic.create(Bytes32.leftPad(SENDER.getBytes())));
+    assertThat(topics.get(1)).isEqualTo(LogTopic.create(Bytes32Helper.leftPad(SENDER.getBytes())));
 
     // Third topic is the recipient address (zero-padded to 32 bytes)
-    assertThat(topics.get(2)).isEqualTo(LogTopic.create(Bytes32.leftPad(RECIPIENT.getBytes())));
+    assertThat(topics.get(2)).isEqualTo(LogTopic.create(Bytes32Helper.leftPad(RECIPIENT.getBytes())));
 
     // Data should be the value as 32-byte big-endian
-    assertThat(log.getData()).isEqualTo(Bytes32.leftPad(value));
+    assertThat(log.getData()).isEqualTo(Bytes32Helper.leftPad(value));
   }
 
   @Test
@@ -95,7 +96,7 @@ class EIP7708TransferLogEmitterTest {
     final Log log = EIP7708TransferLogEmitter.createTransferLog(SENDER, RECIPIENT, oneEth);
 
     assertThat(log.getLogger()).isEqualTo(EIP7708_SYSTEM_ADDRESS);
-    assertThat(log.getData()).isEqualTo(Bytes32.leftPad(oneEth));
+    assertThat(log.getData()).isEqualTo(Bytes32Helper.leftPad(oneEth));
   }
 
   @Test
@@ -143,10 +144,10 @@ class EIP7708TransferLogEmitterTest {
     assertThat(topics.get(0)).isEqualTo(LogTopic.create(BURN_TOPIC));
 
     // Second topic is the closed address (zero-padded to 32 bytes)
-    assertThat(topics.get(1)).isEqualTo(LogTopic.create(Bytes32.leftPad(SENDER.getBytes())));
+    assertThat(topics.get(1)).isEqualTo(LogTopic.create(Bytes32Helper.leftPad(SENDER.getBytes())));
 
     // Data should be the value as 32-byte big-endian
-    assertThat(log.getData()).isEqualTo(Bytes32.leftPad(value));
+    assertThat(log.getData()).isEqualTo(Bytes32Helper.leftPad(value));
   }
 
   @Test
@@ -173,9 +174,9 @@ class EIP7708TransferLogEmitterTest {
     assertThat(capturedLog.getTopics()).hasSize(3);
     assertThat(capturedLog.getTopics().get(0)).isEqualTo(LogTopic.create(TRANSFER_TOPIC));
     assertThat(capturedLog.getTopics().get(1))
-        .isEqualTo(LogTopic.create(Bytes32.leftPad(SENDER.getBytes())));
+        .isEqualTo(LogTopic.create(Bytes32Helper.leftPad(SENDER.getBytes())));
     assertThat(capturedLog.getTopics().get(2))
-        .isEqualTo(LogTopic.create(Bytes32.leftPad(RECIPIENT.getBytes())));
+        .isEqualTo(LogTopic.create(Bytes32Helper.leftPad(RECIPIENT.getBytes())));
   }
 
   @Test
@@ -256,18 +257,18 @@ class EIP7708TransferLogEmitterTest {
 
     // addr2 (0x1111...) should be first
     assertThat(collectedLogs.get(0).getTopics().get(1))
-        .isEqualTo(LogTopic.create(Bytes32.leftPad(addr2.getBytes())));
-    assertThat(collectedLogs.get(0).getData()).isEqualTo(Bytes32.leftPad(Wei.of(100)));
+        .isEqualTo(LogTopic.create(Bytes32Helper.leftPad(addr2.getBytes())));
+    assertThat(collectedLogs.get(0).getData()).isEqualTo(Bytes32Helper.leftPad(Wei.of(100)));
 
     // addr3 (0x2222...) should be second
     assertThat(collectedLogs.get(1).getTopics().get(1))
-        .isEqualTo(LogTopic.create(Bytes32.leftPad(addr3.getBytes())));
-    assertThat(collectedLogs.get(1).getData()).isEqualTo(Bytes32.leftPad(Wei.of(200)));
+        .isEqualTo(LogTopic.create(Bytes32Helper.leftPad(addr3.getBytes())));
+    assertThat(collectedLogs.get(1).getData()).isEqualTo(Bytes32Helper.leftPad(Wei.of(200)));
 
     // addr1 (0x3333...) should be third
     assertThat(collectedLogs.get(2).getTopics().get(1))
-        .isEqualTo(LogTopic.create(Bytes32.leftPad(addr1.getBytes())));
-    assertThat(collectedLogs.get(2).getData()).isEqualTo(Bytes32.leftPad(Wei.of(300)));
+        .isEqualTo(LogTopic.create(Bytes32Helper.leftPad(addr1.getBytes())));
+    assertThat(collectedLogs.get(2).getData()).isEqualTo(Bytes32Helper.leftPad(Wei.of(300)));
   }
 
   @Test
@@ -294,7 +295,7 @@ class EIP7708TransferLogEmitterTest {
     // Should only have 1 log (for the account with balance)
     assertThat(collectedLogs).hasSize(1);
     assertThat(collectedLogs.get(0).getTopics().get(1))
-        .isEqualTo(LogTopic.create(Bytes32.leftPad(addrWithBalance.getBytes())));
+        .isEqualTo(LogTopic.create(Bytes32Helper.leftPad(addrWithBalance.getBytes())));
   }
 
   @Test
@@ -319,6 +320,6 @@ class EIP7708TransferLogEmitterTest {
     // Should only have 1 log (for the existing account)
     assertThat(collectedLogs).hasSize(1);
     assertThat(collectedLogs.get(0).getTopics().get(1))
-        .isEqualTo(LogTopic.create(Bytes32.leftPad(existingAddr.getBytes())));
+        .isEqualTo(LogTopic.create(Bytes32Helper.leftPad(existingAddr.getBytes())));
   }
 }

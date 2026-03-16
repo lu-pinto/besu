@@ -83,8 +83,8 @@ public class StructLogTest {
         .thenReturn(
             Optional.of(
                 Arrays.stream(stack)
-                    .map(Bytes::fromHexString) // Convert each string to Bytes
-                    .toArray(Bytes[]::new)));
+                    .map(Bytes32::fromHexStringLenient)
+                    .toArray(Bytes32[]::new)));
     Map<Bytes32, Bytes32> storageMap = new HashMap<>();
     for (Map.Entry<String, String> entry : storage.entrySet()) {
       storageMap.put(
@@ -144,8 +144,8 @@ public class StructLogTest {
         .thenReturn(
             Optional.of(
                 Arrays.stream(stack)
-                    .map(Bytes::fromHexString) // Convert each string to Bytes
-                    .toArray(Bytes[]::new)));
+                    .map(Bytes32::fromHexStringLenient)
+                    .toArray(Bytes32[]::new)));
     Map<Bytes32, Bytes32> storageMap = new HashMap<>();
     for (Map.Entry<String, String> entry : storage.entrySet()) {
       storageMap.put(

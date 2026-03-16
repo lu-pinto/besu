@@ -17,6 +17,7 @@ package org.hyperledger.besu.util.ssz;
 import java.util.Collections;
 import java.util.List;
 
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;

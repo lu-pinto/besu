@@ -20,6 +20,8 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.Test;
@@ -30,7 +32,7 @@ public class UInt256Test {
   private Bytes32 bigIntTo32B(final BigInteger y) {
     byte[] a = y.toByteArray();
     if (a.length > 32) return Bytes32.wrap(a, a.length - 32);
-    return Bytes32.leftPad(Bytes.wrap(a));
+    return Bytes32Helper.leftPad(Bytes.wrap(a));
   }
 
   private Bytes32 bigIntTo32B(final BigInteger x, final int sign) {
@@ -40,7 +42,7 @@ public class UInt256Test {
     byte[] b = x.toByteArray();
     System.arraycopy(b, 0, a, 32 - b.length, b.length);
     if (a.length > 32) return Bytes32.wrap(a, a.length - 32);
-    return Bytes32.leftPad(Bytes.wrap(a));
+    return Bytes32Helper.leftPad(Bytes.wrap(a));
   }
 
   @Test
@@ -167,10 +169,10 @@ public class UInt256Test {
     byte[] mod_arr = new byte[] {-111, 126, 78, 12};
     UInt256 number = UInt256.fromBytesBE(num_arr);
     UInt256 modulus = UInt256.fromBytesBE(mod_arr);
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
     BigInteger big_number = new BigInteger(1, num_arr);
     BigInteger big_modulus = new BigInteger(1, mod_arr);
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -184,10 +186,10 @@ public class UInt256Test {
     byte[] mod_arr = new byte[] {12, 126, 78, -11};
     UInt256 number = UInt256.fromBytesBE(num_arr);
     UInt256 modulus = UInt256.fromBytesBE(mod_arr);
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
     BigInteger big_number = new BigInteger(1, num_arr);
     BigInteger big_modulus = new BigInteger(1, mod_arr);
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -197,8 +199,8 @@ public class UInt256Test {
     BigInteger big_modulus = new BigInteger("001fff", 16);
     UInt256 number = UInt256.fromBytesBE(big_number.toByteArray());
     UInt256 modulus = UInt256.fromBytesBE(big_modulus.toByteArray());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -208,8 +210,8 @@ public class UInt256Test {
     BigInteger big_modulus = new BigInteger("038d7ea4c68000", 16);
     UInt256 number = UInt256.fromBytesBE(big_number.toByteArray());
     UInt256 modulus = UInt256.fromBytesBE(big_modulus.toByteArray());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -219,8 +221,8 @@ public class UInt256Test {
     BigInteger big_modulus = new BigInteger("ff00000000000000", 16);
     UInt256 number = UInt256.fromBytesBE(big_number.toByteArray());
     UInt256 modulus = UInt256.fromBytesBE(big_modulus.toByteArray());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -230,8 +232,8 @@ public class UInt256Test {
     BigInteger big_modulus = new BigInteger("100000000000000000000000000000000", 16);
     UInt256 number = UInt256.fromBytesBE(big_number.toByteArray());
     UInt256 modulus = UInt256.fromBytesBE(big_modulus.toByteArray());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -241,8 +243,8 @@ public class UInt256Test {
     BigInteger big_modulus = new BigInteger("100000000000000000000000000000001", 16);
     UInt256 number = UInt256.fromBytesBE(big_number.toByteArray());
     UInt256 modulus = UInt256.fromBytesBE(big_modulus.toByteArray());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -252,8 +254,8 @@ public class UInt256Test {
     BigInteger big_modulus = new BigInteger("ff000000000000000000000000000000", 16);
     UInt256 number = UInt256.fromBytesBE(big_number.toByteArray());
     UInt256 modulus = UInt256.fromBytesBE(big_modulus.toByteArray());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -263,8 +265,8 @@ public class UInt256Test {
     BigInteger big_modulus = new BigInteger("100000000000000000000000000000001", 16);
     UInt256 number = UInt256.fromBytesBE(big_number.toByteArray());
     UInt256 modulus = UInt256.fromBytesBE(big_modulus.toByteArray());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -276,8 +278,8 @@ public class UInt256Test {
         new BigInteger("0000000000000000000000000000000000fe0000000000000000000000000001", 16);
     UInt256 number = UInt256.fromBytesBE(big_number.toByteArray());
     UInt256 modulus = UInt256.fromBytesBE(big_modulus.toByteArray());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -288,8 +290,8 @@ public class UInt256Test {
     BigInteger big_modulus = new BigInteger("02000000000000000000", 16);
     UInt256 number = UInt256.fromBytesBE(big_number.toByteArray());
     UInt256 modulus = UInt256.fromBytesBE(big_modulus.toByteArray());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -300,8 +302,8 @@ public class UInt256Test {
     BigInteger big_modulus = new BigInteger("200000000000000ff", 16);
     UInt256 number = UInt256.fromBytesBE(big_number.toByteArray());
     UInt256 modulus = UInt256.fromBytesBE(big_modulus.toByteArray());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -314,8 +316,8 @@ public class UInt256Test {
         new BigInteger("1000000000000000000000002000000000000000000000000", 16);
     UInt256 number = UInt256.fromBytesBE(big_number.toByteArray());
     UInt256 modulus = UInt256.fromBytesBE(big_modulus.toByteArray());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -326,8 +328,8 @@ public class UInt256Test {
     BigInteger big_modulus = new BigInteger("80", 16);
     UInt256 number = UInt256.fromBytesBE(big_number.toByteArray());
     UInt256 modulus = UInt256.fromBytesBE(big_modulus.toByteArray());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -337,8 +339,8 @@ public class UInt256Test {
     BigInteger big_modulus = new BigInteger("7dae7454bb193b1c28e64a6a935bc3", 16);
     UInt256 number = UInt256.fromBytesBE(big_number.toByteArray());
     UInt256 modulus = UInt256.fromBytesBE(big_modulus.toByteArray());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
-    Bytes32 expected = Bytes32.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+    Bytes32 expected = Bytes32Helper.leftPad(Bytes.wrap(big_number.mod(big_modulus).toByteArray()));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -368,7 +370,7 @@ public class UInt256Test {
         big_modulus = aInt;
         modulus = UInt256.fromBytesBE(a);
       }
-      Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
+      Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(number.mod(modulus).toBytesBE()));
       Bytes32 expected =
           BigInteger.ZERO.compareTo(big_modulus) == 0
               ? Bytes32.ZERO
@@ -385,7 +387,7 @@ public class UInt256Test {
     UInt256 x = UInt256.fromBytesBE(xbig.toByteArray());
     UInt256 y = UInt256.fromBytesBE(ybig.toByteArray());
     UInt256 m = UInt256.fromBytesBE(mbig.toByteArray());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(x.addMod(y, m).toBytesBE()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(x.addMod(y, m).toBytesBE()));
     Bytes32 expected =
         BigInteger.ZERO.compareTo(mbig) == 0 ? Bytes32.ZERO : bigIntTo32B(xbig.add(ybig).mod(mbig));
     assertThat(remainder).isEqualTo(expected);
@@ -409,7 +411,7 @@ public class UInt256Test {
     UInt256 x = UInt256.fromBytesBE(xArr);
     UInt256 y = UInt256.fromBytesBE(xArr);
     UInt256 m = UInt256.fromBytesBE(mArr);
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(x.addMod(y, m).toBytesBE()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(x.addMod(y, m).toBytesBE()));
     Bytes32 expected =
         BigInteger.ZERO.compareTo(mbig) == 0 ? Bytes32.ZERO : bigIntTo32B(xbig.add(ybig).mod(mbig));
     assertThat(remainder).isEqualTo(expected);
@@ -434,7 +436,7 @@ public class UInt256Test {
       UInt256 a = UInt256.fromBytesBE(aArray);
       UInt256 b = UInt256.fromBytesBE(bArray);
       UInt256 c = UInt256.fromBytesBE(cArray);
-      Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(a.addMod(b, c).toBytesBE()));
+      Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(a.addMod(b, c).toBytesBE()));
       Bytes32 expected =
           BigInteger.ZERO.compareTo(cInt) == 0
               ? Bytes32.ZERO
@@ -457,7 +459,7 @@ public class UInt256Test {
     UInt256 a = UInt256.fromBytesBE(aBytes.toArrayUnsafe());
     UInt256 b = UInt256.fromBytesBE(bBytes.toArrayUnsafe());
     UInt256 m = UInt256.fromBytesBE(modBytes.toArrayUnsafe());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(a.mulMod(b, m).toBytesBE()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(a.mulMod(b, m).toBytesBE()));
     Bytes32 expected = bigIntTo32B(aInt.multiply(bInt).mod(mInt));
     assertThat(remainder).isEqualTo(expected);
   }
@@ -476,7 +478,7 @@ public class UInt256Test {
     UInt256 a = UInt256.fromBytesBE(value0.toArrayUnsafe());
     UInt256 b = UInt256.fromBytesBE(value1.toArrayUnsafe());
     UInt256 c = UInt256.fromBytesBE(value2.toArrayUnsafe());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(a.mulMod(b, c).toBytesBE()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(a.mulMod(b, c).toBytesBE()));
     Bytes32 expected = bigIntTo32B(aInt.multiply(bInt).mod(cInt));
     assertThat(remainder).isEqualTo(expected);
   }
@@ -495,7 +497,7 @@ public class UInt256Test {
     UInt256 a = UInt256.fromBytesBE(value0.toArrayUnsafe());
     UInt256 b = UInt256.fromBytesBE(value1.toArrayUnsafe());
     UInt256 c = UInt256.fromBytesBE(value2.toArrayUnsafe());
-    Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(a.mulMod(b, c).toBytesBE()));
+    Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(a.mulMod(b, c).toBytesBE()));
     Bytes32 expected = bigIntTo32B(aInt.multiply(bInt).mod(cInt));
     assertThat(remainder).isEqualTo(expected);
 
@@ -511,7 +513,7 @@ public class UInt256Test {
     a = UInt256.fromBytesBE(value0.toArrayUnsafe());
     b = UInt256.fromBytesBE(value1.toArrayUnsafe());
     c = UInt256.fromBytesBE(value2.toArrayUnsafe());
-    remainder = Bytes32.leftPad(Bytes.wrap(a.mulMod(b, c).toBytesBE()));
+    remainder = Bytes32Helper.leftPad(Bytes.wrap(a.mulMod(b, c).toBytesBE()));
     expected = bigIntTo32B(aInt.multiply(bInt).mod(cInt));
     assertThat(remainder).isEqualTo(expected);
   }
@@ -535,7 +537,7 @@ public class UInt256Test {
       UInt256 a = UInt256.fromBytesBE(aArray);
       UInt256 b = UInt256.fromBytesBE(bArray);
       UInt256 c = UInt256.fromBytesBE(cArray);
-      Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(a.mulMod(b, c).toBytesBE()));
+      Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(a.mulMod(b, c).toBytesBE()));
       Bytes32 expected =
           BigInteger.ZERO.compareTo(cInt) == 0
               ? Bytes32.ZERO
@@ -629,7 +631,7 @@ public class UInt256Test {
       UInt256 r = a.signedMod(b);
       BigInteger aInt = a.isNegative() ? new BigInteger(aArray) : new BigInteger(1, aArray);
       BigInteger bInt = b.isNegative() ? new BigInteger(bArray) : new BigInteger(1, bArray);
-      Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(r.toBytesBE()));
+      Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(r.toBytesBE()));
       Bytes32 expected;
       BigInteger rem = BigInteger.ZERO;
       if (BigInteger.ZERO.compareTo(bInt) == 0) expected = Bytes32.ZERO;

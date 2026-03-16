@@ -18,6 +18,7 @@ import static org.hyperledger.besu.ethereum.worldstate.WorldStateStorageCoordina
 
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.rlp.RLP;
 import org.hyperledger.besu.ethereum.trie.MerkleTrie;
 import org.hyperledger.besu.ethereum.trie.common.PmtStateTrieAccountValue;
@@ -41,7 +42,7 @@ public class TrieGenerator {
     return generateTrie(
         worldStateStorageCoordinator,
         IntStream.range(0, nbAccounts)
-            .mapToObj(operand -> Hash.wrap(Bytes32.leftPad(Bytes.of(operand + 1))))
+            .mapToObj(operand -> Hash.wrap(Bytes32Helper.leftPad(Bytes.of(operand + 1))))
             .collect(Collectors.toList()));
   }
 
@@ -72,7 +73,7 @@ public class TrieGenerator {
                   onForest.putAccountStorageTrieNode(hash, value);
                 });
           });
-      final Bytes code = Bytes32.leftPad(Bytes.of(i + 10));
+      final Bytes code = Bytes32Helper.leftPad(Bytes.of(i + 10));
       final Hash codeHash = Hash.hash(code);
       final PmtStateTrieAccountValue accountValue =
           new PmtStateTrieAccountValue(

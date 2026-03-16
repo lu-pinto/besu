@@ -19,6 +19,8 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import jakarta.validation.constraints.NotNull;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
@@ -43,6 +45,6 @@ public class RIPEMD160PrecompiledContract extends AbstractPrecompiledContract {
   @Override
   public PrecompileContractResult computePrecompile(
       final Bytes input, @NotNull final MessageFrame messageFrame) {
-    return PrecompileContractResult.success(Bytes32.leftPad(Hash.ripemd160(input)));
+    return PrecompileContractResult.success(Bytes32Helper.leftPad(Hash.ripemd160(input)));
   }
 }

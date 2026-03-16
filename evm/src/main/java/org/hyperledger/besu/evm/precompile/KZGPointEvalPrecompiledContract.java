@@ -53,7 +53,7 @@ public class KZGPointEvalPrecompiledContract implements PrecompiledContract {
   private static void loadLib() {
     CKZG4844JNI.loadNativeLibrary();
     Bytes fieldElementsPerBlob =
-        Bytes32.wrap(Words.intBytes(CKZG4844JNI.FIELD_ELEMENTS_PER_BLOB).xor(Bytes32.ZERO));
+        Words.intBytes(CKZG4844JNI.FIELD_ELEMENTS_PER_BLOB).xor(Bytes32.ZERO);
     Bytes blsModulus =
         Bytes32.wrap(Bytes.of(CKZG4844JNI.BLS_MODULUS.toByteArray()).xor(Bytes32.ZERO));
 

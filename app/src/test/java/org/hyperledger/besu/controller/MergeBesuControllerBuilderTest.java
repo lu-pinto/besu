@@ -32,6 +32,7 @@ import org.hyperledger.besu.cryptoservices.NodeKey;
 import org.hyperledger.besu.cryptoservices.NodeKeyUtils;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.GasLimitCalculator;
 import org.hyperledger.besu.ethereum.api.ImmutableApiConfiguration;
 import org.hyperledger.besu.ethereum.chain.Blockchain;
@@ -296,7 +297,7 @@ public class MergeBesuControllerBuilderTest {
 
   private BlockHeader finalizedBlockHeader() {
     final long blockNumber = 42;
-    final Hash magicHash = Hash.wrap(Bytes32.leftPad(Bytes.ofUnsignedInt(42)));
+    final Hash magicHash = Hash.wrap(Bytes32Helper.leftPad(Bytes.ofUnsignedInt(42)));
 
     return headerGenerator
         .difficulty(Difficulty.MAX_VALUE)

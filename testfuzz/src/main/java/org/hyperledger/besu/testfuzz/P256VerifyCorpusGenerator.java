@@ -25,6 +25,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.SecureRandom;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.bytes.MutableBytes;
@@ -116,8 +118,8 @@ public class P256VerifyCorpusGenerator {
 
       MutableBytes input = MutableBytes.create(160);
       input.set(0, messageHash);
-      input.set(32, Bytes32.leftPad(Bytes.wrap(signature.getR().toByteArray())));
-      input.set(64, Bytes32.leftPad(Bytes.wrap(signature.getS().toByteArray())));
+      input.set(32, Bytes32Helper.leftPad(Bytes.wrap(signature.getR().toByteArray())));
+      input.set(64, Bytes32Helper.leftPad(Bytes.wrap(signature.getS().toByteArray())));
       input.set(96, keyPair.getPublicKey().getEncodedBytes());
 
       return input.toArray();
@@ -130,8 +132,8 @@ public class P256VerifyCorpusGenerator {
     // r = 1, s = 1 (minimum valid values)
     MutableBytes test1 = MutableBytes.create(160);
     test1.set(0, randomBytes32());
-    test1.set(32, Bytes32.leftPad(Bytes.of(1)));
-    test1.set(64, Bytes32.leftPad(Bytes.of(1)));
+    test1.set(32, Bytes32Helper.leftPad(Bytes.of(1)));
+    test1.set(64, Bytes32Helper.leftPad(Bytes.of(1)));
     test1.set(96, randomValidPoint());
     writeTestCase(outputDir, String.format("boundary_%03d.hex", testCount++), test1.toArray());
 
@@ -147,14 +149,14 @@ public class P256VerifyCorpusGenerator {
     MutableBytes test3 = MutableBytes.create(160);
     test3.set(0, randomBytes32());
     test3.set(32, Bytes32.ZERO);
-    test3.set(64, Bytes32.leftPad(Bytes.of(1)));
+    test3.set(64, Bytes32Helper.leftPad(Bytes.of(1)));
     test3.set(96, randomValidPoint());
     writeTestCase(outputDir, String.format("boundary_%03d.hex", testCount++), test3.toArray());
 
     // s = 0 (invalid)
     MutableBytes test4 = MutableBytes.create(160);
     test4.set(0, randomBytes32());
-    test4.set(32, Bytes32.leftPad(Bytes.of(1)));
+    test4.set(32, Bytes32Helper.leftPad(Bytes.of(1)));
     test4.set(64, Bytes32.ZERO);
     test4.set(96, randomValidPoint());
     writeTestCase(outputDir, String.format("boundary_%03d.hex", testCount++), test4.toArray());
@@ -162,8 +164,8 @@ public class P256VerifyCorpusGenerator {
     // Point at infinity (0, 0)
     MutableBytes test5 = MutableBytes.create(160);
     test5.set(0, randomBytes32());
-    test5.set(32, Bytes32.leftPad(Bytes.of(1)));
-    test5.set(64, Bytes32.leftPad(Bytes.of(1)));
+    test5.set(32, Bytes32Helper.leftPad(Bytes.of(1)));
+    test5.set(64, Bytes32Helper.leftPad(Bytes.of(1)));
     test5.set(96, Bytes32.ZERO);
     test5.set(128, Bytes32.ZERO);
     writeTestCase(outputDir, String.format("boundary_%03d.hex", testCount++), test5.toArray());
@@ -199,8 +201,8 @@ public class P256VerifyCorpusGenerator {
     // Random point not on curve
     MutableBytes test1 = MutableBytes.create(160);
     test1.set(0, randomBytes32());
-    test1.set(32, Bytes32.leftPad(Bytes.of(1)));
-    test1.set(64, Bytes32.leftPad(Bytes.of(1)));
+    test1.set(32, Bytes32Helper.leftPad(Bytes.of(1)));
+    test1.set(64, Bytes32Helper.leftPad(Bytes.of(1)));
     test1.set(96, randomBytes32()); // Random x
     test1.set(128, randomBytes32()); // Random y (likely not on curve)
     writeTestCase(outputDir, String.format("invalid_point_%03d.hex", testCount++), test1.toArray());
@@ -208,10 +210,10 @@ public class P256VerifyCorpusGenerator {
     // Coordinates >= p (field prime)
     MutableBytes test2 = MutableBytes.create(160);
     test2.set(0, randomBytes32());
-    test2.set(32, Bytes32.leftPad(Bytes.of(1)));
-    test2.set(64, Bytes32.leftPad(Bytes.of(1)));
+    test2.set(32, Bytes32Helper.leftPad(Bytes.of(1)));
+    test2.set(64, Bytes32Helper.leftPad(Bytes.of(1)));
     test2.set(96, bigIntegerToBytes32(P)); // x = p (invalid)
-    test2.set(128, Bytes32.leftPad(Bytes.of(1)));
+    test2.set(128, Bytes32Helper.leftPad(Bytes.of(1)));
     writeTestCase(outputDir, String.format("invalid_point_%03d.hex", testCount++), test2.toArray());
 
     return testCount;
@@ -271,7 +273,7 @@ public class P256VerifyCorpusGenerator {
   private Bytes32 bigIntegerToBytes32(final BigInteger value) {
     byte[] bytes = value.toByteArray();
     if (bytes.length <= 32) {
-      return Bytes32.leftPad(Bytes.wrap(bytes));
+      return Bytes32Helper.leftPad(Bytes.wrap(bytes));
     } else {
       // Remove leading zero byte if present
       if (bytes[0] == 0 && bytes.length == 33) {

@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 /** Unit tests for the {@link Shift256Operations} utility class. */
 class Shift256OperationsTest {
 
-  // region Constants Tests
+  // region Bytes32Helper Tests
 
   @Test
   void constants_areCorrect() {

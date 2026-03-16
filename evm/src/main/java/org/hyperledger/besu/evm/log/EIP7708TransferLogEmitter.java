@@ -14,7 +14,6 @@
  */
 package org.hyperledger.besu.evm.log;
 
-import static org.apache.tuweni.bytes.Bytes32.leftPad;
 
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Log;
@@ -22,7 +21,9 @@ import org.hyperledger.besu.datatypes.LogTopic;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.frame.MessageFrame;
+import org.hyperledger.besu.evm.internal.Words;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 
 import java.util.Comparator;
 import java.util.List;
@@ -85,11 +86,11 @@ public class EIP7708TransferLogEmitter implements TransferLogEmitter {
    */
   public static Log createTransferLog(final Address from, final Address to, final Wei value) {
     // Zero-pad addresses to 32 bytes for topics
-    final LogTopic fromTopic = LogTopic.create(leftPad(from.getBytes()));
-    final LogTopic toTopic = LogTopic.create(leftPad(to.getBytes()));
+    final LogTopic fromTopic = LogTopic.create(Words.fromAddress(from));
+    final LogTopic toTopic = LogTopic.create(Words.fromAddress(to));
 
     // Value as big-endian uint256 (32 bytes, zero-padded)
-    final Bytes32 data = leftPad(value);
+    final Bytes32 data = Bytes32Helper.leftPad(value);
 
     return new Log(
         EIP7708_SYSTEM_ADDRESS,
@@ -108,10 +109,10 @@ public class EIP7708TransferLogEmitter implements TransferLogEmitter {
    */
   public static Log createBurnLog(final Address closedAddress, final Wei value) {
     // Zero-pad address to 32 bytes for topic
-    final LogTopic addressTopic = LogTopic.create(leftPad(closedAddress.getBytes()));
+    final LogTopic addressTopic = LogTopic.create(Bytes32Helper.leftPad(closedAddress.getBytes()));
 
     // Value as big-endian uint256 (32 bytes, zero-padded)
-    final Bytes32 data = leftPad(value);
+    final Bytes32 data = Bytes32Helper.leftPad(value);
 
     return new Log(
         EIP7708_SYSTEM_ADDRESS, data, ImmutableList.of(LogTopic.create(BURN_TOPIC), addressTopic));

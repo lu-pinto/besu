@@ -14,7 +14,6 @@
  */
 package org.hyperledger.besu.evm.tracing;
 
-import static org.apache.tuweni.bytes.Bytes32.leftPad;
 
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Log;
@@ -102,8 +101,8 @@ public class EthTransferLogOperationTracer implements OperationTracer {
   private void emitTransferLogs(final Address sender, final Address recipient, final Wei value) {
     final ImmutableList.Builder<LogTopic> builder = ImmutableList.builderWithExpectedSize(3);
     builder.add(LogTopic.create(SIMULATION_TRANSFER_TOPIC));
-    builder.add(LogTopic.create(leftPad(sender.getBytes())));
-    builder.add(LogTopic.create(leftPad(recipient.getBytes())));
+    builder.add(LogTopic.create(Words.fromAddress(sender)));
+    builder.add(LogTopic.create(Words.fromAddress(recipient)));
     traceTransfers.add(new Log(SIMULATION_TRANSFER_ADDRESS, value, builder.build()));
   }
 

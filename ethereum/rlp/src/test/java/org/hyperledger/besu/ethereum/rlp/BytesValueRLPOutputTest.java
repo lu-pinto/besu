@@ -209,7 +209,7 @@ public class BytesValueRLPOutputTest {
 
   private void assertUInt256Scalar(final Bytes expected, final UInt256 toTest) {
     final BytesValueRLPOutput out = new BytesValueRLPOutput();
-    out.writeUInt256Scalar(toTest);
+    out.writeBytes32(toTest);
     assertThat(out.encoded()).isEqualTo(expected);
   }
 

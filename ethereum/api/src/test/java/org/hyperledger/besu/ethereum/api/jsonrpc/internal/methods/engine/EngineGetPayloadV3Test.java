@@ -31,6 +31,7 @@ import org.hyperledger.besu.datatypes.BlobGas;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.TransactionType;
 import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.api.jsonrpc.RpcMethod;
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.response.JsonRpcError;
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.response.JsonRpcErrorResponse;
@@ -242,7 +243,7 @@ public class EngineGetPayloadV3Test extends AbstractEngineGetPayloadTest {
               assertThat(res.getExecutionPayload().getPrevRandao())
                   .isEqualTo(cancunHeader.getPrevRandao().map(Bytes32::toString).orElse(""));
               // excessBlobGas: QUANTITY, 256 bits
-              String expectedQuantityOf10 = Bytes32.leftPad(Bytes.of(10)).toQuantityHexString();
+              String expectedQuantityOf10 = Bytes32Helper.leftPad(Bytes.of(10)).toQuantityHexString();
               assertThat(res.getExecutionPayload().getExcessBlobGas()).isNotEmpty();
               assertThat(res.getExecutionPayload().getExcessBlobGas())
                   .isEqualTo(expectedQuantityOf10);

@@ -284,7 +284,7 @@ public class BlockHeader extends SealableBlockHeader
           out.writeBytes(transactionsRoot.getBytes());
           out.writeBytes(receiptsRoot.getBytes());
           out.writeBytes(logsBloom.getBytes());
-          out.writeUInt256Scalar(difficulty);
+          out.writeBytes32(difficulty);
           out.writeLongScalar(number);
           out.writeLongScalar(gasLimit);
           out.writeLongScalar(gasUsed);
@@ -294,7 +294,7 @@ public class BlockHeader extends SealableBlockHeader
           out.writeLong(nonce);
           do {
             if (baseFee == null) break;
-            out.writeUInt256Scalar(baseFee);
+            out.writeBytes32(baseFee);
 
             if (withdrawalsRoot == null) break;
             out.writeBytes(withdrawalsRoot.getBytes());

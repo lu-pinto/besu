@@ -18,6 +18,7 @@ import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.LogTopic;
 import org.hyperledger.besu.datatypes.VersionedHash;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.Quantity;
 
 import java.math.BigInteger;
@@ -435,7 +436,7 @@ public class Scalars {
             return bytes32;
           } else if (input instanceof Bytes bytes) {
             if (bytes.size() <= 32) {
-              return Bytes32.leftPad((Bytes) input);
+              return Bytes32Helper.leftPad((Bytes) input);
             } else {
               return null;
             }

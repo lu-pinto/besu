@@ -156,7 +156,7 @@ public class BonsaiAccount extends PathBasedAccount {
     out.startList();
 
     out.writeLongScalar(nonce);
-    out.writeUInt256Scalar(balance);
+    out.writeBytes32(balance);
     out.writeBytes(storageRoot.getBytes());
     out.writeBytes(codeHash.getBytes());
 

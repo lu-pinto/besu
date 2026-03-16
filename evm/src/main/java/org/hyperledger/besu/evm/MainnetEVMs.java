@@ -138,6 +138,8 @@ import org.hyperledger.besu.evm.operation.XorOperationOptimized;
 
 import java.math.BigInteger;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
@@ -589,7 +591,7 @@ public class MainnetEVMs {
       final EvmConfiguration evmConfiguration) {
     registerConstantinopleOperations(registry, gasCalculator, evmConfiguration);
     registry.put(
-        new ChainIdOperation(gasCalculator, Bytes32.leftPad(Bytes.of(chainId.toByteArray()))));
+        new ChainIdOperation(gasCalculator, Bytes32Helper.leftPad(Bytes.of(chainId.toByteArray()))));
     registry.put(new SelfBalanceOperation(gasCalculator));
     registry.put(new SStoreOperation(gasCalculator, SStoreOperation.EIP_1706_MINIMUM));
   }

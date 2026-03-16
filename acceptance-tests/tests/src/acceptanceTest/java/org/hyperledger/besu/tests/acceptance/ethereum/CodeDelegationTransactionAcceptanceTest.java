@@ -21,6 +21,7 @@ import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.CodeDelegation;
 import org.hyperledger.besu.datatypes.TransactionType;
 import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.core.Transaction;
 import org.hyperledger.besu.tests.acceptance.dsl.AcceptanceTestBase;
 import org.hyperledger.besu.tests.acceptance.dsl.WaitUtils;
@@ -111,7 +112,7 @@ public class CodeDelegationTransactionAcceptanceTest extends AcceptanceTestBase 
             .gasLimit(1000000)
             .to(Address.fromHexStringStrict(authorizer.getAddress()))
             .value(Wei.ZERO)
-            .payload(Bytes32.leftPad(Bytes.fromHexString(transactionSponsor.getAddress())))
+            .payload(Bytes32Helper.leftPad(Bytes.fromHexString(transactionSponsor.getAddress())))
             .accessList(List.of())
             .codeDelegations(List.of(codeDelegation))
             .signAndBuild(
@@ -177,7 +178,7 @@ public class CodeDelegationTransactionAcceptanceTest extends AcceptanceTestBase 
             .gasLimit(GAS_LIMIT)
             .to(Address.fromHexStringStrict(authorizer.getAddress()))
             .value(Wei.ZERO)
-            .payload(Bytes32.leftPad(Bytes.fromHexString(otherAccount.getAddress())))
+            .payload(Bytes32Helper.leftPad(Bytes.fromHexString(otherAccount.getAddress())))
             .accessList(List.of())
             .codeDelegations(List.of(codeDelegation))
             .signAndBuild(

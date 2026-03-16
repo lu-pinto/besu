@@ -56,7 +56,7 @@ public class NewBlockMessageTest {
     final BytesValueRLPOutput tmp = new BytesValueRLPOutput();
     tmp.startList();
     blockForInsertion.writeTo(tmp);
-    tmp.writeUInt256Scalar(totalDifficulty);
+    tmp.writeBytes32(totalDifficulty);
     tmp.endList();
 
     final RawMessage rawMsg = new RawMessage(EthProtocolMessages.NEW_BLOCK, tmp.encoded());

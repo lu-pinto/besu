@@ -14,11 +14,12 @@
  */
 package org.hyperledger.besu.evm.operation;
 
-import static org.apache.tuweni.bytes.Bytes32.leftPad;
 
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
+
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
@@ -55,7 +56,7 @@ public class SarOperation extends AbstractFixedCostOperation {
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
     Bytes shiftAmount = frame.popStackItem();
-    final Bytes32 value = leftPad(frame.popStackItem());
+    final Bytes32 value = frame.popStackItem();
     final boolean negativeNumber = value.get(0) < 0;
     if (shiftAmount.size() > 4 && (shiftAmount = shiftAmount.trimLeadingZeros()).size() > 4) {
       frame.pushStackItem(negativeNumber ? ALL_BITS : Bytes32.ZERO);
@@ -73,7 +74,7 @@ public class SarOperation extends AbstractFixedCostOperation {
           final Bytes significantBits = ALL_BITS.shiftLeft(256 - shiftAmountInt);
           result = result.or(significantBits);
         }
-        frame.pushStackItem(Bytes32.leftPad(result));
+        frame.pushStackItem(Bytes32Helper.leftPad(result));
       }
     }
     return sarSuccess;

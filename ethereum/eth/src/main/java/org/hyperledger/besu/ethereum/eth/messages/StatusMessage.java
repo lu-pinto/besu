@@ -268,7 +268,7 @@ public final class StatusMessage extends AbstractMessageData {
       out.writeBigIntegerScalar(networkId);
       // if total Difficulty is not null, then this is a pre 69 message
       if (totalDifficulty != null) {
-        out.writeUInt256Scalar(totalDifficulty);
+        out.writeBytes32(totalDifficulty);
         out.writeBytes(bestHash.getBytes());
         out.writeBytes(genesisHash.getBytes());
         forkId.writeTo(out);

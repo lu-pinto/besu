@@ -20,6 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.frame.BlockValues;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
@@ -51,7 +52,7 @@ class BaseFeeOperationTest {
     final MessageFrame frame = createMessageFrame(100, Optional.of(Wei.of(5L)));
     final Operation operation = new BaseFeeOperation(gasCalculator);
     final OperationResult result = operation.execute(frame, null);
-    verify(frame).pushStackItem(UInt256.fromBytes(Bytes32.leftPad(Words.longBytes(5L))));
+    verify(frame).pushStackItem(Words.longBytes(5L));
     assertSuccessResult(result);
   }
 

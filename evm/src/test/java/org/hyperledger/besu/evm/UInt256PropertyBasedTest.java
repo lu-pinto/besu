@@ -26,6 +26,8 @@ import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.Provide;
 import net.jqwik.api.Tuple;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
@@ -254,8 +256,8 @@ public class UInt256PropertyBasedTest {
       @ForAll("unsigned1to32") final byte[] a, @ForAll("unsigned1to32") final byte[] m) {
 
     // Arrange
-    final byte[] a32 = Bytes32.leftPad(Bytes.wrap(a)).toArrayUnsafe();
-    final byte[] m32 = Bytes32.leftPad(Bytes.wrap(m)).toArrayUnsafe();
+    final byte[] a32 = Bytes32Helper.leftPad(Bytes.wrap(a)).toArrayUnsafe();
+    final byte[] m32 = Bytes32Helper.leftPad(Bytes.wrap(m)).toArrayUnsafe();
     final BigInteger A = new BigInteger(a32);
     final BigInteger M = new BigInteger(m32);
     final UInt256 ua = UInt256.fromBytesBE(a32);
@@ -347,8 +349,8 @@ public class UInt256PropertyBasedTest {
     final byte[] got = ua.and(ub).toBytesBE();
 
     // Assert - compare with Bytes.and() (existing implementation)
-    final Bytes bytesA = Bytes32.leftPad(Bytes.wrap(a));
-    final Bytes bytesB = Bytes32.leftPad(Bytes.wrap(b));
+    final Bytes bytesA = Bytes32Helper.leftPad(Bytes.wrap(a));
+    final Bytes bytesB = Bytes32Helper.leftPad(Bytes.wrap(b));
     final byte[] expected = bytesA.and(bytesB).toArrayUnsafe();
 
     assertThat(got).containsExactly(expected);
@@ -465,7 +467,7 @@ public class UInt256PropertyBasedTest {
   void property_and_with_complement_is_zero(@ForAll("unsigned1to32") final byte[] a) {
     // Arrange
     final UInt256 ua = UInt256.fromBytesBE(a);
-    final byte[] aBytes32 = Bytes32.leftPad(Bytes.wrap(a)).toArrayUnsafe();
+    final byte[] aBytes32 = Bytes32Helper.leftPad(Bytes.wrap(a)).toArrayUnsafe();
 
     // Create bitwise complement
     byte[] complementBytes = new byte[32];
@@ -534,8 +536,8 @@ public class UInt256PropertyBasedTest {
     final byte[] got = ua.xor(ub).toBytesBE();
 
     // Assert - compare with Bytes.xor() (existing implementation)
-    final Bytes bytesA = Bytes32.leftPad(Bytes.wrap(a));
-    final Bytes bytesB = Bytes32.leftPad(Bytes.wrap(b));
+    final Bytes bytesA = Bytes32Helper.leftPad(Bytes.wrap(a));
+    final Bytes bytesB = Bytes32Helper.leftPad(Bytes.wrap(b));
     final byte[] expected = bytesA.xor(bytesB).toArrayUnsafe();
 
     assertThat(got).containsExactly(expected);
@@ -625,7 +627,7 @@ public class UInt256PropertyBasedTest {
     final UInt256 result = ua.xor(allOnes);
 
     // Assert - A ^ 0xFF...FF = ~A (bitwise complement)
-    final byte[] aBytes32 = Bytes32.leftPad(Bytes.wrap(a)).toArrayUnsafe();
+    final byte[] aBytes32 = Bytes32Helper.leftPad(Bytes.wrap(a)).toArrayUnsafe();
     byte[] complementBytes = new byte[32];
     for (int i = 0; i < 32; i++) {
       complementBytes[i] = (byte) ~aBytes32[i];
@@ -723,8 +725,8 @@ public class UInt256PropertyBasedTest {
     // Act
     final byte[] got = ua.or(ub).toBytesBE();
     // Assert - compare with Bytes.or() (existing implementation)
-    final Bytes bytesA = Bytes32.leftPad(Bytes.wrap(a));
-    final Bytes bytesB = Bytes32.leftPad(Bytes.wrap(b));
+    final Bytes bytesA = Bytes32Helper.leftPad(Bytes.wrap(a));
+    final Bytes bytesB = Bytes32Helper.leftPad(Bytes.wrap(b));
     final byte[] expected = bytesA.or(bytesB).toArrayUnsafe();
     assertThat(got).containsExactly(expected);
   }
@@ -845,7 +847,7 @@ public class UInt256PropertyBasedTest {
   void property_or_with_complement_is_allOnes(@ForAll("unsigned1to32") final byte[] a) {
     // Arrange
     final UInt256 ua = UInt256.fromBytesBE(a);
-    final byte[] aBytes32 = Bytes32.leftPad(Bytes.wrap(a)).toArrayUnsafe();
+    final byte[] aBytes32 = Bytes32Helper.leftPad(Bytes.wrap(a)).toArrayUnsafe();
     // Create bitwise complement
     byte[] complementBytes = new byte[32];
     for (int i = 0; i < 32; i++) {
@@ -900,8 +902,8 @@ public class UInt256PropertyBasedTest {
     // Arrange
     final UInt256 ua = UInt256.fromBytesBE(a);
     final UInt256 ub = UInt256.fromBytesBE(b);
-    final byte[] aBytes32 = Bytes32.leftPad(Bytes.wrap(a)).toArrayUnsafe();
-    final byte[] bBytes32 = Bytes32.leftPad(Bytes.wrap(b)).toArrayUnsafe();
+    final byte[] aBytes32 = Bytes32Helper.leftPad(Bytes.wrap(a)).toArrayUnsafe();
+    final byte[] bBytes32 = Bytes32Helper.leftPad(Bytes.wrap(b)).toArrayUnsafe();
 
     // Create complements
     byte[] notABytes = new byte[32];
@@ -957,7 +959,7 @@ public class UInt256PropertyBasedTest {
     // Act
     final byte[] got = ua.not().toBytesBE();
     // Assert - compare with Bytes.not() (existing implementation)
-    final Bytes bytesA = Bytes32.leftPad(Bytes.wrap(a));
+    final Bytes bytesA = Bytes32Helper.leftPad(Bytes.wrap(a));
     final byte[] expected = bytesA.not().toArrayUnsafe();
     assertThat(got).containsExactly(expected);
   }
@@ -981,7 +983,7 @@ public class UInt256PropertyBasedTest {
   void property_not_manualComplement(@ForAll("unsigned1to32") final byte[] a) {
     // Arrange
     final UInt256 ua = UInt256.fromBytesBE(a);
-    final byte[] aBytes32 = Bytes32.leftPad(Bytes.wrap(a)).toArrayUnsafe();
+    final byte[] aBytes32 = Bytes32Helper.leftPad(Bytes.wrap(a)).toArrayUnsafe();
 
     // Create expected result manually
     byte[] expected = new byte[32];
@@ -1132,7 +1134,7 @@ public class UInt256PropertyBasedTest {
   void property_not_each_bit_flipped(@ForAll("unsigned1to32") final byte[] a) {
     // Arrange
     final UInt256 ua = UInt256.fromBytesBE(a);
-    final byte[] aBytes32 = Bytes32.leftPad(Bytes.wrap(a)).toArrayUnsafe();
+    final byte[] aBytes32 = Bytes32Helper.leftPad(Bytes.wrap(a)).toArrayUnsafe();
 
     // Act
     final byte[] got = ua.not().toBytesBE();

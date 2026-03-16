@@ -19,6 +19,8 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes32;
 
 /** The CLZ operation. */
@@ -50,7 +52,7 @@ public class CountLeadingZerosOperation extends AbstractFixedCostOperation {
   public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes32 value = frame.popStackItem();
     final int numberOfLeadingZeros = value.numberOfLeadingZeros();
-    frame.pushStackItem(Bytes32.leftPad(Words.intBytes(numberOfLeadingZeros)));
+    frame.pushStackItem(Words.intBytes(numberOfLeadingZeros));
     return clzSuccess;
   }
 }

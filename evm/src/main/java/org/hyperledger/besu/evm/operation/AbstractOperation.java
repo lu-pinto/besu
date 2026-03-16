@@ -15,6 +15,7 @@
 package org.hyperledger.besu.evm.operation;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.account.MutableAccount;
 import org.hyperledger.besu.evm.frame.MessageFrame;
@@ -29,7 +30,7 @@ import org.apache.tuweni.bytes.Bytes32;
  */
 public abstract class AbstractOperation implements Operation {
 
-  static final Bytes32 BYTES_ONE = Bytes32.leftPad(Bytes.of(1));
+  static final Bytes32 BYTES_ONE = Bytes32Helper.leftPad(Bytes.of(1));
 
   private final int opcode;
   private final String name;

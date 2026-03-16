@@ -14,11 +14,11 @@
  */
 package org.hyperledger.besu.evm.operation;
 
-import static org.apache.tuweni.bytes.Bytes32.leftPad;
 
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
@@ -57,7 +57,7 @@ public class ShrOperation extends AbstractFixedCostOperation {
       frame.pushStackItem(Bytes32.ZERO);
     } else {
       final int shiftAmountInt = shiftAmount.toInt();
-      final Bytes32 value = leftPad(frame.popStackItem());
+      final Bytes32 value = Bytes32Helper.leftPad(frame.popStackItem());
 
       if (shiftAmountInt >= 256 || shiftAmountInt < 0) {
         frame.pushStackItem(Bytes32.ZERO);

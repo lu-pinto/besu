@@ -917,15 +917,15 @@ public class Transaction
         rlpOutput -> {
           rlpOutput.startList();
           rlpOutput.writeLongScalar(nonce);
-          rlpOutput.writeUInt256Scalar(gasPrice);
+          rlpOutput.writeBytes32(gasPrice);
           rlpOutput.writeLongScalar(gasLimit);
           rlpOutput.writeBytes(to.map(BytesHolder::getBytes).map(Bytes::copy).orElse(Bytes.EMPTY));
-          rlpOutput.writeUInt256Scalar(value);
+          rlpOutput.writeBytes32(value);
           rlpOutput.writeBytes(payload);
           if (chainId.isPresent()) {
             rlpOutput.writeBigIntegerScalar(chainId.get());
-            rlpOutput.writeUInt256Scalar(UInt256.ZERO);
-            rlpOutput.writeUInt256Scalar(UInt256.ZERO);
+            rlpOutput.writeBytes32(UInt256.ZERO);
+            rlpOutput.writeBytes32(UInt256.ZERO);
           }
           rlpOutput.endList();
         });
@@ -974,11 +974,11 @@ public class Transaction
       final RLPOutput rlpOutput) {
     rlpOutput.writeBigIntegerScalar(chainId.orElseThrow());
     rlpOutput.writeLongScalar(nonce);
-    rlpOutput.writeUInt256Scalar(maxPriorityFeePerGas);
-    rlpOutput.writeUInt256Scalar(maxFeePerGas);
+    rlpOutput.writeBytes32(maxPriorityFeePerGas);
+    rlpOutput.writeBytes32(maxFeePerGas);
     rlpOutput.writeLongScalar(gasLimit);
     rlpOutput.writeBytes(to.map(BytesHolder::getBytes).map(Bytes::copy).orElse(Bytes.EMPTY));
-    rlpOutput.writeUInt256Scalar(value);
+    rlpOutput.writeBytes32(value);
     rlpOutput.writeBytes(payload);
     AccessListTransactionEncoder.writeAccessList(rlpOutput, accessList);
   }
@@ -1011,7 +1011,7 @@ public class Transaction
                   chainId,
                   accessList,
                   rlpOutput);
-              rlpOutput.writeUInt256Scalar(maxFeePerBlobGas);
+              rlpOutput.writeBytes32(maxFeePerBlobGas);
               BlobTransactionEncoder.writeBlobVersionedHashes(rlpOutput, versionedHashes);
               rlpOutput.endList();
             });

@@ -23,6 +23,8 @@ import org.hyperledger.besu.evm.gascalculator.PragueGasCalculator;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 import org.hyperledger.besu.evm.testutils.TestMessageFrameBuilder;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.Test;
@@ -117,10 +119,10 @@ class ExchangeOperationTest {
     final MessageFrame frame = builder.build();
 
     // Before
-    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32.leftPad(Bytes.of(1)));
-    assertThat(frame.getStackItem(1)).isEqualTo(Bytes32.leftPad(Bytes.of(2)));
-    assertThat(frame.getStackItem(2)).isEqualTo(Bytes32.leftPad(Bytes.of(3)));
-    assertThat(frame.getStackItem(3)).isEqualTo(Bytes32.leftPad(Bytes.of(4)));
+    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(1)));
+    assertThat(frame.getStackItem(1)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(2)));
+    assertThat(frame.getStackItem(2)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(3)));
+    assertThat(frame.getStackItem(3)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(4)));
 
     final OperationResult result = operation.execute(frame, null);
 
@@ -129,10 +131,10 @@ class ExchangeOperationTest {
     assertThat(result.getPcIncrement()).isEqualTo(2);
 
     // After: stack[2] and stack[3] swapped
-    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32.leftPad(Bytes.of(1)));
-    assertThat(frame.getStackItem(1)).isEqualTo(Bytes32.leftPad(Bytes.of(2)));
-    assertThat(frame.getStackItem(2)).isEqualTo(Bytes32.leftPad(Bytes.of(4))); // was 3
-    assertThat(frame.getStackItem(3)).isEqualTo(Bytes32.leftPad(Bytes.of(3))); // was 4
+    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(1)));
+    assertThat(frame.getStackItem(1)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(2)));
+    assertThat(frame.getStackItem(2)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(4))); // was 3
+    assertThat(frame.getStackItem(3)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(3))); // was 4
     assertThat(frame.stackSize()).isEqualTo(4);
   }
 
@@ -212,15 +214,15 @@ class ExchangeOperationTest {
     final MessageFrame frame = builder.build();
 
     // Before: stack[9]=10, stack[16]=17
-    assertThat(frame.getStackItem(9)).isEqualTo(Bytes32.leftPad(Bytes.of(10)));
-    assertThat(frame.getStackItem(16)).isEqualTo(Bytes32.leftPad(Bytes.of(17)));
+    assertThat(frame.getStackItem(9)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(10)));
+    assertThat(frame.getStackItem(16)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(17)));
 
     final OperationResult result = operation.execute(frame, null);
 
     assertThat(result.getHaltReason()).isNull();
     // Verify swap: stack[9] and stack[16] swapped
-    assertThat(frame.getStackItem(9)).isEqualTo(Bytes32.leftPad(Bytes.of(17)));
-    assertThat(frame.getStackItem(16)).isEqualTo(Bytes32.leftPad(Bytes.of(10)));
+    assertThat(frame.getStackItem(9)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(17)));
+    assertThat(frame.getStackItem(16)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(10)));
   }
 
   @Test
@@ -262,9 +264,9 @@ class ExchangeOperationTest {
 
     // Verify initial state
     assertThat(frame.stackSize()).isEqualTo(3);
-    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32.leftPad(Bytes.of(2))); // top
-    assertThat(frame.getStackItem(1)).isEqualTo(Bytes32.leftPad(Bytes.of(1)));
-    assertThat(frame.getStackItem(2)).isEqualTo(Bytes32.leftPad(Bytes.of(0))); // bottom
+    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(2))); // top
+    assertThat(frame.getStackItem(1)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(1)));
+    assertThat(frame.getStackItem(2)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(0))); // bottom
 
     final OperationResult result = operation.execute(frame, null);
 
@@ -273,9 +275,9 @@ class ExchangeOperationTest {
 
     // After EXCHANGE 0x8e: stack[1] and stack[2] swapped
     assertThat(frame.stackSize()).isEqualTo(3); // size unchanged
-    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32.leftPad(Bytes.of(2))); // unchanged
-    assertThat(frame.getStackItem(1)).isEqualTo(Bytes32.leftPad(Bytes.of(0))); // swapped
-    assertThat(frame.getStackItem(2)).isEqualTo(Bytes32.leftPad(Bytes.of(1))); // swapped
+    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(2))); // unchanged
+    assertThat(frame.getStackItem(1)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(0))); // swapped
+    assertThat(frame.getStackItem(2)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(1))); // swapped
   }
 
   /**
@@ -299,9 +301,9 @@ class ExchangeOperationTest {
     final MessageFrame frame = builder.build();
 
     assertThat(frame.stackSize()).isEqualTo(30);
-    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32.leftPad(Bytes.of(2))); // top
-    assertThat(frame.getStackItem(1)).isEqualTo(Bytes32.leftPad(Bytes.of(99)));
-    assertThat(frame.getStackItem(29)).isEqualTo(Bytes32.leftPad(Bytes.of(1))); // bottom
+    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(2))); // top
+    assertThat(frame.getStackItem(1)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(99)));
+    assertThat(frame.getStackItem(29)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(1))); // bottom
 
     final OperationResult result = operation.execute(frame, null);
 
@@ -309,9 +311,9 @@ class ExchangeOperationTest {
 
     // After EXCHANGE: stack[1] and stack[29] swapped
     assertThat(frame.stackSize()).isEqualTo(30);
-    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32.leftPad(Bytes.of(2))); // unchanged
-    assertThat(frame.getStackItem(1)).isEqualTo(Bytes32.leftPad(Bytes.of(1))); // was 99, now 1
-    assertThat(frame.getStackItem(29)).isEqualTo(Bytes32.leftPad(Bytes.of(99))); // was 1, now 99
+    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(2))); // unchanged
+    assertThat(frame.getStackItem(1)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(1))); // was 99, now 1
+    assertThat(frame.getStackItem(29)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(99))); // was 1, now 99
   }
 
   /**

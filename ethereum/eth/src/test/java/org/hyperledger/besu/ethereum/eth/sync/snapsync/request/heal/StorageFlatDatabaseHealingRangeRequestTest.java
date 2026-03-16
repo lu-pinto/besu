@@ -18,6 +18,7 @@ import static org.apache.tuweni.rlp.RLP.decodeValue;
 
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.core.InMemoryKeyValueStorageProvider;
 import org.hyperledger.besu.ethereum.core.TrieGenerator;
 import org.hyperledger.besu.ethereum.eth.sync.snapsync.SnapSyncConfiguration;
@@ -336,6 +337,6 @@ class StorageFlatDatabaseHealingRangeRequestTest {
         .putStorageValueBySlotHash(
             account0Hash,
             Hash.wrap(removedSlot.getKey()),
-            Bytes32.leftPad(decodeValue(removedSlot.getValue())));
+            Bytes32Helper.leftPad(decodeValue(removedSlot.getValue())));
   }
 }

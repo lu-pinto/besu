@@ -17,6 +17,7 @@ package org.hyperledger.besu.ethereum.eth.sync.snapsync.request.heal;
 import static org.hyperledger.besu.ethereum.worldstate.WorldStateStorageCoordinator.applyForStrategy;
 
 import org.hyperledger.besu.datatypes.Hash;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.eth.sync.snapsync.SnapSyncConfiguration;
 import org.hyperledger.besu.ethereum.eth.sync.snapsync.SnapSyncProcessState;
 import org.hyperledger.besu.ethereum.eth.sync.snapsync.SnapWorldDownloadState;
@@ -87,7 +88,7 @@ public class StorageTrieNodeHealingRequest extends TrieNodeHealingRequest {
           onBonsai
               .updater()
               .putStorageValueBySlotHash(
-                  accountHash, getSlotHash(location, path), Bytes32.leftPad(RLP.decodeValue(value)))
+                  accountHash, getSlotHash(location, path), Bytes32Helper.leftPad(RLP.decodeValue(value)))
               .commit();
         });
     return Stream.empty();

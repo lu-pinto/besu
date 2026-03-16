@@ -15,6 +15,7 @@
 package org.hyperledger.besu.ethereum.eth.manager.snap;
 
 import org.hyperledger.besu.datatypes.Hash;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.ProtocolContext;
 import org.hyperledger.besu.ethereum.core.Synchronizer;
 import org.hyperledger.besu.ethereum.eth.manager.EthMessages;
@@ -80,7 +81,7 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
   private static final ByteCodesMessage EMPTY_BYTE_CODES_MESSAGE =
       ByteCodesMessage.create(new ArrayDeque<>());
 
-  static final Hash HASH_LAST = Hash.wrap(Bytes32.leftPad(Bytes.fromHexString("FF"), (byte) 0xFF));
+  static final Hash HASH_LAST = Hash.wrap(Bytes32Helper.leftPad(Bytes.fromHexString("FF"), (byte) 0xFF));
 
   private final AtomicBoolean isStarted = new AtomicBoolean(false);
   private final EthMessages snapMessages;
@@ -554,7 +555,7 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
                     // otherwise the first element should be account hash, and subsequent paths
                     // are compact encoded account storage paths
 
-                    final Bytes32 accountPrefix = Bytes32.leftPad(triePath.getFirst());
+                    final Bytes32 accountPrefix = Bytes32Helper.leftPad(triePath.getFirst());
                     var optAccount = storage.getAccount(Hash.wrap(accountPrefix));
                     if (optAccount.isEmpty()) {
                       continue;

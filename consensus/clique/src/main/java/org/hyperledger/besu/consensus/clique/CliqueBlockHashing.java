@@ -96,7 +96,7 @@ public class CliqueBlockHashing {
     out.writeBytes(extraDataSerializer.get());
     out.writeBytes(header.getMixHash().getBytes());
     out.writeLong(header.getNonce());
-    header.getBaseFee().ifPresent(out::writeUInt256Scalar);
+    header.getBaseFee().ifPresent(out::writeBytes32);
     out.endList();
     return out.encoded();
   }

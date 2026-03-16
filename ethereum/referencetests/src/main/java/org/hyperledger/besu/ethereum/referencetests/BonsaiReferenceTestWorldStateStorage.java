@@ -16,6 +16,7 @@ package org.hyperledger.besu.ethereum.referencetests;
 
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.BonsaiAccount;
 import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.cache.CodeCache;
 import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.storage.BonsaiPreImageProxy;
@@ -58,7 +59,7 @@ public class BonsaiReferenceTestWorldStateStorage extends BonsaiWorldStateLayerS
                 Map.Entry::getKey,
                 e ->
                     AccountStorageEntry.create(
-                        Bytes32.leftPad(RLP.decodeValue(e.getValue())),
+                        Bytes32Helper.leftPad(RLP.decodeValue(e.getValue())),
                         e.getKey(),
                         preImageProxy.getStorageTrieKeyPreimage(e.getKey())),
                 (a, b) -> a,

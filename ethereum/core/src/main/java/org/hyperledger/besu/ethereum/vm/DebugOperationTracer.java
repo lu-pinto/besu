@@ -53,7 +53,7 @@ public class DebugOperationTracer implements OperationTracer {
   private List<TraceFrame> traceFrames = new ArrayList<>();
   private TraceFrame lastFrame;
 
-  private Optional<Bytes[]> preExecutionStack;
+  private Optional<Bytes32[]> preExecutionStack;
   private long gasRemaining;
   private Bytes inputData;
   private int pc;
@@ -118,7 +118,7 @@ public class DebugOperationTracer implements OperationTracer {
     final WorldUpdater worldUpdater = frame.getWorldUpdater();
     final Bytes outputData = frame.getOutputData();
     final Optional<Bytes[]> memory = captureMemory(frame);
-    final Optional<Bytes[]> stackPostExecution = captureStack(frame);
+    final Optional<Bytes32[]> stackPostExecution = captureStack(frame);
 
     if (!traceFrames.isEmpty()) {
       final TraceFrame lastTraceFrame = traceFrames.removeLast();
@@ -294,12 +294,12 @@ public class DebugOperationTracer implements OperationTracer {
     return Optional.of(memoryContents);
   }
 
-  private Optional<Bytes[]> captureStack(final MessageFrame frame) {
+  private Optional<Bytes32[]> captureStack(final MessageFrame frame) {
     if (!options.traceStack()) {
       return Optional.empty();
     }
 
-    final Bytes[] stackContents = new Bytes[frame.stackSize()];
+    final Bytes32[] stackContents = new Bytes32[frame.stackSize()];
     for (int i = 0; i < stackContents.length; i++) {
       // Record stack contents in reverse
       stackContents[i] = frame.getStackItem(stackContents.length - i - 1);

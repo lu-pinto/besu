@@ -26,6 +26,7 @@ import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.TransactionType;
 import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.BlockProcessingResult;
 import org.hyperledger.besu.ethereum.ProtocolContext;
 import org.hyperledger.besu.ethereum.chain.DefaultBlockchain;
@@ -1195,8 +1196,8 @@ class AbstractBlockProcessorIntegrationTest {
       final int slot,
       final int expectedValue) {
     BonsaiAccount contractAccount = (BonsaiAccount) worldState.get(contractAddress);
-    Bytes32 actualValue = contractAccount.getStorageValue(Bytes32.leftPad(Bytes.ofUnsignedInt(slot)));
-    assertThat(actualValue).isEqualTo(Bytes32.leftPad(Bytes.ofUnsignedInt(expectedValue)));
+    Bytes32 actualValue = contractAccount.getStorageValue(Bytes32Helper.leftPad(Bytes.ofUnsignedInt(slot)));
+    assertThat(actualValue).isEqualTo(Bytes32Helper.leftPad(Bytes.ofUnsignedInt(expectedValue)));
   }
 
   private Transaction createTransferTransaction(

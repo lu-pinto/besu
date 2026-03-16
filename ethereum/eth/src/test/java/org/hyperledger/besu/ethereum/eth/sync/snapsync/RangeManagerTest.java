@@ -17,6 +17,7 @@ package org.hyperledger.besu.ethereum.eth.sync.snapsync;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.hyperledger.besu.datatypes.Hash;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.core.TrieGenerator;
 import org.hyperledger.besu.ethereum.proof.WorldStateProofProvider;
 import org.hyperledger.besu.ethereum.trie.MerkleTrie;
@@ -154,7 +155,7 @@ public final class RangeManagerTest {
             accountStateTrie.getRootHash(), proofs, accounts, RangeManager.MAX_RANGE);
 
     assertThat(newBeginElementInRange)
-        .contains(Bytes32.leftPad(Bytes.wrap(Bytes.ofUnsignedShort(0x0b))));
+        .contains(Bytes32Helper.leftPad(Bytes.wrap(Bytes.ofUnsignedShort(0x0b))));
   }
 
   @Test

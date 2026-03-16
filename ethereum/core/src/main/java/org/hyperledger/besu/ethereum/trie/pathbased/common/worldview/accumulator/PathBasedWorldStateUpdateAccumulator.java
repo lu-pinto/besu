@@ -16,6 +16,7 @@ package org.hyperledger.besu.ethereum.trie.pathbased.common.worldview.accumulato
 
 import org.hyperledger.besu.datatypes.AccountValue;
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.StorageSlotKey;
 import org.hyperledger.besu.datatypes.Wei;
@@ -403,7 +404,7 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
                   final StorageSlotKey storageSlotKey =
                       new StorageSlotKey(Hash.wrap(keyHash), Optional.empty());
                   if (!deletedStorageUpdates.containsKey(storageSlotKey)) {
-                    final Bytes32 value = Bytes32.leftPad(RLP.decodeOne(entryValue));
+                    final Bytes32 value = Bytes32Helper.leftPad(RLP.decodeOne(entryValue));
                     deletedStorageUpdates.put(
                         storageSlotKey, new PathBasedValue<>(value, null, true));
                   }
@@ -532,7 +533,7 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
   public Bytes32 getStorageValue(final Address address, final Bytes32 slotKey) {
     StorageSlotKey storageSlotKey =
         new StorageSlotKey(hashAndSaveSlotPreImage(slotKey), Optional.of(slotKey));
-    return getStorageValueByStorageSlotKey(address, storageSlotKey).orElse(Bytes32.ZERO);
+    return getStorageValueByStorageSlotKey(address, storageSlotKey).orElse(Bytes32Helper.ZERO_BYTES32);
   }
 
   @Override
@@ -577,7 +578,7 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
       final PathBasedValue<Bytes32> value = localAccountStorage.get(storageSlotKey);
       if (value != null) {
         if (value.isLastStepCleared()) {
-          return Bytes32.ZERO;
+          return Bytes32Helper.ZERO_BYTES32;
         }
         final Bytes32 updated = value.getUpdated();
         if (updated != null) {
@@ -590,7 +591,7 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
       }
     }
     if (storageToClear.contains(address)) {
-      return Bytes32.ZERO;
+      return Bytes32Helper.ZERO_BYTES32;
     }
     return getStorageValue(address, storageKey);
   }
@@ -875,9 +876,9 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
   }
 
   private boolean isSlotEquals(final Bytes32 expectedValue, final Bytes32 existingSlotValue) {
-    final Bytes32 sanitizedExpectedValue = (expectedValue == null) ? Bytes32.ZERO : expectedValue;
+    final Bytes32 sanitizedExpectedValue = (expectedValue == null) ? Bytes32Helper.ZERO_BYTES32 : expectedValue;
     final Bytes32 sanitizedExistingSlotValue =
-        (existingSlotValue == null) ? Bytes32.ZERO : existingSlotValue;
+        (existingSlotValue == null) ? Bytes32Helper.ZERO_BYTES32 : existingSlotValue;
     return Objects.equals(sanitizedExpectedValue, sanitizedExistingSlotValue);
   }
 

@@ -21,6 +21,8 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import java.math.BigInteger;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
@@ -74,7 +76,7 @@ public class ExpOperation extends AbstractOperation {
     if (length > 32) {
       frame.pushStackItem(Bytes32.wrap(resultArray, length - 32));
     } else {
-      frame.pushStackItem(Bytes32.leftPad(Bytes.wrap(resultArray)));
+      frame.pushStackItem(Bytes32Helper.leftPad(Bytes.wrap(resultArray)));
     }
     return new OperationResult(cost, null);
   }

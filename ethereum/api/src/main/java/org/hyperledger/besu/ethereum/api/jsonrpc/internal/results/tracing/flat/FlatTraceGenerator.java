@@ -48,6 +48,7 @@ import java.util.stream.Stream;
 import com.google.common.collect.Streams;
 import com.google.common.util.concurrent.Atomics;
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 public class FlatTraceGenerator {
 
@@ -275,7 +276,7 @@ public class FlatTraceGenerator {
       final long cumulativeGasCost,
       final Deque<FlatTrace.Context> tracesContexts,
       final String opcodeString) {
-    final Bytes[] stack = traceFrame.getStack().orElseThrow();
+    final Bytes32[] stack = traceFrame.getStack().orElseThrow();
     final FlatTrace.Context lastContext = tracesContexts.peekLast();
 
     final String callingAddress = calculateCallingAddress(lastContext);
@@ -386,7 +387,7 @@ public class FlatTraceGenerator {
 
     currentContext.setGasUsed(gasUsed);
 
-    final Bytes[] stack = traceFrame.getStack().orElseThrow();
+    final Bytes32[] stack = traceFrame.getStack().orElseThrow();
     final Address refundAddress = toAddress(stack[stack.length - 1]);
     final FlatTrace.Builder subTraceBuilder =
         FlatTrace.builder()

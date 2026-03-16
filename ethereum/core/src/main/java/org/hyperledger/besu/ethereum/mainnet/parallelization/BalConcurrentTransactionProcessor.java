@@ -15,6 +15,7 @@
 package org.hyperledger.besu.ethereum.mainnet.parallelization;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.ProtocolContext;
 import org.hyperledger.besu.ethereum.core.BlockHeader;
@@ -218,7 +219,7 @@ public class BalConcurrentTransactionProcessor extends ParallelBlockTransactionP
             account = worldStateUpdater.getOrCreate(address);
           }
           account.setStorageValue(
-              slotKey, latestStorage.newValue() != null ? latestStorage.newValue() : Bytes32.ZERO);
+              slotKey, latestStorage.newValue() != null ? latestStorage.newValue() : Bytes32Helper.ZERO_BYTES32);
         }
       }
     }

@@ -25,6 +25,8 @@ import org.hyperledger.besu.evm.internal.Words;
 
 import java.util.stream.Stream;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,8 +59,8 @@ class CountLeadingZerosOperationTest {
   @ParameterizedTest
   @MethodSource("provideClzTestCases")
   void testClzOperation(final String value, final int expectedLeadingZeros) {
-    Bytes32 input = Bytes32.leftPad(Bytes.fromHexString(value));
-    Bytes32 expected = Bytes32.leftPad(Words.intBytes(expectedLeadingZeros));
+    Bytes32 input = Bytes32Helper.leftPad(Bytes.fromHexString(value));
+    Bytes32 expected = Words.intBytes(expectedLeadingZeros);
 
     when(frame.popStackItem()).thenReturn(input);
 

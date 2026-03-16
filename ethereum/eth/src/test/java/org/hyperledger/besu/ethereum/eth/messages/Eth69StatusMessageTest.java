@@ -107,7 +107,7 @@ public class Eth69StatusMessageTest {
     out.startList();
     out.writeIntScalar(69);
     out.writeBigIntegerScalar(networkId);
-    out.writeUInt256Scalar(Difficulty.of(1000L));
+    out.writeBytes32(Difficulty.of(1000L));
     out.writeBytes(bestHash.getBytes());
     out.writeBytes(genesisHash.getBytes());
     forkId.writeTo(out);

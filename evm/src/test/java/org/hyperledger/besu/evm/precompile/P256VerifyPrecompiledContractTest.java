@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.BeforeAll;
@@ -184,18 +186,18 @@ class P256VerifyPrecompiledContractTest {
         defaultResult.cachedResult().isSuccessful(),
         "Valid signature with R'.x > n should verify correctly via modular comparison");
     assertEquals(
-        Bytes32.leftPad(Bytes.of(1)),
+        Bytes32Helper.leftPad(Bytes.of(1)),
         defaultResult.cachedResult().output(),
         "Valid signature with R'.x > n should verify correctly via modular comparison");
     assertTrue(
         defaultMaybeNativeResult.cachedResult().isSuccessful(),
         "Valid signature with R'.x > n should verify correctly via modular comparison for native SignatureAlgorithm");
     assertEquals(
-        Bytes32.leftPad(Bytes.of(1)),
+        Bytes32Helper.leftPad(Bytes.of(1)),
         defaultMaybeNativeResult.cachedResult().output(),
         "Valid signature with R'.x > n should verify correctly via modular comparison for native SignatureAlgorithm");
     assertEquals(
-        Bytes32.leftPad(Bytes.of(1)),
+        Bytes32Helper.leftPad(Bytes.of(1)),
         maybeNativeResult.output(),
         "Valid signature with R'.x > n should verify correctly via modular comparison with Native implementation");
   }

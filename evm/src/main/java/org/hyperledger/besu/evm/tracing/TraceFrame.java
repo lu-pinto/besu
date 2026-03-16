@@ -45,7 +45,7 @@ public class TraceFrame {
   private final Wei value;
   private final Bytes inputData;
   private final Bytes outputData;
-  private final Optional<Bytes[]> stack;
+  private final Optional<Bytes32[]> stack;
   private final Optional<Bytes[]> memory;
   private final Optional<Map<Bytes32, Bytes32>> storage;
   private final WorldUpdater worldUpdater;
@@ -53,7 +53,7 @@ public class TraceFrame {
   private final Optional<Map<Address, Wei>> maybeRefunds;
   private final Optional<Code> maybeCode;
   private final int stackItemsProduced;
-  private final Optional<Bytes[]> stackPostExecution;
+  private final Optional<Bytes32[]> stackPostExecution;
   private final long gasRemainingPostExecution;
   private final boolean virtualOperation;
   private final Optional<MemoryEntry> maybeUpdatedMemory;
@@ -138,7 +138,7 @@ public class TraceFrame {
     private Wei value;
     private Bytes inputData;
     private Bytes outputData;
-    private Optional<Bytes[]> stack = Optional.empty();
+    private Optional<Bytes32[]> stack = Optional.empty();
     private Optional<Bytes[]> memory = Optional.empty();
     private Optional<Map<Bytes32, Bytes32>> storage = Optional.empty();
     private WorldUpdater worldUpdater;
@@ -146,7 +146,7 @@ public class TraceFrame {
     private Optional<Map<Address, Wei>> maybeRefunds = Optional.empty();
     private Optional<Code> maybeCode = Optional.empty();
     private int stackItemsProduced;
-    private Optional<Bytes[]> stackPostExecution = Optional.empty();
+    private Optional<Bytes32[]> stackPostExecution = Optional.empty();
     private long gasRemainingPostExecution;
     private boolean virtualOperation;
     private Optional<MemoryEntry> maybeUpdatedMemory = Optional.empty();
@@ -352,7 +352,7 @@ public class TraceFrame {
      * @param stack the stack as an array of byte arrays, or null for no stack
      * @return this builder instance for method chaining
      */
-    public Builder setStack(final Optional<Bytes[]> stack) {
+    public Builder setStack(final Optional<Bytes32[]> stack) {
       this.stack = stack;
       return this;
     }
@@ -441,7 +441,7 @@ public class TraceFrame {
      *     no stack
      * @return this builder instance for method chaining
      */
-    public Builder setStackPostExecution(final Optional<Bytes[]> stackPostExecution) {
+    public Builder setStackPostExecution(final Optional<Bytes32[]> stackPostExecution) {
       this.stackPostExecution = stackPostExecution;
       return this;
     }
@@ -698,7 +698,7 @@ public class TraceFrame {
    *
    * @return what is on the stack
    */
-  public Optional<Bytes[]> getStack() {
+  public Optional<Bytes32[]> getStack() {
     return stack;
   }
 
@@ -770,7 +770,7 @@ public class TraceFrame {
    *
    * @return stack content after execution
    */
-  public Optional<Bytes[]> getStackPostExecution() {
+  public Optional<Bytes32[]> getStackPostExecution() {
     return stackPostExecution;
   }
 

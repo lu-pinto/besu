@@ -19,6 +19,8 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes32;
 
 /** The Gas operation. */
@@ -37,7 +39,7 @@ public class GasOperation extends AbstractFixedCostOperation {
   public Operation.OperationResult executeFixedCostOperation(
       final MessageFrame frame, final EVM evm) {
     final long gasRemaining = frame.getRemainingGas() - gasCost;
-    final Bytes32 value = Bytes32.leftPad(Words.longBytes(gasRemaining));
+    final Bytes32 value = Words.longBytes(gasRemaining);
     frame.pushStackItem(value);
 
     return successResponse;

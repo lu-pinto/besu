@@ -23,6 +23,8 @@ import org.hyperledger.besu.evm.gascalculator.PragueGasCalculator;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 import org.hyperledger.besu.evm.testutils.TestMessageFrameBuilder;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.Test;
@@ -83,7 +85,7 @@ class DupNOperationTest {
     assertThat(result.getGasCost()).isEqualTo(3);
     assertThat(result.getPcIncrement()).isEqualTo(2);
     // Top of stack should now be a copy of item 17 (value 17)
-    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32.leftPad(Bytes.of(17)));
+    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(17)));
     // Stack should have 18 items now
     assertThat(frame.stackSize()).isEqualTo(18);
   }
@@ -253,8 +255,8 @@ class DupNOperationTest {
     final MessageFrame frame = builder.build();
 
     assertThat(frame.stackSize()).isEqualTo(18);
-    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32.leftPad(Bytes.of(0))); // top
-    assertThat(frame.getStackItem(17)).isEqualTo(Bytes32.leftPad(Bytes.of(1))); // bottom
+    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(0))); // top
+    assertThat(frame.getStackItem(17)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(1))); // bottom
 
     final OperationResult result = operation.execute(frame, null);
 
@@ -262,7 +264,7 @@ class DupNOperationTest {
     assertThat(result.getPcIncrement()).isEqualTo(2);
     // DUPN 0x80 -> n=17, duplicates stack[16] which is 0
     assertThat(frame.stackSize()).isEqualTo(19);
-    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32.leftPad(Bytes.of(0))); // duplicated value
+    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(0))); // duplicated value
   }
 
   /**

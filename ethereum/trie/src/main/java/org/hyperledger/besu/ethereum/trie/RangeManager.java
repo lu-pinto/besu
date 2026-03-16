@@ -15,6 +15,7 @@
 package org.hyperledger.besu.ethereum.trie;
 
 import org.hyperledger.besu.datatypes.Hash;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.trie.patricia.StoredMerklePatriciaTrie;
 
 import java.math.BigInteger;
@@ -153,7 +154,7 @@ public class RangeManager {
   }
 
   private static Bytes32 format(final BigInteger data) {
-    return Bytes32.leftPad(Bytes.of(data.toByteArray()).trimLeadingZeros());
+    return Bytes32Helper.leftPad(Bytes.of(data.toByteArray()).trimLeadingZeros());
   }
 
   /**

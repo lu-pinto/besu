@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.proof;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.Quantity;
 
 import java.util.List;
@@ -44,7 +45,7 @@ public class StorageEntryProof {
       return "0x";
     }
     // for ZERO we want 0x0
-    if (Bytes32.ZERO.equals(key)) {
+    if (Bytes32Helper.ZERO_BYTES32.equals(key)) {
       return Quantity.create(key);
     }
     // otherwise

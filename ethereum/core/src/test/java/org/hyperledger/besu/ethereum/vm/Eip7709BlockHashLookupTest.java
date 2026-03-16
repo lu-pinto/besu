@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.core.BlockHeader;
 import org.hyperledger.besu.ethereum.core.BlockHeaderTestFixture;
 import org.hyperledger.besu.evm.account.Account;
@@ -182,7 +183,7 @@ class Eip7709BlockHashLookupTest {
     clearInvocations(frame);
 
     BlockHashOperation op = new BlockHashOperation(new CancunGasCalculator());
-    when(frame.popStackItem()).thenReturn(Bytes32.leftPad(Bytes.ofUnsignedInt(blockNumber)));
+    when(frame.popStackItem()).thenReturn(Bytes32Helper.leftPad(Bytes.ofUnsignedInt(blockNumber)));
 
     op.execute(frame, null);
 
