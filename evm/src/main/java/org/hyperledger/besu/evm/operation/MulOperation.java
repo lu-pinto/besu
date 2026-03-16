@@ -21,6 +21,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import java.math.BigInteger;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Mul operation. */
 public class MulOperation extends AbstractFixedCostOperation {
@@ -54,9 +55,11 @@ public class MulOperation extends AbstractFixedCostOperation {
     BigInteger b = new BigInteger(1, frame.popStackItem().toArrayUnsafe());
     BigInteger c = a.multiply(b);
     byte[] cBytes = c.toByteArray();
-    Bytes result = Bytes.wrap(cBytes);
+    Bytes32 result;
     if (cBytes.length > 32) {
-      result = result.slice(cBytes.length - 32, 32);
+      result = Bytes32.wrap(cBytes, cBytes.length - 32);
+    } else {
+      result = Bytes32.leftPad(Bytes.wrap(cBytes));
     }
 
     frame.pushStackItem(result);

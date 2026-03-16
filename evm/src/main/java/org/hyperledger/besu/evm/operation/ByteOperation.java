@@ -19,6 +19,7 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Byte operation. */
 public class ByteOperation extends AbstractFixedCostOperation {
@@ -35,20 +36,20 @@ public class ByteOperation extends AbstractFixedCostOperation {
     super(0x1A, "BYTE", 2, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
   }
 
-  private static Bytes getByte(final Bytes seq, final Bytes offset) {
+  private static Bytes32 getByte(final Bytes seq, final Bytes offset) {
     Bytes trimmedOffset = offset.trimLeadingZeros();
     if (trimmedOffset.size() > 1) {
-      return Bytes.EMPTY;
+      return Bytes32.ZERO;
     }
     final int index = trimmedOffset.toInt();
 
     int size = seq.size();
     int pos = index - 32 + size;
     if (pos >= size || pos < 0) {
-      return Bytes.EMPTY;
+      return Bytes32.ZERO;
     } else {
       final byte b = seq.get(pos);
-      return Bytes.of(b);
+      return Bytes32.leftPad(Bytes.of(b));
     }
   }
 
@@ -65,11 +66,11 @@ public class ByteOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes value0 = frame.popStackItem();
-    final Bytes value1 = frame.popStackItem();
+    final Bytes32 value0 = frame.popStackItem();
+    final Bytes32 value1 = frame.popStackItem();
 
     // Stack items are reversed for the BYTE operation.
-    final Bytes result = getByte(value1, value0);
+    final Bytes32 result = getByte(value1, value0);
 
     frame.pushStackItem(result);
 

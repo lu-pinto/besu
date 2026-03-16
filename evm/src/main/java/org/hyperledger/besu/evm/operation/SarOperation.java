@@ -21,6 +21,7 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Sar operation. */
 public class SarOperation extends AbstractFixedCostOperation {
@@ -28,8 +29,8 @@ public class SarOperation extends AbstractFixedCostOperation {
   /** The Sar operation success result. */
   static final OperationResult sarSuccess = new OperationResult(3, null);
 
-  private static final Bytes ALL_BITS =
-      Bytes.fromHexString("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+  private static final Bytes32 ALL_BITS =
+      Bytes32.fromHexString("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
   /**
    * Instantiates a new Sar operation.
@@ -54,15 +55,15 @@ public class SarOperation extends AbstractFixedCostOperation {
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
     Bytes shiftAmount = frame.popStackItem();
-    final Bytes value = leftPad(frame.popStackItem());
+    final Bytes32 value = leftPad(frame.popStackItem());
     final boolean negativeNumber = value.get(0) < 0;
     if (shiftAmount.size() > 4 && (shiftAmount = shiftAmount.trimLeadingZeros()).size() > 4) {
-      frame.pushStackItem(negativeNumber ? ALL_BITS : Bytes.EMPTY);
+      frame.pushStackItem(negativeNumber ? ALL_BITS : Bytes32.ZERO);
     } else {
       final int shiftAmountInt = shiftAmount.toInt();
 
       if (shiftAmountInt >= 256 || shiftAmountInt < 0) {
-        frame.pushStackItem(negativeNumber ? ALL_BITS : Bytes.EMPTY);
+        frame.pushStackItem(negativeNumber ? ALL_BITS : Bytes32.ZERO);
       } else {
         // first perform standard shift right.
         Bytes result = value.shiftRight(shiftAmountInt);
@@ -72,7 +73,7 @@ public class SarOperation extends AbstractFixedCostOperation {
           final Bytes significantBits = ALL_BITS.shiftLeft(256 - shiftAmountInt);
           result = result.or(significantBits);
         }
-        frame.pushStackItem(result);
+        frame.pushStackItem(Bytes32.leftPad(result));
       }
     }
     return sarSuccess;

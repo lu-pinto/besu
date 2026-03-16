@@ -50,20 +50,14 @@ public class SDivOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes value0 = frame.popStackItem();
-    final Bytes value1 = frame.popStackItem();
+    final Bytes32 value0 = frame.popStackItem();
+    final Bytes32 value1 = frame.popStackItem();
 
     if (value1.isZero()) {
-      frame.pushStackItem(Bytes.EMPTY);
+      frame.pushStackItem(Bytes32.ZERO);
     } else {
-      final BigInteger b1 =
-          value0.size() < 32
-              ? new BigInteger(1, value0.toArrayUnsafe())
-              : new BigInteger(value0.toArrayUnsafe());
-      final BigInteger b2 =
-          value1.size() < 32
-              ? new BigInteger(1, value1.toArrayUnsafe())
-              : new BigInteger(value1.toArrayUnsafe());
+      final BigInteger b1 = new BigInteger(value0.toArrayUnsafe());
+      final BigInteger b2 = new BigInteger(value1.toArrayUnsafe());
       final BigInteger result = b1.divide(b2);
       Bytes resultBytes = Bytes.wrap(result.toByteArray());
       if (resultBytes.size() > 32) {

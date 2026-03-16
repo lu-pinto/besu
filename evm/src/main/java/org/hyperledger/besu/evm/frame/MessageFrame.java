@@ -423,7 +423,7 @@ public class MessageFrame {
    * @return The item at the specified offset in the stack
    * @throws UnderflowException if the offset is out of range
    */
-  public Bytes getStackItem(final int offset) {
+  public Bytes32 getStackItem(final int offset) {
     return stack.get(offset);
   }
 
@@ -433,7 +433,7 @@ public class MessageFrame {
    * @return the item at the top of the stack
    * @throws UnderflowException if the stack is empty
    */
-  public Bytes popStackItem() {
+  public Bytes32 popStackItem() {
     return stack.pop();
   }
 
@@ -449,9 +449,9 @@ public class MessageFrame {
   /**
    * Pushes the corresponding item onto the top of the stack
    *
-   * @param value The value to push onto the stack.
+   * @param value The Bytes32 value to push onto the stack.
    */
-  public void pushStackItem(final Bytes value) {
+  public void pushStackItem(final Bytes32 value) {
     stack.push(value);
   }
 
@@ -459,10 +459,10 @@ public class MessageFrame {
    * Sets the stack item at the specified offset from the top of the stack to the value
    *
    * @param offset The item's position relative to the top of the stack
-   * @param value The value to set the stack item to
+   * @param value The Bytes32 value to set the stack item to
    * @throws IllegalStateException if the stack is too small
    */
-  public void setStackItem(final int offset, final Bytes value) {
+  public void setStackItem(final int offset, final Bytes32 value) {
     stack.set(offset, value);
   }
 

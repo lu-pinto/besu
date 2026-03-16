@@ -19,9 +19,9 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Mul mod operation. */
 public class MulModOperation extends AbstractFixedCostOperation {
@@ -50,12 +50,12 @@ public class MulModOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes value0 = frame.popStackItem();
-    final Bytes value1 = frame.popStackItem();
-    final Bytes value2 = frame.popStackItem();
+    final Bytes32 value0 = frame.popStackItem();
+    final Bytes32 value1 = frame.popStackItem();
+    final Bytes32 value2 = frame.popStackItem();
 
     if (value2.isZero()) {
-      frame.pushStackItem(Bytes.EMPTY);
+      frame.pushStackItem(Bytes32.ZERO);
     } else {
       BigInteger b0 = new BigInteger(1, value0.toArrayUnsafe());
       BigInteger b1 = new BigInteger(1, value1.toArrayUnsafe());
@@ -67,10 +67,7 @@ public class MulModOperation extends AbstractFixedCostOperation {
         resultBytes = resultBytes.slice(resultBytes.size() - 32, 32);
       }
 
-      final byte[] padding = new byte[32 - resultBytes.size()];
-      Arrays.fill(padding, result.signum() < 0 ? (byte) 0xFF : 0x00);
-
-      frame.pushStackItem(Bytes.concatenate(Bytes.wrap(padding), resultBytes));
+      frame.pushStackItem(Bytes32.leftPad(resultBytes, result.signum() < 0 ? (byte) 0xFF : 0x00));
     }
 
     return mulModSuccess;

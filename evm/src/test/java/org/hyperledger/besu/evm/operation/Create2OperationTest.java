@@ -43,6 +43,7 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -327,7 +328,7 @@ public class Create2OperationTest {
             .initialGas(100000L)
             .worldUpdater(worldUpdater)
             .build();
-    messageFrame.pushStackItem(Bytes.EMPTY);
+    messageFrame.pushStackItem(Bytes32.ZERO);
     messageFrame.pushStackItem(memoryLength);
     messageFrame.pushStackItem(memoryOffset);
     messageFrame.pushStackItem(UInt256.ZERO);

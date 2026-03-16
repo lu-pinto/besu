@@ -20,7 +20,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import java.math.BigInteger;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The SLT operation. */
 public class SLtOperation extends AbstractFixedCostOperation {
@@ -50,19 +50,13 @@ public class SLtOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes value0 = frame.popStackItem();
-    final Bytes value1 = frame.popStackItem();
+    final Bytes32 value0 = frame.popStackItem();
+    final Bytes32 value1 = frame.popStackItem();
 
-    final BigInteger b0 =
-        value0.size() < 32
-            ? new BigInteger(1, value0.toArrayUnsafe())
-            : new BigInteger(value0.toArrayUnsafe());
-    final BigInteger b1 =
-        value1.size() < 32
-            ? new BigInteger(1, value1.toArrayUnsafe())
-            : new BigInteger(value1.toArrayUnsafe());
+    final BigInteger b0 = new BigInteger(value0.toArrayUnsafe());
+    final BigInteger b1 = new BigInteger(value1.toArrayUnsafe());
 
-    final Bytes result = b0.compareTo(b1) < 0 ? BYTES_ONE : Bytes.EMPTY;
+    final Bytes32 result = b0.compareTo(b1) < 0 ? BYTES_ONE : Bytes32.ZERO;
 
     frame.pushStackItem(result);
 

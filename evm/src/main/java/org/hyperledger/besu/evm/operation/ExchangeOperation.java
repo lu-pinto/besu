@@ -20,7 +20,7 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.UnderflowException;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /**
  * The EXCHANGE operation (EIP-8024).
@@ -90,8 +90,8 @@ public class ExchangeOperation extends AbstractFixedCostOperation {
     try {
       // Swap the (n+1)'th item (index n) with the (m+1)'th item (index m)
       // In Besu's 0-indexed stack, (n+1)'th is index n, (m+1)'th is index m
-      final Bytes itemN = frame.getStackItem(n);
-      final Bytes itemM = frame.getStackItem(m);
+      final Bytes32 itemN = frame.getStackItem(n);
+      final Bytes32 itemM = frame.getStackItem(m);
       frame.setStackItem(n, itemM);
       frame.setStackItem(m, itemN);
       return EXCHANGE_SUCCESS;

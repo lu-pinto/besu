@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -181,11 +182,11 @@ class Eip7709BlockHashLookupTest {
     clearInvocations(frame);
 
     BlockHashOperation op = new BlockHashOperation(new CancunGasCalculator());
-    when(frame.popStackItem()).thenReturn(Bytes.ofUnsignedInt(blockNumber));
+    when(frame.popStackItem()).thenReturn(Bytes32.leftPad(Bytes.ofUnsignedInt(blockNumber)));
 
     op.execute(frame, null);
 
-    verify(frame).pushStackItem(hash.getBytes());
+    verify(frame).pushStackItem(Bytes32.wrap(hash.getBytes().toArrayUnsafe()));
   }
 
   private BlockHeader createHeader(final long blockNumber, final BlockHeader parentHeader) {

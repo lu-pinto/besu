@@ -123,7 +123,7 @@ class ShrOperationTest {
         .thenReturn(UInt256.fromBytes(Bytes32.fromHexStringLenient(shift)))
         .thenReturn(UInt256.fromHexString(number));
     operation.execute(frame, null);
-    verify(frame).pushStackItem(Bytes.fromHexString(expectedResult));
+    verify(frame).pushStackItem(Bytes32.fromHexStringLenient(expectedResult));
   }
 
   @Test

@@ -24,7 +24,7 @@ import org.hyperledger.besu.evm.internal.OverflowException;
 import org.hyperledger.besu.evm.internal.UnderflowException;
 import org.hyperledger.besu.evm.internal.Words;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Ext code hash operation. */
 public class ExtCodeHashOperation extends AbstractOperation {
@@ -64,9 +64,9 @@ public class ExtCodeHashOperation extends AbstractOperation {
       final Account account = getAccount(address, frame);
 
       if (account == null || account.isEmpty()) {
-        frame.pushStackItem(Bytes.EMPTY);
+        frame.pushStackItem(Bytes32.ZERO);
       } else {
-        frame.pushStackItem(account.getCodeHash().getBytes());
+        frame.pushStackItem(Bytes32.wrap(account.getCodeHash().getBytes().toArrayUnsafe()));
       }
       return new OperationResult(cost, null);
 

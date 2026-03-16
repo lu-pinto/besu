@@ -34,6 +34,7 @@ import org.hyperledger.besu.evm.internal.EvmConfiguration;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -90,7 +91,7 @@ public class SelfDestructOperationTest {
             .initialGas(100_000L)
             .worldUpdater(worldUpdater)
             .build();
-    messageFrame.pushStackItem(Bytes.fromHexString(beneficiary));
+    messageFrame.pushStackItem(Bytes32.leftPad(Bytes.fromHexString(beneficiary)));
     if (newContract) {
       messageFrame.addCreate(originatorAddress);
     }

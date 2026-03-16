@@ -173,9 +173,9 @@ class SarOperationTest {
     when(frame.getRemainingGas()).thenReturn(100L);
     when(frame.popStackItem())
         .thenReturn(Bytes32.fromHexStringLenient(shift))
-        .thenReturn(Bytes.fromHexString(number));
+        .thenReturn(Bytes32.fromHexStringLenient(number));
     operation.execute(frame, null);
-    verify(frame).pushStackItem(Bytes.fromHexString(expectedResult));
+    verify(frame).pushStackItem(Bytes32.fromHexStringLenient(expectedResult));
   }
 
   @Test

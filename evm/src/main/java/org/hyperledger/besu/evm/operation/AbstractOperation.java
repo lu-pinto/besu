@@ -21,6 +21,7 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /**
@@ -29,7 +30,7 @@ import org.apache.tuweni.units.bigints.UInt256;
  */
 public abstract class AbstractOperation implements Operation {
 
-  static final Bytes BYTES_ONE = Bytes.of(1);
+  static final Bytes32 BYTES_ONE = Bytes32.leftPad(Bytes.of(1));
 
   private final int opcode;
   private final String name;

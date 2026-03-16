@@ -366,20 +366,20 @@ public class SarOperationPropertyBasedTest {
   private Bytes runOperation(
       final Bytes shift, final Bytes value, final OperationExecutor executor) {
     final MessageFrame frame = mock(MessageFrame.class);
-    final Deque<Bytes> stack = new ArrayDeque<>();
-    stack.push(value);
-    stack.push(shift);
+    final Deque<Bytes32> stack = new ArrayDeque<>();
+    stack.push(Bytes32.leftPad(value));
+    stack.push(Bytes32.leftPad(shift));
 
     when(frame.popStackItem()).thenAnswer(invocation -> stack.pop());
 
-    final Bytes[] result = new Bytes[1];
+    final Bytes32[] result = new Bytes32[1];
     doAnswer(
             invocation -> {
               result[0] = invocation.getArgument(0);
               return null;
             })
         .when(frame)
-        .pushStackItem(any(Bytes.class));
+        .pushStackItem(any(Bytes32.class));
 
     executor.execute(frame);
     return result[0];

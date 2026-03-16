@@ -25,6 +25,7 @@ import org.hyperledger.besu.evm.internal.UnderflowException;
 import org.hyperledger.besu.evm.internal.Words;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Ext code size operation. */
 public class ExtCodeSizeOperation extends AbstractOperation {
@@ -62,7 +63,7 @@ public class ExtCodeSizeOperation extends AbstractOperation {
       } else {
         final Account account = getAccount(address, frame);
 
-        Bytes codeSize = (account == null) ? Bytes.EMPTY : Words.intBytes(account.getCode().size());
+        Bytes32 codeSize = (account == null) ? Bytes32.ZERO : Bytes32.leftPad(Words.intBytes(account.getCode().size()));
         frame.pushStackItem(codeSize);
 
         return new OperationResult(cost, null);

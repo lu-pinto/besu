@@ -21,7 +21,7 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import java.util.Arrays;
 import java.util.Objects;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /**
  * An operand stack for the Ethereum Virtual machine (EVM). The stack grows 32 entries at a time if
@@ -29,6 +29,9 @@ import org.apache.tuweni.bytes.Bytes;
  *
  * <p>The operand stack is responsible for storing the current operands that the EVM can execute. It
  * is assumed to have a fixed maximum size but may have a smaller memory footprint.
+ *
+ * <p>All stack entries are stored as {@link Bytes32} values, ensuring consistent 32-byte
+ * representation as required by the EVM specification.
  */
 public class OperandStack {
   /**
@@ -51,7 +54,7 @@ public class OperandStack {
    */
   private static final int MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
 
-  private Bytes[] entries;
+  private Bytes32[] entries;
 
   private final int maxSize;
   private int currentCapacity;
@@ -68,7 +71,7 @@ public class OperandStack {
     checkArgument(maxSize <= MAX_ARRAY_LENGTH, "max size is too large");
 
     this.currentCapacity = Math.min(INITIAL_SIZE, maxSize);
-    this.entries = new Bytes[currentCapacity];
+    this.entries = new Bytes32[currentCapacity];
     this.maxSize = maxSize;
     this.top = -1;
   }
@@ -79,7 +82,7 @@ public class OperandStack {
    * @param offset the offset
    * @return the operand
    */
-  public Bytes get(final int offset) {
+  public Bytes32 get(final int offset) {
     if (offset < 0 || offset >= size()) {
       throw new UnderflowException();
     }
@@ -92,12 +95,12 @@ public class OperandStack {
    *
    * @return the operand
    */
-  public Bytes pop() {
+  public Bytes32 pop() {
     if (top < 0) {
       throw new UnderflowException();
     }
 
-    final Bytes removed = entries[top];
+    final Bytes32 removed = entries[top];
     entries[top--] = null;
     return removed;
   }
@@ -107,7 +110,7 @@ public class OperandStack {
    *
    * @return the T entry
    */
-  public Bytes peek() {
+  public Bytes32 peek() {
     if (top < 0) {
       return null;
     } else {
@@ -162,7 +165,7 @@ public class OperandStack {
   }
 
   private void expandEntries(final int nextSize) {
-    var nextEntries = new Bytes[nextSize];
+    var nextEntries = new Bytes32[nextSize];
     System.arraycopy(entries, 0, nextEntries, 0, currentCapacity);
     entries = nextEntries;
     currentCapacity = nextSize;
@@ -173,7 +176,7 @@ public class OperandStack {
    *
    * @param operand the operand
    */
-  public void push(final Bytes operand) {
+  public void push(final Bytes32 operand) {
     final int nextTop = top + 1;
     if (nextTop >= maxSize) {
       throw new OverflowException();
@@ -200,7 +203,7 @@ public class OperandStack {
    * @param offset the offset
    * @param operand the operand
    */
-  public void set(final int offset, final Bytes operand) {
+  public void set(final int offset, final Bytes32 operand) {
     if (offset < 0) {
       throw new UnderflowException();
     } else if (offset > top) {

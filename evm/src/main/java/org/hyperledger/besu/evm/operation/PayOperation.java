@@ -30,7 +30,7 @@ import org.hyperledger.besu.evm.internal.Words;
 
 import java.util.Objects;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The PAY operation */
 public class PayOperation extends AbstractOperation {
@@ -50,7 +50,7 @@ public class PayOperation extends AbstractOperation {
       return new OperationResult(0, ExceptionalHaltReason.ILLEGAL_STATE_CHANGE);
     }
 
-    final Bytes toAddressBytes = frame.getStackItem(0);
+    final Bytes32 toAddressBytes = frame.getStackItem(0);
     final int numberOfLowBytes = toAddressBytes.size() - toAddressBytes.numberOfLeadingZeroBytes();
     if (numberOfLowBytes > 20) {
       return new OperationResult(0, ExceptionalHaltReason.ADDRESS_OUT_OF_RANGE);

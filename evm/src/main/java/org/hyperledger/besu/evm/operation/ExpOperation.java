@@ -22,6 +22,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import java.math.BigInteger;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Exp operation. */
 public class ExpOperation extends AbstractOperation {
@@ -51,8 +52,8 @@ public class ExpOperation extends AbstractOperation {
    */
   public static OperationResult staticOperation(
       final MessageFrame frame, final GasCalculator gasCalculator) {
-    final Bytes number = frame.popStackItem();
-    final Bytes power = frame.popStackItem();
+    final Bytes32 number = frame.popStackItem();
+    final Bytes32 power = frame.popStackItem();
 
     final int numBytes = (power.bitLength() + 7) / 8;
 
@@ -71,9 +72,9 @@ public class ExpOperation extends AbstractOperation {
     byte[] resultArray = result.toByteArray();
     int length = resultArray.length;
     if (length > 32) {
-      frame.pushStackItem(Bytes.wrap(resultArray, length - 32, 32));
+      frame.pushStackItem(Bytes32.wrap(resultArray, length - 32));
     } else {
-      frame.pushStackItem(Bytes.wrap(resultArray));
+      frame.pushStackItem(Bytes32.leftPad(Bytes.wrap(resultArray)));
     }
     return new OperationResult(cost, null);
   }

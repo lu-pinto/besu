@@ -46,6 +46,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.junit.jupiter.api.Test;
 
@@ -156,9 +157,9 @@ class AbstractCreateOperationTest {
             .worldUpdater(worldUpdater)
             .build();
     final Deque<MessageFrame> messageFrameStack = messageFrame.getMessageFrameStack();
-    messageFrame.pushStackItem(Bytes.ofUnsignedLong(contract.size()));
+    messageFrame.pushStackItem(Bytes32.leftPad(Bytes.ofUnsignedLong(contract.size())));
     messageFrame.pushStackItem(memoryOffset);
-    messageFrame.pushStackItem(Bytes.EMPTY);
+    messageFrame.pushStackItem(Bytes32.ZERO);
     messageFrame.expandMemory(0, 500);
     messageFrame.writeMemory(memoryOffset.trimLeadingZeros().toInt(), contract.size(), contract);
 

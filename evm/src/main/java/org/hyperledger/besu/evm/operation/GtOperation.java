@@ -18,7 +18,7 @@ import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The GT operation. */
 public class GtOperation extends AbstractFixedCostOperation {
@@ -48,10 +48,10 @@ public class GtOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes value0 = frame.popStackItem().trimLeadingZeros();
-    final Bytes value1 = frame.popStackItem().trimLeadingZeros();
+    final Bytes32 value0 = frame.popStackItem();
+    final Bytes32 value1 = frame.popStackItem();
 
-    final Bytes result = (value0.compareTo(value1) > 0 ? BYTES_ONE : Bytes.EMPTY);
+    final Bytes32 result = (value0.trimLeadingZeros().compareTo(value1.trimLeadingZeros()) > 0 ? BYTES_ONE : Bytes32.ZERO);
 
     frame.pushStackItem(result);
 

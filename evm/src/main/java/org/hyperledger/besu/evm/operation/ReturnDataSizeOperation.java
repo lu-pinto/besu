@@ -20,6 +20,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Return data size operation. */
 public class ReturnDataSizeOperation extends AbstractFixedCostOperation {
@@ -37,7 +38,7 @@ public class ReturnDataSizeOperation extends AbstractFixedCostOperation {
   public Operation.OperationResult executeFixedCostOperation(
       final MessageFrame frame, final EVM evm) {
     final Bytes returnData = frame.getReturnData();
-    frame.pushStackItem(Words.longBytes(returnData.size()));
+    frame.pushStackItem(Bytes32.leftPad(Words.longBytes(returnData.size())));
 
     return successResponse;
   }

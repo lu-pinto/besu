@@ -35,6 +35,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.worldstate.CodeDelegationHelper;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /**
  * A skeleton class for implementing call operations.
@@ -48,8 +49,8 @@ public abstract class AbstractCallOperation extends AbstractOperation {
   protected static final OperationResult UNDERFLOW_RESPONSE =
       new OperationResult(0L, ExceptionalHaltReason.INSUFFICIENT_STACK_ITEMS);
 
-  static final Bytes LEGACY_SUCCESS_STACK_ITEM = BYTES_ONE;
-  static final Bytes LEGACY_FAILURE_STACK_ITEM = Bytes.EMPTY;
+  static final Bytes32 LEGACY_SUCCESS_STACK_ITEM = BYTES_ONE;
+  static final Bytes32 LEGACY_FAILURE_STACK_ITEM = Bytes32.ZERO;
 
   /**
    * Instantiates a new Abstract call operation.
@@ -327,7 +328,7 @@ public abstract class AbstractCallOperation extends AbstractOperation {
     frame.incrementRemainingGas(gasRemaining);
 
     frame.popStackItems(getStackItemsConsumed());
-    Bytes resultItem;
+    Bytes32 resultItem;
 
     resultItem = getCallResultStackItem(childFrame);
     frame.pushStackItem(resultItem);
@@ -336,7 +337,7 @@ public abstract class AbstractCallOperation extends AbstractOperation {
     frame.setPC(currentPC + 1);
   }
 
-  Bytes getCallResultStackItem(final MessageFrame childFrame) {
+  Bytes32 getCallResultStackItem(final MessageFrame childFrame) {
     if (childFrame.getState() == State.COMPLETED_SUCCESS) {
       return LEGACY_SUCCESS_STACK_ITEM;
     } else {

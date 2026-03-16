@@ -59,11 +59,11 @@ public class SubOperation extends AbstractFixedCostOperation {
     byte[] resultArray = result.toByteArray();
     int length = resultArray.length;
     if (length >= 32) {
-      frame.pushStackItem(Bytes.wrap(resultArray, length - 32, 32));
+      frame.pushStackItem(Bytes32.wrap(resultArray, length - 32));
     } else if (result.signum() < 0) {
       frame.pushStackItem(Bytes32.leftPad(Bytes.wrap(resultArray), (byte) -1));
     } else {
-      frame.pushStackItem(Bytes.wrap(resultArray));
+      frame.pushStackItem(Bytes32.leftPad(Bytes.wrap(resultArray)));
     }
 
     return subSuccess;

@@ -26,6 +26,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 
+import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.Test;
 
 class SlotNumOperationTest {
@@ -46,7 +47,7 @@ class SlotNumOperationTest {
     final MessageFrame frame = createMessageFrame(100L, expectedSlotNumber);
     final Operation operation = new SlotNumOperation(gasCalculator);
     final OperationResult result = operation.execute(frame, null);
-    verify(frame).pushStackItem(Words.longBytes(expectedSlotNumber));
+    verify(frame).pushStackItem(Bytes32.leftPad(Words.longBytes(expectedSlotNumber)));
     assertSuccessResult(result);
   }
 
@@ -55,7 +56,7 @@ class SlotNumOperationTest {
     final MessageFrame frame = createMessageFrame(100L, 0L);
     final Operation operation = new SlotNumOperation(gasCalculator);
     final OperationResult result = operation.execute(frame, null);
-    verify(frame).pushStackItem(Words.longBytes(0L));
+    verify(frame).pushStackItem(Bytes32.leftPad(Words.longBytes(0L)));
     assertSuccessResult(result);
   }
 
@@ -65,7 +66,7 @@ class SlotNumOperationTest {
     final MessageFrame frame = createMessageFrame(100L, maxSlotNumber);
     final Operation operation = new SlotNumOperation(gasCalculator);
     final OperationResult result = operation.execute(frame, null);
-    verify(frame).pushStackItem(Words.longBytes(maxSlotNumber));
+    verify(frame).pushStackItem(Bytes32.leftPad(Words.longBytes(maxSlotNumber)));
     assertSuccessResult(result);
   }
 

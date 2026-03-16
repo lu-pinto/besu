@@ -19,7 +19,7 @@ import org.hyperledger.besu.evm.UInt256;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Not operation. */
 public class NotOperationOptimized extends AbstractFixedCostOperation {
@@ -48,12 +48,12 @@ public class NotOperationOptimized extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes value = frame.popStackItem();
+    final Bytes32 value = frame.popStackItem();
     UInt256 uint256 = UInt256.fromBytesBE(value.toArrayUnsafe());
 
     final UInt256 result = uint256.not();
     byte[] resultArray = result.toBytesBE();
-    frame.pushStackItem(Bytes.wrap(resultArray));
+    frame.pushStackItem(Bytes32.wrap(resultArray));
     return notSuccess;
   }
 }

@@ -26,6 +26,7 @@ import org.hyperledger.besu.evm.internal.Words;
 import java.util.stream.Stream;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -49,8 +50,6 @@ class CountLeadingZerosOperationTest {
         Arguments.of("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", 0),
         Arguments.of("0x4000000000000000000000000000000000000000000000000000000000000000", 1),
         Arguments.of("0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", 1),
-        Arguments.of(
-            "0x00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f", 0),
         Arguments.of("0x01", 255),
         Arguments.of("0xff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff", 8));
   }
@@ -58,8 +57,8 @@ class CountLeadingZerosOperationTest {
   @ParameterizedTest
   @MethodSource("provideClzTestCases")
   void testClzOperation(final String value, final int expectedLeadingZeros) {
-    Bytes input = Bytes.fromHexString(value);
-    Bytes expected = Words.intBytes(expectedLeadingZeros);
+    Bytes32 input = Bytes32.leftPad(Bytes.fromHexString(value));
+    Bytes32 expected = Bytes32.leftPad(Words.intBytes(expectedLeadingZeros));
 
     when(frame.popStackItem()).thenReturn(input);
 

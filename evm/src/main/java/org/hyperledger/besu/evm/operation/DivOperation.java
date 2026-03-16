@@ -21,6 +21,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import java.math.BigInteger;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Div operation. */
 public class DivOperation extends AbstractFixedCostOperation {
@@ -51,11 +52,11 @@ public class DivOperation extends AbstractFixedCostOperation {
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
 
-    final Bytes value0 = frame.popStackItem();
-    final Bytes value1 = frame.popStackItem();
+    final Bytes32 value0 = frame.popStackItem();
+    final Bytes32 value1 = frame.popStackItem();
 
     if (value1.isZero()) {
-      frame.pushStackItem(Bytes.EMPTY);
+      frame.pushStackItem(Bytes32.ZERO);
     } else {
       BigInteger b1 = new BigInteger(1, value0.toArrayUnsafe());
       BigInteger b2 = new BigInteger(1, value1.toArrayUnsafe());
@@ -66,9 +67,9 @@ public class DivOperation extends AbstractFixedCostOperation {
       byte[] resultArray = result.toByteArray();
       int length = resultArray.length;
       if (length > 32) {
-        frame.pushStackItem(Bytes.wrap(resultArray, length - 32, 32));
+        frame.pushStackItem(Bytes32.wrap(resultArray, length - 32));
       } else {
-        frame.pushStackItem(Bytes.wrap(resultArray));
+        frame.pushStackItem(Bytes32.leftPad(Bytes.wrap(resultArray)));
       }
     }
 

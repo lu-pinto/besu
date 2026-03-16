@@ -20,7 +20,7 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.UnderflowException;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /**
  * The SWAPN operation (EIP-8024).
@@ -85,8 +85,8 @@ public class SwapNOperation extends AbstractFixedCostOperation {
     try {
       // Swap the top of stack (index 0) with the (n+1)'th item (index n)
       // In Besu's 0-indexed stack, top is index 0, (n+1)'th is index n
-      final Bytes top = frame.getStackItem(0);
-      final Bytes nthItem = frame.getStackItem(n);
+      final Bytes32 top = frame.getStackItem(0);
+      final Bytes32 nthItem = frame.getStackItem(n);
       frame.setStackItem(0, nthItem);
       frame.setStackItem(n, top);
       return SWAPN_SUCCESS;

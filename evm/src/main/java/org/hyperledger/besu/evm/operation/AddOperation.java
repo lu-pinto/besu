@@ -21,6 +21,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import java.math.BigInteger;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Add operation. */
 public class AddOperation extends AbstractFixedCostOperation {
@@ -58,9 +59,9 @@ public class AddOperation extends AbstractFixedCostOperation {
     byte[] resultArray = result.toByteArray();
     int length = resultArray.length;
     if (length > 32) {
-      frame.pushStackItem(Bytes.wrap(resultArray, length - 32, 32));
+      frame.pushStackItem(Bytes32.wrap(resultArray, length - 32));
     } else {
-      frame.pushStackItem(Bytes.wrap(resultArray));
+      frame.pushStackItem(Bytes32.leftPad(Bytes.wrap(resultArray)));
     }
 
     return addSuccess;

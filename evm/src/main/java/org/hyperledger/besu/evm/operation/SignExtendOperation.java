@@ -50,7 +50,7 @@ public class SignExtendOperation extends AbstractFixedCostOperation {
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes value0 = frame.popStackItem().trimLeadingZeros();
-    final Bytes value1 = Bytes32.leftPad(frame.popStackItem());
+    final Bytes32 value1 = frame.popStackItem();
 
     final MutableBytes32 result = MutableBytes32.create();
 

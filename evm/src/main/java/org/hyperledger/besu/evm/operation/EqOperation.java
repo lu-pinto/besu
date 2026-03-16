@@ -20,8 +20,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import java.util.Arrays;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Eq operation. */
 public class EqOperation extends AbstractFixedCostOperation {
@@ -57,9 +56,9 @@ public class EqOperation extends AbstractFixedCostOperation {
     final byte[] b = frame.popStackItem().toArrayUnsafe();
     final int nonZeroA = firstNonZeroIndex(a);
     final int nonZeroB = firstNonZeroIndex(b);
-    Bytes result = UInt256.ZERO;
+    Bytes32 result = Bytes32.ZERO;
     if (Arrays.equals(a, nonZeroA, a.length, b, nonZeroB, b.length)) {
-      result = UInt256.ONE;
+      result = BYTES_ONE;
     }
 
     frame.pushStackItem(result);

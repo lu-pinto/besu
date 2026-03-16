@@ -20,7 +20,7 @@ import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Push0 operation. */
 public class Push0Operation extends AbstractFixedCostOperation {
@@ -49,7 +49,7 @@ public class Push0Operation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    frame.pushStackItem(Bytes.EMPTY);
+    frame.pushStackItem(Bytes32.ZERO);
     return push0Success;
   }
 }

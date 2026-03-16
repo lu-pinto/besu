@@ -19,7 +19,7 @@ import org.hyperledger.besu.evm.UInt256;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Add operation. */
 public class AddOperationOptimized extends AbstractFixedCostOperation {
@@ -50,13 +50,13 @@ public class AddOperationOptimized extends AbstractFixedCostOperation {
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
 
-    final Bytes value0 = frame.popStackItem();
-    final Bytes value1 = frame.popStackItem();
+    final Bytes32 value0 = frame.popStackItem();
+    final Bytes32 value1 = frame.popStackItem();
 
     byte[] b0 = value0.toArrayUnsafe();
     byte[] b1 = value1.toArrayUnsafe();
     byte[] resultArray = UInt256.add(b0, b1);
-    frame.pushStackItem(Bytes.wrap(resultArray));
+    frame.pushStackItem(Bytes32.wrap(resultArray));
 
     return addSuccess;
   }

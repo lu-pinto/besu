@@ -35,6 +35,7 @@ import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Abstract create operation. */
 public abstract class AbstractCreateOperation extends AbstractOperation {
@@ -165,7 +166,7 @@ public abstract class AbstractCreateOperation extends AbstractOperation {
     final long inputSize = clampedToLong(frame.getStackItem(2));
     frame.readMutableMemory(inputOffset, inputSize);
     frame.popStackItems(getStackItemsConsumed());
-    frame.pushStackItem(Bytes.EMPTY);
+    frame.pushStackItem(Bytes32.ZERO);
   }
 
   private void spawnChildMessage(final MessageFrame parent, final Code code) {
@@ -229,7 +230,7 @@ public abstract class AbstractCreateOperation extends AbstractOperation {
       onSuccess(frame, createdAddress);
     } else {
       frame.setReturnData(childFrame.getOutputData());
-      frame.pushStackItem(Bytes.EMPTY);
+      frame.pushStackItem(Bytes32.ZERO);
       onFailure(frame, childFrame.getExceptionalHaltReason());
     }
 

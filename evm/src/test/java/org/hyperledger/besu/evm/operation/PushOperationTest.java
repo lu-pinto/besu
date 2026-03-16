@@ -60,24 +60,24 @@ public class PushOperationTest {
   @Test
   void unpaddedPushDoesntReachEndCode() {
     staticOperation(frame, byteCode, 0, byteCode.length - 2);
-    assertThat(frame.getStackItem(0).equals(Bytes.fromHexString("0x0102"))).isTrue();
+    assertThat(frame.getStackItem(0).equals(Bytes32.fromHexStringLenient("0x0102"))).isTrue();
   }
 
   @Test
   void unpaddedPushUpReachesEndCode() {
     staticOperation(frame, byteCode, 0, byteCode.length - 1);
-    assertThat(frame.getStackItem(0).equals(Bytes.fromHexString("0x010203"))).isTrue();
+    assertThat(frame.getStackItem(0).equals(Bytes32.fromHexStringLenient("0x010203"))).isTrue();
   }
 
   @Test
   void paddedPush() {
     staticOperation(frame, byteCode, 1, byteCode.length - 1);
-    assertThat(frame.getStackItem(0).equals(Bytes.fromHexString("0x020300"))).isTrue();
+    assertThat(frame.getStackItem(0).equals(Bytes32.fromHexStringLenient("0x020300"))).isTrue();
   }
 
   @Test
   void oobPush() {
     staticOperation(frame, byteCode, byteCode.length, byteCode.length - 1);
-    assertThat(frame.getStackItem(0).equals(Bytes.EMPTY)).isTrue();
+    assertThat(frame.getStackItem(0).equals(Bytes32.ZERO)).isTrue();
   }
 }

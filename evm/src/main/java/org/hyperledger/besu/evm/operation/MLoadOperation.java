@@ -21,7 +21,7 @@ import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The M load operation. */
 public class MLoadOperation extends AbstractOperation {
@@ -44,7 +44,7 @@ public class MLoadOperation extends AbstractOperation {
       return new OperationResult(cost, ExceptionalHaltReason.INSUFFICIENT_GAS);
     }
 
-    final Bytes value = frame.readMutableMemory(location, 32, true).copy();
+    final Bytes32 value = Bytes32.wrap(frame.readMutableMemory(location, 32, true).copy().toArrayUnsafe());
 
     frame.pushStackItem(value);
     return new OperationResult(cost, null);

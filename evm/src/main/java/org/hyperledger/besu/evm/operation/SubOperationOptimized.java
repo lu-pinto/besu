@@ -19,7 +19,7 @@ import org.hyperledger.besu.evm.UInt256;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Sub (Subtract) operation. */
 public class SubOperationOptimized extends AbstractFixedCostOperation {
@@ -49,12 +49,12 @@ public class SubOperationOptimized extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes value0 = frame.popStackItem();
-    final Bytes value1 = frame.popStackItem();
+    final Bytes32 value0 = frame.popStackItem();
+    final Bytes32 value1 = frame.popStackItem();
 
     byte[] b0 = value0.toArrayUnsafe();
     byte[] b1 = value1.toArrayUnsafe();
-    Bytes resultBytes = Bytes.wrap(UInt256.sub(b0, b1));
+    Bytes32 resultBytes = Bytes32.wrap(UInt256.sub(b0, b1));
 
     frame.pushStackItem(resultBytes);
     return subSuccess;

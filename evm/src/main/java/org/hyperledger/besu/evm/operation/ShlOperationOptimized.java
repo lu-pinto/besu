@@ -20,7 +20,6 @@ import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
-import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
 /**
@@ -56,19 +55,19 @@ public class ShlOperationOptimized extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes shiftAmount = frame.popStackItem();
-    final Bytes value = frame.popStackItem();
+    final Bytes32 shiftAmount = frame.popStackItem();
+    final Bytes32 value = frame.popStackItem();
     if (value.isZero()) {
-      frame.pushStackItem(Bytes.EMPTY);
+      frame.pushStackItem(Bytes32.ZERO);
       return shlSuccess;
     }
 
-    final byte[] valueBytes = Bytes32.leftPad(value).toArrayUnsafe();
+    final byte[] valueBytes = value.toArrayUnsafe();
     final byte[] shiftBytes = shiftAmount.toArrayUnsafe();
 
     // shift >= 256, push All 0s
     if (isShiftOverflow(shiftBytes)) {
-      frame.pushStackItem(Bytes.EMPTY);
+      frame.pushStackItem(Bytes32.ZERO);
       return shlSuccess;
     }
 
@@ -88,9 +87,9 @@ public class ShlOperationOptimized extends AbstractFixedCostOperation {
    * @param shift the left shift amount in bits (0–255)
    * @return the shifted 256-bit value
    */
-  private static Bytes shl256(final byte[] in, final int shift) {
+  private static Bytes32 shl256(final byte[] in, final int shift) {
     if (shift == 0) {
-      return Bytes.wrap(in);
+      return Bytes32.wrap(in);
     }
 
     final int shiftBytes = shift >>> 3; // /8
@@ -112,6 +111,6 @@ public class ShlOperationOptimized extends AbstractFixedCostOperation {
       }
     }
 
-    return Bytes.wrap(out);
+    return Bytes32.wrap(out);
   }
 }

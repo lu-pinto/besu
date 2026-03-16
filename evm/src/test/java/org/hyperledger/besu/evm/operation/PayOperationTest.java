@@ -30,6 +30,7 @@ import org.hyperledger.besu.evm.testutils.TestMessageFrameBuilder;
 import java.util.List;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -58,7 +59,7 @@ public class PayOperationTest {
             99,
             100,
             ExceptionalHaltReason.INSUFFICIENT_GAS,
-            RECIPIENT_ADDRESS.getBytes(),
+            Bytes32.leftPad(RECIPIENT_ADDRESS.getBytes()),
             true),
         Arguments.of(
             "enough gas",
@@ -147,7 +148,7 @@ public class PayOperationTest {
             5000,
             9100,
             ExceptionalHaltReason.INSUFFICIENT_GAS,
-            RECIPIENT_ADDRESS.getBytes(),
+            Bytes32.leftPad(RECIPIENT_ADDRESS.getBytes()),
             Wei.of(1000),
             Wei.of(2000),
             Wei.of(2000),
@@ -298,7 +299,7 @@ public class PayOperationTest {
             101,
             0,
             ExceptionalHaltReason.ILLEGAL_STATE_CHANGE,
-            RECIPIENT_ADDRESS.getBytes(),
+            Bytes32.leftPad(RECIPIENT_ADDRESS.getBytes()),
             Wei.of(0),
             Wei.of(2000),
             Wei.of(2000),
@@ -310,7 +311,7 @@ public class PayOperationTest {
             10000,
             0,
             ExceptionalHaltReason.ILLEGAL_STATE_CHANGE,
-            RECIPIENT_ADDRESS.getBytes(),
+            Bytes32.leftPad(RECIPIENT_ADDRESS.getBytes()),
             Wei.of(1000),
             Wei.of(2000),
             Wei.of(2000),
@@ -322,7 +323,7 @@ public class PayOperationTest {
             9200,
             0,
             ExceptionalHaltReason.ILLEGAL_STATE_CHANGE,
-            RECIPIENT_ADDRESS.getBytes(),
+            Bytes32.leftPad(RECIPIENT_ADDRESS.getBytes()),
             Wei.of(1000),
             Wei.of(2000),
             Wei.of(2000),
@@ -334,7 +335,7 @@ public class PayOperationTest {
             9200,
             0,
             ExceptionalHaltReason.ILLEGAL_STATE_CHANGE,
-            RECIPIENT_ADDRESS.getBytes(),
+            Bytes32.leftPad(RECIPIENT_ADDRESS.getBytes()),
             Wei.ZERO,
             Wei.of(2000),
             Wei.of(2000),
@@ -346,7 +347,7 @@ public class PayOperationTest {
             9000,
             0,
             ExceptionalHaltReason.ILLEGAL_STATE_CHANGE,
-            RECIPIENT_ADDRESS.getBytes(),
+            Bytes32.leftPad(RECIPIENT_ADDRESS.getBytes()),
             Wei.of(1),
             Wei.of(2000),
             Wei.of(2000),
@@ -424,7 +425,7 @@ public class PayOperationTest {
             "exact 21 bytes address",
             Bytes.fromHexString("0x341a2e456a2c23ca9a8c7d765521bcee2188d66a76"),
             ExceptionalHaltReason.ADDRESS_OUT_OF_RANGE,
-            Bytes.fromHexString("0x341a2e456a2c23ca9a8c7d765521bcee2188d66a76"),
+            Bytes32.leftPad(Bytes.fromHexString("0x341a2e456a2c23ca9a8c7d765521bcee2188d66a76")),
             0),
         Arguments.of(
             "20 bytes address padded to 32 bytes",
@@ -436,7 +437,7 @@ public class PayOperationTest {
             "22 byte address size padded to 32 bytes",
             Bytes.fromHexString("0x341a2e456a2c23ca9a8c7d765521bcee2188d66a76ad", 32),
             ExceptionalHaltReason.ADDRESS_OUT_OF_RANGE,
-            Bytes.fromHexString("0x341a2e456a2c23ca9a8c7d765521bcee2188d66a76ad", 32),
+            Bytes32.wrap(Bytes.fromHexString("0x341a2e456a2c23ca9a8c7d765521bcee2188d66a76ad", 32)),
             0));
   }
 

@@ -19,7 +19,7 @@ import org.hyperledger.besu.evm.UInt256;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The XOR operation. */
 public class OrOperationOptimized extends AbstractFixedCostOperation {
@@ -48,13 +48,13 @@ public class OrOperationOptimized extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes value0 = frame.popStackItem();
-    final Bytes value1 = frame.popStackItem();
+    final Bytes32 value0 = frame.popStackItem();
+    final Bytes32 value1 = frame.popStackItem();
     UInt256 b0 = UInt256.fromBytesBE(value0.toArrayUnsafe());
     UInt256 b1 = UInt256.fromBytesBE(value1.toArrayUnsafe());
     UInt256 result = b0.or(b1);
     byte[] resultArray = result.toBytesBE();
-    frame.pushStackItem(Bytes.wrap(resultArray));
+    frame.pushStackItem(Bytes32.wrap(resultArray));
     return xorSuccess;
   }
 }

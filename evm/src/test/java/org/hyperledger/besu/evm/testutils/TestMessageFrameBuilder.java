@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 public class TestMessageFrameBuilder {
 
@@ -166,7 +167,7 @@ public class TestMessageFrameBuilder {
             .isStatic(isStatic)
             .build();
     frame.setPC(pc);
-    stackItems.forEach(frame::pushStackItem);
+    stackItems.forEach(item -> frame.pushStackItem(Bytes32.leftPad(item)));
     frame.writeMemory(0, memory.size(), memory);
     return frame;
   }

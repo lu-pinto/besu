@@ -16,7 +16,7 @@ package org.hyperledger.besu.evm.operation;
 
 import java.util.Arrays;
 
-import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 
 /**
  * Utility class for shared constants and helpers used by optimized 256-bit shift operations (SHL,
@@ -28,7 +28,7 @@ public final class Shift256Operations {
   private static final byte[] ZERO_31 = new byte[31];
 
   /** All ones (0xFF repeated 32 times). */
-  public static final Bytes ALL_ONES = Bytes.repeat((byte) 0xFF, 32);
+  public static final Bytes32 ALL_ONES = Bytes32.fromHexString("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
   /** Raw byte array of ALL_ONES for use with {@code Arrays.equals} (JVM intrinsic). */
   static final byte[] ALL_ONES_BYTES = ALL_ONES.toArrayUnsafe();

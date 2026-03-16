@@ -36,6 +36,7 @@ import org.hyperledger.besu.evm.operation.BlockHashOperation;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -148,14 +149,14 @@ class BlockchainBasedBlockHashLookupTest {
 
     BlockHashOperation op = new BlockHashOperation(new CancunGasCalculator());
     when(messageFrameMock.getRemainingGas()).thenReturn(10_000_000L);
-    when(messageFrameMock.popStackItem()).thenReturn(Bytes.ofUnsignedInt(blockNumber));
+    when(messageFrameMock.popStackItem()).thenReturn(Bytes32.leftPad(Bytes.ofUnsignedInt(blockNumber)));
     when(messageFrameMock.getBlockValues()).thenReturn(blockValuesMock);
     when(messageFrameMock.getBlockHashLookup()).thenReturn(lookup);
     when(blockValuesMock.getNumber()).thenReturn((long) CURRENT_BLOCK_NUMBER);
 
     op.execute(messageFrameMock, null);
 
-    verify(messageFrameMock).pushStackItem(hash.getBytes());
+    verify(messageFrameMock).pushStackItem(Bytes32.wrap(hash.getBytes().toArrayUnsafe()));
   }
 
   private BlockHeader createHeader(final int blockNumber, final BlockHeader parentHeader) {

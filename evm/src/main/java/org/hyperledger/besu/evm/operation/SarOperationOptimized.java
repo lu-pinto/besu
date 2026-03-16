@@ -24,7 +24,6 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import java.util.Arrays;
 
-import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
 /** The Sar operation. */
@@ -55,20 +54,19 @@ public class SarOperationOptimized extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes shiftAmount = frame.popStackItem();
-    final Bytes value = frame.popStackItem();
+    final Bytes32 shiftAmount = frame.popStackItem();
+    final Bytes32 value = frame.popStackItem();
     byte[] valueBytes = value.toArrayUnsafe();
     if (Arrays.equals(valueBytes, ALL_ONES_BYTES)) {
       frame.pushStackItem(ALL_ONES);
       return sarSuccess;
     }
-    valueBytes = Bytes32.leftPad(value).toArrayUnsafe();
     final byte[] shiftBytes = shiftAmount.toArrayUnsafe();
     final boolean negative = (valueBytes[0] & 0x80) != 0;
 
     // shift >= 256, push All 1s if negative, All 0s otherwise
     if (isShiftOverflow(shiftBytes)) {
-      frame.pushStackItem(negative ? ALL_ONES : Bytes.EMPTY);
+      frame.pushStackItem(negative ? ALL_ONES : Bytes32.ZERO);
       return sarSuccess;
     }
     final int shift = shiftBytes.length == 0 ? 0 : (shiftBytes[shiftBytes.length - 1] & 0xFF);
@@ -92,8 +90,8 @@ public class SarOperationOptimized extends AbstractFixedCostOperation {
    * @param negative whether the input value is negative (sign bit set)
    * @return the shifted 256-bit value
    */
-  private static Bytes sar256(final byte[] in, final int shift, final boolean negative) {
-    if (shift == 0) return Bytes.wrap(in);
+  private static Bytes32 sar256(final byte[] in, final int shift, final boolean negative) {
+    if (shift == 0) return Bytes32.wrap(in);
 
     final int shiftBytes = shift >>> 3; // /8
     final int shiftBits = shift & 7; // %8
@@ -118,6 +116,6 @@ public class SarOperationOptimized extends AbstractFixedCostOperation {
       }
     }
 
-    return Bytes.wrap(out);
+    return Bytes32.wrap(out);
   }
 }
