@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.SortedMap;
 
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 public class WorldStateProof {
 
@@ -34,12 +34,12 @@ public class WorldStateProof {
 
   private final Proof<Bytes> accountProof;
 
-  private final Map<UInt256, Proof<Bytes>> storageProofs;
+  private final Map<Bytes32, Proof<Bytes>> storageProofs;
 
   public WorldStateProof(
       final PmtStateTrieAccountValue stateTrieAccountValue,
       final Proof<Bytes> accountProof,
-      final SortedMap<UInt256, Proof<Bytes>> storageProofs) {
+      final SortedMap<Bytes32, Proof<Bytes>> storageProofs) {
     this.stateTrieAccountValue = Optional.ofNullable(stateTrieAccountValue);
     this.accountProof = accountProof;
     this.storageProofs = storageProofs;
@@ -59,20 +59,20 @@ public class WorldStateProof {
     return accountProof.getProofRelatedNodes();
   }
 
-  public List<UInt256> getStorageKeys() {
+  public List<Bytes32> getStorageKeys() {
     return new ArrayList<>(storageProofs.keySet());
   }
 
-  public UInt256 getStorageValue(final UInt256 key) {
+  public Bytes32 getStorageValue(final Bytes32 key) {
     Optional<Bytes> value = storageProofs.get(key).getValue();
     if (value.isEmpty()) {
-      return UInt256.ZERO;
+      return Bytes32.ZERO;
     } else {
       return RLP.input(value.get()).readUInt256Scalar();
     }
   }
 
-  public List<Bytes> getStorageProof(final UInt256 key) {
+  public List<Bytes> getStorageProof(final Bytes32 key) {
     return storageProofs.get(key).getProofRelatedNodes();
   }
 }

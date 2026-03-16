@@ -29,7 +29,7 @@ import org.hyperledger.besu.evm.internal.EvmConfiguration;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 public class BonsaiReferenceTestUpdateAccumulator extends BonsaiWorldStateUpdateAccumulator {
   private final BonsaiPreImageProxy preImageProxy;
@@ -51,7 +51,7 @@ public class BonsaiReferenceTestUpdateAccumulator extends BonsaiWorldStateUpdate
   }
 
   @Override
-  protected Hash hashAndSaveSlotPreImage(final UInt256 slotKey) {
+  protected Hash hashAndSaveSlotPreImage(final Bytes32 slotKey) {
     return preImageProxy.hashAndSavePreImage(slotKey);
   }
 
@@ -69,7 +69,7 @@ public class BonsaiReferenceTestUpdateAccumulator extends BonsaiWorldStateUpdate
     getStorageToUpdate()
         .forEach(
             (k, v) -> {
-              StorageConsumingMap<StorageSlotKey, PathBasedValue<UInt256>> newMap =
+              StorageConsumingMap<StorageSlotKey, PathBasedValue<Bytes32>> newMap =
                   new StorageConsumingMap<>(k, new ConcurrentHashMap<>(), v.getConsumer());
               v.forEach((key, value) -> newMap.put(key, value.copy()));
               copy.getStorageToUpdate().put(k, newMap);

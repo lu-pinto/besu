@@ -26,7 +26,7 @@ import java.util.Optional;
 import graphql.schema.DataFetchingEnvironment;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
+
 
 /**
  * The AccountAdapter class extends the AdapterBase class. It provides methods to get the account
@@ -143,11 +143,11 @@ public class AccountAdapter extends AdapterBase {
       return query
           .getAndMapWorldState(
               blockNumber.orElse(query.headBlockNumber()),
-              ws -> Optional.of((Bytes32) ws.get(address).getStorageValue(UInt256.fromBytes(slot))))
+              ws -> Optional.of(ws.get(address).getStorageValue(slot)))
           .get();
     } else {
       return account
-          .map(a -> (Bytes32) a.getStorageValue(UInt256.fromBytes(slot)))
+          .map(a -> a.getStorageValue(slot))
           .orElse(Bytes32.ZERO);
     }
   }

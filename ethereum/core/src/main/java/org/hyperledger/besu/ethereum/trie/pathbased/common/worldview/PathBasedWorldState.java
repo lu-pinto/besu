@@ -46,7 +46,7 @@ import java.util.stream.Stream;
 import jakarta.validation.constraints.NotNull;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -372,7 +372,7 @@ public abstract class PathBasedWorldState
   }
 
   @Override
-  public UInt256 getPriorStorageValue(final Address address, final UInt256 storageKey) {
+  public Bytes32 getPriorStorageValue(final Address address, final Bytes32 storageKey) {
     return getStorageValue(address, storageKey);
   }
 
@@ -425,10 +425,10 @@ public abstract class PathBasedWorldState
   public abstract Account get(final Address address);
 
   @Override
-  public abstract UInt256 getStorageValue(final Address address, final UInt256 storageKey);
+  public abstract Bytes32 getStorageValue(final Address address, final Bytes32 storageKey);
 
   @Override
-  public abstract Optional<UInt256> getStorageValueByStorageSlotKey(
+  public abstract Optional<Bytes32> getStorageValueByStorageSlotKey(
       final Address address, final StorageSlotKey storageSlotKey);
 
   @Override

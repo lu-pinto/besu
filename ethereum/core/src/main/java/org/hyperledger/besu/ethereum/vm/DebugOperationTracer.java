@@ -37,7 +37,7 @@ import java.util.OptionalLong;
 import java.util.TreeMap;
 
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 public class DebugOperationTracer implements OperationTracer {
 
@@ -127,7 +127,7 @@ public class DebugOperationTracer implements OperationTracer {
       traceFrames.add(updatedLast);
     }
 
-    final Optional<Map<UInt256, UInt256>> storage = captureStorage(frame);
+    final Optional<Map<Bytes32, Bytes32>> storage = captureStorage(frame);
     final Optional<Map<Address, Wei>> maybeRefunds =
         frame.getRefunds().isEmpty() ? Optional.empty() : Optional.of(frame.getRefunds());
     long thisGasCost = operationResult.getGasCost();
@@ -267,15 +267,15 @@ public class DebugOperationTracer implements OperationTracer {
     traceFrames.add(traceFrame);
   }
 
-  private Optional<Map<UInt256, UInt256>> captureStorage(final MessageFrame frame) {
+  private Optional<Map<Bytes32, Bytes32>> captureStorage(final MessageFrame frame) {
     if (!options.traceStorage()) {
       return Optional.empty();
     }
     try {
-      Map<UInt256, UInt256> updatedStorage =
+      Map<Bytes32, Bytes32> updatedStorage =
           frame.getWorldUpdater().getAccount(frame.getRecipientAddress()).getUpdatedStorage();
       if (updatedStorage.isEmpty()) return Optional.empty();
-      final Map<UInt256, UInt256> storageContents = new TreeMap<>(updatedStorage);
+      final Map<Bytes32, Bytes32> storageContents = new TreeMap<>(updatedStorage);
 
       return Optional.of(storageContents);
     } catch (final ModificationNotAllowedException e) {

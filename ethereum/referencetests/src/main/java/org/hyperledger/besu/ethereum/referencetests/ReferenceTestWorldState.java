@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** Represent a worldState for testing. */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -41,12 +41,12 @@ public interface ReferenceTestWorldState extends MutableWorldState {
     private final long nonce;
     private final Wei balance;
     private final Bytes code;
-    private final Map<UInt256, UInt256> storage;
+    private final Map<Bytes32, Bytes32> storage;
 
-    private static Map<UInt256, UInt256> parseStorage(final Map<String, String> values) {
-      final Map<UInt256, UInt256> storage = new HashMap<>();
+    private static Map<Bytes32, Bytes32> parseStorage(final Map<String, String> values) {
+      final Map<Bytes32, Bytes32> storage = new HashMap<>();
       for (final Map.Entry<String, String> entry : values.entrySet()) {
-        storage.put(UInt256.fromHexString(entry.getKey()), UInt256.fromHexString(entry.getValue()));
+        storage.put(Bytes32.fromHexStringLenient(entry.getKey()), Bytes32.fromHexStringLenient(entry.getValue()));
       }
       return storage;
     }
@@ -74,7 +74,7 @@ public interface ReferenceTestWorldState extends MutableWorldState {
       return code;
     }
 
-    public Map<UInt256, UInt256> getStorage() {
+    public Map<Bytes32, Bytes32> getStorage() {
       return storage;
     }
   }
@@ -85,7 +85,7 @@ public interface ReferenceTestWorldState extends MutableWorldState {
     account.setNonce(toCopy.getNonce());
     account.setBalance(toCopy.getBalance());
     account.setCode(toCopy.getCode());
-    for (final Map.Entry<UInt256, UInt256> entry : toCopy.getStorage().entrySet()) {
+    for (final Map.Entry<Bytes32, Bytes32> entry : toCopy.getStorage().entrySet()) {
       account.setStorageValue(entry.getKey(), entry.getValue());
     }
   }

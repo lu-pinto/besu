@@ -39,6 +39,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 public class TrieLogFactoryImpl implements TrieLogFactory {
@@ -119,18 +120,18 @@ public class TrieLogFactoryImpl implements TrieLogFactory {
         writeRlp(codeChange, output, RLPOutput::writeBytes);
       }
 
-      final Map<StorageSlotKey, TrieLog.LogTuple<UInt256>> storageChanges =
+      final Map<StorageSlotKey, TrieLog.LogTuple<Bytes32>> storageChanges =
           layer.getStorageChanges().get(address);
       if (storageChanges == null) {
         output.writeNull();
       } else {
         output.startList();
-        for (final Map.Entry<StorageSlotKey, TrieLog.LogTuple<UInt256>> storageChangeEntry :
+        for (final Map.Entry<StorageSlotKey, TrieLog.LogTuple<Bytes32>> storageChangeEntry :
             storageChanges.entrySet()) {
           output.startList();
           // do not write slotKey, it is not used in mainnet bonsai trielogs
           output.writeBytes(storageChangeEntry.getKey().getSlotHash().getBytes());
-          writeInnerRlp(storageChangeEntry.getValue(), output, RLPOutput::writeUInt256Scalar);
+          writeInnerRlp(storageChangeEntry.getValue(), output, (o, v) -> o.writeUInt256Scalar(UInt256.fromBytes(v)));
           output.endList();
         }
         output.endList();
@@ -185,14 +186,14 @@ public class TrieLogFactoryImpl implements TrieLogFactory {
       if (input.nextIsNull()) {
         input.skipNext();
       } else {
-        final Map<StorageSlotKey, PathBasedValue<UInt256>> storageChanges = new TreeMap<>();
+        final Map<StorageSlotKey, PathBasedValue<Bytes32>> storageChanges = new TreeMap<>();
         input.enterList();
         while (!input.isEndOfCurrentList()) {
           input.enterList();
           final Hash slotHash = Hash.wrap(input.readBytes32());
           final StorageSlotKey storageSlotKey = new StorageSlotKey(slotHash, Optional.empty());
-          final UInt256 oldValue = nullOrValue(input, RLPInput::readUInt256Scalar);
-          final UInt256 newValue = nullOrValue(input, RLPInput::readUInt256Scalar);
+          final Bytes32 oldValue = nullOrValue(input, RLPInput::readUInt256Scalar);
+          final Bytes32 newValue = nullOrValue(input, RLPInput::readUInt256Scalar);
           final boolean isCleared = getOptionalIsCleared(input);
           storageChanges.put(storageSlotKey, new PathBasedValue<>(oldValue, newValue, isCleared));
           input.leaveList();

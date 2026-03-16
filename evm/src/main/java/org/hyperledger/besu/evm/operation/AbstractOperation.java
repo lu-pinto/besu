@@ -22,7 +22,6 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
 
 /**
  * All {@link Operation} implementations should inherit from this class to get the setting of some
@@ -159,9 +158,9 @@ public abstract class AbstractOperation implements Operation {
    * @param frame the current message execution frame
    * @return the value stored at the specified key
    */
-  protected UInt256 getStorageValue(
-      final Account account, final UInt256 slotKey, final MessageFrame frame) {
-    final UInt256 slotValue = account.getStorageValue(slotKey);
+  protected Bytes32 getStorageValue(
+      final Account account, final Bytes32 slotKey, final MessageFrame frame) {
+    final Bytes32 slotValue = account.getStorageValue(slotKey);
     frame
         .getEip7928AccessList()
         .ifPresent(t -> t.addSlotAccessForAccount(account.getAddress(), slotKey));

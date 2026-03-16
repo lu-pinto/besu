@@ -24,7 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 /**
  * An interface for interacting with TrieLog objects, which represent changes to accounts, code, and
@@ -71,7 +71,7 @@ public interface TrieLog {
    * @param <U> the type of LogTuple representing the storage changes
    * @return a map of addresses to their storage changes
    */
-  <U extends LogTuple<UInt256>> Map<Address, Map<StorageSlotKey, U>> getStorageChanges();
+  <U extends LogTuple<Bytes32>> Map<Address, Map<StorageSlotKey, U>> getStorageChanges();
 
   /**
    * Gets the storage changes for a specific address.
@@ -80,7 +80,7 @@ public interface TrieLog {
    * @param <U> the type of LogTuple representing the storage changes
    * @return a map of storage slot keys to their changes
    */
-  <U extends LogTuple<UInt256>> Map<StorageSlotKey, U> getStorageChanges(final Address address);
+  <U extends LogTuple<Bytes32>> Map<StorageSlotKey, U> getStorageChanges(final Address address);
 
   /**
    * Gets the prior code for a specific address, if available.
@@ -106,7 +106,7 @@ public interface TrieLog {
    * @return an Optional containing the prior storage value if available, otherwise an empty
    *     Optional
    */
-  Optional<UInt256> getPriorStorageByStorageSlotKey(
+  Optional<Bytes32> getPriorStorageByStorageSlotKey(
       final Address address, final StorageSlotKey storageSlotKey);
 
   /**
@@ -116,7 +116,7 @@ public interface TrieLog {
    * @param storageSlotKey the storage slot key to get the storage value for
    * @return an Optional containing the storage value if available, otherwise an empty Optional
    */
-  Optional<UInt256> getStorageByStorageSlotKey(
+  Optional<Bytes32> getStorageByStorageSlotKey(
       final Address address, final StorageSlotKey storageSlotKey);
 
   /**

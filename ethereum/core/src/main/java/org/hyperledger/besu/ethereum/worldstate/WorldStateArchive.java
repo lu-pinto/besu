@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 public interface WorldStateArchive extends Closeable {
   Optional<WorldState> get(Hash rootHash, Hash blockHash);
@@ -78,7 +78,7 @@ public interface WorldStateArchive extends Closeable {
   <U> Optional<U> getAccountProof(
       final BlockHeader blockHeader,
       final Address accountAddress,
-      final List<UInt256> accountStorageKeys,
+      final List<Bytes32> accountStorageKeys,
       final Function<Optional<WorldStateProof>, ? extends Optional<U>> mapper);
 
   /**

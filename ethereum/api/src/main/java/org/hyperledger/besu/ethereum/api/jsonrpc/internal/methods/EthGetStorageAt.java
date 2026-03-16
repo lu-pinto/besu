@@ -25,7 +25,7 @@ import org.hyperledger.besu.ethereum.api.jsonrpc.internal.parameters.JsonRpcPara
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.response.RpcErrorType;
 import org.hyperledger.besu.ethereum.api.query.BlockchainQueries;
 
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 public class EthGetStorageAt extends AbstractBlockParameterOrBlockHashMethod {
   public EthGetStorageAt(final BlockchainQueries blockchainQueries) {
@@ -57,7 +57,7 @@ public class EthGetStorageAt extends AbstractBlockParameterOrBlockHashMethod {
       throw new InvalidJsonRpcParameters(
           "Invalid address parameter (index 0)", RpcErrorType.INVALID_ADDRESS_PARAMS, e);
     }
-    final UInt256 position;
+    final Bytes32 position;
     try {
       position = request.getRequiredParameter(1, UInt256Parameter.class).getValue();
     } catch (JsonRpcParameterException e) {
@@ -67,7 +67,7 @@ public class EthGetStorageAt extends AbstractBlockParameterOrBlockHashMethod {
     return blockchainQueries
         .get()
         .storageAt(address, position, blockHash)
-        .map(UInt256::toHexString)
+        .map(Bytes32::toHexString)
         .orElse(null);
   }
 }

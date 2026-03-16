@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AccountChangesJson {
@@ -65,7 +65,7 @@ public class AccountChangesJson {
         Address.fromHexString(address),
         storageChanges.stream().map(SlotChangesJson::toSlotChanges).toList(),
         storageReads.stream()
-            .map(s -> new SlotRead(new StorageSlotKey(UInt256.fromHexString(s))))
+            .map(s -> new SlotRead(new StorageSlotKey(Bytes32.fromHexStringLenient(s))))
             .toList(),
         balanceChanges.stream().map(BalanceChangeJson::toBalanceChange).toList(),
         nonceChanges.stream().map(NonceChangeJson::toNonceChange).toList(),
@@ -95,7 +95,7 @@ public class AccountChangesJson {
 
     public SlotChanges toSlotChanges() {
       return new SlotChanges(
-          new StorageSlotKey(UInt256.fromHexString(slot)),
+          new StorageSlotKey(Bytes32.fromHexStringLenient(slot)),
           slotChanges.stream().map(StorageChangeJson::toStorageChange).toList());
     }
   }
@@ -116,7 +116,7 @@ public class AccountChangesJson {
     public StorageChange toStorageChange() {
       return new StorageChange(
           decodeIndex(blockAccessIndex),
-          postValue != null ? UInt256.fromHexString(postValue) : UInt256.ZERO);
+          postValue != null ? Bytes32.fromHexStringLenient(postValue) : Bytes32.ZERO);
     }
   }
 

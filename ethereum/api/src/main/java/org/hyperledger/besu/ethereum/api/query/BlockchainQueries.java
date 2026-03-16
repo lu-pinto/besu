@@ -65,6 +65,7 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.apache.tuweni.units.bigints.UInt256s;
 import org.slf4j.Logger;
@@ -216,8 +217,8 @@ public class BlockchainQueries {
    * @param blockNumber The blockNumber that is being queried.
    * @return The value at the storage index being queried.
    */
-  public Optional<UInt256> storageAt(
-      final Address address, final UInt256 storageIndex, final long blockNumber) {
+  public Optional<Bytes32> storageAt(
+      final Address address, final Bytes32 storageIndex, final long blockNumber) {
     final Hash blockHash = getBlockHashByNumber(blockNumber).orElse(Hash.EMPTY);
 
     return storageAt(address, storageIndex, blockHash);
@@ -231,10 +232,10 @@ public class BlockchainQueries {
    * @param blockHash The blockHash that is being queried.
    * @return The value at the storage index being queried.
    */
-  public Optional<UInt256> storageAt(
-      final Address address, final UInt256 storageIndex, final Hash blockHash) {
+  public Optional<Bytes32> storageAt(
+      final Address address, final Bytes32 storageIndex, final Hash blockHash) {
     return fromAccount(
-        address, blockHash, account -> account.getStorageValue(storageIndex), UInt256.ZERO);
+        address, blockHash, account -> account.getStorageValue(storageIndex), Bytes32.ZERO);
   }
 
   /**

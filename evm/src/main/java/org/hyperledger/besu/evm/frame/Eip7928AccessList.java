@@ -16,7 +16,7 @@ package org.hyperledger.besu.evm.frame;
 
 import org.hyperledger.besu.datatypes.Address;
 
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 /**
  * Interface for tracking accessed accounts and storage slots during transaction execution for the
@@ -41,9 +41,9 @@ public interface Eip7928AccessList {
    * the same (account, slot) pair should have no effect.
    *
    * @param address the {@link Address} of the account whose storage was accessed
-   * @param slotKey the {@link UInt256} key of the storage slot accessed
+   * @param slotKey the {@link Bytes32} key of the storage slot accessed
    */
-  void addSlotAccessForAccount(final Address address, final UInt256 slotKey);
+  void addSlotAccessForAccount(final Address address, final Bytes32 slotKey);
 
   /** Clears all tracked access list entries. */
   void clear();

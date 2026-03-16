@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 @JsonPropertyOrder({"pc", "op", "gas", "gasCost", "depth", "stack", "memory", "storage"})
 public class StructLog {
@@ -66,7 +66,7 @@ public class StructLog {
     reason = traceFrame.getRevertReason().map(bytes -> toCompactHex(bytes, true)).orElse(null);
   }
 
-  private static Map<String, String> formatStorage(final Map<UInt256, UInt256> storage) {
+  private static Map<String, String> formatStorage(final Map<Bytes32, Bytes32> storage) {
     final Map<String, String> formattedStorage = new TreeMap<>();
     storage.forEach(
         (key, value) -> formattedStorage.put(toCompactHex(key, false), toCompactHex(value, false)));

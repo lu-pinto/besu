@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Streams;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
 
 interface GenesisReader {
   String CONFIG_FIELD = "config";
@@ -164,7 +163,7 @@ interface GenesisReader {
           long nonce = 0;
           Wei balance = Wei.ZERO;
           Bytes code = null;
-          Map<UInt256, UInt256> storage = Map.of();
+          Map<Bytes32, Bytes32> storage = Map.of();
           Bytes32 privateKey = null;
           parser.nextToken(); // consume start object
           while (parser.nextToken() != JsonToken.END_OBJECT) {
@@ -189,9 +188,9 @@ interface GenesisReader {
                 parser.nextToken();
                 storage = new HashMap<>();
                 while (parser.nextToken() != JsonToken.END_OBJECT) {
-                  final var key = UInt256.fromHexString(parser.currentName());
+                  final var key = Bytes32.fromHexStringLenient(parser.currentName());
                   parser.nextToken();
-                  final var value = UInt256.fromHexString(parser.getText());
+                  final var value = Bytes32.fromHexStringLenient(parser.getText());
                   storage.put(key, value);
                 }
                 break;
@@ -230,7 +229,7 @@ interface GenesisReader {
       return Wei.of(val);
     }
 
-    static Map<UInt256, UInt256> getStorageMap(final ObjectNode json, final String key) {
+    static Map<Bytes32, Bytes32> getStorageMap(final ObjectNode json, final String key) {
       return JsonUtil.getObjectNode(json, key)
           .map(
               storageMap ->
@@ -238,8 +237,8 @@ interface GenesisReader {
                       .propertyStream()
                       .collect(
                           Collectors.toMap(
-                              e -> UInt256.fromHexString(e.getKey()),
-                              e -> UInt256.fromHexString(e.getValue().asText()))))
+                              e -> Bytes32.fromHexStringLenient(e.getKey()),
+                              e -> Bytes32.fromHexStringLenient(e.getValue().asText()))))
           .orElse(Map.of());
     }
   }

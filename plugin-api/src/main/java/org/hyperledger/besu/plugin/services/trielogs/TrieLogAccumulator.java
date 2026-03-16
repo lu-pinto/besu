@@ -21,7 +21,7 @@ import org.hyperledger.besu.datatypes.StorageSlotKey;
 import java.util.Map;
 
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** Accumulator interface for providing trie updates for creating TrieLogs. */
 public interface TrieLogAccumulator {
@@ -45,6 +45,6 @@ public interface TrieLogAccumulator {
    *
    * @return the storage to update
    */
-  Map<Address, ? extends Map<StorageSlotKey, ? extends TrieLog.LogTuple<UInt256>>>
+  Map<Address, ? extends Map<StorageSlotKey, ? extends TrieLog.LogTuple<Bytes32>>>
       getStorageToUpdate();
 }

@@ -28,17 +28,16 @@ import java.util.Optional;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
 
 public interface PathBasedWorldView extends WorldView {
 
   Optional<Bytes> getCode(Address address, final Hash codeHash);
 
-  UInt256 getStorageValue(Address address, UInt256 key);
+  Bytes32 getStorageValue(Address address, Bytes32 key);
 
-  Optional<UInt256> getStorageValueByStorageSlotKey(Address address, StorageSlotKey storageSlotKey);
+  Optional<Bytes32> getStorageValueByStorageSlotKey(Address address, StorageSlotKey storageSlotKey);
 
-  UInt256 getPriorStorageValue(Address address, UInt256 key);
+  Bytes32 getPriorStorageValue(Address address, Bytes32 key);
 
   /**
    * Retrieve all the storage values of an account.

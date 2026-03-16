@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 public class EthGetProof extends AbstractBlockParameterOrBlockHashMethod {
   public EthGetProof(final BlockchainQueries blockchain) {
@@ -69,7 +69,7 @@ public class EthGetProof extends AbstractBlockParameterOrBlockHashMethod {
       throw new InvalidJsonRpcParameters(
           "Invalid address parameter (index 0)", RpcErrorType.INVALID_ADDRESS_PARAMS, e);
     }
-    final List<UInt256> storageKeys = getStorageKeys(requestContext);
+    final List<Bytes32> storageKeys = getStorageKeys(requestContext);
 
     final Blockchain blockchain = getBlockchainQueries().getBlockchain();
     final WorldStateArchive worldStateArchive = getBlockchainQueries().getWorldStateArchive();
@@ -106,10 +106,10 @@ public class EthGetProof extends AbstractBlockParameterOrBlockHashMethod {
     return (JsonRpcResponse) handleParamTypes(requestContext);
   }
 
-  private List<UInt256> getStorageKeys(final JsonRpcRequestContext request) {
+  private List<Bytes32> getStorageKeys(final JsonRpcRequestContext request) {
     try {
       return Arrays.stream(request.getRequiredParameter(1, String[].class))
-          .map(UInt256::fromHexString)
+          .map(Bytes32::fromHexString)
           .collect(Collectors.toList());
     } catch (JsonRpcParameterException e) {
       throw new InvalidJsonRpcParameters(

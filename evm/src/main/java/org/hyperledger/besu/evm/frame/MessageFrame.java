@@ -51,7 +51,6 @@ import com.google.common.collect.Table;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.bytes.MutableBytes;
-import org.apache.tuweni.units.bigints.UInt256;
 
 /**
  * A container object for all the states associated with a message.
@@ -749,7 +748,7 @@ public class MessageFrame {
    * @param storageAddress the storage address
    * @param value the value
    */
-  public void storageWasUpdated(final UInt256 storageAddress, final Bytes value) {
+  public void storageWasUpdated(final Bytes32 storageAddress, final Bytes32 value) {
     maybeUpdatedStorage = Optional.of(new StorageEntry(storageAddress, value));
   }
 

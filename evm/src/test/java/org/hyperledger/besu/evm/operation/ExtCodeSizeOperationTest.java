@@ -31,6 +31,7 @@ import org.hyperledger.besu.evm.toy.ToyWorld;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.junit.jupiter.api.Test;
 
@@ -103,7 +104,7 @@ class ExtCodeSizeOperationTest {
     final Bytes code = Bytes.fromHexString("0xabcdef");
     final MutableAccount account = worldStateUpdater.getOrCreate(REQUESTED_ADDRESS);
     account.setCode(code);
-    final UInt256 value =
+    final Bytes32 value =
         UInt256.fromBytes(Words.fromAddress(REQUESTED_ADDRESS))
             .add(UInt256.valueOf(2).pow(UInt256.valueOf(160)));
     final MessageFrame frame = createMessageFrame(value);
@@ -116,7 +117,7 @@ class ExtCodeSizeOperationTest {
     final Bytes code = Bytes.fromHexString("0xEFF09f918bf09f9fa9");
     final MutableAccount account = worldStateUpdater.getOrCreate(REQUESTED_ADDRESS);
     account.setCode(code);
-    final UInt256 value =
+    final Bytes32 value =
         UInt256.fromBytes(Words.fromAddress(REQUESTED_ADDRESS))
             .add(UInt256.valueOf(2).pow(UInt256.valueOf(160)));
 
@@ -136,11 +137,11 @@ class ExtCodeSizeOperationTest {
   }
 
   private MessageFrame createMessageFrame(final Address requestedAddress) {
-    final UInt256 stackItem = Words.fromAddress(requestedAddress);
+    final Bytes32 stackItem = Words.fromAddress(requestedAddress);
     return createMessageFrame(stackItem);
   }
 
-  private MessageFrame createMessageFrame(final UInt256 stackItem) {
+  private MessageFrame createMessageFrame(final Bytes32 stackItem) {
     final BlockValues blockValues = new FakeBlockValues(1337);
     final MessageFrame frame =
         new TestMessageFrameBuilder()

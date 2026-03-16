@@ -16,7 +16,7 @@ package org.hyperledger.besu.evm.gascalculator;
 
 import java.util.function.Supplier;
 
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Constantinople gas calculator. */
 public class ConstantinopleGasCalculator extends ByzantiumGasCalculator {
@@ -38,15 +38,15 @@ public class ConstantinopleGasCalculator extends ByzantiumGasCalculator {
   @Override
   // As per https://eips.ethereum.org/EIPS/eip-1283
   public long calculateStorageCost(
-      final UInt256 newValue,
-      final Supplier<UInt256> currentValue,
-      final Supplier<UInt256> originalValue) {
+      final Bytes32 newValue,
+      final Supplier<Bytes32> currentValue,
+      final Supplier<Bytes32> originalValue) {
 
-    final UInt256 localCurrentValue = currentValue.get();
+    final Bytes32 localCurrentValue = currentValue.get();
     if (localCurrentValue.equals(newValue)) {
       return SSTORE_NO_OP_COST;
     } else {
-      final UInt256 localOriginalValue = originalValue.get();
+      final Bytes32 localOriginalValue = originalValue.get();
       if (localOriginalValue.equals(localCurrentValue)) {
         return localOriginalValue.isZero()
             ? SSTORE_FIRST_DIRTY_NEW_STORAGE_COST
@@ -60,15 +60,15 @@ public class ConstantinopleGasCalculator extends ByzantiumGasCalculator {
   @Override
   // As per https://eips.ethereum.org/EIPS/eip-1283
   public long calculateStorageRefundAmount(
-      final UInt256 newValue,
-      final Supplier<UInt256> currentValue,
-      final Supplier<UInt256> originalValue) {
+      final Bytes32 newValue,
+      final Supplier<Bytes32> currentValue,
+      final Supplier<Bytes32> originalValue) {
 
-    UInt256 localCurrentValue = currentValue.get();
+    Bytes32 localCurrentValue = currentValue.get();
     if (localCurrentValue.equals(newValue)) {
       return 0L;
     } else {
-      UInt256 localOriginalValue = originalValue.get();
+      Bytes32 localOriginalValue = originalValue.get();
       if (localOriginalValue.equals(localCurrentValue)) {
         if (localOriginalValue.isZero()) {
           return 0L;

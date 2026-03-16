@@ -24,7 +24,6 @@ import org.hyperledger.besu.evm.internal.OverflowException;
 import org.hyperledger.besu.evm.internal.UnderflowException;
 
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
 
 /** The SLoad operation. */
 public class SLoadOperation extends AbstractOperation {
@@ -55,13 +54,13 @@ public class SLoadOperation extends AbstractOperation {
     try {
       final Account account = getAccount(frame.getRecipientAddress(), frame);
       final Address address = account.getAddress();
-      final Bytes32 key = UInt256.fromBytes(frame.popStackItem());
+      final Bytes32 key = frame.popStackItem();
       final boolean slotIsWarm = frame.warmUpStorage(address, key);
       final long cost = slotIsWarm ? warmCost : coldCost;
       if (frame.getRemainingGas() < cost) {
         return new OperationResult(cost, ExceptionalHaltReason.INSUFFICIENT_GAS);
       } else {
-        frame.pushStackItem(getStorageValue(account, UInt256.fromBytes(key), frame));
+        frame.pushStackItem(getStorageValue(account, key, frame));
         return slotIsWarm ? warmSuccess : coldSuccess;
       }
     } catch (final UnderflowException ufe) {

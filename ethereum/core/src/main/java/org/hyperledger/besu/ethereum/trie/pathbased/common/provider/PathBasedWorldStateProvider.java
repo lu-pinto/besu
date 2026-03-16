@@ -45,7 +45,7 @@ import java.util.function.Function;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -372,7 +372,7 @@ public abstract class PathBasedWorldStateProvider implements WorldStateArchive {
   public <U> Optional<U> getAccountProof(
       final BlockHeader blockHeader,
       final Address accountAddress,
-      final List<UInt256> accountStorageKeys,
+      final List<Bytes32> accountStorageKeys,
       final Function<Optional<WorldStateProof>, ? extends Optional<U>> mapper) {
     try (PathBasedWorldState ws =
         (PathBasedWorldState)

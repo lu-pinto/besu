@@ -58,7 +58,7 @@ public class BonsaiReferenceTestWorldStateStorage extends BonsaiWorldStateLayerS
                 Map.Entry::getKey,
                 e ->
                     AccountStorageEntry.create(
-                        UInt256.fromBytes(RLP.decodeValue(e.getValue())),
+                        Bytes32.leftPad(RLP.decodeValue(e.getValue())),
                         e.getKey(),
                         preImageProxy.getStorageTrieKeyPreimage(e.getKey())),
                 (a, b) -> a,

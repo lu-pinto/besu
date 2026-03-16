@@ -24,7 +24,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
 
 /** Acts as both a Hasher and PreImageStorage for Bonsai storage format. */
 public interface BonsaiPreImageProxy extends WorldStatePreimageStorage {
@@ -52,8 +51,8 @@ public interface BonsaiPreImageProxy extends WorldStatePreimageStorage {
     }
 
     @Override
-    public Optional<UInt256> getStorageTrieKeyPreimage(final Bytes32 trieKey) {
-      return Optional.ofNullable(preImageCache.get(trieKey)).map(UInt256::fromBytes);
+    public Optional<Bytes32> getStorageTrieKeyPreimage(final Bytes32 trieKey) {
+      return Optional.ofNullable(preImageCache.get(trieKey)).map(Bytes32::wrap);
     }
 
     @Override

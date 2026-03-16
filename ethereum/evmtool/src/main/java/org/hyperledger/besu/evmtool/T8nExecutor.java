@@ -89,7 +89,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import com.google.common.base.Stopwatch;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
+
 
 /**
  * The T8nExecutor class is responsible for executing transactions in the context of the Ethereum
@@ -631,13 +631,13 @@ public class T8nExecutor {
               if (account.getCode() != null && !account.getCode().isEmpty()) {
                 accountObject.put("code", account.getCode().toHexString());
               }
-              List<Entry<UInt256, UInt256>> storageEntries =
+              List<Entry<Bytes32, Bytes32>> storageEntries =
                   account.storageEntriesFrom(Bytes32.ZERO, Integer.MAX_VALUE).values().stream()
                       .map(
                           e ->
                               Map.entry(
                                   e.getKey().get(),
-                                  account.getStorageValue(UInt256.fromBytes(e.getKey().get()))))
+                                  account.getStorageValue(e.getKey().get())))
                       .filter(e -> !e.getValue().isZero())
                       .sorted(Map.Entry.comparingByKey())
                       .toList();

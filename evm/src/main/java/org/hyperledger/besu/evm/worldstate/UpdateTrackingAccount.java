@@ -32,7 +32,6 @@ import java.util.TreeMap;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -65,7 +64,7 @@ public class UpdateTrackingAccount<A extends Account> implements MutableAccount 
 
   // Only contains updated storage entries, but may contain entry with a value of 0 to signify
   // deletion.
-  private final NavigableMap<UInt256, UInt256> updatedStorage;
+  private final NavigableMap<Bytes32, Bytes32> updatedStorage;
   private boolean storageWasCleared = false;
   private boolean transactionBoundary = false;
 
@@ -164,7 +163,7 @@ public class UpdateTrackingAccount<A extends Account> implements MutableAccount 
    *     with a value of 0 to signify deletion.
    */
   @Override
-  public Map<UInt256, UInt256> getUpdatedStorage() {
+  public Map<Bytes32, Bytes32> getUpdatedStorage() {
     return updatedStorage;
   }
 
@@ -267,26 +266,26 @@ public class UpdateTrackingAccount<A extends Account> implements MutableAccount 
   }
 
   @Override
-  public UInt256 getStorageValue(final UInt256 key) {
-    final UInt256 value = updatedStorage.get(key);
+  public Bytes32 getStorageValue(final Bytes32 key) {
+    final Bytes32 value = updatedStorage.get(key);
     if (value != null) {
       return value;
     }
     if (storageWasCleared) {
-      return UInt256.ZERO;
+      return Bytes32.ZERO;
     }
 
     // We haven't updated the key-value yet, so either it's a new account, and it doesn't have the
     // key, or we should query the underlying storage for its existing value (which might be 0).
-    return account == null ? UInt256.ZERO : account.getStorageValue(key);
+    return account == null ? Bytes32.ZERO : account.getStorageValue(key);
   }
 
   @Override
-  public UInt256 getOriginalStorageValue(final UInt256 key) {
+  public Bytes32 getOriginalStorageValue(final Bytes32 key) {
     if (transactionBoundary) {
       return getStorageValue(key);
     } else if (storageWasCleared || account == null) {
-      return UInt256.ZERO;
+      return Bytes32.ZERO;
     } else {
       return account.getOriginalStorageValue(key);
     }
@@ -313,7 +312,7 @@ public class UpdateTrackingAccount<A extends Account> implements MutableAccount 
   }
 
   @Override
-  public void setStorageValue(final UInt256 key, final UInt256 value) {
+  public void setStorageValue(final Bytes32 key, final Bytes32 value) {
     if (immutable) {
       throw new ModificationNotAllowedException();
     }

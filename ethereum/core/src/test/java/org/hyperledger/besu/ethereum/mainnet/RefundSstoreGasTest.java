@@ -14,8 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.mainnet;
 
-import static org.apache.tuweni.units.bigints.UInt256.ONE;
-import static org.apache.tuweni.units.bigints.UInt256.ZERO;
+import static org.apache.tuweni.bytes.Bytes32.ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,7 +27,7 @@ import org.hyperledger.besu.evm.gascalculator.PetersburgGasCalculator;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +36,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class RefundSstoreGasTest {
 
-  private static final UInt256 TWO = UInt256.valueOf(2);
+  private static final Bytes32 ONE = Bytes32.fromHexStringLenient("0x01");
+  private static final Bytes32 TWO = Bytes32.fromHexStringLenient("0x02");
 
   public static Stream<Arguments> scenarios() {
     final GasCalculator constantinople = new ConstantinopleGasCalculator();
@@ -90,15 +90,15 @@ public class RefundSstoreGasTest {
         Arguments.of("istanbul", istanbul, ONE, ONE, ONE, 800L, 0L));
   }
 
-  private final Supplier<UInt256> mockSupplierForOriginalValue = mockSupplier();
-  private final Supplier<UInt256> mockSupplierCurrentValue = mockSupplier();
+  private final Supplier<Bytes32> mockSupplierForOriginalValue = mockSupplier();
+  private final Supplier<Bytes32> mockSupplierCurrentValue = mockSupplier();
 
   @SuppressWarnings("unchecked")
   private <T> Supplier<T> mockSupplier() {
     return mock(Supplier.class);
   }
 
-  public void setUp(final UInt256 originalValue, final UInt256 currentValue) {
+  public void setUp(final Bytes32 originalValue, final Bytes32 currentValue) {
     when(mockSupplierForOriginalValue.get()).thenReturn(originalValue);
     when(mockSupplierCurrentValue.get()).thenReturn(currentValue);
   }
@@ -108,9 +108,9 @@ public class RefundSstoreGasTest {
   public void shouldChargeCorrectGas(
       final String forkName,
       final GasCalculator gasCalculator,
-      final UInt256 originalValue,
-      final UInt256 currentValue,
-      final UInt256 newValue,
+      final Bytes32 originalValue,
+      final Bytes32 currentValue,
+      final Bytes32 newValue,
       final long expectedGasCost,
       final long expectedGasRefund) {
     setUp(originalValue, currentValue);
@@ -125,9 +125,9 @@ public class RefundSstoreGasTest {
   public void shouldRefundCorrectGas(
       final String forkName,
       final GasCalculator gasCalculator,
-      final UInt256 originalValue,
-      final UInt256 currentValue,
-      final UInt256 newValue,
+      final Bytes32 originalValue,
+      final Bytes32 currentValue,
+      final Bytes32 newValue,
       final long expectedGasCost,
       final long expectedGasRefund) {
     setUp(originalValue, currentValue);

@@ -43,7 +43,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,7 +209,7 @@ public class BalConcurrentTransactionProcessor extends ParallelBlockTransactionP
       }
 
       for (var slotChanges : accountChanges.storageChanges()) {
-        final UInt256 slotKey = slotChanges.slot().getSlotKey().orElseThrow();
+        final Bytes32 slotKey = slotChanges.slot().getSlotKey().orElseThrow();
 
         final var latestStorage = findLatestStorageChange(slotChanges.changes(), balIndex);
 
@@ -218,7 +218,7 @@ public class BalConcurrentTransactionProcessor extends ParallelBlockTransactionP
             account = worldStateUpdater.getOrCreate(address);
           }
           account.setStorageValue(
-              slotKey, latestStorage.newValue() != null ? latestStorage.newValue() : UInt256.ZERO);
+              slotKey, latestStorage.newValue() != null ? latestStorage.newValue() : Bytes32.ZERO);
         }
       }
     }

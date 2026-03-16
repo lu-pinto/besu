@@ -41,7 +41,7 @@ import java.util.function.Function;
 import com.google.common.collect.Ordering;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +61,7 @@ public class WorldStateProofProvider {
   public Optional<WorldStateProof> getAccountProof(
       final Hash worldStateRoot,
       final Address accountAddress,
-      final List<UInt256> accountStorageKeys) {
+      final List<Bytes32> accountStorageKeys) {
 
     if (!worldStateStorageCoordinator.isWorldStateAvailable(
         Bytes32.wrap(worldStateRoot.getBytes()), null)) {
@@ -78,7 +78,7 @@ public class WorldStateProofProvider {
           .map(PmtStateTrieAccountValue::readFrom)
           .map(
               account -> {
-                final SortedMap<UInt256, Proof<Bytes>> storageProofs =
+                final SortedMap<Bytes32, Proof<Bytes>> storageProofs =
                     getStorageProofs(accountHash, account, accountStorageKeys);
                 return new WorldStateProof(account, accountProof, storageProofs);
               })
@@ -86,13 +86,13 @@ public class WorldStateProofProvider {
     }
   }
 
-  private SortedMap<UInt256, Proof<Bytes>> getStorageProofs(
+  private SortedMap<Bytes32, Proof<Bytes>> getStorageProofs(
       final Hash accountHash,
       final PmtStateTrieAccountValue account,
-      final List<UInt256> accountStorageKeys) {
+      final List<Bytes32> accountStorageKeys) {
     final MerkleTrie<Bytes32, Bytes> storageTrie =
         newAccountStorageTrie(accountHash, Bytes32.wrap(account.getStorageRoot().getBytes()));
-    final NavigableMap<UInt256, Proof<Bytes>> storageProofs =
+    final NavigableMap<Bytes32, Proof<Bytes>> storageProofs =
         new TreeMap<>(Comparator.comparing(Bytes32::toHexString));
     accountStorageKeys.forEach(
         key ->

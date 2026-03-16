@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
 
 /**
  * Genesis account
@@ -38,5 +37,5 @@ public record GenesisAccount(
     long nonce,
     Wei balance,
     Bytes code,
-    Map<UInt256, UInt256> storage,
+    Map<Bytes32, Bytes32> storage,
     Bytes32 privateKey) {}

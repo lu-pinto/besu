@@ -34,7 +34,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 public record BlockAccessList(List<AccountChanges> accountChanges) {
 
@@ -68,7 +68,7 @@ public record BlockAccessList(List<AccountChanges> accountChanges) {
     return "BlockAccessList{" + "accountChanges=" + accountChanges + '}';
   }
 
-  public record StorageChange(int txIndex, UInt256 newValue) {
+  public record StorageChange(int txIndex, Bytes32 newValue) {
     @Override
     public String toString() {
       return "StorageChange{txIndex=" + txIndex + ", newValue=" + newValue + '}';
@@ -223,7 +223,7 @@ public record BlockAccessList(List<AccountChanges> accountChanges) {
         this.address = address;
       }
 
-      Optional<UInt256> getLastWriteValue(final UInt256 slot) {
+      Optional<Bytes32> getLastWriteValue(final Bytes32 slot) {
         final StorageSlotKey slotKeyObj = new StorageSlotKey(slot);
         final List<StorageChange> storageChanges = this.slotWrites.get(slotKeyObj);
         if (storageChanges != null && !storageChanges.isEmpty()) {
@@ -269,7 +269,7 @@ public record BlockAccessList(List<AccountChanges> accountChanges) {
         }
       }
 
-      void addStorageWrite(final StorageSlotKey slot, final int txIndex, final UInt256 value) {
+      void addStorageWrite(final StorageSlotKey slot, final int txIndex, final Bytes32 value) {
         final List<StorageChange> changes =
             slotWrites.computeIfAbsent(slot, __ -> new ArrayList<>());
         slotReads.remove(slot);
@@ -297,7 +297,7 @@ public record BlockAccessList(List<AccountChanges> accountChanges) {
       AccountChanges build() {
         final List<SlotChanges> slotChanges =
             slotWrites.entrySet().stream()
-                .sorted(Comparator.comparing(e -> e.getKey().getSlotKey().orElseThrow().toBytes()))
+                .sorted(Comparator.comparing(e -> (Bytes) e.getKey().getSlotKey().orElseThrow()))
                 .map(
                     e ->
                         new SlotChanges(
@@ -309,7 +309,7 @@ public record BlockAccessList(List<AccountChanges> accountChanges) {
 
         final List<SlotRead> reads =
             slotReads.stream()
-                .sorted(Comparator.comparing(e -> e.getSlotKey().orElseThrow().toBytes()))
+                .sorted(Comparator.comparing(e -> (Bytes) e.getSlotKey().orElseThrow()))
                 .map(SlotRead::new)
                 .collect(Collectors.toList());
 

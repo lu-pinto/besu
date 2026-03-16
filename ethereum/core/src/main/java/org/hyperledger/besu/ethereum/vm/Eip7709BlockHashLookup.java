@@ -26,6 +26,7 @@ import org.hyperledger.besu.evm.worldstate.WorldUpdater;
 import java.util.HashMap;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,14 +87,14 @@ public class Eip7709BlockHashLookup implements BlockHashLookup {
       return ZERO;
     }
 
-    UInt256 slot = UInt256.valueOf(blockNumber % historyServeWindow);
-    final UInt256 value = account.getStorageValue(slot);
+    Bytes32 slot = UInt256.valueOf(blockNumber % historyServeWindow);
+    final Bytes32 value = account.getStorageValue(slot);
     LOG.atTrace()
         .log(
             () ->
                 String.format(
                     "Read block %s for account %s returned value %s",
-                    account.getAddress(), slot.toDecimalString(), value.toString()));
+                    account.getAddress(), slot.toShortHexString(), value.toString()));
     Hash blockHash = Hash.wrap(value);
     hashByNumber.put(blockNumber, blockHash);
     return blockHash;

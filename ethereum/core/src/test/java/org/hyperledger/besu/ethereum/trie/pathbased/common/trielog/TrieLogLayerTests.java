@@ -24,6 +24,7 @@ import org.hyperledger.besu.ethereum.trie.common.PmtStateTrieAccountValue;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -105,14 +106,14 @@ public class TrieLogLayerTests {
   @Test
   public void testAddStorageChange() {
     Address address = Address.fromHexString("0x00");
-    UInt256 oldValue = UInt256.ZERO;
-    UInt256 newValue = UInt256.ONE;
+    Bytes32 oldValue = Bytes32.ZERO;
+    Bytes32 newValue = Bytes32.fromHexStringLenient("0x01");
     UInt256 slot = UInt256.ONE;
     StorageSlotKey storageSlotKey = new StorageSlotKey(slot);
 
     Address otherAddress = Address.fromHexString("0x000000");
-    UInt256 otherOldValue = UInt256.ZERO;
-    UInt256 otherNewValue = UInt256.ONE;
+    Bytes32 otherOldValue = Bytes32.ZERO;
+    Bytes32 otherNewValue = Bytes32.fromHexStringLenient("0x01");
     UInt256 otherSlot = UInt256.ONE;
     StorageSlotKey otherStorageSlotKey = new StorageSlotKey(otherSlot);
 
@@ -122,12 +123,12 @@ public class TrieLogLayerTests {
 
     Assertions.assertThat(trieLogLayer).isEqualTo(otherTrieLogLayer);
 
-    Optional<UInt256> priorStorageValue =
+    Optional<Bytes32> priorStorageValue =
         trieLogLayer.getPriorStorageByStorageSlotKey(address, storageSlotKey);
     Assertions.assertThat(priorStorageValue).isPresent();
     Assertions.assertThat(priorStorageValue.get()).isEqualTo(oldValue);
 
-    Optional<UInt256> updatedStorageValue =
+    Optional<Bytes32> updatedStorageValue =
         trieLogLayer.getStorageByStorageSlotKey(address, storageSlotKey);
     Assertions.assertThat(updatedStorageValue).isPresent();
     Assertions.assertThat(updatedStorageValue.get()).isEqualTo(newValue);

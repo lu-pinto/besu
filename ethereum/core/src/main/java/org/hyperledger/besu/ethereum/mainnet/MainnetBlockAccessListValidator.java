@@ -38,7 +38,7 @@ public class MainnetBlockAccessListValidator implements BlockAccessListValidator
   /** Canonical slot order (by slot key bytes), consistent with BlockAccessListBuilder. */
   private static int compareSlotKeysByCanonicalOrder(
       final StorageSlotKey a, final StorageSlotKey b) {
-    return a.getSlotKey().orElseThrow().toBytes().compareTo(b.getSlotKey().orElseThrow().toBytes());
+    return a.getSlotKey().orElseThrow().compareTo(b.getSlotKey().orElseThrow());
   }
 
   private final ProtocolSchedule protocolSchedule;

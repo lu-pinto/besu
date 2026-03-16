@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 @SuppressWarnings("rawtypes")
 public class BlockAccessListStateRootHashCalculator {
@@ -111,11 +111,11 @@ public class BlockAccessListStateRootHashCalculator {
         final List<StorageChange> changes = slotChanges.changes();
         if (!changes.isEmpty()) {
           final StorageChange change = changes.get(changes.size() - 1);
-          final Optional<UInt256> maybeKey = slotChanges.slot().getSlotKey();
+          final Optional<Bytes32> maybeKey = slotChanges.slot().getSlotKey();
           if (maybeKey.isPresent()) {
-            final UInt256 key = maybeKey.get();
-            final UInt256 value = change.newValue();
-            account.setStorageValue(key, value == null ? UInt256.ZERO : value);
+            final Bytes32 key = maybeKey.get();
+            final Bytes32 value = change.newValue();
+            account.setStorageValue(key, value == null ? Bytes32.ZERO : value);
           }
         }
       }

@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 /**
  * Represents a partial view of a Block Access List (BAL) for a single transaction within a block.
@@ -87,7 +87,7 @@ public final class PartialBlockAccessView {
     return Objects.hash(accountChanges);
   }
 
-  public record SlotChange(StorageSlotKey slot, UInt256 newValue) {
+  public record SlotChange(StorageSlotKey slot, Bytes32 newValue) {
     @Override
     public String toString() {
       return "SlotChange{newValue=" + newValue + '}';
@@ -222,7 +222,7 @@ public final class PartialBlockAccessView {
     }
 
     public AccountChangesBuilder addStorageChange(
-        final StorageSlotKey slot, final UInt256 newValue) {
+        final StorageSlotKey slot, final Bytes32 newValue) {
       storageChanges.add(new SlotChange(slot, newValue));
       return this;
     }

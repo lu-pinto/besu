@@ -92,8 +92,8 @@ public class WorldStateProofProviderTest {
     // Persist updates
     updater.commit();
 
-    final List<UInt256> storageKeys =
-        Arrays.asList(UInt256.ONE, UInt256.valueOf(3L), UInt256.valueOf(6L));
+    final List<Bytes32> storageKeys =
+        Arrays.asList(Bytes32.fromHexStringLenient("0x01"), Bytes32.fromHexStringLenient("0x03"), Bytes32.fromHexStringLenient("0x06"));
     final Optional<WorldStateProof> accountProof =
         worldStateProofProvider.getAccountProof(
             Hash.wrap(worldStateTrie.getRootHash()), address, storageKeys);
@@ -104,16 +104,16 @@ public class WorldStateProofProviderTest {
     // Check storage fields
     assertThat(accountProof.get().getStorageKeys()).isEqualTo(storageKeys);
     // Check key 1
-    UInt256 storageKey = UInt256.ONE;
-    assertThat(accountProof.get().getStorageValue(storageKey)).isEqualTo(UInt256.valueOf(2L));
+    Bytes32 storageKey = Bytes32.fromHexStringLenient("0x01");
+    assertThat(accountProof.get().getStorageValue(storageKey)).isEqualTo(Bytes32.fromHexStringLenient("0x02"));
     assertThat(accountProof.get().getStorageProof(storageKey).size()).isGreaterThanOrEqualTo(1);
     // Check key 3
-    storageKey = UInt256.valueOf(3L);
-    assertThat(accountProof.get().getStorageValue(storageKey)).isEqualTo(UInt256.valueOf(6L));
+    storageKey = Bytes32.fromHexStringLenient("0x03");
+    assertThat(accountProof.get().getStorageValue(storageKey)).isEqualTo(Bytes32.fromHexStringLenient("0x06"));
     assertThat(accountProof.get().getStorageProof(storageKey).size()).isGreaterThanOrEqualTo(1);
     // Check key 6
-    storageKey = UInt256.valueOf(6L);
-    assertThat(accountProof.get().getStorageValue(storageKey)).isEqualTo(UInt256.ZERO);
+    storageKey = Bytes32.fromHexStringLenient("0x06");
+    assertThat(accountProof.get().getStorageValue(storageKey)).isEqualTo(Bytes32.ZERO);
     assertThat(accountProof.get().getStorageProof(storageKey).size()).isGreaterThanOrEqualTo(1);
   }
 

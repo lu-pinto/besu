@@ -1195,8 +1195,8 @@ class AbstractBlockProcessorIntegrationTest {
       final int slot,
       final int expectedValue) {
     BonsaiAccount contractAccount = (BonsaiAccount) worldState.get(contractAddress);
-    UInt256 actualValue = contractAccount.getStorageValue(UInt256.valueOf(slot));
-    assertThat(actualValue).isEqualTo(UInt256.valueOf(expectedValue));
+    Bytes32 actualValue = contractAccount.getStorageValue(Bytes32.leftPad(Bytes.ofUnsignedInt(slot)));
+    assertThat(actualValue).isEqualTo(Bytes32.leftPad(Bytes.ofUnsignedInt(expectedValue)));
   }
 
   private Transaction createTransferTransaction(

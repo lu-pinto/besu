@@ -65,7 +65,7 @@ import com.google.common.base.Stopwatch;
 import io.vertx.core.json.JsonObject;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
+
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -608,8 +608,8 @@ public class EvmToolCommand implements Runnable {
                       .map(
                           e ->
                               Map.entry(
-                                  e.getKey().orElse(UInt256.ZERO),
-                                  account.getStorageValue(UInt256.fromBytes(e.getKey().get()))))
+                                  e.getKey().orElse(Bytes32.ZERO),
+                                  account.getStorageValue(e.getKey().get())))
                       .filter(e -> !e.getValue().isZero())
                       .sorted(Map.Entry.comparingByKey())
                       .toList();

@@ -50,7 +50,7 @@ import java.util.function.Function;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,10 +71,10 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
   // storage sub mapped by _hashed_ key.  This is because in self_destruct calls we need to
   // enumerate the old storage and delete it.  Those are trie stored by hashed key by spec and the
   // alternative was to keep a giant pre-image cache of the entire trie.
-  private final Map<Address, StorageConsumingMap<StorageSlotKey, PathBasedValue<UInt256>>>
+  private final Map<Address, StorageConsumingMap<StorageSlotKey, PathBasedValue<Bytes32>>>
       storageToUpdate = new ConcurrentHashMap<>();
 
-  private final Map<UInt256, Hash> storageKeyHashLookup = new ConcurrentHashMap<>();
+  private final Map<Bytes32, Hash> storageKeyHashLookup = new ConcurrentHashMap<>();
   protected boolean isAccumulatorStateChanged;
 
   public PathBasedWorldStateUpdateAccumulator(
@@ -143,20 +143,20 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
         .getStorageToUpdate()
         .forEach(
             (address, slots) -> {
-              StorageConsumingMap<StorageSlotKey, PathBasedValue<UInt256>> storageConsumingMap =
+              StorageConsumingMap<StorageSlotKey, PathBasedValue<Bytes32>> storageConsumingMap =
                   storageToUpdate.computeIfAbsent(
                       address,
                       k ->
                           new StorageConsumingMap<>(
                               address, new ConcurrentHashMap<>(), storagePreloader));
               slots.forEach(
-                  (storageSlotKey, uInt256PathBasedValue) -> {
+                  (storageSlotKey, bytes32PathBasedValue) -> {
                     storageConsumingMap.put(
                         storageSlotKey,
                         new PathBasedValue<>(
-                            uInt256PathBasedValue.getPrior(),
-                            uInt256PathBasedValue.getUpdated(),
-                            uInt256PathBasedValue.isLastStepCleared()));
+                            bytes32PathBasedValue.getPrior(),
+                            bytes32PathBasedValue.getUpdated(),
+                            bytes32PathBasedValue.isLastStepCleared()));
                   });
             });
     storageToClear.addAll(source.storageToClear);
@@ -205,18 +205,18 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
         .getStorageToUpdate()
         .forEach(
             (address, slots) -> {
-              StorageConsumingMap<StorageSlotKey, PathBasedValue<UInt256>> storageConsumingMap =
+              StorageConsumingMap<StorageSlotKey, PathBasedValue<Bytes32>> storageConsumingMap =
                   storageToUpdate.computeIfAbsent(
                       address,
                       k ->
                           new StorageConsumingMap<>(
                               address, new ConcurrentHashMap<>(), storagePreloader));
               slots.forEach(
-                  (storageSlotKey, uInt256PathBasedValue) -> {
+                  (storageSlotKey, bytes32PathBasedValue) -> {
                     storageConsumingMap.putIfAbsent(
                         storageSlotKey,
                         new PathBasedValue<>(
-                            uInt256PathBasedValue.getPrior(), uInt256PathBasedValue.getPrior()));
+                            bytes32PathBasedValue.getPrior(), bytes32PathBasedValue.getPrior()));
                   });
             });
     storageKeyHashLookup.putAll(source.storageKeyHashLookup);
@@ -294,7 +294,7 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
   }
 
   @Override
-  public Map<Address, StorageConsumingMap<StorageSlotKey, PathBasedValue<UInt256>>>
+  public Map<Address, StorageConsumingMap<StorageSlotKey, PathBasedValue<Bytes32>>>
       getStorageToUpdate() {
     return storageToUpdate;
   }
@@ -375,17 +375,17 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
       }
 
       // mark all updated storage as to be cleared
-      final Map<StorageSlotKey, PathBasedValue<UInt256>> deletedStorageUpdates =
+      final Map<StorageSlotKey, PathBasedValue<Bytes32>> deletedStorageUpdates =
           storageToUpdate.computeIfAbsent(
               deletedAddress,
               k ->
                   new StorageConsumingMap<>(
                       deletedAddress, new ConcurrentHashMap<>(), storagePreloader));
-      final Iterator<Map.Entry<StorageSlotKey, PathBasedValue<UInt256>>> iter =
+      final Iterator<Map.Entry<StorageSlotKey, PathBasedValue<Bytes32>>> iter =
           deletedStorageUpdates.entrySet().iterator();
       while (iter.hasNext()) {
-        final Map.Entry<StorageSlotKey, PathBasedValue<UInt256>> updateEntry = iter.next();
-        final PathBasedValue<UInt256> updatedSlot = updateEntry.getValue();
+        final Map.Entry<StorageSlotKey, PathBasedValue<Bytes32>> updateEntry = iter.next();
+        final PathBasedValue<Bytes32> updatedSlot = updateEntry.getValue();
         if (updatedSlot.getPrior() == null || updatedSlot.getPrior().isZero()) {
           iter.remove();
         } else {
@@ -403,7 +403,7 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
                   final StorageSlotKey storageSlotKey =
                       new StorageSlotKey(Hash.wrap(keyHash), Optional.empty());
                   if (!deletedStorageUpdates.containsKey(storageSlotKey)) {
-                    final UInt256 value = UInt256.fromBytes(RLP.decodeOne(entryValue));
+                    final Bytes32 value = Bytes32.leftPad(RLP.decodeOne(entryValue));
                     deletedStorageUpdates.put(
                         storageSlotKey, new PathBasedValue<>(value, null, true));
                   }
@@ -422,7 +422,7 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
               final ACCOUNT updatedAccount;
               final PathBasedValue<ACCOUNT> updatedAccountValue =
                   accountsToUpdate.get(updatedAddress);
-              final Map<StorageSlotKey, PathBasedValue<UInt256>> pendingStorageUpdates =
+              final Map<StorageSlotKey, PathBasedValue<Bytes32>> pendingStorageUpdates =
                   storageToUpdate.computeIfAbsent(
                       updatedAddress,
                       k ->
@@ -481,18 +481,18 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
                   .entrySet()
                   .forEach(
                       storageUpdate -> {
-                        final UInt256 keyUInt = storageUpdate.getKey();
+                        final Bytes32 keyBytes = storageUpdate.getKey();
                         final StorageSlotKey slotKey =
                             new StorageSlotKey(
-                                hashAndSaveSlotPreImage(keyUInt), Optional.of(keyUInt));
-                        final UInt256 value = storageUpdate.getValue();
-                        final PathBasedValue<UInt256> pendingValue =
+                                hashAndSaveSlotPreImage(keyBytes), Optional.of(keyBytes));
+                        final Bytes32 value = storageUpdate.getValue();
+                        final PathBasedValue<Bytes32> pendingValue =
                             pendingStorageUpdates.get(slotKey);
                         if (pendingValue == null) {
                           pendingStorageUpdates.put(
                               slotKey,
                               new PathBasedValue<>(
-                                  updatedAccount.getOriginalStorageValue(keyUInt), value));
+                                  updatedAccount.getOriginalStorageValue(keyBytes), value));
                         } else {
                           pendingValue.setUpdated(value);
                         }
@@ -529,25 +529,25 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
   }
 
   @Override
-  public UInt256 getStorageValue(final Address address, final UInt256 slotKey) {
+  public Bytes32 getStorageValue(final Address address, final Bytes32 slotKey) {
     StorageSlotKey storageSlotKey =
         new StorageSlotKey(hashAndSaveSlotPreImage(slotKey), Optional.of(slotKey));
-    return getStorageValueByStorageSlotKey(address, storageSlotKey).orElse(UInt256.ZERO);
+    return getStorageValueByStorageSlotKey(address, storageSlotKey).orElse(Bytes32.ZERO);
   }
 
   @Override
-  public Optional<UInt256> getStorageValueByStorageSlotKey(
+  public Optional<Bytes32> getStorageValueByStorageSlotKey(
       final Address address, final StorageSlotKey storageSlotKey) {
-    final Map<StorageSlotKey, PathBasedValue<UInt256>> localAccountStorage =
+    final Map<StorageSlotKey, PathBasedValue<Bytes32>> localAccountStorage =
         storageToUpdate.get(address);
     if (localAccountStorage != null) {
-      final PathBasedValue<UInt256> value = localAccountStorage.get(storageSlotKey);
+      final PathBasedValue<Bytes32> value = localAccountStorage.get(storageSlotKey);
       if (value != null) {
         return Optional.ofNullable(value.getUpdated());
       }
     }
     try {
-      final Optional<UInt256> valueUInt =
+      final Optional<Bytes32> valueBytes =
           (wrappedWorldView() instanceof PathBasedWorldState worldState)
               ? worldState.getStorageValueByStorageSlotKey(address, storageSlotKey)
               : wrappedWorldView().getStorageValueByStorageSlotKey(address, storageSlotKey);
@@ -557,8 +557,8 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
               key ->
                   new StorageConsumingMap<>(address, new ConcurrentHashMap<>(), storagePreloader))
           .put(
-              storageSlotKey, new PathBasedValue<>(valueUInt.orElse(null), valueUInt.orElse(null)));
-      return valueUInt;
+              storageSlotKey, new PathBasedValue<>(valueBytes.orElse(null), valueBytes.orElse(null)));
+      return valueBytes;
     } catch (MerkleTrieException e) {
       // need to throw to trigger the heal
       throw new MerkleTrieException(
@@ -567,30 +567,30 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
   }
 
   @Override
-  public UInt256 getPriorStorageValue(final Address address, final UInt256 storageKey) {
+  public Bytes32 getPriorStorageValue(final Address address, final Bytes32 storageKey) {
     // TODO maybe log the read into the trie layer?
     StorageSlotKey storageSlotKey =
         new StorageSlotKey(hashAndSaveSlotPreImage(storageKey), Optional.of(storageKey));
-    final Map<StorageSlotKey, PathBasedValue<UInt256>> localAccountStorage =
+    final Map<StorageSlotKey, PathBasedValue<Bytes32>> localAccountStorage =
         storageToUpdate.get(address);
     if (localAccountStorage != null) {
-      final PathBasedValue<UInt256> value = localAccountStorage.get(storageSlotKey);
+      final PathBasedValue<Bytes32> value = localAccountStorage.get(storageSlotKey);
       if (value != null) {
         if (value.isLastStepCleared()) {
-          return UInt256.ZERO;
+          return Bytes32.ZERO;
         }
-        final UInt256 updated = value.getUpdated();
+        final Bytes32 updated = value.getUpdated();
         if (updated != null) {
           return updated;
         }
-        final UInt256 original = value.getPrior();
+        final Bytes32 original = value.getPrior();
         if (original != null) {
           return original;
         }
       }
     }
     if (storageToClear.contains(address)) {
-      return UInt256.ZERO;
+      return Bytes32.ZERO;
     }
     return getStorageValue(address, storageKey);
   }
@@ -598,7 +598,7 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
   @Override
   public Map<Bytes32, Bytes> getAllAccountStorage(final Address address, final Hash rootHash) {
     final Map<Bytes32, Bytes> results = wrappedWorldView().getAllAccountStorage(address, rootHash);
-    final StorageConsumingMap<StorageSlotKey, PathBasedValue<UInt256>> pathBasedValueStorage =
+    final StorageConsumingMap<StorageSlotKey, PathBasedValue<Bytes32>> pathBasedValueStorage =
         storageToUpdate.get(address);
     if (pathBasedValueStorage != null) {
       // hash the key to match the implied storage interface of hashed slotKey
@@ -791,10 +791,11 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
     }
   }
 
-  private Map<StorageSlotKey, PathBasedValue<UInt256>> maybeCreateStorageMap(
-      final Map<StorageSlotKey, PathBasedValue<UInt256>> storageMap, final Address address) {
+  private Map<StorageSlotKey, PathBasedValue<Bytes32>> maybeCreateStorageMap(
+      final Map<StorageSlotKey, PathBasedValue<Bytes32>> storageMap, final Address address) {
+
     if (storageMap == null) {
-      final StorageConsumingMap<StorageSlotKey, PathBasedValue<UInt256>> newMap =
+      final StorageConsumingMap<StorageSlotKey, PathBasedValue<Bytes32>> newMap =
           new StorageConsumingMap<>(address, new ConcurrentHashMap<>(), storagePreloader);
       storageToUpdate.put(address, newMap);
       return newMap;
@@ -806,8 +807,8 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
   private void rollStorageChange(
       final Address address,
       final StorageSlotKey storageSlotKey,
-      final UInt256 expectedValue,
-      final UInt256 replacementValue) {
+      final Bytes32 expectedValue,
+      final Bytes32 replacementValue) {
     if (Objects.equals(expectedValue, replacementValue)) {
       // non-change, a cached read.
       return;
@@ -816,10 +817,10 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
       // corner case on deletes, non-change
       return;
     }
-    final Map<StorageSlotKey, PathBasedValue<UInt256>> storageMap = storageToUpdate.get(address);
-    PathBasedValue<UInt256> slotValue = storageMap == null ? null : storageMap.get(storageSlotKey);
+    final Map<StorageSlotKey, PathBasedValue<Bytes32>> storageMap = storageToUpdate.get(address);
+    PathBasedValue<Bytes32> slotValue = storageMap == null ? null : storageMap.get(storageSlotKey);
     if (slotValue == null) {
-      final Optional<UInt256> storageValue =
+      final Optional<Bytes32> storageValue =
           wrappedWorldView().getStorageValueByStorageSlotKey(address, storageSlotKey);
       if (storageValue.isPresent()) {
         slotValue = new PathBasedValue<>(storageValue.get(), storageValue.get());
@@ -842,7 +843,7 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
                 address, storageSlotKey));
       }
     } else {
-      final UInt256 existingSlotValue = slotValue.getUpdated();
+      final Bytes32 existingSlotValue = slotValue.getUpdated();
       if ((expectedValue == null || expectedValue.isZero())
           && existingSlotValue != null
           && !existingSlotValue.isZero()) {
@@ -861,7 +862,7 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
                 existingSlotValue == null ? "null" : existingSlotValue.toShortHexString()));
       }
       if (replacementValue == null && slotValue.getPrior() == null) {
-        final Map<StorageSlotKey, PathBasedValue<UInt256>> thisStorageUpdate =
+        final Map<StorageSlotKey, PathBasedValue<Bytes32>> thisStorageUpdate =
             maybeCreateStorageMap(storageMap, address);
         thisStorageUpdate.remove(storageSlotKey);
         if (thisStorageUpdate.isEmpty()) {
@@ -873,10 +874,10 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
     }
   }
 
-  private boolean isSlotEquals(final UInt256 expectedValue, final UInt256 existingSlotValue) {
-    final UInt256 sanitizedExpectedValue = (expectedValue == null) ? UInt256.ZERO : expectedValue;
-    final UInt256 sanitizedExistingSlotValue =
-        (existingSlotValue == null) ? UInt256.ZERO : existingSlotValue;
+  private boolean isSlotEquals(final Bytes32 expectedValue, final Bytes32 existingSlotValue) {
+    final Bytes32 sanitizedExpectedValue = (expectedValue == null) ? Bytes32.ZERO : expectedValue;
+    final Bytes32 sanitizedExistingSlotValue =
+        (existingSlotValue == null) ? Bytes32.ZERO : existingSlotValue;
     return Objects.equals(sanitizedExpectedValue, sanitizedExistingSlotValue);
   }
 
@@ -924,7 +925,7 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
     return Hash.hash(address.getBytes());
   }
 
-  protected Hash hashAndSaveSlotPreImage(final UInt256 slotKey) {
+  protected Hash hashAndSaveSlotPreImage(final Bytes32 slotKey) {
     Hash hash = storageKeyHashLookup.get(slotKey);
     if (hash == null) {
       hash = Hash.hash(slotKey);

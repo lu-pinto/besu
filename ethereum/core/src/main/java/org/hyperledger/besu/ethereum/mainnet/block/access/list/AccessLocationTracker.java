@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.vertx.core.impl.ConcurrentHashSet;
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 public class AccessLocationTracker implements Eip7928AccessList {
 
@@ -55,7 +55,7 @@ public class AccessLocationTracker implements Eip7928AccessList {
   }
 
   @Override
-  public void addSlotAccessForAccount(final Address address, final UInt256 slotKey) {
+  public void addSlotAccessForAccount(final Address address, final Bytes32 slotKey) {
     addTouchedAccount(address);
     touchedAccounts.get(address).addSlotAccess(slotKey);
   }
@@ -66,13 +66,13 @@ public class AccessLocationTracker implements Eip7928AccessList {
 
   public static final class AccountAccessList {
     private final Address address;
-    private final Set<UInt256> slots = new ConcurrentHashSet<>();
+    private final Set<Bytes32> slots = new ConcurrentHashSet<>();
 
     public AccountAccessList(final Address address) {
       this.address = address;
     }
 
-    public void addSlotAccess(final UInt256 slotKey) {
+    public void addSlotAccess(final Bytes32 slotKey) {
       slots.add(slotKey);
     }
 
@@ -80,7 +80,7 @@ public class AccessLocationTracker implements Eip7928AccessList {
       return address;
     }
 
-    public Set<UInt256> getSlots() {
+    public Set<Bytes32> getSlots() {
       return slots;
     }
 
@@ -106,7 +106,7 @@ public class AccessLocationTracker implements Eip7928AccessList {
               .filter(a -> a.equals(address))
               .findAny()
               .isEmpty()) {
-        for (UInt256 slot : accountAccessListEntry.getValue().getSlots()) {
+        for (Bytes32 slot : accountAccessListEntry.getValue().getSlots()) {
           final StorageSlotKey slotKeyObj = new StorageSlotKey(slot);
           accountBuilder.addStorageRead(slotKeyObj);
         }
@@ -160,14 +160,14 @@ public class AccessLocationTracker implements Eip7928AccessList {
           }
         }
 
-        final Map<UInt256, UInt256> updatedStorage = account.getUpdatedStorage();
-        final Set<UInt256> txListTouchedSlots = accountAccessListEntry.getValue().getSlots();
-        for (UInt256 touchedSlot : txListTouchedSlots) {
+        final Map<Bytes32, Bytes32> updatedStorage = account.getUpdatedStorage();
+        final Set<Bytes32> txListTouchedSlots = accountAccessListEntry.getValue().getSlots();
+        for (Bytes32 touchedSlot : txListTouchedSlots) {
           StorageSlotKey slotKeyObj = new StorageSlotKey(touchedSlot);
 
           if (updatedStorage.containsKey(touchedSlot)) {
-            final UInt256 originalValue = account.getOriginalStorageValue(touchedSlot);
-            final UInt256 updatedValue = updatedStorage.get(touchedSlot);
+            final Bytes32 originalValue = account.getOriginalStorageValue(touchedSlot);
+            final Bytes32 updatedValue = updatedStorage.get(touchedSlot);
 
             final boolean isSet = originalValue == null;
             final boolean isReset = updatedValue == null;
@@ -184,7 +184,7 @@ public class AccessLocationTracker implements Eip7928AccessList {
           }
         }
       } else {
-        for (UInt256 slot : accountAccessListEntry.getValue().getSlots()) {
+        for (Bytes32 slot : accountAccessListEntry.getValue().getSlots()) {
           final StorageSlotKey slotKeyObj = new StorageSlotKey(slot);
           accountBuilder.addStorageRead(slotKeyObj);
         }

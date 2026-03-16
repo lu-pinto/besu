@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import jakarta.validation.constraints.NotNull;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 /**
  * StorageSlotKey represents a key used for storage slots in Ethereum. It contains the hash of the
@@ -32,15 +32,15 @@ import org.apache.tuweni.units.bigints.UInt256;
 public class StorageSlotKey implements Comparable<StorageSlotKey> {
 
   private final Hash slotHash;
-  private final Optional<UInt256> slotKey;
+  private final Optional<Bytes32> slotKey;
 
   /**
    * Creates a StorageSlotKey.
    *
    * @param slotHash Hashed storage slot key.
-   * @param slotKey Optional UInt256 storage slot key.
+   * @param slotKey Optional Bytes32 storage slot key.
    */
-  public StorageSlotKey(final Hash slotHash, final Optional<UInt256> slotKey) {
+  public StorageSlotKey(final Hash slotHash, final Optional<Bytes32> slotKey) {
     this.slotHash = slotHash;
     this.slotKey = slotKey;
   }
@@ -48,9 +48,9 @@ public class StorageSlotKey implements Comparable<StorageSlotKey> {
   /**
    * Creates a StorageSlotKey, hashing the slotKey.
    *
-   * @param slotKey the UInt256 storage slot key.
+   * @param slotKey the Bytes32 storage slot key.
    */
-  public StorageSlotKey(final UInt256 slotKey) {
+  public StorageSlotKey(final Bytes32 slotKey) {
     this(Hash.hash(slotKey), Optional.of(slotKey));
   }
 
@@ -64,12 +64,12 @@ public class StorageSlotKey implements Comparable<StorageSlotKey> {
   }
 
   /**
-   * Gets the optional UInt256 representation of the storage slot key.
+   * Gets the optional Bytes32 representation of the storage slot key.
    *
-   * @return an Optional containing the UInt256 storage slot key if present, otherwise an empty
+   * @return an Optional containing the Bytes32 storage slot key if present, otherwise an empty
    *     Optional.
    */
-  public Optional<UInt256> getSlotKey() {
+  public Optional<Bytes32> getSlotKey() {
     return slotKey;
   }
 
@@ -101,7 +101,7 @@ public class StorageSlotKey implements Comparable<StorageSlotKey> {
   public String toString() {
     return String.format(
         "StorageSlotKey{slotHash=%s, slotKey=%s}",
-        slotHash, slotKey.map(UInt256::toString).orElse("null"));
+        slotHash, slotKey.map(Bytes32::toHexString).orElse("null"));
   }
 
   @Override

@@ -29,7 +29,7 @@ import java.util.OptionalLong;
 
 import com.google.common.base.MoreObjects;
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** Collects information about the current execution frame during a trace. */
 public class TraceFrame {
@@ -47,7 +47,7 @@ public class TraceFrame {
   private final Bytes outputData;
   private final Optional<Bytes[]> stack;
   private final Optional<Bytes[]> memory;
-  private final Optional<Map<UInt256, UInt256>> storage;
+  private final Optional<Map<Bytes32, Bytes32>> storage;
   private final WorldUpdater worldUpdater;
   private final Optional<Bytes> revertReason;
   private final Optional<Map<Address, Wei>> maybeRefunds;
@@ -140,7 +140,7 @@ public class TraceFrame {
     private Bytes outputData;
     private Optional<Bytes[]> stack = Optional.empty();
     private Optional<Bytes[]> memory = Optional.empty();
-    private Optional<Map<UInt256, UInt256>> storage = Optional.empty();
+    private Optional<Map<Bytes32, Bytes32>> storage = Optional.empty();
     private WorldUpdater worldUpdater;
     private Optional<Bytes> revertReason = Optional.empty();
     private Optional<Map<Address, Wei>> maybeRefunds = Optional.empty();
@@ -371,10 +371,10 @@ public class TraceFrame {
     /**
      * Sets the storage for this operation.
      *
-     * @param storage the storage as an optional map of UInt256 keys and values
+     * @param storage the storage as an optional map of Bytes32 keys and values
      * @return this builder instance for method chaining
      */
-    public Builder setStorage(final Optional<Map<UInt256, UInt256>> storage) {
+    public Builder setStorage(final Optional<Map<Bytes32, Bytes32>> storage) {
       this.storage = storage;
       return this;
     }
@@ -716,7 +716,7 @@ public class TraceFrame {
    *
    * @return data storage slots and values
    */
-  public Optional<Map<UInt256, UInt256>> getStorage() {
+  public Optional<Map<Bytes32, Bytes32>> getStorage() {
     return storage;
   }
 

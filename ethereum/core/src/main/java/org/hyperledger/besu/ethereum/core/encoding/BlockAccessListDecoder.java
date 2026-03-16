@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 
 public final class BlockAccessListDecoder {
@@ -51,13 +52,13 @@ public final class BlockAccessListDecoder {
           acctIn.readList(
               scIn -> {
                 scIn.enterList();
-                StorageSlotKey slot = new StorageSlotKey(UInt256.fromBytes(scIn.readBytes()));
+                StorageSlotKey slot = new StorageSlotKey(Bytes32.leftPad(scIn.readBytes()));
                 List<StorageChange> changes =
                     scIn.readList(
                         changeIn -> {
                           changeIn.enterList();
                           int txIndex = changeIn.readIntScalar();
-                          UInt256 newVal = UInt256.fromBytes(changeIn.readBytes());
+                          Bytes32 newVal = Bytes32.leftPad(changeIn.readBytes());
                           changeIn.leaveList();
                           return new StorageChange(txIndex, newVal);
                         });
@@ -66,7 +67,7 @@ public final class BlockAccessListDecoder {
               });
 
       List<SlotRead> reads =
-          acctIn.readList(r -> new SlotRead(new StorageSlotKey(UInt256.fromBytes(r.readBytes()))));
+          acctIn.readList(r -> new SlotRead(new StorageSlotKey(Bytes32.leftPad(r.readBytes()))));
 
       List<BalanceChange> balances =
           acctIn.readList(

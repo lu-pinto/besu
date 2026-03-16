@@ -31,7 +31,7 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 /**
  * Generates state diffs (before/after account and storage changes) for Ethereum transactions.
@@ -135,7 +135,7 @@ public class StateTraceGenerator {
                         if (rootAccount == null) {
                           // Case 1: The account did not exist before this transaction.
                           // In diff mode, include only non-zero storage writes.
-                          if (!UInt256.ZERO.equals(newValue)) {
+                          if (!Bytes32.ZERO.equals(newValue)) {
                             storageDiff.put(
                                 key.toHexString(), new DiffNode(null, newValue.toHexString()));
                           }
@@ -183,7 +183,7 @@ public class StateTraceGenerator {
               slotKey -> {
                 // The pre-state mode only cares about the *original* value.
                 if (original != null) {
-                  final UInt256 value = original.getStorageValue(slotKey);
+                  final Bytes32 value = original.getStorageValue(slotKey);
                   storageDiff.put(slotKey.toHexString(), new DiffNode(value.toHexString(), null));
                 }
               });

@@ -37,6 +37,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -196,7 +197,7 @@ public class StateTraceGeneratorTest {
       final Address addr,
       final long balance,
       final long nonce,
-      final Map<UInt256, UInt256> updatedStorage) {
+      final Map<Bytes32, Bytes32> updatedStorage) {
 
     MutableAccount a = mock(MutableAccount.class);
     when(a.getAddress()).thenReturn(addr);
@@ -239,7 +240,7 @@ public class StateTraceGeneratorTest {
 
     TransactionTrace txTrace = mock(TransactionTrace.class);
     when(txTrace.getTraceFrames()).thenReturn(List.of(f));
-    Set<UInt256> slots = new java.util.HashSet<>();
+    Set<Bytes32> slots = new java.util.HashSet<>();
     slots.addAll(preState.getUpdatedStorage().keySet());
     slots.addAll(postState.getUpdatedStorage().keySet());
     Collection<AccessLocationTracker.AccountAccessList> touchedAccounts =
@@ -250,7 +251,7 @@ public class StateTraceGeneratorTest {
   }
 
   private AccessLocationTracker.AccountAccessList mockAccountAccessListEntry(
-      final Address address, final Set<UInt256> slots) {
+      final Address address, final Set<Bytes32> slots) {
     AccessLocationTracker.AccountAccessList entry =
         mock(AccessLocationTracker.AccountAccessList.class);
     when(entry.getAddress()).thenReturn(address);

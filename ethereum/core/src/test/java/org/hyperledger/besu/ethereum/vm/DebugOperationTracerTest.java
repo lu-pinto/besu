@@ -181,7 +181,7 @@ class DebugOperationTracerTest {
   @Test
   void shouldRecordStorageWhenEnabled() {
     final MessageFrame frame = validMessageFrame();
-    final Map<UInt256, UInt256> updatedStorage = setupStorageForCapture(frame);
+    final Map<Bytes32, Bytes32> updatedStorage = setupStorageForCapture(frame);
     final TraceFrame traceFrame =
         traceFrame(
             frame,
@@ -264,7 +264,7 @@ class DebugOperationTracerTest {
   @Test
   void shouldCaptureFrameWhenExceptionalHaltOccurs() {
     final MessageFrame frame = validMessageFrame();
-    final Map<UInt256, UInt256> updatedStorage = setupStorageForCapture(frame);
+    final Map<Bytes32, Bytes32> updatedStorage = setupStorageForCapture(frame);
 
     final DebugOperationTracer tracer =
         new DebugOperationTracer(
@@ -337,13 +337,13 @@ class DebugOperationTracerTest {
         .blockchain(blockchain);
   }
 
-  private Map<UInt256, UInt256> setupStorageForCapture(final MessageFrame frame) {
+  private Map<Bytes32, Bytes32> setupStorageForCapture(final MessageFrame frame) {
     final MutableAccount account = mock(MutableAccount.class);
     when(worldUpdater.getAccount(frame.getRecipientAddress())).thenReturn(account);
 
-    final Map<UInt256, UInt256> updatedStorage = new TreeMap<>();
-    updatedStorage.put(UInt256.ZERO, UInt256.valueOf(233));
-    updatedStorage.put(UInt256.ONE, UInt256.valueOf(2424));
+    final Map<Bytes32, Bytes32> updatedStorage = new TreeMap<>();
+    updatedStorage.put(Bytes32.ZERO, Bytes32.fromHexStringLenient("0xe9"));
+    updatedStorage.put(Bytes32.fromHexStringLenient("0x01"), Bytes32.fromHexStringLenient("0x978"));
     when(account.getUpdatedStorage()).thenReturn(updatedStorage);
     final Bytes32 word1 = Bytes32.fromHexString("0x01");
     final Bytes32 word2 = Bytes32.fromHexString("0x02");

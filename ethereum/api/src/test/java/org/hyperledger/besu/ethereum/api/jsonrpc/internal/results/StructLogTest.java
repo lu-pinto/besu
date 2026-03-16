@@ -28,7 +28,7 @@ import java.util.OptionalLong;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -85,10 +85,10 @@ public class StructLogTest {
                 Arrays.stream(stack)
                     .map(Bytes::fromHexString) // Convert each string to Bytes
                     .toArray(Bytes[]::new)));
-    Map<UInt256, UInt256> storageMap = new HashMap<>();
+    Map<Bytes32, Bytes32> storageMap = new HashMap<>();
     for (Map.Entry<String, String> entry : storage.entrySet()) {
       storageMap.put(
-          UInt256.fromHexString(entry.getKey()), UInt256.fromHexString(entry.getValue()));
+          Bytes32.fromHexStringLenient(entry.getKey()), Bytes32.fromHexStringLenient(entry.getValue()));
     }
     when(traceFrame.getStorage()).thenReturn(Optional.of(storageMap));
     when(traceFrame.getRevertReason()).thenReturn(Optional.of(Bytes.fromHexString(reason)));
@@ -146,10 +146,10 @@ public class StructLogTest {
                 Arrays.stream(stack)
                     .map(Bytes::fromHexString) // Convert each string to Bytes
                     .toArray(Bytes[]::new)));
-    Map<UInt256, UInt256> storageMap = new HashMap<>();
+    Map<Bytes32, Bytes32> storageMap = new HashMap<>();
     for (Map.Entry<String, String> entry : storage.entrySet()) {
       storageMap.put(
-          UInt256.fromHexString(entry.getKey()), UInt256.fromHexString(entry.getValue()));
+          Bytes32.fromHexStringLenient(entry.getKey()), Bytes32.fromHexStringLenient(entry.getValue()));
     }
     when(traceFrame.getStorage()).thenReturn(Optional.of(storageMap));
     when(traceFrame.getRevertReason()).thenReturn(Optional.of(Bytes.fromHexString(reason)));

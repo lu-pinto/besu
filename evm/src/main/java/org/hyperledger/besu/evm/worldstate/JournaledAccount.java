@@ -32,7 +32,6 @@ import java.util.TreeMap;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -59,7 +58,7 @@ public class JournaledAccount implements MutableAccount, Undoable {
 
   // Only contains updated storage entries, but may contain entry with a value of 0 to signify
   // deletion.
-  private final UndoNavigableMap<UInt256, UInt256> updatedStorage;
+  private final UndoNavigableMap<Bytes32, Bytes32> updatedStorage;
   private boolean storageWasCleared = false;
 
   boolean immutable;
@@ -164,7 +163,7 @@ public class JournaledAccount implements MutableAccount, Undoable {
    *     with a value of 0 to signify deletion.
    */
   @Override
-  public Map<UInt256, UInt256> getUpdatedStorage() {
+  public Map<Bytes32, Bytes32> getUpdatedStorage() {
     return updatedStorage;
   }
 
@@ -260,26 +259,26 @@ public class JournaledAccount implements MutableAccount, Undoable {
   }
 
   @Override
-  public UInt256 getStorageValue(final UInt256 key) {
-    final UInt256 value = updatedStorage.get(key);
+  public Bytes32 getStorageValue(final Bytes32 key) {
+    final Bytes32 value = updatedStorage.get(key);
     if (value != null) {
       return value;
     }
     if (storageWasCleared) {
-      return UInt256.ZERO;
+      return Bytes32.ZERO;
     }
 
     // We haven't updated the key-value yet, so either it's a new account, and it doesn't have the
     // key, or we should query the underlying storage for its existing value (which might be 0).
-    return account == null ? UInt256.ZERO : account.getStorageValue(key);
+    return account == null ? Bytes32.ZERO : account.getStorageValue(key);
   }
 
   @Override
-  public UInt256 getOriginalStorageValue(final UInt256 key) {
+  public Bytes32 getOriginalStorageValue(final Bytes32 key) {
     // if storage was cleared then it is because it was an empty account, hence zero storage
     // if we have no backing account, it's a new account, hence zero storage
     // otherwise ask outside of what we are journaling, journaled change may not be original value
-    return (storageWasCleared || account == null) ? UInt256.ZERO : account.getStorageValue(key);
+    return (storageWasCleared || account == null) ? Bytes32.ZERO : account.getStorageValue(key);
   }
 
   @Override
@@ -303,7 +302,7 @@ public class JournaledAccount implements MutableAccount, Undoable {
   }
 
   @Override
-  public void setStorageValue(final UInt256 key, final UInt256 value) {
+  public void setStorageValue(final Bytes32 key, final Bytes32 value) {
     if (immutable) {
       throw new ModificationNotAllowedException();
     }

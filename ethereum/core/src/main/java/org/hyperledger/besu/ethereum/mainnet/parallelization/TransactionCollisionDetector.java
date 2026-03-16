@@ -27,7 +27,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 public class TransactionCollisionDetector {
 
@@ -138,7 +138,7 @@ public class TransactionCollisionDetector {
     HashSet<StorageSlotKey> slots = new HashSet<>();
     accumulator.ifPresent(
         pathBasedWorldStateUpdateAccumulator -> {
-          final StorageConsumingMap<StorageSlotKey, PathBasedValue<UInt256>> map =
+          final StorageConsumingMap<StorageSlotKey, PathBasedValue<Bytes32>> map =
               pathBasedWorldStateUpdateAccumulator.getStorageToUpdate().get(address);
           if (map != null) {
             map.forEach(
@@ -207,7 +207,7 @@ public class TransactionCollisionDetector {
     HashSet<StorageSlotKey> slots = new HashSet<>();
     accumulator.ifPresent(
         pathBasedWorldStateUpdateAccumulator -> {
-          final StorageConsumingMap<StorageSlotKey, PathBasedValue<UInt256>> map =
+          final StorageConsumingMap<StorageSlotKey, PathBasedValue<Bytes32>> map =
               pathBasedWorldStateUpdateAccumulator.getStorageToUpdate().get(address);
           if (map != null) {
             map.forEach(

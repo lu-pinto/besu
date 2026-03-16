@@ -27,7 +27,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 public class BlockAccessListResult {
 
@@ -62,7 +62,7 @@ public class BlockAccessListResult {
       this.storageChanges = changes.storageChanges().stream().map(SlotChangeResult::new).toList();
       this.storageReads =
           changes.storageReads().stream()
-              .map(sr -> sr.slot().getSlotKey().map(UInt256::toHexString).orElse(""))
+              .map(sr -> sr.slot().getSlotKey().map(Bytes32::toHexString).orElse(""))
               .toList();
       this.balanceChanges =
           changes.balanceChanges().stream().map(BalanceChangeResult::new).toList();
@@ -77,7 +77,7 @@ public class BlockAccessListResult {
     public final List<StorageChangeResult> changes;
 
     public SlotChangeResult(final SlotChanges changes) {
-      this.slot = changes.slot().getSlotKey().map(UInt256::toHexString).orElse("null");
+      this.slot = changes.slot().getSlotKey().map(Bytes32::toHexString).orElse("null");
       this.changes = changes.changes().stream().map(StorageChangeResult::new).toList();
     }
   }

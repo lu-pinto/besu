@@ -21,7 +21,6 @@ import java.math.BigInteger;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.bytes.MutableBytes;
-import org.apache.tuweni.units.bigints.UInt256;
 
 /** Static utility methods to work with VM words (that is, {@link Bytes32} values). */
 public interface Words {
@@ -32,8 +31,8 @@ public interface Words {
    * @return A VM word containing {@code address} (left-padded as according to the VM specification
    *     (Appendix H. of the Yellow paper)).
    */
-  static UInt256 fromAddress(final Address address) {
-    return UInt256.fromBytes(Bytes32.leftPad(address.getBytes()));
+  static Bytes32 fromAddress(final Address address) {
+    return Bytes32.leftPad(address.getBytes());
   }
 
   /**

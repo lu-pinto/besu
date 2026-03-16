@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 public abstract class PathBasedAccount implements MutableAccount, AccountValue {
   protected final PathBasedWorldView context;
@@ -43,7 +43,7 @@ public abstract class PathBasedAccount implements MutableAccount, AccountValue {
   protected Code code;
   protected final CodeCache codeCache;
 
-  protected final Map<UInt256, UInt256> updatedStorage = new HashMap<>();
+  protected final Map<Bytes32, Bytes32> updatedStorage = new HashMap<>();
 
   /**
    * Constructs a new PathBasedAccount instance without the account's code. This constructor is used
@@ -242,12 +242,12 @@ public abstract class PathBasedAccount implements MutableAccount, AccountValue {
   }
 
   @Override
-  public UInt256 getStorageValue(final UInt256 key) {
+  public Bytes32 getStorageValue(final Bytes32 key) {
     return context.getStorageValue(address, key);
   }
 
   @Override
-  public UInt256 getOriginalStorageValue(final UInt256 key) {
+  public Bytes32 getOriginalStorageValue(final Bytes32 key) {
     return context.getPriorStorageValue(address, key);
   }
 
@@ -258,7 +258,7 @@ public abstract class PathBasedAccount implements MutableAccount, AccountValue {
   }
 
   @Override
-  public void setStorageValue(final UInt256 key, final UInt256 value) {
+  public void setStorageValue(final Bytes32 key, final Bytes32 value) {
     if (immutable) {
       throw new ModificationNotAllowedException();
     }
@@ -271,7 +271,7 @@ public abstract class PathBasedAccount implements MutableAccount, AccountValue {
   }
 
   @Override
-  public Map<UInt256, UInt256> getUpdatedStorage() {
+  public Map<Bytes32, Bytes32> getUpdatedStorage() {
     return updatedStorage;
   }
 

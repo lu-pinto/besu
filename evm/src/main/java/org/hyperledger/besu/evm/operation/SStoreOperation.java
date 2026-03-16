@@ -24,7 +24,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
-import org.apache.tuweni.units.bigints.UInt256;
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The SStore operation. */
 public class SStoreOperation extends AbstractOperation {
@@ -64,8 +64,8 @@ public class SStoreOperation extends AbstractOperation {
   @Override
   public OperationResult execute(final MessageFrame frame, final EVM evm) {
 
-    final UInt256 key = UInt256.fromBytes(frame.popStackItem());
-    final UInt256 newValue = UInt256.fromBytes(frame.popStackItem());
+    final Bytes32 key = frame.popStackItem();
+    final Bytes32 newValueBytes = frame.popStackItem();
 
     final MutableAccount account = getMutableAccount(frame.getRecipientAddress(), frame);
     if (account == null) {
@@ -84,13 +84,14 @@ public class SStoreOperation extends AbstractOperation {
 
     final Address address = account.getAddress();
     final boolean slotIsWarm = frame.warmUpStorage(address, key);
-    final Supplier<UInt256> currentValueSupplier =
+    final Supplier<Bytes32> currentValueSupplier =
         Suppliers.memoize(() -> getStorageValue(account, key, frame));
-    final Supplier<UInt256> originalValueSupplier =
+    final Supplier<Bytes32> originalValueSupplier =
         Suppliers.memoize(() -> account.getOriginalStorageValue(key));
 
     final long cost =
-        gasCalculator().calculateStorageCost(newValue, currentValueSupplier, originalValueSupplier)
+        gasCalculator()
+                .calculateStorageCost(newValueBytes, currentValueSupplier, originalValueSupplier)
             + (slotIsWarm ? 0L : gasCalculator().getColdSloadCost());
     if (remainingGas < cost) {
       return new OperationResult(cost, ExceptionalHaltReason.INSUFFICIENT_GAS);
@@ -99,10 +100,11 @@ public class SStoreOperation extends AbstractOperation {
     // Increment the refund counter.
     frame.incrementGasRefund(
         gasCalculator()
-            .calculateStorageRefundAmount(newValue, currentValueSupplier, originalValueSupplier));
+            .calculateStorageRefundAmount(
+                newValueBytes, currentValueSupplier, originalValueSupplier));
 
-    account.setStorageValue(key, newValue);
-    frame.storageWasUpdated(key, newValue);
+    account.setStorageValue(key, newValueBytes);
+    frame.storageWasUpdated(key, newValueBytes);
     frame.getEip7928AccessList().ifPresent(t -> t.addSlotAccessForAccount(address, key));
 
     return new OperationResult(cost, null);
