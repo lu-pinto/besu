@@ -38,11 +38,6 @@ class Shift256OperationsTest {
   // region isShiftOverflow Tests
 
   @Test
-  void isShiftOverflow_empty_returnsFalse() {
-    assertThat(isShiftOverflow(Bytes.EMPTY.toArrayUnsafe())).isFalse();
-  }
-
-  @Test
   void isShiftOverflow_singleByte_returnsFalse() {
     assertThat(isShiftOverflow(Bytes.of(0).toArrayUnsafe())).isFalse();
     assertThat(isShiftOverflow(Bytes.of(1).toArrayUnsafe())).isFalse();

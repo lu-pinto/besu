@@ -77,15 +77,10 @@ public class PushOperation extends AbstractFixedCostOperation {
       push = Bytes32Helper.ZERO_BYTES32;
     } else {
       final int copyLength = Math.min(pushSize, code.length - copyStart);
-      final int rightPad = pushSize - copyLength;
-      if (rightPad == 0) {
-        push = Bytes32Helper.leftPad(Bytes.wrap(code, copyStart, copyLength));
-      } else {
-        // Right Pad the push with 0s up to pushSize if greater than the copyLength
-        var bytecodeLocal = new byte[pushSize];
-        System.arraycopy(code, copyStart, bytecodeLocal, 0, copyLength);
-        push = Bytes32Helper.leftPad(Bytes.wrap(bytecodeLocal));
-      }
+      final int destOffset = Math.max(copyLength, pushSize);
+      final byte[] bytes = new byte[32];
+      System.arraycopy(code, copyStart, bytes, 32 - destOffset, copyLength);
+      push = Bytes32.wrap(bytes);
     }
     frame.pushStackItem(push);
     frame.setPC(pc + pushSize);

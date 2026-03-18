@@ -47,7 +47,6 @@ public final class Shift256Operations {
    */
   public static boolean isShiftOverflow(final byte[] shiftBytes) {
     final int len = shiftBytes.length - 1;
-    if (len <= 0) return false;
     return !Arrays.equals(shiftBytes, 0, len, ZERO_31, 0, len);
   }
 }

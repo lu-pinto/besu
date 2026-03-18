@@ -71,7 +71,7 @@ public class ShrOperationOptimized extends AbstractFixedCostOperation {
       return shrSuccess;
     }
 
-    final int shift = shiftBytes.length == 0 ? 0 : (shiftBytes[shiftBytes.length - 1] & 0xFF);
+    final int shift = shiftBytes[shiftBytes.length - 1] & 0xFF;
 
     frame.pushStackItem(shr256(valueBytes, shift));
     return shrSuccess;

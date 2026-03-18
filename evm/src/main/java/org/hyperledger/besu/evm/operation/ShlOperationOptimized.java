@@ -71,7 +71,7 @@ public class ShlOperationOptimized extends AbstractFixedCostOperation {
       return shlSuccess;
     }
 
-    final int shift = shiftBytes.length == 0 ? 0 : (shiftBytes[shiftBytes.length - 1] & 0xFF);
+    final int shift = shiftBytes[shiftBytes.length - 1] & 0xFF;
 
     frame.pushStackItem(shl256(valueBytes, shift));
     return shlSuccess;
