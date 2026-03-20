@@ -20,7 +20,6 @@ import static org.hyperledger.besu.evm.frame.SoftFailureReason.LEGACY_MAX_CALL_D
 import static org.hyperledger.besu.evm.internal.Words.clampedToLong;
 
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.account.MutableAccount;
@@ -83,7 +82,7 @@ public abstract class AbstractCreateOperation extends AbstractOperation {
     if (frame.getRemainingGas() < cost) {
       return new OperationResult(cost, ExceptionalHaltReason.INSUFFICIENT_GAS);
     }
-    final Wei value = Wei.wrap(frame.getStackItem(0));
+    final Bytes32 value = frame.getStackItem(0);
 
     final Address address = frame.getRecipientAddress();
     final MutableAccount account = getMutableAccount(address, frame);
@@ -170,7 +169,7 @@ public abstract class AbstractCreateOperation extends AbstractOperation {
   }
 
   private void spawnChildMessage(final MessageFrame parent, final Code code) {
-    final Wei value = Wei.wrap(parent.getStackItem(0));
+    final Bytes32 value = parent.getStackItem(0);
 
     final Address contractAddress = generateTargetContractAddress(parent, code);
     final Bytes inputData = getInputData(parent);

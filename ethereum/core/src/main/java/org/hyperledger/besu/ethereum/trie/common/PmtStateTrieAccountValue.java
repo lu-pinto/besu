@@ -18,7 +18,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import org.hyperledger.besu.datatypes.AccountValue;
 import org.hyperledger.besu.datatypes.Hash;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.rlp.RLPInput;
 import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 
@@ -33,7 +32,7 @@ public class PmtStateTrieAccountValue extends AbstractStateTrieAccountValue
   protected final Hash storageRoot;
 
   public PmtStateTrieAccountValue(
-      final long nonce, final Wei balance, final Hash storageRoot, final Hash codeHash) {
+      final long nonce, final Bytes32 balance, final Hash storageRoot, final Hash codeHash) {
     super(nonce, balance, codeHash);
     checkNotNull(storageRoot, "storageRoot cannot be null");
     this.storageRoot = storageRoot;
@@ -80,7 +79,7 @@ public class PmtStateTrieAccountValue extends AbstractStateTrieAccountValue
     in.enterList();
 
     final long nonce = in.readLongScalar();
-    final Wei balance = Wei.of(in.readUInt256Scalar());
+    final Bytes32 balance = in.readBytes32Scalar();
     Bytes32 storageRoot;
     Bytes32 codeHash;
     if (in.nextIsNull()) {

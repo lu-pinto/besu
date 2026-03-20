@@ -214,15 +214,15 @@ public class MessageFrame {
 
   // Transaction state fields.
   private final List<Log> logs = new ArrayList<>();
-  private final Map<Address, Wei> refunds = new HashMap<>();
+  private final Map<Address, Bytes32> refunds = new HashMap<>();
 
   // Execution Environment fields.
   private final Address recipient;
   private final Address contract;
   private final Bytes inputData;
   private final Address sender;
-  private final Wei value;
-  private final Wei apparentValue;
+  private final Bytes32 value;
+  private final Bytes32 apparentValue;
   private final Code code;
 
   private Optional<Bytes> revertReason;
@@ -259,8 +259,8 @@ public class MessageFrame {
       final Address contract,
       final Bytes inputData,
       final Address sender,
-      final Wei value,
-      final Wei apparentValue,
+      final Bytes32 value,
+      final Bytes32 apparentValue,
       final Code code,
       final boolean isStatic,
       final Consumer<MessageFrame> completer,
@@ -880,7 +880,7 @@ public class MessageFrame {
    * @param beneficiary the beneficiary of the refund.
    * @param amount the amount of the refund.
    */
-  public void addRefund(final Address beneficiary, final Wei amount) {
+  public void addRefund(final Address beneficiary, final Bytes32 amount) {
     refunds.put(beneficiary, amount);
   }
 
@@ -889,7 +889,7 @@ public class MessageFrame {
    *
    * @return the refunds map
    */
-  public Map<Address, Wei> getRefunds() {
+  public Map<Address, Bytes32> getRefunds() {
     return refunds;
   }
 
@@ -1029,8 +1029,12 @@ public class MessageFrame {
    *
    * @return the current gas price
    */
-  public Wei getGasPrice() {
+  public Bytes32 getGasPrice() {
     return txValues.gasPrice();
+  }
+
+  public Bytes32 getBaseFee() {
+    return txValues.baseFee();
   }
 
   /**
@@ -1038,7 +1042,7 @@ public class MessageFrame {
    *
    * @return the current blob gas price
    */
-  public Wei getBlobGasPrice() {
+  public Bytes32 getBlobGasPrice() {
     return txValues.blobGasPrice();
   }
 
@@ -1056,7 +1060,7 @@ public class MessageFrame {
    *
    * @return the value being transferred
    */
-  public Wei getValue() {
+  public Bytes32 getValue() {
     return value;
   }
 
@@ -1065,7 +1069,7 @@ public class MessageFrame {
    *
    * @return the apparent value being transferred
    */
-  public Wei getApparentValue() {
+  public Bytes32 getApparentValue() {
     return apparentValue;
   }
 
@@ -1281,12 +1285,12 @@ public class MessageFrame {
     private Address address;
     private Address originator;
     private Address contract;
-    private Wei gasPrice;
-    private Wei blobGasPrice = Wei.ZERO;
+    private Bytes32 gasPrice;
+    private Bytes32 blobGasPrice = Bytes32.ZERO;
     private Bytes inputData;
     private Address sender;
-    private Wei value;
-    private Wei apparentValue;
+    private Bytes32 value;
+    private Bytes32 apparentValue;
     private Code code;
     private BlockValues blockValues;
     private int maxStackSize = DEFAULT_MAX_STACK_SIZE;
@@ -1301,6 +1305,7 @@ public class MessageFrame {
     private Optional<Eip7928AccessList> eip7928AccessList = Optional.empty();
 
     private Optional<List<VersionedHash>> versionedHashes = Optional.empty();
+    private Bytes32 baseFee;
 
     /** Instantiates a new Builder. */
     public Builder() {
@@ -1392,7 +1397,12 @@ public class MessageFrame {
      * @return the builder
      */
     public Builder gasPrice(final Wei gasPrice) {
-      this.gasPrice = gasPrice;
+      this.gasPrice = Bytes32.wrap(gasPrice.toBytes().toArrayUnsafe());
+      return this;
+    }
+
+    public Builder baseFee(final Wei baseFee) {
+      this.baseFee = Bytes32.wrap(baseFee.toBytes().toArrayUnsafe());
       return this;
     }
 
@@ -1403,7 +1413,7 @@ public class MessageFrame {
      * @return the builder
      */
     public Builder blobGasPrice(final Wei blobGasPrice) {
-      this.blobGasPrice = blobGasPrice;
+      this.blobGasPrice = Bytes32.wrap(blobGasPrice.toBytes().toArrayUnsafe());
       return this;
     }
 
@@ -1430,13 +1440,35 @@ public class MessageFrame {
     }
 
     /**
-     * Sets Value.
+     * Sets Value. Only to be used when entering EVM from transaction!!!
      *
      * @param value the value
      * @return the builder
      */
     public Builder value(final Wei value) {
+      this.value = Bytes32.wrap(value.toBytes().toArrayUnsafe());
+      return this;
+    }
+
+    /**
+     * Sets Value.
+     *
+     * @param value the value
+     * @return the builder
+     */
+    public Builder value(final Bytes32 value) {
       this.value = value;
+      return this;
+    }
+
+    /**
+     * Sets Apparent value. Only to be used when entering EVM from transaction!!!
+     *
+     * @param apparentValue the apparent value
+     * @return the builder
+     */
+    public Builder apparentValue(final Wei apparentValue) {
+      this.apparentValue = Bytes32.wrap(apparentValue.toBytes().toArrayUnsafe());
       return this;
     }
 
@@ -1446,7 +1478,7 @@ public class MessageFrame {
      * @param apparentValue the apparent value
      * @return the builder
      */
-    public Builder apparentValue(final Wei apparentValue) {
+    public Builder apparentValue(final Bytes32 apparentValue) {
       this.apparentValue = apparentValue;
       return this;
     }
@@ -1640,6 +1672,7 @@ public class MessageFrame {
                 UndoTable.of(HashBasedTable.create()),
                 originator,
                 gasPrice,
+                baseFee,
                 blobGasPrice,
                 blockValues,
                 new ArrayDeque<>(),

@@ -17,9 +17,9 @@ package org.hyperledger.besu.evm.testutils;
 import static org.hyperledger.besu.evm.frame.MessageFrame.DEFAULT_MAX_STACK_SIZE;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
 import org.hyperledger.besu.evm.frame.BlockValues;
@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
 
 public class TestMessageFrameBuilder {
 
@@ -163,7 +162,8 @@ public class TestMessageFrameBuilder {
             .completer(c -> {})
             .miningBeneficiary(Address.ZERO)
             .blockHashLookup(
-                blockHashLookup.orElse((__, number) -> Hash.hash(Words.longBytes(number).trimLeadingZeros())))
+                blockHashLookup.orElse(
+                    (__, number) -> Hash.hash(Words.longBytes(number).trimLeadingZeros())))
             .maxStackSize(maxStackSize)
             .isStatic(isStatic)
             .build();

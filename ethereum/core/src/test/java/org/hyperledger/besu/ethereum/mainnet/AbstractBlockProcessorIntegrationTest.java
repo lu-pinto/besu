@@ -23,10 +23,10 @@ import org.hyperledger.besu.crypto.SECPPrivateKey;
 import org.hyperledger.besu.crypto.SignatureAlgorithm;
 import org.hyperledger.besu.crypto.SignatureAlgorithmFactory;
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.TransactionType;
 import org.hyperledger.besu.datatypes.Wei;
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.BlockProcessingResult;
 import org.hyperledger.besu.ethereum.ProtocolContext;
 import org.hyperledger.besu.ethereum.chain.DefaultBlockchain;
@@ -1196,7 +1196,8 @@ class AbstractBlockProcessorIntegrationTest {
       final int slot,
       final int expectedValue) {
     BonsaiAccount contractAccount = (BonsaiAccount) worldState.get(contractAddress);
-    Bytes32 actualValue = contractAccount.getStorageValue(Bytes32Helper.leftPad(Bytes.ofUnsignedInt(slot)));
+    Bytes32 actualValue =
+        contractAccount.getStorageValue(Bytes32Helper.leftPad(Bytes.ofUnsignedInt(slot)));
     assertThat(actualValue).isEqualTo(Bytes32Helper.leftPad(Bytes.ofUnsignedInt(expectedValue)));
   }
 
@@ -1241,7 +1242,7 @@ class AbstractBlockProcessorIntegrationTest {
     final Wei balanceFromAccessList = Wei.fromHexString(lastChange.postBalance().toHexString());
 
     final MutableWorldState worldState = worldStateArchive.getWorldState();
-    final Wei actualBalance = ((BonsaiAccount) worldState.get(address)).getBalance();
+    final Wei actualBalance = Wei.wrap(((BonsaiAccount) worldState.get(address)).getBalance());
 
     if (address.equals(coinbase)) {
       final Wei delta = actualBalance.subtract(balanceFromAccessList);

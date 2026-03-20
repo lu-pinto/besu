@@ -19,7 +19,7 @@ import static org.hyperledger.besu.evm.operation.AbstractCallOperation.LEGACY_FA
 import static org.hyperledger.besu.evm.operation.AbstractCallOperation.LEGACY_SUCCESS_STACK_ITEM;
 
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.account.MutableAccount;
@@ -57,8 +57,8 @@ public class PayOperation extends AbstractOperation {
     }
 
     final Address to = Words.toAddress(toAddressBytes);
-    final Wei value = Wei.wrap(frame.getStackItem(1));
-    final boolean hasValue = value.greaterThan(Wei.ZERO);
+    final Bytes32 value = frame.getStackItem(1);
+    final boolean hasValue = Bytes32Helper.greaterThanZero(value);
     final Account recipient = getAccount(to, frame);
 
     final boolean accountIsWarm = frame.warmUpAddress(to);

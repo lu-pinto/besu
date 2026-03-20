@@ -252,7 +252,7 @@ public class MainnetTransactionProcessor {
       final Wei upfrontGasCost =
           transaction.getUpfrontGasCost(transactionGasPrice, blobGasPrice, blobGas);
       try {
-        final Wei previousBalance = sender.decrementBalance(upfrontGasCost);
+        final Bytes32 previousBalance = sender.decrementBalance(upfrontGasCost);
         LOG.trace(
             "Deducted sender {} upfront gas cost {} ({} -> {})",
             senderAddress,
@@ -329,6 +329,7 @@ public class MainnetTransactionProcessor {
               .originator(senderAddress)
               .gasPrice(transactionGasPrice)
               .blobGasPrice(blobGasPrice)
+              .baseFee(blockHeader.getBaseFee().orElse(Wei.ZERO))
               .sender(senderAddress)
               .value(transaction.getValue())
               .apparentValue(transaction.getValue())
@@ -412,7 +413,7 @@ public class MainnetTransactionProcessor {
       final long refundedGas =
           gasCalculator.calculateGasRefund(transaction, initialFrame, codeDelegationRefund);
       final Wei refundedWei = transactionGasPrice.multiply(refundedGas);
-      final Wei balancePriorToRefund = sender.getBalance();
+      final Bytes32 balancePriorToRefund = sender.getBalance();
       sender.incrementBalance(refundedWei);
       LOG.atTrace()
           .setMessage("refunded sender {}  {} wei ({} -> {})")

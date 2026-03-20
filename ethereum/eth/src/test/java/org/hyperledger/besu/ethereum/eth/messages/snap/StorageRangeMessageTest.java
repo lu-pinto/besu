@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.eth.messages.snap;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.p2p.rlpx.wire.MessageData;
 import org.hyperledger.besu.ethereum.p2p.rlpx.wire.RawMessage;
 
@@ -23,8 +24,6 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import kotlin.collections.ArrayDeque;
-import org.hyperledger.besu.datatypes.Bytes32Helper;
-
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.assertj.core.api.Assertions;

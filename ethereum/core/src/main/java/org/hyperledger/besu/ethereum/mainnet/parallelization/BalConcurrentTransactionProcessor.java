@@ -219,7 +219,10 @@ public class BalConcurrentTransactionProcessor extends ParallelBlockTransactionP
             account = worldStateUpdater.getOrCreate(address);
           }
           account.setStorageValue(
-              slotKey, latestStorage.newValue() != null ? latestStorage.newValue() : Bytes32Helper.ZERO_BYTES32);
+              slotKey,
+              latestStorage.newValue() != null
+                  ? latestStorage.newValue()
+                  : Bytes32Helper.ZERO_BYTES32);
         }
       }
     }

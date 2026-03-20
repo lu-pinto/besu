@@ -15,8 +15,8 @@
 package org.hyperledger.besu.ethereum.mainnet.block.access.list;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.StorageSlotKey;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.mainnet.block.access.list.PartialBlockAccessView.AccountChangesBuilder;
 import org.hyperledger.besu.ethereum.mainnet.block.access.list.PartialBlockAccessView.PartialBlockAccessViewBuilder;
 import org.hyperledger.besu.evm.account.Account;
@@ -113,7 +113,7 @@ public class AccessLocationTracker implements Eip7928AccessList {
         if (stackedUpdater.getDeletedAccountAddresses().contains(address)) {
           final Optional<Account> originalAccount = findOriginalAccount(stackedUpdater, address);
           if (originalAccount.isPresent() && !originalAccount.get().getBalance().isZero()) {
-            accountBuilder.withPostBalance(Wei.ZERO);
+            accountBuilder.withPostBalance(Bytes32Helper.ZERO_BYTES32);
           }
         }
         continue;
@@ -126,8 +126,8 @@ public class AccessLocationTracker implements Eip7928AccessList {
         final Account wrappedAccount = account.getWrappedAccount();
 
         if (wrappedAccount != null) {
-          Wei newBalance = account.getBalance();
-          Wei originalBalance = wrappedAccount.getBalance();
+          Bytes32 newBalance = account.getBalance();
+          Bytes32 originalBalance = wrappedAccount.getBalance();
           if (!newBalance.equals(originalBalance)) {
             accountBuilder.withPostBalance(newBalance);
           }
@@ -144,7 +144,7 @@ public class AccessLocationTracker implements Eip7928AccessList {
             accountBuilder.withNewCode(newCode);
           }
         } else {
-          Wei newBalance = account.getBalance();
+          Bytes32 newBalance = account.getBalance();
           if (!newBalance.isZero()) {
             accountBuilder.withPostBalance(newBalance);
           }

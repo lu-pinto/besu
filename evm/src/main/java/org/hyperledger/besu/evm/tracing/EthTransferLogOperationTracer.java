@@ -14,7 +14,6 @@
  */
 package org.hyperledger.besu.evm.tracing;
 
-
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Log;
 import org.hyperledger.besu.datatypes.LogTopic;
@@ -59,9 +58,10 @@ public class EthTransferLogOperationTracer implements OperationTracer {
   @Override
   public void traceContextEnter(final MessageFrame frame) {
     logSnapshots.push(traceTransfers.size());
-    if (frame.getValue().compareTo(Wei.ZERO) > 0
+    final Wei transferValue = Wei.wrap(frame.getValue());
+    if (transferValue.compareTo(Wei.ZERO) > 0
         && !frame.getRecipientAddress().equals(frame.getSenderAddress())) {
-      emitTransferLogs(frame.getSenderAddress(), frame.getRecipientAddress(), frame.getValue());
+      emitTransferLogs(frame.getSenderAddress(), frame.getRecipientAddress(), transferValue);
     }
   }
 
@@ -94,11 +94,12 @@ public class EthTransferLogOperationTracer implements OperationTracer {
     final Address beneficiaryAddress = Words.toAddress(frame.getStackItem(0));
     final Address originatorAddress = frame.getRecipientAddress();
     final MutableAccount originatorAccount = frame.getWorldUpdater().getAccount(originatorAddress);
-    final Wei originatorBalance = originatorAccount.getBalance();
+    final Bytes32 originatorBalance = originatorAccount.getBalance();
     emitTransferLogs(frame.getRecipientAddress(), beneficiaryAddress, originatorBalance);
   }
 
-  private void emitTransferLogs(final Address sender, final Address recipient, final Wei value) {
+  private void emitTransferLogs(
+      final Address sender, final Address recipient, final Bytes32 value) {
     final ImmutableList.Builder<LogTopic> builder = ImmutableList.builderWithExpectedSize(3);
     builder.add(LogTopic.create(SIMULATION_TRANSFER_TOPIC));
     builder.add(LogTopic.create(Words.fromAddress(sender)));

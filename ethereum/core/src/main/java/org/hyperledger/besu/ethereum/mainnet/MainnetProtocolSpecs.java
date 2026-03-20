@@ -124,6 +124,7 @@ import java.util.stream.IntStream;
 
 import com.google.common.io.Resources;
 import io.vertx.core.json.JsonArray;
+import org.apache.tuweni.bytes.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1454,7 +1455,7 @@ public abstract class MainnetProtocolSpecs {
             worldUpdater.getOrCreate(DAO_REFUND_CONTRACT_ADDRESS);
         for (final Address address : addresses) {
           final MutableAccount account = worldUpdater.getOrCreate(address);
-          final Wei balance = account.getBalance();
+          final Bytes32 balance = account.getBalance();
           account.decrementBalance(balance);
           daoRefundContract.incrementBalance(balance);
         }

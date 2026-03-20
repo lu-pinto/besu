@@ -82,7 +82,7 @@ public class GetProofResult {
                                   worldStateProof.getStorageProof(key))));
               return new GetProofResult(
                   address,
-                  pmtStateTrieAccountValue.getBalance(),
+                  Wei.wrap(pmtStateTrieAccountValue.getBalance()),
                   Bytes32.wrap(pmtStateTrieAccountValue.getCodeHash().getBytes()),
                   pmtStateTrieAccountValue.getNonce(),
                   Bytes32.wrap(pmtStateTrieAccountValue.getStorageRoot().getBytes()),

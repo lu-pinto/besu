@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.processor;
 
+import org.apache.tuweni.bytes.Bytes32;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.ModificationNotAllowedException;
@@ -131,8 +132,9 @@ public class ContractCreationProcessor extends AbstractMessageProcessor {
     }
     try {
 
+      final Bytes32 weiValue = frame.getValue();
       final MutableAccount sender = frame.getWorldUpdater().getSenderAccount(frame);
-      sender.decrementBalance(frame.getValue());
+      sender.decrementBalance(weiValue);
 
       Address contractAddress = frame.getContractAddress();
       final MutableAccount contract = frame.getWorldUpdater().getOrCreate(contractAddress);
@@ -147,11 +149,11 @@ public class ContractCreationProcessor extends AbstractMessageProcessor {
             frame, Optional.of(ExceptionalHaltReason.ILLEGAL_STATE_CHANGE));
       } else {
         frame.addCreate(contractAddress);
-        contract.incrementBalance(frame.getValue());
+        contract.incrementBalance(weiValue);
 
         // Emit transfer log for nonzero value contract creation (no-op before Amsterdam)
         transferLogEmitter.emitTransferLog(
-            frame, frame.getSenderAddress(), contractAddress, frame.getValue());
+            frame, frame.getSenderAddress(), contractAddress, weiValue);
 
         contract.setNonce(initialContractNonce);
         contract.clearStorage();

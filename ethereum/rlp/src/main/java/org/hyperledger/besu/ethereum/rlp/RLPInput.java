@@ -193,6 +193,8 @@ public interface RLPInput {
    */
   UInt256 readUInt256Scalar();
 
+  Bytes32 readBytes32Scalar();
+
   /**
    * Reads the next item of this input (which must be exactly 1 byte) as a byte.
    *

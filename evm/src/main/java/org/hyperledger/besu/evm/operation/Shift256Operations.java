@@ -28,7 +28,8 @@ public final class Shift256Operations {
   private static final byte[] ZERO_31 = new byte[31];
 
   /** All ones (0xFF repeated 32 times). */
-  public static final Bytes32 ALL_ONES = Bytes32.fromHexString("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+  public static final Bytes32 ALL_ONES =
+      Bytes32.fromHexString("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
   /** Raw byte array of ALL_ONES for use with {@code Arrays.equals} (JVM intrinsic). */
   static final byte[] ALL_ONES_BYTES = ALL_ONES.toArrayUnsafe();

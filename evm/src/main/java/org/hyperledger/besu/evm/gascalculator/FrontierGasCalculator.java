@@ -20,8 +20,8 @@ import static org.hyperledger.besu.evm.internal.Words.clampedToInt;
 import static org.hyperledger.besu.evm.internal.Words.numWords;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Transaction;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.operation.ExpOperation;
@@ -292,7 +292,7 @@ public class FrontierGasCalculator implements GasCalculator {
       final long inputDataLength,
       final long outputDataOffset,
       final long outputDataLength,
-      final Wei transferValue,
+      final Bytes32 transferValue,
       final Address recipientAddress,
       final boolean accountIsWarm) {
     final long inputDataMemoryExpansionCost =
@@ -304,7 +304,7 @@ public class FrontierGasCalculator implements GasCalculator {
 
     long cost = clampedAdd(clampedAdd(callOperationBaseGasCost(), stipend), memoryExpansionCost);
 
-    if (!transferValue.isZero()) {
+    if (Bytes32Helper.greaterThanZero(transferValue)) {
       cost = clampedAdd(cost, callValueTransferGasCost());
     }
 
@@ -320,7 +320,7 @@ public class FrontierGasCalculator implements GasCalculator {
       final long inputDataLength,
       final long outputDataOffset,
       final long outputDataLength,
-      final Wei transferValue,
+      final Bytes32 transferValue,
       final Address recipientAddress,
       final boolean accountIsWarm) {
     long cost = staticCallCost;

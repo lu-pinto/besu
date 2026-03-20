@@ -266,7 +266,7 @@ public class BlockchainQueriesTest {
             final Account actualAccount = worldState.get(address);
             final Optional<Wei> result = queries.accountBalance(address, curBlockNumber);
 
-            assertThat(result).contains(actualAccount.getBalance());
+            assertThat(result).contains(Wei.wrap(actualAccount.getBalance()));
           });
     }
   }

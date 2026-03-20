@@ -47,8 +47,7 @@ public final class BlockAccessListEncoder {
               });
 
           acctOut.writeList(
-              acct.storageReads(),
-              (sr, srOut) -> srOut.writeBytes32(sr.slot().getSlotKey().get()));
+              acct.storageReads(), (sr, srOut) -> srOut.writeBytes32(sr.slot().getSlotKey().get()));
 
           acctOut.writeList(
               acct.balanceChanges(),

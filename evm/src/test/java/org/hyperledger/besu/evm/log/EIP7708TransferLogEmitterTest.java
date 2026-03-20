@@ -25,10 +25,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Log;
 import org.hyperledger.besu.datatypes.LogTopic;
 import org.hyperledger.besu.datatypes.Wei;
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
@@ -83,7 +83,8 @@ class EIP7708TransferLogEmitterTest {
     assertThat(topics.get(1)).isEqualTo(LogTopic.create(Bytes32Helper.leftPad(SENDER.getBytes())));
 
     // Third topic is the recipient address (zero-padded to 32 bytes)
-    assertThat(topics.get(2)).isEqualTo(LogTopic.create(Bytes32Helper.leftPad(RECIPIENT.getBytes())));
+    assertThat(topics.get(2))
+        .isEqualTo(LogTopic.create(Bytes32Helper.leftPad(RECIPIENT.getBytes())));
 
     // Data should be the value as 32-byte big-endian
     assertThat(log.getData()).isEqualTo(Bytes32Helper.leftPad(value));

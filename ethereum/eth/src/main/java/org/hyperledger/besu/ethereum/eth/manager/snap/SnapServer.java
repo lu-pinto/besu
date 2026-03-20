@@ -14,8 +14,8 @@
  */
 package org.hyperledger.besu.ethereum.eth.manager.snap;
 
-import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Bytes32Helper;
+import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.ethereum.ProtocolContext;
 import org.hyperledger.besu.ethereum.core.Synchronizer;
 import org.hyperledger.besu.ethereum.eth.manager.EthMessages;
@@ -81,7 +81,8 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
   private static final ByteCodesMessage EMPTY_BYTE_CODES_MESSAGE =
       ByteCodesMessage.create(new ArrayDeque<>());
 
-  static final Hash HASH_LAST = Hash.wrap(Bytes32Helper.leftPad(Bytes.fromHexString("FF"), (byte) 0xFF));
+  static final Hash HASH_LAST =
+      Hash.wrap(Bytes32Helper.leftPad(Bytes.fromHexString("FF"), (byte) 0xFF));
 
   private final AtomicBoolean isStarted = new AtomicBoolean(false);
   private final EthMessages snapMessages;

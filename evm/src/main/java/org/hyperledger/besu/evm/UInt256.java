@@ -15,7 +15,6 @@
 package org.hyperledger.besu.evm;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 
 /**
  * 256-bits wide unsigned integer class.
@@ -41,8 +40,6 @@ public record UInt256(long u3, long u2, long u1, long u0) {
 
   /** The constant 0. */
   public static final UInt256 ZERO = new UInt256(0, 0, 0, 0);
-
-  private static final byte[] ZERO_BYTES = new byte[BYTESIZE];
 
   /** The constant All ones */
   public static final UInt256 MAX =
@@ -517,97 +514,6 @@ public record UInt256(long u3, long u2, long u1, long u0) {
     if (modulus.u2 != 0) return modulus.asModulus192().mul(this, other);
     if (modulus.u1 != 0) return modulus.asModulus128().mul(this, other);
     return modulus.asModulus64().mul(this, other);
-  }
-
-  // --------------------------------------------------------------------------
-  // endregion
-
-  // region Bytes Arithmetic Operations
-  //
-  // Addition is faster when done straight in byte[]
-  // --------------------------------------------------------------------------
-
-  /**
-   * Addition in bytes: x + y.
-   *
-   * <p>Compute the wrapping sum
-   *
-   * @param x The left value to add.
-   * @param y The right value to add.
-   * @return The sum x + y.
-   */
-  public static byte[] add(final byte[] x, final byte[] y) {
-    if (isZero(x)) return y;
-    if (isZero(y)) return x;
-    return adc(x, y);
-  }
-
-  /**
-   * Substraction in bytes: x - y.
-   *
-   * <p>Compute the wrapping difference
-   *
-   * @param x The left value.
-   * @param y The right value to substract.
-   * @return The wrapping difference x - y.
-   */
-  public static byte[] sub(final byte[] x, final byte[] y) {
-    if (isZero(y)) return x;
-    if (isZero(x)) return neg(y);
-    return sbb(x, y);
-  }
-
-  private static boolean isZero(final byte[] arr) {
-    int index = Arrays.mismatch(arr, ZERO_BYTES);
-    return (index == -1 || index >= arr.length);
-  }
-
-  private static byte[] padLeft(final byte[] a) {
-    if (a.length == BYTESIZE) return a;
-    byte[] res = new byte[BYTESIZE];
-    System.arraycopy(a, 0, res, BYTESIZE - a.length, a.length);
-    return res;
-  }
-
-  private static byte[] adc(final byte[] a, final byte[] b) {
-    int res;
-    int carry = 0;
-    byte[] x = padLeft(a);
-    byte[] y = padLeft(b);
-    byte[] sum = new byte[BYTESIZE];
-    for (int i = 31; i >= 0; i--) {
-      res = (x[i] & 0xFF) + (y[i] & 0xFF) + carry;
-      sum[i] = (byte) res;
-      carry = (res >> 8);
-    }
-    return sum;
-  }
-
-  private static byte[] neg(final byte[] a) {
-    int res;
-    int carry = 1;
-    byte[] x = padLeft(a);
-    byte[] out = new byte[BYTESIZE];
-    for (int i = 31; i >= 0; i--) {
-      res = (~x[i] & 0xFF) + carry;
-      out[i] = (byte) res;
-      carry = (res >> 8);
-    }
-    return out;
-  }
-
-  private static byte[] sbb(final byte[] a, final byte[] b) {
-    int res;
-    int borrow = 0;
-    byte[] x = padLeft(a);
-    byte[] y = padLeft(b);
-    byte[] diff = new byte[BYTESIZE];
-    for (int i = 31; i >= 0; i--) {
-      res = (x[i] & 0xFF) - (y[i] & 0xFF) - borrow;
-      diff[i] = (byte) res;
-      borrow = (res < 0) ? 1 : 0;
-    }
-    return diff;
   }
 
   // --------------------------------------------------------------------------

@@ -14,8 +14,8 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.EVM;
-import org.hyperledger.besu.evm.UInt256;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
@@ -54,7 +54,7 @@ public class SubOperationOptimized extends AbstractFixedCostOperation {
 
     byte[] b0 = value0.toArrayUnsafe();
     byte[] b1 = value1.toArrayUnsafe();
-    Bytes32 resultBytes = Bytes32.wrap(UInt256.sub(b0, b1));
+    Bytes32 resultBytes = Bytes32.wrap(Bytes32Helper.sub(b0, b1));
 
     frame.pushStackItem(resultBytes);
     return subSuccess;

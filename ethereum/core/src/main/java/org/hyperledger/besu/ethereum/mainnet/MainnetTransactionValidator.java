@@ -36,6 +36,7 @@ import java.math.BigInteger;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.tuweni.bytes.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -286,7 +287,7 @@ public class MainnetTransactionValidator implements TransactionValidator {
       final Transaction transaction,
       final Account sender,
       final TransactionValidationParams validationParams) {
-    Wei senderBalance = Account.DEFAULT_BALANCE;
+    Bytes32 senderBalance = Account.DEFAULT_BALANCE;
     long senderNonce = Account.DEFAULT_NONCE;
     Hash codeHash = Hash.EMPTY;
 

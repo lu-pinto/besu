@@ -15,7 +15,6 @@
 package org.hyperledger.besu.evm.account;
 
 import org.hyperledger.besu.datatypes.Hash;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.Code;
 
 import java.util.NavigableMap;
@@ -65,7 +64,7 @@ public interface AccountState {
    *
    * @return the balance, in Wei, of the account.
    */
-  Wei getBalance();
+  Bytes32 getBalance();
 
   /**
    * The EVM bytecode associated with this account.

@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.core.BlockHeader;
 import org.hyperledger.besu.ethereum.core.InMemoryKeyValueStorageProvider;
 import org.hyperledger.besu.ethereum.core.MutableWorldState;
@@ -30,6 +29,7 @@ import org.hyperledger.besu.evm.account.Account;
 import java.util.stream.Stream;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.jupiter.api.Test;
@@ -224,8 +224,8 @@ final class GenesisStateTest {
     assertThat(first.getCode())
         .isEqualTo(Bytes.fromHexString("0x5f804955600180495560028049556003804955"));
     assertThat(last).isNotNull();
-    Wei lastBalance = last.getBalance();
-    assertThat(lastBalance).isEqualTo(Wei.fromHexString("0x123450000000000000000"));
+    Bytes32 lastBalance = last.getBalance();
+    assertThat(lastBalance).isEqualTo(Bytes32.fromHexStringLenient("0x123450000000000000000"));
   }
 
   @ParameterizedTest
@@ -273,8 +273,8 @@ final class GenesisStateTest {
     assertThat(first.getCode())
         .isEqualTo(Bytes.fromHexString("0x5f804955600180495560028049556003804955"));
     assertThat(last).isNotNull();
-    Wei lastBalance = last.getBalance();
-    assertThat(lastBalance).isEqualTo(Wei.fromHexString("0x123450000000000000000"));
+    Bytes32 lastBalance = last.getBalance();
+    assertThat(lastBalance).isEqualTo(Bytes32.fromHexStringLenient("0x123450000000000000000"));
     assertThat(header.getRequestsHash().isPresent()).isFalse();
   }
 
@@ -323,8 +323,8 @@ final class GenesisStateTest {
     assertThat(first.getCode())
         .isEqualTo(Bytes.fromHexString("0x5f804955600180495560028049556003804955"));
     assertThat(last).isNotNull();
-    Wei lastBalance = last.getBalance();
-    assertThat(lastBalance).isEqualTo(Wei.fromHexString("0x123450000000000000000"));
+    Bytes32 lastBalance = last.getBalance();
+    assertThat(lastBalance).isEqualTo(Bytes32.fromHexStringLenient("0x123450000000000000000"));
 
     assertThat(header.getRequestsHash().isPresent()).isTrue();
     assertThat(header.getRequestsHash().get())

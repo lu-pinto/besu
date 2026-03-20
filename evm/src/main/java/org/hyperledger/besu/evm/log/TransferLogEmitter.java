@@ -16,12 +16,13 @@ package org.hyperledger.besu.evm.log;
 
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Log;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
 
 import java.util.Set;
 import java.util.function.Consumer;
+
+import org.apache.tuweni.bytes.Bytes32;
 
 /**
  * Strategy interface for emitting ETH transfer logs.
@@ -43,7 +44,7 @@ public interface TransferLogEmitter {
    * @param to the recipient address
    * @param value the amount transferred in Wei
    */
-  void emitTransferLog(MessageFrame frame, Address from, Address to, Wei value);
+  void emitTransferLog(MessageFrame frame, Address from, Address to, Bytes32 value);
 
   /**
    * Emit a log for a SELFDESTRUCT operation.
@@ -64,7 +65,7 @@ public interface TransferLogEmitter {
       final MessageFrame frame,
       final Address originator,
       final Address beneficiary,
-      final Wei value) {
+      final Bytes32 value) {
     // Default implementation delegates to emitTransferLog for backward compatibility
     emitTransferLog(frame, originator, beneficiary, value);
   }

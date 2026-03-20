@@ -14,8 +14,8 @@
  */
 package org.hyperledger.besu.evm.worldstate;
 
+import org.apache.tuweni.bytes.Bytes32;
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.account.MutableAccount;
 import org.hyperledger.besu.evm.frame.MessageFrame;
@@ -47,13 +47,13 @@ public interface WorldUpdater extends MutableWorldView {
    * @return the account {@code address}, which will have nonce {@code nonce}, balance {@code
    *     balance} and empty code and storage.
    */
-  MutableAccount createAccount(Address address, long nonce, Wei balance);
+  MutableAccount createAccount(Address address, long nonce, Bytes32 balance);
 
   /**
    * Creates a new account, or reset it (that is, act as if it was deleted and created anew) if it
    * already exists.
    *
-   * <p>This call is equivalent to {@link #createAccount(Address, long, Wei)} but defaults both the
+   * <p>This call is equivalent to {@link #createAccount(Address, long, Bytes32)} but defaults both the
    * nonce and balance to zero.
    *
    * @param address the address of the account to create (or reset).

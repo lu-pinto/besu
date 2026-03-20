@@ -17,7 +17,6 @@ package org.hyperledger.besu.evm.gascalculator;
 import org.hyperledger.besu.datatypes.AccessListEntry;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Transaction;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.operation.BalanceOperation;
@@ -189,7 +188,7 @@ public interface GasCalculator {
       final long inputDataLength,
       final long outputDataOffset,
       final long outputDataLength,
-      final Wei transferValue,
+      final Bytes32 transferValue,
       final Address recipientAddress,
       final boolean accountIsWarm);
 
@@ -217,7 +216,7 @@ public interface GasCalculator {
       final long inputDataLength,
       final long outputDataOffset,
       final long outputDataLength,
-      final Wei transferValue,
+      final Bytes32 transferValue,
       final Address recipientAddress,
       final boolean accountIsWarm);
 
@@ -406,7 +405,7 @@ public interface GasCalculator {
    * @param inheritance The amount the recipient will receive
    * @return the cost for executing the self destruct operation
    */
-  default long selfDestructOperationGasCost(final Account recipient, final Wei inheritance) {
+  default long selfDestructOperationGasCost(final Account recipient, final Bytes32 inheritance) {
     return selfDestructOperationStaticGasCost();
   }
 

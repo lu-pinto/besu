@@ -19,7 +19,6 @@ import org.hyperledger.besu.collections.undo.UndoSet;
 import org.hyperledger.besu.collections.undo.UndoTable;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.VersionedHash;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
 
 import java.util.Deque;
@@ -38,8 +37,8 @@ import org.apache.tuweni.bytes.Bytes32;
  * @param warmedUpAddresses The warmed-up addresses
  * @param warmedUpStorage The warmed-up storage
  * @param originator The originator address
- * @param gasPrice The gas price
- * @param blobGasPrice The blob gas price
+ * @param gasPrice The gas price as Bytes32
+ * @param blobGasPrice The blob gas price as Bytes32
  * @param blockValues The block values
  * @param messageFrameStack The message frame stack
  * @param miningBeneficiary The mining beneficiary address
@@ -55,8 +54,9 @@ public record TxValues(
     UndoSet<Address> warmedUpAddresses,
     UndoTable<Address, Bytes32, Boolean> warmedUpStorage,
     Address originator,
-    Wei gasPrice,
-    Wei blobGasPrice,
+    Bytes32 gasPrice,
+    Bytes32 baseFee,
+    Bytes32 blobGasPrice,
     BlockValues blockValues,
     Deque<MessageFrame> messageFrameStack,
     Address miningBeneficiary,

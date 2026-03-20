@@ -14,8 +14,9 @@
  */
 package org.hyperledger.besu.evm.account;
 
+import org.apache.tuweni.bytes.Bytes32;
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.internal.CodeCache;
 
 /**
@@ -34,7 +35,7 @@ public interface Account extends AccountState {
   long MAX_NONCE = -1; // per twos compliment rules -1 will be the unsigned max number
 
   /** The constant DEFAULT_BALANCE. */
-  Wei DEFAULT_BALANCE = Wei.ZERO;
+  Bytes32 DEFAULT_BALANCE = Bytes32Helper.ZERO_BYTES32;
 
   /**
    * The account address.

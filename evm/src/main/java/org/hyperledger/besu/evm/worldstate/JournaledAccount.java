@@ -22,7 +22,6 @@ import org.hyperledger.besu.collections.undo.Undoable;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.ModificationNotAllowedException;
 import org.hyperledger.besu.evm.account.AccountStorageEntry;
 import org.hyperledger.besu.evm.account.MutableAccount;
@@ -52,7 +51,7 @@ public class JournaledAccount implements MutableAccount, Undoable {
 
   private long transactionBoundaryMark;
   private final UndoScalar<Long> nonce;
-  private final UndoScalar<Wei> balance;
+  private final UndoScalar<Bytes32> balance;
   private final UndoScalar<Bytes> code;
   private final UndoScalar<Hash> codeHash;
   private final UndoScalar<Boolean> deleted;
@@ -76,7 +75,7 @@ public class JournaledAccount implements MutableAccount, Undoable {
     this.account = null;
 
     this.nonce = UndoScalar.of(0L);
-    this.balance = UndoScalar.of(Wei.ZERO);
+    this.balance = UndoScalar.of(Bytes32.ZERO);
 
     this.code = UndoScalar.of(Bytes.EMPTY);
     this.codeHash = UndoScalar.of(Hash.EMPTY);
@@ -197,12 +196,12 @@ public class JournaledAccount implements MutableAccount, Undoable {
   }
 
   @Override
-  public Wei getBalance() {
+  public Bytes32 getBalance() {
     return balance.get();
   }
 
   @Override
-  public void setBalance(final Wei value) {
+  public void setBalance(final Bytes32 value) {
     if (immutable) {
       throw new ModificationNotAllowedException();
     }
@@ -279,7 +278,9 @@ public class JournaledAccount implements MutableAccount, Undoable {
     // if storage was cleared then it is because it was an empty account, hence zero storage
     // if we have no backing account, it's a new account, hence zero storage
     // otherwise ask outside of what we are journaling, journaled change may not be original value
-    return (storageWasCleared || account == null) ? Bytes32Helper.ZERO_BYTES32 : account.getStorageValue(key);
+    return (storageWasCleared || account == null)
+        ? Bytes32Helper.ZERO_BYTES32
+        : account.getStorageValue(key);
   }
 
   @Override

@@ -27,7 +27,6 @@ import graphql.schema.DataFetchingEnvironment;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
-
 /**
  * The AccountAdapter class extends the AdapterBase class. It provides methods to get the account
  * details such as address, balance, transaction count, code, and storage.
@@ -97,7 +96,7 @@ public class AccountAdapter extends AdapterBase {
    * @return the balance of the account
    */
   public Wei getBalance() {
-    return account.map(AccountState::getBalance).orElse(Wei.ZERO);
+    return account.map(a -> Wei.wrap(a.getBalance())).orElse(Wei.ZERO);
   }
 
   /**
@@ -146,9 +145,7 @@ public class AccountAdapter extends AdapterBase {
               ws -> Optional.of(ws.get(address).getStorageValue(slot)))
           .get();
     } else {
-      return account
-          .map(a -> a.getStorageValue(slot))
-          .orElse(Bytes32.ZERO);
+      return account.map(a -> a.getStorageValue(slot)).orElse(Bytes32.ZERO);
     }
   }
 }

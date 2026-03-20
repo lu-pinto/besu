@@ -90,7 +90,6 @@ import com.google.common.base.Stopwatch;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
-
 /**
  * The T8nExecutor class is responsible for executing transactions in the context of the Ethereum
  * Virtual Machine (EVM). It extracts transactions from a given input, runs tests on them, and
@@ -636,8 +635,7 @@ public class T8nExecutor {
                       .map(
                           e ->
                               Map.entry(
-                                  e.getKey().get(),
-                                  account.getStorageValue(e.getKey().get())))
+                                  e.getKey().get(), account.getStorageValue(e.getKey().get())))
                       .filter(e -> !e.getValue().isZero())
                       .sorted(Map.Entry.comparingByKey())
                       .toList();

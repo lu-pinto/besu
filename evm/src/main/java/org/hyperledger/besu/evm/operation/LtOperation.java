@@ -51,7 +51,10 @@ public class LtOperation extends AbstractFixedCostOperation {
     final Bytes32 value0 = frame.popStackItem();
     final Bytes32 value1 = frame.popStackItem();
 
-    final Bytes32 result = value0.trimLeadingZeros().compareTo(value1.trimLeadingZeros()) < 0 ? BYTES_ONE : Bytes32.ZERO;
+    final Bytes32 result =
+        value0.trimLeadingZeros().compareTo(value1.trimLeadingZeros()) < 0
+            ? BYTES_ONE
+            : Bytes32.ZERO;
 
     frame.pushStackItem(result);
 

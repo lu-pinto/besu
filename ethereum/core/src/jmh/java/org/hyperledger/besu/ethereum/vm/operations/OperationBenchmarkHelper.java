@@ -17,6 +17,7 @@ package org.hyperledger.besu.ethereum.vm.operations;
 import static java.util.Collections.emptyList;
 
 import org.hyperledger.besu.config.GenesisConfig;
+import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.chain.Blockchain;
 import org.hyperledger.besu.ethereum.chain.MutableBlockchain;
 import org.hyperledger.besu.ethereum.core.Block;
@@ -124,8 +125,8 @@ public class OperationBenchmarkHelper {
         .inputData(messageFrame.getInputData())
         .eip7928AccessList(messageFrame.getEip7928AccessList().get())
         .sender(messageFrame.getSenderAddress())
-        .value(messageFrame.getValue())
-        .apparentValue(messageFrame.getApparentValue())
+        .value(Wei.wrap(messageFrame.getValue()))
+        .apparentValue(Wei.wrap(messageFrame.getApparentValue()))
         .code(messageFrame.getCode())
         .isStatic(messageFrame.isStatic())
         .completer(frame -> {});

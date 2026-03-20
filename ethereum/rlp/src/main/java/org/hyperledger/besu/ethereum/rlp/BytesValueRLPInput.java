@@ -382,12 +382,13 @@ public class BytesValueRLPInput implements RLPInput {
     return UInt64.fromBytes(readBytes8Scalar());
   }
 
-  private Bytes32 readBytes32Scalar() {
+  @Override
+  public Bytes32 readBytes32Scalar() {
     checkScalar("32-bytes scalar", 32);
     final MutableBytes32 res = MutableBytes32.create();
     payloadSlice().copyTo(res, res.size() - currentPayloadSize);
     setTo(nextItem());
-    return res;
+    return Bytes32.wrap(res.toArrayUnsafe());
   }
 
   @Override

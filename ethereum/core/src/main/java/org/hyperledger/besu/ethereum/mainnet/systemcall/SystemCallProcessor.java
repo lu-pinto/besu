@@ -143,6 +143,7 @@ public class SystemCallProcessor {
             .initialGas(SYSTEM_CALL_GAS_LIMIT)
             .originator(SYSTEM_ADDRESS)
             .gasPrice(Wei.ZERO)
+            .baseFee(Wei.ZERO)
             .blobGasPrice(Wei.ZERO)
             .value(Wei.ZERO)
             .apparentValue(Wei.ZERO)

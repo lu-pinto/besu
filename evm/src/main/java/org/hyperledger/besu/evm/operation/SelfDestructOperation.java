@@ -15,7 +15,6 @@
 package org.hyperledger.besu.evm.operation;
 
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.account.MutableAccount;
@@ -24,6 +23,8 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
 import org.hyperledger.besu.evm.log.TransferLogEmitter;
+
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Self destruct operation. */
 public class SelfDestructOperation extends AbstractOperation {
@@ -92,7 +93,7 @@ public class SelfDestructOperation extends AbstractOperation {
     final Account beneficiaryNullable = getAccount(beneficiaryAddress, frame);
     final Address originatorAddress = frame.getRecipientAddress();
     final MutableAccount originatorAccount = getMutableAccount(originatorAddress, frame);
-    final Wei originatorBalance = originatorAccount.getBalance();
+    final Bytes32 originatorBalance = originatorAccount.getBalance();
 
     final long cost =
         gasCalculator().selfDestructOperationGasCost(beneficiaryNullable, originatorBalance)
@@ -127,7 +128,7 @@ public class SelfDestructOperation extends AbstractOperation {
     // beneficiary) as well as tag it for later self-destruct cleanup.
     if (willBeDestroyed) {
       frame.addSelfDestruct(originatorAccount.getAddress());
-      originatorAccount.setBalance(Wei.ZERO);
+      originatorAccount.setBalance(Bytes32.ZERO);
     }
 
     // Add refund in message frame.

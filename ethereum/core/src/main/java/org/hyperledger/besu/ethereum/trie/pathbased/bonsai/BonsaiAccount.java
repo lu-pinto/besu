@@ -17,7 +17,6 @@ package org.hyperledger.besu.ethereum.trie.pathbased.bonsai;
 import org.hyperledger.besu.datatypes.AccountValue;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.rlp.RLP;
 import org.hyperledger.besu.ethereum.rlp.RLPException;
 import org.hyperledger.besu.ethereum.rlp.RLPInput;
@@ -45,7 +44,7 @@ public class BonsaiAccount extends PathBasedAccount {
       final Address address,
       final Hash addressHash,
       final long nonce,
-      final Wei balance,
+      final Bytes32 balance,
       final Hash storageRoot,
       final Hash codeHash,
       final boolean mutable,
@@ -121,7 +120,7 @@ public class BonsaiAccount extends PathBasedAccount {
     in.enterList();
 
     final long nonce = in.readLongScalar();
-    final Wei balance = Wei.of(in.readUInt256Scalar());
+    final Bytes32 balance = in.readBytes32Scalar();
     final Hash storageRoot = Hash.wrap(in.readBytes32());
     final Hash codeHash = Hash.wrap(in.readBytes32());
 

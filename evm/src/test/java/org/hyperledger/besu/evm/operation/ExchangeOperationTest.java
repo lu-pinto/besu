@@ -16,6 +16,7 @@ package org.hyperledger.besu.evm.operation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
@@ -23,10 +24,7 @@ import org.hyperledger.besu.evm.gascalculator.PragueGasCalculator;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 import org.hyperledger.besu.evm.testutils.TestMessageFrameBuilder;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
-
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -312,8 +310,10 @@ class ExchangeOperationTest {
     // After EXCHANGE: stack[1] and stack[29] swapped
     assertThat(frame.stackSize()).isEqualTo(30);
     assertThat(frame.getStackItem(0)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(2))); // unchanged
-    assertThat(frame.getStackItem(1)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(1))); // was 99, now 1
-    assertThat(frame.getStackItem(29)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(99))); // was 1, now 99
+    assertThat(frame.getStackItem(1))
+        .isEqualTo(Bytes32Helper.leftPad(Bytes.of(1))); // was 99, now 1
+    assertThat(frame.getStackItem(29))
+        .isEqualTo(Bytes32Helper.leftPad(Bytes.of(99))); // was 1, now 99
   }
 
   /**

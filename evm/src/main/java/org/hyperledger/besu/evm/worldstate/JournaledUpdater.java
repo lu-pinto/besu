@@ -14,10 +14,10 @@
  */
 package org.hyperledger.besu.evm.worldstate;
 
+import org.apache.tuweni.bytes.Bytes32;
 import org.hyperledger.besu.collections.undo.UndoMap;
 import org.hyperledger.besu.collections.undo.UndoSet;
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.account.MutableAccount;
 import org.hyperledger.besu.evm.internal.EvmConfiguration;
@@ -127,7 +127,7 @@ public class JournaledUpdater<W extends WorldView> implements WorldUpdater {
   }
 
   @Override
-  public MutableAccount createAccount(final Address address, final long nonce, final Wei balance) {
+  public MutableAccount createAccount(final Address address, final long nonce, final Bytes32 balance) {
     JournaledAccount journaledAccount =
         new JournaledAccount(rootWorld.createAccount(address, nonce, balance));
     accounts.put(address, journaledAccount);

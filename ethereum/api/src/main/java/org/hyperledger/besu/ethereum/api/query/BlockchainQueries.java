@@ -235,7 +235,10 @@ public class BlockchainQueries {
   public Optional<Bytes32> storageAt(
       final Address address, final Bytes32 storageIndex, final Hash blockHash) {
     return fromAccount(
-        address, blockHash, account -> account.getStorageValue(storageIndex), Bytes32Helper.ZERO_BYTES32);
+        address,
+        blockHash,
+        account -> account.getStorageValue(storageIndex),
+        Bytes32Helper.ZERO_BYTES32);
   }
 
   /**
@@ -259,7 +262,7 @@ public class BlockchainQueries {
    * @return The balance of the account in Wei.
    */
   public Optional<Wei> accountBalance(final Address address, final Hash blockHash) {
-    return fromAccount(address, blockHash, Account::getBalance, Wei.ZERO);
+    return fromAccount(address, blockHash, a -> Wei.wrap(a.getBalance()), Wei.ZERO);
   }
 
   /**

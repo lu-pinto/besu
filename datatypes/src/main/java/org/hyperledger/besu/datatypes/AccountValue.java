@@ -16,6 +16,8 @@ package org.hyperledger.besu.datatypes;
 
 import org.hyperledger.besu.ethereum.rlp.RLPOutput;
 
+import org.apache.tuweni.bytes.Bytes32;
+
 /** The values of an account in the world state trie. */
 public interface AccountValue {
   /**
@@ -30,7 +32,7 @@ public interface AccountValue {
    *
    * @return the balance, in Wei, of the account.
    */
-  Wei getBalance();
+  Bytes32 getBalance();
 
   /**
    * The hash of the root of the storage trie associated with this account.

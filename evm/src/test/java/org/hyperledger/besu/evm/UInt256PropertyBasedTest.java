@@ -16,6 +16,8 @@ package org.hyperledger.besu.evm;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import java.math.BigInteger;
 import java.util.Arrays;
 
@@ -26,8 +28,6 @@ import net.jqwik.api.ForAll;
 import net.jqwik.api.Property;
 import net.jqwik.api.Provide;
 import net.jqwik.api.Tuple;
-import org.hyperledger.besu.datatypes.Bytes32Helper;
-
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
@@ -1415,7 +1415,7 @@ public class UInt256PropertyBasedTest {
     final byte[] b32 = toBytes32Unsigned(b);
 
     // Act
-    final byte[] got = UInt256.add(a32, b32);
+    final byte[] got = Bytes32Helper.add(a32, b32);
 
     // Assert
     BigInteger A = toBigUnsigned(a);
@@ -1432,7 +1432,7 @@ public class UInt256PropertyBasedTest {
     final byte[] b32 = toBytes32Unsigned(b);
 
     // Act & Assert
-    assertThat(UInt256.add(a32, b32)).containsExactly(UInt256.add(b32, a32));
+    assertThat(Bytes32Helper.add(a32, b32)).containsExactly(Bytes32Helper.add(b32, a32));
   }
 
   @Property
@@ -1442,8 +1442,8 @@ public class UInt256PropertyBasedTest {
     final byte[] zero = new byte[32];
 
     // Act & Assert — x + 0 = x
-    assertThat(UInt256.add(a32, zero)).containsExactly(a32);
-    assertThat(UInt256.add(zero, a32)).containsExactly(a32);
+    assertThat(Bytes32Helper.add(a32, zero)).containsExactly(a32);
+    assertThat(Bytes32Helper.add(zero, a32)).containsExactly(a32);
   }
 
   @Property
@@ -1456,7 +1456,7 @@ public class UInt256PropertyBasedTest {
     final UInt256 ub = UInt256.fromBytesBE(b);
 
     // Act
-    final byte[] fromBytes = UInt256.add(a32, b32);
+    final byte[] fromBytes = Bytes32Helper.add(a32, b32);
     final byte[] fromUInt256 = ua.add(ub).toBytesBE();
 
     // Assert — byte[] and UInt256 paths must agree
@@ -1472,7 +1472,7 @@ public class UInt256PropertyBasedTest {
     final byte[] b32 = toBytes32Unsigned(b);
 
     // Act
-    final byte[] got = UInt256.add(a32, b32);
+    final byte[] got = Bytes32Helper.add(a32, b32);
 
     // Assert
     BigInteger A = toBigUnsigned(a);
@@ -1495,7 +1495,7 @@ public class UInt256PropertyBasedTest {
     final byte[] b32 = toBytes32Unsigned(b);
 
     // Act
-    final byte[] got = UInt256.sub(a32, b32);
+    final byte[] got = Bytes32Helper.sub(a32, b32);
 
     // Assert — wrapping subtraction mod 2^256
     BigInteger A = toBigUnsigned(a);
@@ -1512,7 +1512,7 @@ public class UInt256PropertyBasedTest {
     final byte[] zero = new byte[32];
 
     // Act & Assert — x - 0 = x
-    assertThat(UInt256.sub(a32, zero)).containsExactly(a32);
+    assertThat(Bytes32Helper.sub(a32, zero)).containsExactly(a32);
   }
 
   @Property
@@ -1521,7 +1521,7 @@ public class UInt256PropertyBasedTest {
     final byte[] a32 = toBytes32Unsigned(a);
 
     // Act & Assert — x - x = 0
-    assertThat(UInt256.sub(a32, a32)).containsExactly(new byte[32]);
+    assertThat(Bytes32Helper.sub(a32, a32)).containsExactly(new byte[32]);
   }
 
   @Property
@@ -1532,19 +1532,19 @@ public class UInt256PropertyBasedTest {
     final byte[] b32 = toBytes32Unsigned(b);
 
     // Act & Assert — (x + y) - y = x
-    byte[] sum = UInt256.add(a32, b32);
-    assertThat(UInt256.sub(sum, b32)).containsExactly(a32);
+    byte[] sum = Bytes32Helper.add(a32, b32);
+    assertThat(Bytes32Helper.sub(sum, b32)).containsExactly(a32);
   }
 
   @Property
   void property_subBytes_anti_commutative(
       @ForAll("unsigned1to32") final byte[] a, @ForAll("unsigned1to32") final byte[] b) {
     // Arrange — fresh copies for each sub call (sub/neg may mutate input arrays)
-    final byte[] aMinusB = UInt256.sub(toBytes32Unsigned(a), toBytes32Unsigned(b));
-    final byte[] bMinusA = UInt256.sub(toBytes32Unsigned(b), toBytes32Unsigned(a));
+    final byte[] aMinusB = Bytes32Helper.sub(toBytes32Unsigned(a), toBytes32Unsigned(b));
+    final byte[] bMinusA = Bytes32Helper.sub(toBytes32Unsigned(b), toBytes32Unsigned(a));
 
     // Assert — (a - b) + (b - a) = 0
-    assertThat(UInt256.add(aMinusB, bMinusA)).containsExactly(new byte[32]);
+    assertThat(Bytes32Helper.add(aMinusB, bMinusA)).containsExactly(new byte[32]);
   }
 
   @Property
@@ -1557,7 +1557,7 @@ public class UInt256PropertyBasedTest {
     final byte[] b32 = toBytes32Unsigned(b);
 
     // Act — sub(a,b) should equal a + neg(b) via UInt256
-    final byte[] fromSub = UInt256.sub(a32, b32);
+    final byte[] fromSub = Bytes32Helper.sub(a32, b32);
     final byte[] fromAddNeg = ua.add(ub.neg()).toBytesBE();
 
     // Assert
@@ -1573,7 +1573,7 @@ public class UInt256PropertyBasedTest {
     final byte[] b32 = toBytes32Unsigned(b);
 
     // Act
-    final byte[] got = UInt256.sub(a32, b32);
+    final byte[] got = Bytes32Helper.sub(a32, b32);
 
     // Assert
     BigInteger A = toBigUnsigned(a);

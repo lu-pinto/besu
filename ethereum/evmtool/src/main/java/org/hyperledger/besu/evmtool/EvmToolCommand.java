@@ -65,8 +65,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import io.vertx.core.json.JsonObject;
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
-
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -605,7 +603,10 @@ public class EvmToolCommand implements Runnable {
                 out.println("  \"code\": \"" + account.getCode().toHexString() + "\",");
               }
               var storageEntries =
-                  account.storageEntriesFrom(Bytes32Helper.ZERO_BYTES32, Integer.MAX_VALUE).values().stream()
+                  account
+                      .storageEntriesFrom(Bytes32Helper.ZERO_BYTES32, Integer.MAX_VALUE)
+                      .values()
+                      .stream()
                       .map(
                           e ->
                               Map.entry(
@@ -629,7 +630,8 @@ public class EvmToolCommand implements Runnable {
                             .toList()));
                 out.println("  },");
               }
-              out.print("  \"balance\": \"" + account.getBalance().toDecimalString() + "\"");
+              out.print(
+                  "  \"balance\": \"" + Wei.wrap(account.getBalance()).toDecimalString() + "\"");
               if (account.getNonce() != 0) {
                 out.println(",");
                 out.println("  \"nonce\": " + account.getNonce());

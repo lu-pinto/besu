@@ -17,11 +17,13 @@ package org.hyperledger.besu.evm.gascalculator;
 import static org.hyperledger.besu.evm.internal.Words.clampedAdd;
 
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.internal.Words;
 import org.hyperledger.besu.evm.operation.SelfDestructOperation;
+
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Tangerine whistle gas calculator. */
 public class TangerineWhistleGasCalculator extends HomesteadGasCalculator {
@@ -65,7 +67,7 @@ public class TangerineWhistleGasCalculator extends HomesteadGasCalculator {
       final long inputDataLength,
       final long outputDataOffset,
       final long outputDataLength,
-      final Wei transferValue,
+      final Bytes32 transferValue,
       final Address recipientAddress,
       final boolean accountIsWarm) {
     final long inputDataMemoryExpansionCost =
@@ -77,7 +79,7 @@ public class TangerineWhistleGasCalculator extends HomesteadGasCalculator {
 
     long cost = clampedAdd(callOperationBaseGasCost(), memoryExpansionCost);
 
-    if (!transferValue.isZero()) {
+    if (Bytes32Helper.greaterThanZero(transferValue)) {
       cost = clampedAdd(cost, callValueTransferGasCost());
     }
 
@@ -93,7 +95,7 @@ public class TangerineWhistleGasCalculator extends HomesteadGasCalculator {
       final long inputDataLength,
       final long outputDataOffset,
       final long outputDataLength,
-      final Wei transferValue,
+      final Bytes32 transferValue,
       final Address recipientAddress,
       final boolean accountIsWarm) {
     long cost = staticCallCost;
@@ -137,7 +139,7 @@ public class TangerineWhistleGasCalculator extends HomesteadGasCalculator {
   }
 
   @Override
-  public long selfDestructOperationGasCost(final Account recipient, final Wei inheritance) {
+  public long selfDestructOperationGasCost(final Account recipient, final Bytes32 inheritance) {
     if (recipient == null) {
       return SELFDESTRUCT_OPERATION_CREATES_NEW_ACCOUNT;
     } else {

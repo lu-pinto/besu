@@ -20,7 +20,6 @@ import static org.hyperledger.besu.evm.internal.Words.clampedMultiply;
 import static org.hyperledger.besu.evm.internal.Words.clampedToInt;
 
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.internal.Words;
 import org.hyperledger.besu.evm.precompile.BigIntegerModularExponentiationPrecompiledContract;
@@ -152,7 +151,7 @@ public class BerlinGasCalculator extends IstanbulGasCalculator {
       final long inputDataLength,
       final long outputDataOffset,
       final long outputDataLength,
-      final Wei transferValue,
+      final Bytes32 transferValue,
       final Address recipientAddress,
       final boolean accountIsWarm) {
     final long baseCost =

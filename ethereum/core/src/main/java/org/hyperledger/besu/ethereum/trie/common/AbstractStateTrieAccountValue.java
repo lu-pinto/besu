@@ -18,17 +18,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import org.hyperledger.besu.datatypes.AccountValue;
 import org.hyperledger.besu.datatypes.Hash;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.rlp.RLPOutput;
+
+import org.apache.tuweni.bytes.Bytes32;
 
 /** Represents the raw values associated with an account in the world state trie. */
 public abstract class AbstractStateTrieAccountValue implements AccountValue {
 
   protected final long nonce;
-  protected final Wei balance;
+  protected final Bytes32 balance;
   protected final Hash codeHash;
 
-  public AbstractStateTrieAccountValue(final long nonce, final Wei balance, final Hash codeHash) {
+  public AbstractStateTrieAccountValue(
+      final long nonce, final Bytes32 balance, final Hash codeHash) {
     checkNotNull(balance, "balance cannot be null");
     checkNotNull(codeHash, "codeHash cannot be null");
     this.nonce = nonce;
@@ -52,7 +54,7 @@ public abstract class AbstractStateTrieAccountValue implements AccountValue {
    * @return the balance, in Wei, of the account.
    */
   @Override
-  public Wei getBalance() {
+  public Bytes32 getBalance() {
     return balance;
   }
 

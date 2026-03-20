@@ -22,8 +22,8 @@ import static org.hyperledger.besu.evm.worldstate.CodeDelegationHelper.getTarget
 import static org.hyperledger.besu.evm.worldstate.CodeDelegationHelper.hasCodeDelegation;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.account.Account;
@@ -94,7 +94,7 @@ public abstract class AbstractCallOperation extends AbstractOperation {
    * @param frame The current message frame
    * @return the value being transferred in the call
    */
-  protected abstract Wei value(MessageFrame frame);
+  protected abstract Bytes32 value(MessageFrame frame);
 
   /**
    * Returns the apparent value being transferred in the call
@@ -102,7 +102,7 @@ public abstract class AbstractCallOperation extends AbstractOperation {
    * @param frame The current message frame
    * @return the apparent value being transferred in the call
    */
-  protected abstract Wei apparentValue(MessageFrame frame);
+  protected abstract Bytes32 apparentValue(MessageFrame frame);
 
   /**
    * Returns the memory offset the input data starts at.
@@ -193,7 +193,7 @@ public abstract class AbstractCallOperation extends AbstractOperation {
     final long inputDataLength = inputDataLength(frame);
     final long outputDataOffset = outputDataOffset(frame);
     final long outputDataLength = outputDataLength(frame);
-    final Wei transferValue = value(frame);
+    final Bytes32 transferValue = value(frame);
     final Address recipientAddress = address(frame);
 
     final long staticCost =
@@ -242,7 +242,7 @@ public abstract class AbstractCallOperation extends AbstractOperation {
 
     final Account account = getAccount(frame.getRecipientAddress(), frame);
 
-    final Wei balance = account == null ? Wei.ZERO : account.getBalance();
+    final Bytes32 balance = account == null ? Bytes32Helper.ZERO_BYTES32 : account.getBalance();
 
     // If the call is sending more value than the account has or the message frame is too deep
     // return a failed call

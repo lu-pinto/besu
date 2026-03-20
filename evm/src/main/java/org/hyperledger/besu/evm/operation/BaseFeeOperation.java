@@ -14,13 +14,14 @@
  */
 package org.hyperledger.besu.evm.operation;
 
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import java.util.Optional;
+
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Base fee operation. */
 public class BaseFeeOperation extends AbstractFixedCostOperation {
@@ -37,11 +38,11 @@ public class BaseFeeOperation extends AbstractFixedCostOperation {
   @Override
   public Operation.OperationResult executeFixedCostOperation(
       final MessageFrame frame, final EVM evm) {
-    final Optional<Wei> maybeBaseFee = frame.getBlockValues().getBaseFee();
-    if (maybeBaseFee.isEmpty()) {
+    final Bytes32 baseFee = frame.getBaseFee();
+    if (baseFee == null) {
       return new Operation.OperationResult(gasCost, ExceptionalHaltReason.INVALID_OPERATION);
     }
-    frame.pushStackItem(maybeBaseFee.orElseThrow());
+    frame.pushStackItem(baseFee);
     return successResponse;
   }
 }

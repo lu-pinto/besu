@@ -82,13 +82,12 @@ public class StructLogTest {
     when(traceFrame.getStack())
         .thenReturn(
             Optional.of(
-                Arrays.stream(stack)
-                    .map(Bytes32::fromHexStringLenient)
-                    .toArray(Bytes32[]::new)));
+                Arrays.stream(stack).map(Bytes32::fromHexStringLenient).toArray(Bytes32[]::new)));
     Map<Bytes32, Bytes32> storageMap = new HashMap<>();
     for (Map.Entry<String, String> entry : storage.entrySet()) {
       storageMap.put(
-          Bytes32.fromHexStringLenient(entry.getKey()), Bytes32.fromHexStringLenient(entry.getValue()));
+          Bytes32.fromHexStringLenient(entry.getKey()),
+          Bytes32.fromHexStringLenient(entry.getValue()));
     }
     when(traceFrame.getStorage()).thenReturn(Optional.of(storageMap));
     when(traceFrame.getRevertReason()).thenReturn(Optional.of(Bytes.fromHexString(reason)));
@@ -143,13 +142,12 @@ public class StructLogTest {
     when(traceFrame.getStack())
         .thenReturn(
             Optional.of(
-                Arrays.stream(stack)
-                    .map(Bytes32::fromHexStringLenient)
-                    .toArray(Bytes32[]::new)));
+                Arrays.stream(stack).map(Bytes32::fromHexStringLenient).toArray(Bytes32[]::new)));
     Map<Bytes32, Bytes32> storageMap = new HashMap<>();
     for (Map.Entry<String, String> entry : storage.entrySet()) {
       storageMap.put(
-          Bytes32.fromHexStringLenient(entry.getKey()), Bytes32.fromHexStringLenient(entry.getValue()));
+          Bytes32.fromHexStringLenient(entry.getKey()),
+          Bytes32.fromHexStringLenient(entry.getValue()));
     }
     when(traceFrame.getStorage()).thenReturn(Optional.of(storageMap));
     when(traceFrame.getRevertReason()).thenReturn(Optional.of(Bytes.fromHexString(reason)));

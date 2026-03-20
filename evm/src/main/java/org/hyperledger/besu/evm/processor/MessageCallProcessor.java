@@ -15,7 +15,7 @@
 package org.hyperledger.besu.evm.processor;
 
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.ModificationNotAllowedException;
 import org.hyperledger.besu.evm.account.MutableAccount;
@@ -33,6 +33,7 @@ import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,7 +133,8 @@ public class MessageCallProcessor extends AbstractMessageProcessor {
     final MutableAccount recipientAccount =
         frame.getWorldUpdater().getOrCreate(frame.getRecipientAddress());
 
-    if (Objects.equals(frame.getValue(), Wei.ZERO)) {
+    final Bytes32 weiValue = frame.getValue();
+    if (Objects.equals(weiValue, Bytes32Helper.ZERO_BYTES32)) {
       // This is only here for situations where you are calling a public address from a private
       // address. Without this guard clause we would attempt to get a mutable public address
       // which isn't possible from a private address and an error would be thrown.
@@ -153,12 +155,12 @@ public class MessageCallProcessor extends AbstractMessageProcessor {
           .getEip7928AccessList()
           .ifPresent(t -> t.addTouchedAccount(recipientAccount.getAddress()));
 
-      final Wei prevSenderBalance = senderAccount.decrementBalance(frame.getValue());
-      final Wei prevRecipientBalance = recipientAccount.incrementBalance(frame.getValue());
+      final Bytes32 prevSenderBalance = senderAccount.decrementBalance(weiValue);
+      final Bytes32 prevRecipientBalance = recipientAccount.incrementBalance(weiValue);
 
       LOG.trace(
           "Transferred value {} for message call from {} ({} -> {}) to {} ({} -> {})",
-          frame.getValue(),
+          weiValue,
           frame.getSenderAddress(),
           prevSenderBalance,
           senderAccount.getBalance(),
@@ -169,7 +171,7 @@ public class MessageCallProcessor extends AbstractMessageProcessor {
 
     // Emit transfer log for nonzero value transfers (no-op before Amsterdam, EIP-7708 after)
     transferLogEmitter.emitTransferLog(
-        frame, frame.getSenderAddress(), frame.getRecipientAddress(), frame.getValue());
+        frame, frame.getSenderAddress(), frame.getRecipientAddress(), weiValue);
   }
 
   /**

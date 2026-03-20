@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.evm.account;
 
-import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 
 import java.util.Map;
 
@@ -48,9 +48,9 @@ public interface MutableAccount extends Account {
    * @param value The amount to increment
    * @return the previous balance (before increment).
    */
-  default Wei incrementBalance(final Wei value) {
-    final Wei current = getBalance();
-    setBalance(current.addExact(value));
+  default Bytes32 incrementBalance(final Bytes32 value) {
+    final Bytes32 current = getBalance();
+    setBalance(Bytes32Helper.add(current, value));
     return current;
   }
 
@@ -62,13 +62,13 @@ public interface MutableAccount extends Account {
    *     exception is thrown.
    * @throws IllegalStateException if the account balance is strictly less than {@code value}.
    */
-  default Wei decrementBalance(final Wei value) {
-    final Wei current = getBalance();
+  default Bytes32 decrementBalance(final Bytes32 value) {
+    final Bytes32 current = getBalance();
     if (current.compareTo(value) < 0) {
       throw new IllegalStateException(
           String.format("Cannot remove %s wei from account, balance is only %s", value, current));
     }
-    setBalance(current.subtract(value));
+    setBalance(Bytes32Helper.subtract(current, value));
     return current;
   }
 
@@ -77,7 +77,7 @@ public interface MutableAccount extends Account {
    *
    * @param value the amount to set.
    */
-  void setBalance(Wei value);
+  void setBalance(Bytes32 value);
 
   /**
    * Sets the code for the account.

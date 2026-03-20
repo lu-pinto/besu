@@ -14,16 +14,14 @@
  */
 package org.hyperledger.besu.evm.log;
 
-
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Log;
 import org.hyperledger.besu.datatypes.LogTopic;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.internal.Words;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 
 import java.util.Comparator;
 import java.util.List;
@@ -84,17 +82,14 @@ public class EIP7708TransferLogEmitter implements TransferLogEmitter {
    * @param value the amount transferred in Wei
    * @return the transfer log
    */
-  public static Log createTransferLog(final Address from, final Address to, final Wei value) {
+  public static Log createTransferLog(final Address from, final Address to, final Bytes32 value) {
     // Zero-pad addresses to 32 bytes for topics
     final LogTopic fromTopic = LogTopic.create(Words.fromAddress(from));
     final LogTopic toTopic = LogTopic.create(Words.fromAddress(to));
 
-    // Value as big-endian uint256 (32 bytes, zero-padded)
-    final Bytes32 data = Bytes32Helper.leftPad(value);
-
     return new Log(
         EIP7708_SYSTEM_ADDRESS,
-        data,
+        value,
         ImmutableList.of(LogTopic.create(TRANSFER_TOPIC), fromTopic, toTopic));
   }
 
@@ -107,21 +102,18 @@ public class EIP7708TransferLogEmitter implements TransferLogEmitter {
    * @param value the balance being burned in Wei
    * @return the burn log
    */
-  public static Log createBurnLog(final Address closedAddress, final Wei value) {
+  public static Log createBurnLog(final Address closedAddress, final Bytes32 value) {
     // Zero-pad address to 32 bytes for topic
     final LogTopic addressTopic = LogTopic.create(Bytes32Helper.leftPad(closedAddress.getBytes()));
 
-    // Value as big-endian uint256 (32 bytes, zero-padded)
-    final Bytes32 data = Bytes32Helper.leftPad(value);
-
     return new Log(
-        EIP7708_SYSTEM_ADDRESS, data, ImmutableList.of(LogTopic.create(BURN_TOPIC), addressTopic));
+        EIP7708_SYSTEM_ADDRESS, value, ImmutableList.of(LogTopic.create(BURN_TOPIC), addressTopic));
   }
 
   @Override
   public void emitTransferLog(
-      final MessageFrame frame, final Address from, final Address to, final Wei value) {
-    if (value.greaterThan(Wei.ZERO) && !from.equals(to)) {
+      final MessageFrame frame, final Address from, final Address to, final Bytes32 value) {
+    if (Bytes32Helper.greaterThanZero(value) && !from.equals(to)) {
       frame.addLog(createTransferLog(from, to, value));
     }
   }
@@ -131,8 +123,8 @@ public class EIP7708TransferLogEmitter implements TransferLogEmitter {
       final MessageFrame frame,
       final Address originator,
       final Address beneficiary,
-      final Wei value) {
-    if (value.greaterThan(Wei.ZERO)) {
+      final Bytes32 value) {
+    if (Bytes32Helper.greaterThanZero(value)) {
       if (originator.equals(beneficiary)) {
         // SELFDESTRUCT to self → Burn log (LOG2)
         frame.addLog(createBurnLog(originator, value));
@@ -149,7 +141,7 @@ public class EIP7708TransferLogEmitter implements TransferLogEmitter {
       final Set<Address> selfDestructs,
       final Consumer<Log> logConsumer) {
     // Collect addresses with nonzero balances, sorted lexicographically
-    final List<Map.Entry<Address, Wei>> closures =
+    final List<Map.Entry<Address, Bytes32>> closures =
         selfDestructs.stream()
             .map(
                 addr ->
@@ -157,8 +149,8 @@ public class EIP7708TransferLogEmitter implements TransferLogEmitter {
                         addr,
                         Optional.ofNullable(worldState.get(addr))
                             .map(Account::getBalance)
-                            .orElse(Wei.ZERO)))
-            .filter(e -> e.getValue().greaterThan(Wei.ZERO))
+                            .orElse(Bytes32Helper.ZERO_BYTES32)))
+            .filter(e -> Bytes32Helper.greaterThanZero(e.getValue()))
             .sorted(Comparator.comparing(e -> e.getKey().getBytes().toHexString()))
             .toList();
 

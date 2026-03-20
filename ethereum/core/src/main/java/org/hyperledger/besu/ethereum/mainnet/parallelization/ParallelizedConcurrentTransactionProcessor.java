@@ -39,6 +39,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.apache.tuweni.bytes.Bytes32;
 
 /**
  * Optimizes transaction processing by executing transactions in parallel within a given block.
@@ -216,7 +217,7 @@ public class ParallelizedConcurrentTransactionProcessor extends ParallelBlockTra
           miningBeneficiaryAccount.incrementBalance(reward);
         }
 
-        final Wei miningBeneficiaryPostBalance = miningBeneficiaryAccount.getBalance();
+        final Bytes32 miningBeneficiaryPostBalance = miningBeneficiaryAccount.getBalance();
         transactionProcessingResult
             .getPartialBlockAccessView()
             .ifPresent(

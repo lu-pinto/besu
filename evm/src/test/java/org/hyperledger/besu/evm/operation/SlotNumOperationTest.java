@@ -26,9 +26,6 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
-
-import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.Test;
 
 class SlotNumOperationTest {

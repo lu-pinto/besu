@@ -17,7 +17,6 @@ package org.hyperledger.besu.ethereum.trie.pathbased.common;
 import org.hyperledger.besu.datatypes.AccountValue;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.rlp.BytesValueRLPOutput;
 import org.hyperledger.besu.ethereum.trie.pathbased.common.worldview.PathBasedWorldView;
 import org.hyperledger.besu.evm.Code;
@@ -39,7 +38,7 @@ public abstract class PathBasedAccount implements MutableAccount, AccountValue {
   protected final Hash addressHash;
   protected Hash codeHash;
   protected long nonce;
-  protected Wei balance;
+  protected Bytes32 balance;
   protected Code code;
   protected final CodeCache codeCache;
 
@@ -67,7 +66,7 @@ public abstract class PathBasedAccount implements MutableAccount, AccountValue {
       final Address address,
       final Hash addressHash,
       final long nonce,
-      final Wei balance,
+      final Bytes32 balance,
       final Hash codeHash,
       final boolean mutable,
       final CodeCache codeCache) {
@@ -109,7 +108,7 @@ public abstract class PathBasedAccount implements MutableAccount, AccountValue {
       final Address address,
       final Hash addressHash,
       final long nonce,
-      final Wei balance,
+      final Bytes32 balance,
       final Hash codeHash,
       final Code code,
       final boolean mutable,
@@ -162,12 +161,12 @@ public abstract class PathBasedAccount implements MutableAccount, AccountValue {
   }
 
   @Override
-  public Wei getBalance() {
+  public Bytes32 getBalance() {
     return balance;
   }
 
   @Override
-  public void setBalance(final Wei value) {
+  public void setBalance(final Bytes32 value) {
     if (immutable) {
       throw new ModificationNotAllowedException();
     }

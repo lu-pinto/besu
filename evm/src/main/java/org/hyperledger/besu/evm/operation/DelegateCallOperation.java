@@ -16,8 +16,9 @@ package org.hyperledger.besu.evm.operation;
 
 import static org.hyperledger.besu.evm.internal.Words.clampedToLong;
 
+import org.apache.tuweni.bytes.Bytes32;
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
@@ -40,12 +41,12 @@ public class DelegateCallOperation extends AbstractCallOperation {
   }
 
   @Override
-  protected Wei value(final MessageFrame frame) {
-    return Wei.ZERO;
+  protected Bytes32 value(final MessageFrame frame) {
+    return Bytes32Helper.ZERO_BYTES32;
   }
 
   @Override
-  protected Wei apparentValue(final MessageFrame frame) {
+  protected Bytes32 apparentValue(final MessageFrame frame) {
     return frame.getApparentValue();
   }
 

@@ -46,7 +46,9 @@ public interface ReferenceTestWorldState extends MutableWorldState {
     private static Map<Bytes32, Bytes32> parseStorage(final Map<String, String> values) {
       final Map<Bytes32, Bytes32> storage = new HashMap<>();
       for (final Map.Entry<String, String> entry : values.entrySet()) {
-        storage.put(Bytes32.fromHexStringLenient(entry.getKey()), Bytes32.fromHexStringLenient(entry.getValue()));
+        storage.put(
+            Bytes32.fromHexStringLenient(entry.getKey()),
+            Bytes32.fromHexStringLenient(entry.getValue()));
       }
       return storage;
     }

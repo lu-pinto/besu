@@ -17,10 +17,12 @@ package org.hyperledger.besu.evm.operation;
 import static org.hyperledger.besu.evm.internal.Words.clampedToLong;
 
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Wei;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
+
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Static call operation. */
 public class StaticCallOperation extends AbstractCallOperation {
@@ -40,12 +42,12 @@ public class StaticCallOperation extends AbstractCallOperation {
   }
 
   @Override
-  protected Wei value(final MessageFrame frame) {
-    return Wei.ZERO;
+  protected Bytes32 value(final MessageFrame frame) {
+    return Bytes32Helper.ZERO_BYTES32;
   }
 
   @Override
-  protected Wei apparentValue(final MessageFrame frame) {
+  protected Bytes32 apparentValue(final MessageFrame frame) {
     return value(frame);
   }
 
@@ -81,7 +83,8 @@ public class StaticCallOperation extends AbstractCallOperation {
 
   @Override
   public long gasAvailableForChildCall(final MessageFrame frame) {
-    return gasCalculator().gasAvailableForChildCall(frame, gas(frame), !value(frame).isZero());
+    return gasCalculator()
+        .gasAvailableForChildCall(frame, gas(frame), Bytes32Helper.greaterThanZero(value(frame)));
   }
 
   @Override

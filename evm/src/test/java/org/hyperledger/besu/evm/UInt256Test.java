@@ -16,11 +16,11 @@ package org.hyperledger.besu.evm;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
-
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;

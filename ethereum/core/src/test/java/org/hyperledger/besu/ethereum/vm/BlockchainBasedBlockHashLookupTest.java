@@ -23,8 +23,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Bytes32Helper;
+import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.ethereum.chain.Blockchain;
 import org.hyperledger.besu.ethereum.core.BlockHeader;
 import org.hyperledger.besu.ethereum.core.BlockHeaderTestFixture;
@@ -150,7 +150,8 @@ class BlockchainBasedBlockHashLookupTest {
 
     BlockHashOperation op = new BlockHashOperation(new CancunGasCalculator());
     when(messageFrameMock.getRemainingGas()).thenReturn(10_000_000L);
-    when(messageFrameMock.popStackItem()).thenReturn(Bytes32Helper.leftPad(Bytes.ofUnsignedInt(blockNumber)));
+    when(messageFrameMock.popStackItem())
+        .thenReturn(Bytes32Helper.leftPad(Bytes.ofUnsignedInt(blockNumber)));
     when(messageFrameMock.getBlockValues()).thenReturn(blockValuesMock);
     when(messageFrameMock.getBlockHashLookup()).thenReturn(lookup);
     when(blockValuesMock.getNumber()).thenReturn((long) CURRENT_BLOCK_NUMBER);

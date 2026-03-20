@@ -14,11 +14,11 @@
  */
 package org.hyperledger.besu.ethereum.trie.pathbased.bonsai.worldview;
 
+import org.apache.tuweni.bytes.Bytes32;
 import org.hyperledger.besu.datatypes.AccountValue;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.StorageSlotKey;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.BonsaiAccount;
 import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.cache.CodeCache;
 import org.hyperledger.besu.ethereum.trie.pathbased.common.PathBasedValue;
@@ -82,7 +82,7 @@ public class BonsaiWorldStateUpdateAccumulator
       final Address address,
       final Hash addressHash,
       final long nonce,
-      final Wei balance,
+      final Bytes32 balance,
       final Hash storageRoot,
       final Hash codeHash,
       final boolean mutable) {

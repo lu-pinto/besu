@@ -15,6 +15,7 @@
 package org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.tracing.diff;
 
 import org.hyperledger.besu.datatypes.Bytes32Helper;
+import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.processor.TransactionTrace;
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.tracing.TracingUtils;
 import org.hyperledger.besu.ethereum.mainnet.block.access.list.AccessLocationTracker;
@@ -246,7 +247,7 @@ public class StateTraceGenerator {
   }
 
   private static String balanceAsHex(final Account account) {
-    return TracingUtils.weiAsHex(account.getBalance());
+    return TracingUtils.weiAsHex(Wei.wrap(account.getBalance()));
   }
 
   private static String codeHashAsHex(final Account account) {

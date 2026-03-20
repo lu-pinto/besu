@@ -18,8 +18,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.datatypes.Bytes32Helper;
+import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.account.MutableAccount;
@@ -426,7 +426,8 @@ public class PayOperationTest {
             "exact 21 bytes address",
             Bytes.fromHexString("0x341a2e456a2c23ca9a8c7d765521bcee2188d66a76"),
             ExceptionalHaltReason.ADDRESS_OUT_OF_RANGE,
-            Bytes32Helper.leftPad(Bytes.fromHexString("0x341a2e456a2c23ca9a8c7d765521bcee2188d66a76")),
+            Bytes32Helper.leftPad(
+                Bytes.fromHexString("0x341a2e456a2c23ca9a8c7d765521bcee2188d66a76")),
             0),
         Arguments.of(
             "20 bytes address padded to 32 bytes",

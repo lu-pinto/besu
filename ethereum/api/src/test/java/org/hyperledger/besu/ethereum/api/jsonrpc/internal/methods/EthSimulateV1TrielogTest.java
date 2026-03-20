@@ -21,6 +21,7 @@ import static org.hyperledger.besu.ethereum.core.InMemoryKeyValueStorageProvider
 import org.hyperledger.besu.config.GenesisAccount;
 import org.hyperledger.besu.config.GenesisConfig;
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.api.ImmutableApiConfiguration;
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.JsonRpcRequest;
@@ -47,6 +48,7 @@ import org.hyperledger.besu.metrics.noop.NoOpMetricsSystem;
 import java.util.List;
 
 import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -150,10 +152,14 @@ public class EthSimulateV1TrielogTest {
 
     var senderPrior = trieLogAccountChanges.get(senderAccount.address()).getPrior();
     var senderPost = trieLogAccountChanges.get(senderAccount.address()).getUpdated();
-    assertThat(senderPrior.getBalance().subtract(senderPost.getBalance()))
-        .isEqualTo(Wei.of(1_337_000L)); // zero base fee, balance delta should just be value xfer
+    assertThat(Bytes32Helper.subtract(senderPrior.getBalance(), senderPost.getBalance()))
+        .isEqualTo(
+            Bytes32.fromHexStringLenient(
+                "0x"
+                    + Long.toHexString(
+                        1_337_000L))); // zero base fee, balance delta should just be value xfer
     assertThat(trieLogAccountChanges.get(testAddress).getUpdated().getBalance())
-        .isEqualTo(Wei.of(1_337_000L));
+        .isEqualTo(Bytes32.fromHexStringLenient("0x" + Long.toHexString(1_337_000L)));
   }
 
   @Test
@@ -235,12 +241,16 @@ public class EthSimulateV1TrielogTest {
 
     var senderPrior = trieLogAccountChanges.get(senderAccount.address()).getPrior();
     var senderPost = trieLogAccountChanges.get(senderAccount.address()).getUpdated();
-    assertThat(senderPrior.getBalance().subtract(senderPost.getBalance()))
-        .isEqualTo(Wei.of(1_337L + 420L)); // zero base fee, balance delta should just be value xfer
+    assertThat(Bytes32Helper.subtract(senderPrior.getBalance(), senderPost.getBalance()))
+        .isEqualTo(
+            Bytes32.fromHexStringLenient(
+                "0x"
+                    + Long.toHexString(
+                        1_337L + 420L))); // zero base fee, balance delta should just be value xfer
     assertThat(trieLogAccountChanges.get(testAddress1).getUpdated().getBalance())
-        .isEqualTo(Wei.of(1_337L));
+        .isEqualTo(Bytes32.fromHexStringLenient("0x" + Long.toHexString(1_337L)));
     assertThat(trieLogAccountChanges.get(testAddress2).getUpdated().getBalance())
-        .isEqualTo(Wei.of(420L));
+        .isEqualTo(Bytes32.fromHexStringLenient("0x" + Long.toHexString(420L)));
   }
 
   private CallParameter simpleSend(final Address toAddress, final Wei value) {

@@ -75,7 +75,7 @@ public record BlockAccessList(List<AccountChanges> accountChanges) {
     }
   }
 
-  public record BalanceChange(int txIndex, Wei postBalance) {
+  public record BalanceChange(int txIndex, Bytes32 postBalance) {
     @Override
     public String toString() {
       return "BalanceChange{txIndex=" + txIndex + ", postBalance=" + postBalance + '}';
@@ -282,7 +282,7 @@ public record BlockAccessList(List<AccountChanges> accountChanges) {
         }
       }
 
-      void addBalanceChange(final int txIndex, final Wei postBalance) {
+      void addBalanceChange(final int txIndex, final Bytes32 postBalance) {
         balances.add(new BalanceChange(txIndex, postBalance));
       }
 

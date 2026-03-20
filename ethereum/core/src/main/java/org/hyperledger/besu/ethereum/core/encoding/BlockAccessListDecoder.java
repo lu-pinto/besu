@@ -68,7 +68,8 @@ public final class BlockAccessListDecoder {
               });
 
       List<SlotRead> reads =
-          acctIn.readList(r -> new SlotRead(new StorageSlotKey(Bytes32Helper.leftPad(r.readBytes()))));
+          acctIn.readList(
+              r -> new SlotRead(new StorageSlotKey(Bytes32Helper.leftPad(r.readBytes()))));
 
       List<BalanceChange> balances =
           acctIn.readList(

@@ -130,7 +130,8 @@ public interface SenderBalanceChecker {
 
     private Wei getSenderBalance(final Address sender) {
       final var maybeAccount = worldStateArchive.getWorldState().get(sender);
-      final var senderBalance = maybeAccount != null ? maybeAccount.getBalance() : Wei.ZERO;
+      final var senderBalance =
+          maybeAccount != null ? Wei.wrap(maybeAccount.getBalance()) : Wei.ZERO;
       logSenderBalance(sender, senderBalance);
       return senderBalance;
     }

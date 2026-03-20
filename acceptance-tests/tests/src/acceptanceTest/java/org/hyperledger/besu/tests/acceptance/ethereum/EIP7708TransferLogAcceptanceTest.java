@@ -18,9 +18,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.hyperledger.besu.crypto.SECP256K1;
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.TransactionType;
 import org.hyperledger.besu.datatypes.Wei;
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.core.Transaction;
 import org.hyperledger.besu.tests.acceptance.dsl.AcceptanceTestBase;
 import org.hyperledger.besu.tests.acceptance.dsl.WaitUtils;
@@ -34,7 +34,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -144,7 +143,8 @@ public class EIP7708TransferLogAcceptanceTest extends AcceptanceTestBase {
 
     // Verify sender address (zero-padded to 32 bytes)
     final Address senderAddress = Address.fromHexStringStrict(sender.getAddress());
-    final String expectedSenderTopic = Bytes32Helper.leftPad(senderAddress.getBytes()).toHexString();
+    final String expectedSenderTopic =
+        Bytes32Helper.leftPad(senderAddress.getBytes()).toHexString();
     assertThat(transferLog.getTopics().get(1)).isEqualToIgnoringCase(expectedSenderTopic);
 
     // Verify recipient address (zero-padded to 32 bytes)
@@ -256,7 +256,8 @@ public class EIP7708TransferLogAcceptanceTest extends AcceptanceTestBase {
         .isEqualToIgnoringCase(Bytes32Helper.leftPad(senderAddress.getBytes()).toHexString());
     assertThat(log1.getTopics().get(2))
         .isEqualToIgnoringCase(Bytes32Helper.leftPad(forwarderContract.getBytes()).toHexString());
-    assertThat(log1.getData()).isEqualToIgnoringCase(Bytes32Helper.leftPad(transferAmount).toHexString());
+    assertThat(log1.getData())
+        .isEqualToIgnoringCase(Bytes32Helper.leftPad(transferAmount).toHexString());
 
     // Log 2: forwarder contract -> recipient (via internal CALL)
     final Log log2 = logs.get(1);
@@ -268,7 +269,8 @@ public class EIP7708TransferLogAcceptanceTest extends AcceptanceTestBase {
     assertThat(log2.getTopics().get(2))
         .isEqualToIgnoringCase(Bytes32Helper.leftPad(recipientAddress.getBytes()).toHexString());
     // The contract forwards its entire balance (which is the transfer amount)
-    assertThat(log2.getData()).isEqualToIgnoringCase(Bytes32Helper.leftPad(transferAmount).toHexString());
+    assertThat(log2.getData())
+        .isEqualToIgnoringCase(Bytes32Helper.leftPad(transferAmount).toHexString());
   }
 
   /**
@@ -329,7 +331,8 @@ public class EIP7708TransferLogAcceptanceTest extends AcceptanceTestBase {
     assertThat(transferLog.getTopics()).hasSize(3);
     assertThat(transferLog.getTopics().get(0)).isEqualToIgnoringCase(TRANSFER_TOPIC);
     assertThat(transferLog.getTopics().get(1))
-        .isEqualToIgnoringCase(Bytes32Helper.leftPad(selfDestructContract.getBytes()).toHexString());
+        .isEqualToIgnoringCase(
+            Bytes32Helper.leftPad(selfDestructContract.getBytes()).toHexString());
     assertThat(transferLog.getTopics().get(2))
         .isEqualToIgnoringCase(Bytes32Helper.leftPad(beneficiary.getBytes()).toHexString());
     assertThat(transferLog.getData())

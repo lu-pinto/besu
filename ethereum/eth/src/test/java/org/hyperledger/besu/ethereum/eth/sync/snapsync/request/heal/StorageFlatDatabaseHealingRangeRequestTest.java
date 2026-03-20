@@ -17,8 +17,8 @@ package org.hyperledger.besu.ethereum.eth.sync.snapsync.request.heal;
 import static org.apache.tuweni.rlp.RLP.decodeValue;
 
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Bytes32Helper;
+import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.ethereum.core.InMemoryKeyValueStorageProvider;
 import org.hyperledger.besu.ethereum.core.TrieGenerator;
 import org.hyperledger.besu.ethereum.eth.sync.snapsync.SnapSyncConfiguration;

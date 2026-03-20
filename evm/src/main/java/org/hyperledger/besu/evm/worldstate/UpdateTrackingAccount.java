@@ -19,7 +19,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.ModificationNotAllowedException;
 import org.hyperledger.besu.evm.account.Account;
@@ -56,7 +55,7 @@ public class UpdateTrackingAccount<A extends Account> implements MutableAccount 
   private boolean immutable;
 
   private long nonce;
-  private Wei balance;
+  private Bytes32 balance;
 
   @Nullable private Bytes updatedCode; // Null if the underlying code has not been updated.
   private final Bytes oldCode;
@@ -81,7 +80,7 @@ public class UpdateTrackingAccount<A extends Account> implements MutableAccount 
     this.account = null;
 
     this.nonce = 0;
-    this.balance = Wei.ZERO;
+    this.balance = Bytes32.ZERO;
 
     this.updatedCode = Bytes.EMPTY;
     this.oldCode = Bytes.EMPTY;
@@ -192,12 +191,12 @@ public class UpdateTrackingAccount<A extends Account> implements MutableAccount 
   }
 
   @Override
-  public Wei getBalance() {
+  public Bytes32 getBalance() {
     return balance;
   }
 
   @Override
-  public void setBalance(final Wei value) {
+  public void setBalance(final Bytes32 value) {
     if (immutable) {
       throw new ModificationNotAllowedException();
     }

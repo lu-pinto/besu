@@ -20,6 +20,7 @@ import org.hyperledger.besu.crypto.KeyPair;
 import org.hyperledger.besu.crypto.SECP256R1;
 import org.hyperledger.besu.crypto.SECPSignature;
 import org.hyperledger.besu.crypto.SignatureAlgorithm;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.OsakaGasCalculator;
 import org.hyperledger.besu.evm.precompile.P256VerifyPrecompiledContract;
@@ -29,8 +30,6 @@ import org.hyperledger.besu.testfuzz.javafuzz.FuzzTarget;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Arrays;
-
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
@@ -85,7 +84,8 @@ public class P256VerifyFuzzTarget implements FuzzTarget {
   private static final ECPoint G = R1_PARAMS.getG(); // Generator point
 
   // Expected verification results
-  private static final Bytes32 VALID_SIGNATURE_RESULT = Bytes32Helper.leftPad(Bytes.of(1), (byte) 0);
+  private static final Bytes32 VALID_SIGNATURE_RESULT =
+      Bytes32Helper.leftPad(Bytes.of(1), (byte) 0);
 
   // Core components
   private final P256VerifyPrecompiledContract verificationContractNative;

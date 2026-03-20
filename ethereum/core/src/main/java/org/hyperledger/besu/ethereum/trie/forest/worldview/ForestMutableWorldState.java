@@ -17,7 +17,6 @@ package org.hyperledger.besu.ethereum.trie.forest.worldview;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.core.MutableWorldState;
 import org.hyperledger.besu.ethereum.mainnet.staterootcommitter.StateRootCommitter;
 import org.hyperledger.besu.ethereum.rlp.RLP;
@@ -52,7 +51,6 @@ import java.util.stream.Stream;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-
 
 public class ForestMutableWorldState implements MutableWorldState {
 
@@ -226,7 +224,7 @@ public class ForestMutableWorldState implements MutableWorldState {
     // TODO: we could probably have an optimized method to decode a single scalar since it's used
     // pretty often.
     final RLPInput in = RLP.input(value);
-    return in.readUInt256Scalar();
+    return in.readBytes32();
   }
 
   private Optional<Address> getAccountTrieKeyPreimage(final Bytes32 trieKey) {
@@ -283,7 +281,7 @@ public class ForestMutableWorldState implements MutableWorldState {
     }
 
     @Override
-    public Wei getBalance() {
+    public Bytes32 getBalance() {
       return accountValue.getBalance();
     }
 
@@ -473,7 +471,7 @@ public class ForestMutableWorldState implements MutableWorldState {
     }
 
     private static Bytes serializeAccount(
-        final long nonce, final Wei balance, final Hash storageRoot, final Hash codeHash) {
+        final long nonce, final Bytes32 balance, final Hash storageRoot, final Hash codeHash) {
       final PmtStateTrieAccountValue accountValue =
           new PmtStateTrieAccountValue(nonce, balance, storageRoot, codeHash);
       return RLP.encode(accountValue::writeTo);

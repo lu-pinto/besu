@@ -37,7 +37,6 @@ import java.util.function.Function;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
-
 public class ForestWorldStateArchive implements WorldStateArchive {
   private final ForestWorldStateKeyValueStorage worldStateKeyValueStorage;
   private final WorldStatePreimageStorage preimageStorage;

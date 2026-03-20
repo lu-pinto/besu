@@ -51,7 +51,6 @@ import java.util.function.Function;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -252,7 +251,7 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
   }
 
   @Override
-  public MutableAccount createAccount(final Address address, final long nonce, final Wei balance) {
+  public MutableAccount createAccount(final Address address, final long nonce, final Bytes32 balance) {
     PathBasedValue<ACCOUNT> pathBasedValue = accountsToUpdate.get(address);
 
     if (pathBasedValue == null) {
@@ -533,7 +532,8 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
   public Bytes32 getStorageValue(final Address address, final Bytes32 slotKey) {
     StorageSlotKey storageSlotKey =
         new StorageSlotKey(hashAndSaveSlotPreImage(slotKey), Optional.of(slotKey));
-    return getStorageValueByStorageSlotKey(address, storageSlotKey).orElse(Bytes32Helper.ZERO_BYTES32);
+    return getStorageValueByStorageSlotKey(address, storageSlotKey)
+        .orElse(Bytes32Helper.ZERO_BYTES32);
   }
 
   @Override
@@ -558,7 +558,8 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
               key ->
                   new StorageConsumingMap<>(address, new ConcurrentHashMap<>(), storagePreloader))
           .put(
-              storageSlotKey, new PathBasedValue<>(valueBytes.orElse(null), valueBytes.orElse(null)));
+              storageSlotKey,
+              new PathBasedValue<>(valueBytes.orElse(null), valueBytes.orElse(null)));
       return valueBytes;
     } catch (MerkleTrieException e) {
       // need to throw to trigger the heal
@@ -876,7 +877,8 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
   }
 
   private boolean isSlotEquals(final Bytes32 expectedValue, final Bytes32 existingSlotValue) {
-    final Bytes32 sanitizedExpectedValue = (expectedValue == null) ? Bytes32Helper.ZERO_BYTES32 : expectedValue;
+    final Bytes32 sanitizedExpectedValue =
+        (expectedValue == null) ? Bytes32Helper.ZERO_BYTES32 : expectedValue;
     final Bytes32 sanitizedExistingSlotValue =
         (existingSlotValue == null) ? Bytes32Helper.ZERO_BYTES32 : existingSlotValue;
     return Objects.equals(sanitizedExpectedValue, sanitizedExistingSlotValue);
@@ -953,7 +955,7 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
       final Address address,
       final Hash addressHash,
       final long nonce,
-      final Wei balance,
+      final Bytes32 balance,
       final Hash storageRoot,
       final Hash codeHash,
       final boolean mutable);

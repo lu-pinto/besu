@@ -14,13 +14,12 @@
  */
 package org.hyperledger.besu.ethereum.api.jsonrpc.internal.results;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import java.math.BigInteger;
 import java.util.Objects;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
-
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
 import org.apache.tuweni.units.bigints.UInt256Value;
 import org.apache.tuweni.units.bigints.UInt64Value;

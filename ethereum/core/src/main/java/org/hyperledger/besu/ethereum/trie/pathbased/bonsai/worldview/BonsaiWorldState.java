@@ -59,7 +59,6 @@ import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.rlp.RLP;
 
-
 @SuppressWarnings("rawtypes")
 public class BonsaiWorldState extends PathBasedWorldState {
 
@@ -324,7 +323,8 @@ public class BonsaiWorldState extends PathBasedWorldState {
               Bytes32.wrap(oldAccount.getStorageRoot().getBytes()));
       try {
         StorageConsumingMap<StorageSlotKey, PathBasedValue<Bytes32>> storageToDelete = null;
-        Map<Bytes32, Bytes> entriesToDelete = storageTrie.entriesFrom(Bytes32Helper.ZERO_BYTES32, 256);
+        Map<Bytes32, Bytes> entriesToDelete =
+            storageTrie.entriesFrom(Bytes32Helper.ZERO_BYTES32, 256);
         while (!entriesToDelete.isEmpty()) {
           if (storageToDelete == null) {
             storageToDelete =
@@ -341,8 +341,7 @@ public class BonsaiWorldState extends PathBasedWorldState {
           for (Map.Entry<Bytes32, Bytes> slot : entriesToDelete.entrySet()) {
             final StorageSlotKey storageSlotKey =
                 new StorageSlotKey(Hash.wrap(slot.getKey()), Optional.empty());
-            final Bytes32 slotValue =
-                Bytes32Helper.leftPad(RLP.decodeValue(slot.getValue()));
+            final Bytes32 slotValue = Bytes32Helper.leftPad(RLP.decodeValue(slot.getValue()));
             maybeStateUpdater.ifPresent(
                 bonsaiUpdater ->
                     bonsaiUpdater.removeStorageValueBySlotHash(

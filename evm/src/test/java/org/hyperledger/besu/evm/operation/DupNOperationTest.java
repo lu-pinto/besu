@@ -16,6 +16,7 @@ package org.hyperledger.besu.evm.operation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
@@ -23,10 +24,7 @@ import org.hyperledger.besu.evm.gascalculator.PragueGasCalculator;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 import org.hyperledger.besu.evm.testutils.TestMessageFrameBuilder;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
-
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -264,7 +262,8 @@ class DupNOperationTest {
     assertThat(result.getPcIncrement()).isEqualTo(2);
     // DUPN 0x80 -> n=17, duplicates stack[16] which is 0
     assertThat(frame.stackSize()).isEqualTo(19);
-    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32Helper.leftPad(Bytes.of(0))); // duplicated value
+    assertThat(frame.getStackItem(0))
+        .isEqualTo(Bytes32Helper.leftPad(Bytes.of(0))); // duplicated value
   }
 
   /**

@@ -16,7 +16,6 @@ package org.hyperledger.besu.evm.toy;
 
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.ModificationNotAllowedException;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.account.AccountStorageEntry;
@@ -41,7 +40,7 @@ public class ToyAccount implements MutableAccount {
   private final Supplier<Hash> addressHash =
       Suppliers.memoize(() -> address == null ? Hash.ZERO : address.addressHash());
   private long nonce;
-  private Wei balance;
+  private Bytes32 balance;
   private Bytes code;
   private Supplier<Hash> codeHash =
       Suppliers.memoize(() -> code == null ? Hash.EMPTY : Hash.hash(code));
@@ -51,7 +50,7 @@ public class ToyAccount implements MutableAccount {
       final Account parent,
       final Address address,
       final long nonce,
-      final Wei balance,
+      final Bytes32 balance,
       final Bytes code) {
     this.parent = parent;
     this.address = address;
@@ -76,7 +75,7 @@ public class ToyAccount implements MutableAccount {
   }
 
   @Override
-  public Wei getBalance() {
+  public Bytes32 getBalance() {
     return balance;
   }
 
@@ -125,7 +124,7 @@ public class ToyAccount implements MutableAccount {
   }
 
   @Override
-  public void setBalance(final Wei value) {
+  public void setBalance(final Bytes32 value) {
     if (immutable) {
       throw new ModificationNotAllowedException();
     }

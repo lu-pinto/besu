@@ -129,7 +129,13 @@ public class DebugOperationTracer implements OperationTracer {
 
     final Optional<Map<Bytes32, Bytes32>> storage = captureStorage(frame);
     final Optional<Map<Address, Wei>> maybeRefunds =
-        frame.getRefunds().isEmpty() ? Optional.empty() : Optional.of(frame.getRefunds());
+        frame.getRefunds().isEmpty()
+            ? Optional.empty()
+            : Optional.of(
+                frame.getRefunds().entrySet().stream()
+                    .collect(
+                        java.util.stream.Collectors.toMap(
+                            Map.Entry::getKey, e -> Wei.wrap(e.getValue()))));
     long thisGasCost = operationResult.getGasCost();
     if (recordChildCallGas && currentOperation instanceof AbstractCallOperation) {
       thisGasCost += frame.getMessageFrameStack().getFirst().getRemainingGas();
@@ -151,7 +157,7 @@ public class DebugOperationTracer implements OperationTracer {
             .setDepth(depth)
             .setExceptionalHaltReason(haltReason)
             .setRecipient(frame.getRecipientAddress())
-            .setValue(frame.getApparentValue())
+            .setValue(Wei.wrap(frame.getApparentValue()))
             .setInputData(inputData)
             .setOutputData(outputData)
             .setStack(preExecutionStack)
@@ -190,11 +196,18 @@ public class DebugOperationTracer implements OperationTracer {
               .setGasRefund(frame.getGasRefund())
               .setDepth(frame.getDepth())
               .setRecipient(recipient)
-              .setValue(frame.getValue())
+              .setValue(Wei.wrap(frame.getValue()))
               .setInputData(inputData)
               .setOutputData(frame.getOutputData())
               .setWorldUpdater(frame.getWorldUpdater())
-              .setMaybeRefunds(Optional.ofNullable(frame.getRefunds()))
+              .setMaybeRefunds(
+                  frame.getRefunds() == null || frame.getRefunds().isEmpty()
+                      ? Optional.empty()
+                      : Optional.of(
+                          frame.getRefunds().entrySet().stream()
+                              .collect(
+                                  java.util.stream.Collectors.toMap(
+                                      Map.Entry::getKey, e -> Wei.wrap(e.getValue())))))
               .setMaybeCode(Optional.ofNullable(frame.getCode()))
               .setStackItemsProduced(frame.getMaxStackSize())
               .setVirtualOperation(true)
@@ -255,11 +268,18 @@ public class DebugOperationTracer implements OperationTracer {
             .setDepth(frame.getDepth())
             .setExceptionalHaltReason(Optional.of(exceptionalHaltReason))
             .setRecipient(frame.getRecipientAddress())
-            .setValue(frame.getValue())
+            .setValue(Wei.wrap(frame.getValue()))
             .setInputData(frame.getInputData().copy())
             .setOutputData(frame.getOutputData())
             .setWorldUpdater(frame.getWorldUpdater())
-            .setMaybeRefunds(Optional.ofNullable(frame.getRefunds()))
+            .setMaybeRefunds(
+                frame.getRefunds() == null || frame.getRefunds().isEmpty()
+                    ? Optional.empty()
+                    : Optional.of(
+                        frame.getRefunds().entrySet().stream()
+                            .collect(
+                                java.util.stream.Collectors.toMap(
+                                    Map.Entry::getKey, e -> Wei.wrap(e.getValue())))))
             .setMaybeCode(Optional.ofNullable(frame.getCode()))
             .setStackItemsProduced(frame.getMaxStackSize())
             .setVirtualOperation(true)
