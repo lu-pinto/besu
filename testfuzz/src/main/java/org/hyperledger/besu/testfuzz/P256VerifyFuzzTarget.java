@@ -314,8 +314,8 @@ public class P256VerifyFuzzTarget implements FuzzTarget {
     } else {
       LOG.warn("Unexpected public key format, size: {}", publicKeyBytes.size());
       // Fill with zeros if format is unexpected
-      packed.set(96, Bytes32.ZERO);
-      packed.set(128, Bytes32.ZERO);
+      packed.set(96, Bytes32Helper.ZERO_BYTES32);
+      packed.set(128, Bytes32Helper.ZERO_BYTES32);
     }
 
     return packed.toArray();
@@ -489,7 +489,7 @@ public class P256VerifyFuzzTarget implements FuzzTarget {
 
     switch (boundaryType) {
       case 0: // r = 0 (invalid)
-        input.set(32, Bytes32.ZERO);
+        input.set(32, Bytes32Helper.ZERO_BYTES32);
         break;
       case 1: // r = n-1 (valid boundary)
         writeBigIntegerAs32Bytes(input, 32, N.subtract(BigInteger.ONE));
@@ -498,7 +498,7 @@ public class P256VerifyFuzzTarget implements FuzzTarget {
         writeBigIntegerAs32Bytes(input, 32, N);
         break;
       case 3: // s = 0 (invalid)
-        input.set(64, Bytes32.ZERO);
+        input.set(64, Bytes32Helper.ZERO_BYTES32);
         break;
       case 4: // s = n-1 (valid boundary)
         writeBigIntegerAs32Bytes(input, 64, N.subtract(BigInteger.ONE));
@@ -574,8 +574,8 @@ public class P256VerifyFuzzTarget implements FuzzTarget {
 
     switch (attackType) {
       case 0: // Point at infinity (0, 0)
-        input.set(96, Bytes32.ZERO);
-        input.set(128, Bytes32.ZERO);
+        input.set(96, Bytes32Helper.ZERO_BYTES32);
+        input.set(128, Bytes32Helper.ZERO_BYTES32);
         break;
 
       case 1: // Random off-curve point
@@ -703,8 +703,8 @@ public class P256VerifyFuzzTarget implements FuzzTarget {
 
     switch (bypassType) {
       case 0: // True infinity point (0, 0) - BouncyCastle's implIsValid returns true
-        input.set(96, Bytes32.ZERO);
-        input.set(128, Bytes32.ZERO);
+        input.set(96, Bytes32Helper.ZERO_BYTES32);
+        input.set(128, Bytes32Helper.ZERO_BYTES32);
         break;
 
       case 1: // Coordinates exactly at field prime p

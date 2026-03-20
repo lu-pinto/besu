@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.vm;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
@@ -219,7 +220,7 @@ public class GeneralStateReferenceTestTools {
   private static void logWorldState(final ReferenceTestWorldState worldState) {
     ObjectMapper mapper = new ObjectMapper();
     ObjectNode worldStateJson = mapper.createObjectNode();
-    worldState.streamAccounts(Bytes32.ZERO, Integer.MAX_VALUE)
+    worldState.streamAccounts(Bytes32Helper.ZERO_BYTES32, Integer.MAX_VALUE)
         .forEach(
             account -> {
               ObjectNode accountJson = mapper.createObjectNode();
@@ -227,7 +228,7 @@ public class GeneralStateReferenceTestTools {
               accountJson.put("balance", account.getBalance().toShortHexString());
               accountJson.put("code", account.getCode().toHexString());
               ObjectNode storageJson = mapper.createObjectNode();
-              var storageEntries = account.storageEntriesFrom(Bytes32.ZERO, Integer.MAX_VALUE);
+              var storageEntries = account.storageEntriesFrom(Bytes32Helper.ZERO_BYTES32, Integer.MAX_VALUE);
               storageEntries.values().stream()
                   .map(
                       e ->

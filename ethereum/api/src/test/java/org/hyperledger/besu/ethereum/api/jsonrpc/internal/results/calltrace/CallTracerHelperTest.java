@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.calltrace;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.stream.Stream;
@@ -232,7 +233,7 @@ class CallTracerHelperTest {
     Bytes result = CallTracerHelper.extractCallDataFromMemory(memory, 30, 36);
     assertThat(result.size()).isEqualTo(36);
     // Check that null word is treated as zeros
-    assertThat(result.slice(2, 32)).isEqualTo(Bytes32.ZERO);
+    assertThat(result.slice(2, 32)).isEqualTo(Bytes32Helper.ZERO_BYTES32);
   }
 
   @Test
@@ -365,7 +366,7 @@ class CallTracerHelperTest {
     assertThat(result.slice(0, 32)).isEqualTo(memory[0]);
     // Verify null words are zeros
     for (int i = 1; i < 5; i++) {
-      assertThat(result.slice(i * 32, 32)).isEqualTo(Bytes32.ZERO);
+      assertThat(result.slice(i * 32, 32)).isEqualTo(Bytes32Helper.ZERO_BYTES32);
     }
     // Verify sixth word
     assertThat(result.slice(160, 32)).isEqualTo(memory[5]);
@@ -424,7 +425,7 @@ class CallTracerHelperTest {
             Bytes.fromHexString("0xFF")),
         Arguments.of(
             "Extract with offset beyond memory",
-            new Bytes[] {Bytes32.ZERO},
+            new Bytes[] {Bytes32Helper.ZERO_BYTES32},
             100,
             10,
             MutableBytes.create(10)),

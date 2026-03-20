@@ -57,7 +57,7 @@ public class DivOperation extends AbstractFixedCostOperation {
     final Bytes32 value1 = frame.popStackItem();
 
     if (value1.isZero()) {
-      frame.pushStackItem(Bytes32.ZERO);
+      frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
     } else {
       BigInteger b1 = new BigInteger(1, value0.toArrayUnsafe());
       BigInteger b2 = new BigInteger(1, value1.toArrayUnsafe());

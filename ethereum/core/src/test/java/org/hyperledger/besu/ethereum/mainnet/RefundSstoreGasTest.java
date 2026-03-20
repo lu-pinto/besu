@@ -14,7 +14,8 @@
  */
 package org.hyperledger.besu.ethereum.mainnet;
 
-import static org.apache.tuweni.bytes.Bytes32.ZERO;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
+import static org.hyperledger.besu.datatypes.Bytes32Helper.ZERO_BYTES32;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -36,6 +37,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class RefundSstoreGasTest {
 
+  private static final Bytes32 ZERO = ZERO_BYTES32;
   private static final Bytes32 ONE = Bytes32.fromHexStringLenient("0x01");
   private static final Bytes32 TWO = Bytes32.fromHexStringLenient("0x02");
 

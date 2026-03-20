@@ -15,6 +15,7 @@
 package org.hyperledger.besu.ethereum.referencetests;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.StorageSlotKey;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.mainnet.block.access.list.BlockAccessList;
@@ -116,7 +117,7 @@ public class AccountChangesJson {
     public StorageChange toStorageChange() {
       return new StorageChange(
           decodeIndex(blockAccessIndex),
-          postValue != null ? Bytes32.fromHexStringLenient(postValue) : Bytes32.ZERO);
+          postValue != null ? Bytes32.fromHexStringLenient(postValue) : Bytes32Helper.ZERO_BYTES32);
     }
   }
 

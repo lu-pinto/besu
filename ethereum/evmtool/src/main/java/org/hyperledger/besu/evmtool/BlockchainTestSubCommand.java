@@ -19,6 +19,7 @@ import static org.hyperledger.besu.evmtool.BlockchainTestSubCommand.COMMAND_NAME
 
 import org.hyperledger.besu.crypto.SignatureAlgorithmFactory;
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Log;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.ProtocolContext;
@@ -434,7 +435,7 @@ public class BlockchainTestSubCommand implements Runnable {
     EVM evm = protocolSpec.getEvm();
     if (evm.getEvmConfiguration().worldUpdaterMode() == WorldUpdaterMode.JOURNALED) {
       if (worldState
-          .streamAccounts(Bytes32.ZERO, Integer.MAX_VALUE)
+          .streamAccounts(Bytes32Helper.ZERO_BYTES32, Integer.MAX_VALUE)
           .anyMatch(AccountState::isEmpty)) {
         parentCommand.out.println("Journaled account configured and empty account detected");
       }

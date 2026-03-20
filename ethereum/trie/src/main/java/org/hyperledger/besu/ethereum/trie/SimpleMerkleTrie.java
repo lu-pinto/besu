@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.trie;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.hyperledger.besu.ethereum.trie.CompactEncoding.bytesToPath;
@@ -163,7 +164,7 @@ public abstract class SimpleMerkleTrie<K extends Bytes, V> implements MerkleTrie
   @Override
   public void visitLeafs(final TrieIterator.LeafHandler<V> handler) {
     final TrieIterator<V> visitor = new TrieIterator<>(handler, true);
-    root.accept(visitor, CompactEncoding.bytesToPath(Bytes32.ZERO));
+    root.accept(visitor, CompactEncoding.bytesToPath(Bytes32Helper.ZERO_BYTES32));
   }
 
   public abstract PathNodeVisitor<V> getGetVisitor();

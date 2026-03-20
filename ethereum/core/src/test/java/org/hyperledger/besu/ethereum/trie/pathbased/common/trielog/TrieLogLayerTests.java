@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.trie.pathbased.common.trielog;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.AccountValue;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
@@ -106,13 +107,13 @@ public class TrieLogLayerTests {
   @Test
   public void testAddStorageChange() {
     Address address = Address.fromHexString("0x00");
-    Bytes32 oldValue = Bytes32.ZERO;
+    Bytes32 oldValue = Bytes32Helper.ZERO_BYTES32;
     Bytes32 newValue = Bytes32.fromHexStringLenient("0x01");
     UInt256 slot = UInt256.ONE;
     StorageSlotKey storageSlotKey = new StorageSlotKey(slot);
 
     Address otherAddress = Address.fromHexString("0x000000");
-    Bytes32 otherOldValue = Bytes32.ZERO;
+    Bytes32 otherOldValue = Bytes32Helper.ZERO_BYTES32;
     Bytes32 otherNewValue = Bytes32.fromHexStringLenient("0x01");
     UInt256 otherSlot = UInt256.ONE;
     StorageSlotKey otherStorageSlotKey = new StorageSlotKey(otherSlot);

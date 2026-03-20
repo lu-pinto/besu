@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.vm;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hyperledger.besu.ethereum.core.InMemoryKeyValueStorageProvider.createInMemoryWorldStateArchive;
 
@@ -65,7 +66,7 @@ public class EntriesFromIntegrationTest {
     }
 
     final Map<Bytes32, AccountStorageEntry> values =
-        account.storageEntriesFrom(Bytes32.ZERO, Integer.MAX_VALUE);
+        account.storageEntriesFrom(Bytes32Helper.ZERO_BYTES32, Integer.MAX_VALUE);
     assertThat(values).isEqualTo(expectedValues);
   }
 

@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.consensus.qbft.core.test;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hyperledger.besu.consensus.qbft.core.support.IntegrationTestHelpers.createSignedCommitPayload;
 
@@ -150,7 +151,7 @@ public class SpuriousBehaviourTest {
 
     // nonProposer-2 will generate an invalid seal
     final ValidatorPeer badSealPeer = peers.getNonProposing(2);
-    final SECPSignature illegalSeal = badSealPeer.getnodeKey().sign(Bytes32.ZERO);
+    final SECPSignature illegalSeal = badSealPeer.getnodeKey().sign(Bytes32Helper.ZERO_BYTES32);
 
     badSealPeer.injectCommit(roundId, proposedBlock.getHash(), illegalSeal);
     assertThat(context.getCurrentChainHeight()).isEqualTo(0);

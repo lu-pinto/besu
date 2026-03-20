@@ -15,6 +15,7 @@
 package org.hyperledger.besu.evm.operation;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
@@ -63,7 +64,7 @@ public class ExtCodeSizeOperation extends AbstractOperation {
         final Account account = getAccount(address, frame);
 
         Bytes32 codeSize =
-            (account == null) ? Bytes32.ZERO : Words.intBytes(account.getCode().size());
+            (account == null) ? Bytes32Helper.ZERO_BYTES32 : Words.intBytes(account.getCode().size());
         frame.pushStackItem(codeSize);
 
         return new OperationResult(cost, null);

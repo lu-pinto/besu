@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.services;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.hyperledger.besu.datatypes.BlobGas;
@@ -43,7 +44,7 @@ public class RlpConverterServiceImplTest {
             .baseFeePerGas(Wei.of(1000))
             .requestsHash(Hash.ZERO)
             .balHash(Hash.ZERO)
-            .parentBeaconBlockRoot(Optional.of(Bytes32.ZERO))
+            .parentBeaconBlockRoot(Optional.of(Bytes32Helper.ZERO_BYTES32))
             .withdrawalsRoot(Hash.ZERO)
             .blobGasUsed(500L)
             .excessBlobGas(BlobGas.of(500L))

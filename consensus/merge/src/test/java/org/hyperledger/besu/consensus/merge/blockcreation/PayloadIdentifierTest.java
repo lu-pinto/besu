@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.consensus.merge.blockcreation;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -190,7 +191,7 @@ public class PayloadIdentifierTest {
             prevRandao,
             Address.fromHexString("0x42"),
             Optional.empty(),
-            Optional.of(Bytes32.ZERO));
+            Optional.of(Bytes32Helper.ZERO_BYTES32));
     assertThat(idForWithdrawals1).isNotEqualTo(idForWithdrawals2);
   }
 
@@ -212,7 +213,7 @@ public class PayloadIdentifierTest {
             prevRandao,
             Address.fromHexString("0x42"),
             Optional.empty(),
-            Optional.of(Bytes32.ZERO));
+            Optional.of(Bytes32Helper.ZERO_BYTES32));
     assertThat(idForWithdrawals1).isNotEqualTo(idForWithdrawals2);
   }
 }

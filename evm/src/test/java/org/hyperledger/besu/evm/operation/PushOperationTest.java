@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hyperledger.besu.evm.operation.PushOperation.staticOperation;
 
@@ -47,7 +48,7 @@ public class PushOperationTest {
           .initialGas(1)
           .address(Address.ZERO)
           .contract(Address.ZERO)
-          .inputData(Bytes32.ZERO)
+          .inputData(Bytes32Helper.ZERO_BYTES32)
           .sender(Address.ZERO)
           .value(Wei.ZERO)
           .apparentValue(Wei.ZERO)
@@ -77,6 +78,6 @@ public class PushOperationTest {
   @Test
   void oobPush() {
     staticOperation(frame, byteCode, byteCode.length, byteCode.length - 1);
-    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32.ZERO);
+    assertThat(frame.getStackItem(0)).isEqualTo(Bytes32Helper.ZERO_BYTES32);
   }
 }

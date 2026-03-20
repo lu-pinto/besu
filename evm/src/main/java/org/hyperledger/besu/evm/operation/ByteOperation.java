@@ -40,14 +40,14 @@ public class ByteOperation extends AbstractFixedCostOperation {
   private static Bytes32 getByte(final Bytes seq, final Bytes offset) {
     Bytes trimmedOffset = offset.trimLeadingZeros();
     if (trimmedOffset.size() > 1) {
-      return Bytes32.ZERO;
+      return Bytes32Helper.ZERO_BYTES32;
     }
     final int index = trimmedOffset.toInt();
 
     int size = seq.size();
     int pos = index - 32 + size;
     if (pos >= size || pos < 0) {
-      return Bytes32.ZERO;
+      return Bytes32Helper.ZERO_BYTES32;
     } else {
       final byte b = seq.get(pos);
       return Bytes32Helper.leftPad(Bytes.of(b));

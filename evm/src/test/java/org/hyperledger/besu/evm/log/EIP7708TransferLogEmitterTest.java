@@ -106,7 +106,7 @@ class EIP7708TransferLogEmitterTest {
     final Wei value = Wei.of(100);
     final Log log = EIP7708TransferLogEmitter.createTransferLog(zeroAddress, RECIPIENT, value);
 
-    assertThat(log.getTopics().get(1)).isEqualTo(LogTopic.create(Bytes32.ZERO));
+    assertThat(log.getTopics().get(1)).isEqualTo(LogTopic.create(Bytes32Helper.ZERO_BYTES32));
   }
 
   @Test

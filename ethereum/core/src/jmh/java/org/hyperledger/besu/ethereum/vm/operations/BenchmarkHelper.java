@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.vm.operations;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.mockito.Mockito.mock;
 
 import org.hyperledger.besu.datatypes.Address;
@@ -55,7 +56,7 @@ public class BenchmarkHelper {
         .initialGas(Long.MAX_VALUE)
         .address(Address.ZERO)
         .contract(Address.ZERO)
-        .inputData(Bytes32.ZERO)
+        .inputData(Bytes32Helper.ZERO_BYTES32)
         .sender(Address.ZERO)
         .value(Wei.ZERO)
         .apparentValue(Wei.ZERO)

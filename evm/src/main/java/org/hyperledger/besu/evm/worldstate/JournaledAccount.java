@@ -75,7 +75,7 @@ public class JournaledAccount implements MutableAccount, Undoable {
     this.account = null;
 
     this.nonce = UndoScalar.of(0L);
-    this.balance = UndoScalar.of(Bytes32.ZERO);
+    this.balance = UndoScalar.of(Bytes32Helper.ZERO_BYTES32);
 
     this.code = UndoScalar.of(Bytes.EMPTY);
     this.codeHash = UndoScalar.of(Hash.EMPTY);

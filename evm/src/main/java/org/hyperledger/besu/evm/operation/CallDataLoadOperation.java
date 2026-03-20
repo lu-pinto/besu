@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
@@ -44,13 +45,13 @@ public class CallDataLoadOperation extends AbstractFixedCostOperation {
     // returned
     // word should be zero.
     if (startWord.size() > 4) {
-      frame.pushStackItem(Bytes32.ZERO);
+      frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
       return successResponse;
     }
 
     final int offset = startWord.toInt();
     if (offset < 0) {
-      frame.pushStackItem(Bytes32.ZERO);
+      frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
       return successResponse;
     }
     final Bytes data = frame.getInputData();
@@ -60,7 +61,7 @@ public class CallDataLoadOperation extends AbstractFixedCostOperation {
       toCopy.copyTo(res, 0);
       frame.pushStackItem(res.copy());
     } else {
-      frame.pushStackItem(Bytes32.ZERO);
+      frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
     }
 
     return successResponse;

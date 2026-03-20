@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.trie;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.trie.patricia.BranchNode;
 import org.hyperledger.besu.ethereum.trie.patricia.ExtensionNode;
 import org.hyperledger.besu.ethereum.trie.patricia.LeafNode;
@@ -113,7 +114,7 @@ public class TrieIterator<V> implements PathNodeVisitor<V> {
       fullPath = Bytes.wrap(fullPath, iterator.next());
     }
     return fullPath.isZero()
-        ? Bytes32.ZERO
+        ? Bytes32Helper.ZERO_BYTES32
         : Bytes32.wrap(CompactEncoding.pathToBytes(fullPath), 0);
   }
 

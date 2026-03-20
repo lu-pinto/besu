@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.toy;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.evm.ModificationNotAllowedException;
@@ -96,7 +97,7 @@ public class ToyAccount implements MutableAccount {
     } else if (parent != null) {
       return getOriginalStorageValue(key);
     } else {
-      return Bytes32.ZERO;
+      return Bytes32Helper.ZERO_BYTES32;
     }
   }
 

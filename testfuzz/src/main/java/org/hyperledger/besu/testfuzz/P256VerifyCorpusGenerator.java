@@ -147,7 +147,7 @@ public class P256VerifyCorpusGenerator {
     // r = 0 (invalid)
     MutableBytes test3 = MutableBytes.create(160);
     test3.set(0, randomBytes32());
-    test3.set(32, Bytes32.ZERO);
+    test3.set(32, Bytes32Helper.ZERO_BYTES32);
     test3.set(64, Bytes32Helper.leftPad(Bytes.of(1)));
     test3.set(96, randomValidPoint());
     writeTestCase(outputDir, String.format("boundary_%03d.hex", testCount++), test3.toArray());
@@ -156,7 +156,7 @@ public class P256VerifyCorpusGenerator {
     MutableBytes test4 = MutableBytes.create(160);
     test4.set(0, randomBytes32());
     test4.set(32, Bytes32Helper.leftPad(Bytes.of(1)));
-    test4.set(64, Bytes32.ZERO);
+    test4.set(64, Bytes32Helper.ZERO_BYTES32);
     test4.set(96, randomValidPoint());
     writeTestCase(outputDir, String.format("boundary_%03d.hex", testCount++), test4.toArray());
 
@@ -165,8 +165,8 @@ public class P256VerifyCorpusGenerator {
     test5.set(0, randomBytes32());
     test5.set(32, Bytes32Helper.leftPad(Bytes.of(1)));
     test5.set(64, Bytes32Helper.leftPad(Bytes.of(1)));
-    test5.set(96, Bytes32.ZERO);
-    test5.set(128, Bytes32.ZERO);
+    test5.set(96, Bytes32Helper.ZERO_BYTES32);
+    test5.set(128, Bytes32Helper.ZERO_BYTES32);
     writeTestCase(outputDir, String.format("boundary_%03d.hex", testCount++), test5.toArray());
 
     return testCount;

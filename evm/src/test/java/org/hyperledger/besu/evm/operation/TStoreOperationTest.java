@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hyperledger.besu.evm.frame.ExceptionalHaltReason.INSUFFICIENT_GAS;
 
@@ -105,7 +106,7 @@ class TStoreOperationTest {
     final OperationResult tloadResult = tload.execute(frame, null);
     assertThat(tloadResult.getHaltReason()).isNull();
     var tloadValue = frame.popStackItem();
-    assertThat(tloadValue).isEqualTo(Bytes32.ZERO);
+    assertThat(tloadValue).isEqualTo(Bytes32Helper.ZERO_BYTES32);
   }
 
   @Test

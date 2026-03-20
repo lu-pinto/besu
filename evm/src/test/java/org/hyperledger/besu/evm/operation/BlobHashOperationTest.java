@@ -75,7 +75,7 @@ class BlobHashOperationTest {
     Operation.OperationResult failed2 = getHash.execute(frame, fakeEVM);
     assertThat(failed2.getGasCost()).isEqualTo(3);
     assertThat(failed2.getHaltReason()).isNull();
-    verify(frame, times(2)).pushStackItem(Bytes32.ZERO);
+    verify(frame, times(2)).pushStackItem(Bytes32Helper.ZERO_BYTES32);
   }
 
   @Test
@@ -90,7 +90,7 @@ class BlobHashOperationTest {
     Operation.OperationResult r = getHash.execute(frame, fakeEVM);
     assertThat(r.getGasCost()).isEqualTo(3);
     assertThat(r.getHaltReason()).isNull();
-    verify(frame).pushStackItem(Bytes32.ZERO);
+    verify(frame).pushStackItem(Bytes32Helper.ZERO_BYTES32);
   }
 
   @Test
@@ -105,6 +105,6 @@ class BlobHashOperationTest {
     Operation.OperationResult r = getHash.execute(frame, fakeEVM);
     assertThat(r.getGasCost()).isEqualTo(3);
     assertThat(r.getHaltReason()).isNull();
-    verify(frame).pushStackItem(Bytes32.ZERO);
+    verify(frame).pushStackItem(Bytes32Helper.ZERO_BYTES32);
   }
 }

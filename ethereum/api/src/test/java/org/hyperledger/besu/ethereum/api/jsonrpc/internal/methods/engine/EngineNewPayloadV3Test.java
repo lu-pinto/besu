@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.api.jsonrpc.internal.methods.engine;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hyperledger.besu.ethereum.api.jsonrpc.internal.methods.ExecutionEngineJsonRpcMethod.EngineStatus.INVALID;
@@ -95,7 +96,7 @@ public class EngineNewPayloadV3Test extends EngineNewPayloadV2Test {
   @Override
   public void before() {
     super.before();
-    maybeParentBeaconBlockRoot = Optional.of(Bytes32.ZERO);
+    maybeParentBeaconBlockRoot = Optional.of(Bytes32Helper.ZERO_BYTES32);
     this.method =
         new EngineNewPayloadV3(
             vertx,

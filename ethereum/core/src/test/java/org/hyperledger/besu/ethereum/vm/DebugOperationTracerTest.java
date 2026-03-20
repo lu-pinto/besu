@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.vm;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -342,7 +343,7 @@ class DebugOperationTracerTest {
     when(worldUpdater.getAccount(frame.getRecipientAddress())).thenReturn(account);
 
     final Map<Bytes32, Bytes32> updatedStorage = new TreeMap<>();
-    updatedStorage.put(Bytes32.ZERO, Bytes32.fromHexStringLenient("0xe9"));
+    updatedStorage.put(Bytes32Helper.ZERO_BYTES32, Bytes32.fromHexStringLenient("0xe9"));
     updatedStorage.put(Bytes32.fromHexStringLenient("0x01"), Bytes32.fromHexStringLenient("0x978"));
     when(account.getUpdatedStorage()).thenReturn(updatedStorage);
     final Bytes32 word1 = Bytes32.fromHexString("0x01");

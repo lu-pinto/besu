@@ -1842,7 +1842,7 @@ public class PeerDiscoveryControllerTest {
     final Bytes id = from.getId();
     when(packet.getNodeId()).thenReturn(id);
     when(packet.getType()).thenReturn(PacketType.PING);
-    when(packet.getHash()).thenReturn(Bytes32.ZERO);
+    when(packet.getHash()).thenReturn(Bytes32Helper.ZERO_BYTES32);
 
     return packet;
   }

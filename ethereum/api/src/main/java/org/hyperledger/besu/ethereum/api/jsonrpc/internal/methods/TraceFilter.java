@@ -17,6 +17,7 @@ package org.hyperledger.besu.ethereum.api.jsonrpc.internal.methods;
 import static org.hyperledger.besu.services.pipeline.PipelineBuilder.createPipelineFrom;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.api.jsonrpc.RpcMethod;
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.JsonRpcRequestContext;
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.exception.InvalidJsonRpcParameters;
@@ -143,7 +144,7 @@ public class TraceFilter extends TraceBlock {
     Optional<Block> block =
         blockchainQueriesSupplier.get().getBlockchain().getBlockByNumber(currentBlockNumber);
     while ((block.isEmpty()
-            || block.get().getHeader().getParentHash().getBytes().equals(Bytes32.ZERO))
+            || block.get().getHeader().getParentHash().getBytes().equals(Bytes32Helper.ZERO_BYTES32))
         && currentBlockNumber < toBlock) {
       currentBlockNumber++;
       block = blockchainQueriesSupplier.get().getBlockchain().getBlockByNumber(currentBlockNumber);

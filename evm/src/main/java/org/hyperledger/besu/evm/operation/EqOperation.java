@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
@@ -56,7 +57,7 @@ public class EqOperation extends AbstractFixedCostOperation {
     final byte[] b = frame.popStackItem().toArrayUnsafe();
     final int nonZeroA = firstNonZeroIndex(a);
     final int nonZeroB = firstNonZeroIndex(b);
-    Bytes32 result = Bytes32.ZERO;
+    Bytes32 result = Bytes32Helper.ZERO_BYTES32;
     if (Arrays.equals(a, nonZeroA, a.length, b, nonZeroB, b.length)) {
       result = BYTES_ONE;
     }

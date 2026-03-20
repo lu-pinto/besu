@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.fluent;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.frame.BlockValues;
 
@@ -25,8 +26,8 @@ import org.apache.tuweni.bytes.Bytes32;
 /** A concrete BlockValues object that takes all the defaults */
 public class SimpleBlockValues implements BlockValues {
 
-  Bytes difficultyBytes = Bytes32.ZERO;
-  Bytes32 mixHashOrPrevRandao = Bytes32.ZERO;
+  Bytes difficultyBytes = Bytes32Helper.ZERO_BYTES32;
+  Bytes32 mixHashOrPrevRandao = Bytes32Helper.ZERO_BYTES32;
   Optional<Wei> baseFee = Optional.empty();
   long number = 1;
   long timestamp = 1;

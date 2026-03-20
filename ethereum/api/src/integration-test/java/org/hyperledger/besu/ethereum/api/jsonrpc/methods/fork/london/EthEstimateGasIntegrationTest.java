@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.api.jsonrpc.methods.fork.london;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.hyperledger.besu.datatypes.AccessListEntry;
@@ -160,7 +161,7 @@ public class EthEstimateGasIntegrationTest {
     return List.of(
         new AccessListEntry(
             Address.fromHexString("0x8888f1f195afa192cfee860698584c030f4c9db1"),
-            List.of(Bytes32.ZERO)));
+            List.of(Bytes32Helper.ZERO_BYTES32)));
   }
 
   private JsonRpcRequestContext requestWithParams(final Object... params) {

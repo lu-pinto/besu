@@ -50,7 +50,7 @@ public abstract class AbstractCallOperation extends AbstractOperation {
       new OperationResult(0L, ExceptionalHaltReason.INSUFFICIENT_STACK_ITEMS);
 
   static final Bytes32 LEGACY_SUCCESS_STACK_ITEM = BYTES_ONE;
-  static final Bytes32 LEGACY_FAILURE_STACK_ITEM = Bytes32.ZERO;
+  static final Bytes32 LEGACY_FAILURE_STACK_ITEM = Bytes32Helper.ZERO_BYTES32;
 
   /**
    * Instantiates a new Abstract call operation.

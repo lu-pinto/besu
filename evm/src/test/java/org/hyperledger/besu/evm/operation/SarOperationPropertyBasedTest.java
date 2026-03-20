@@ -263,8 +263,8 @@ public class SarOperationPropertyBasedTest {
     final Bytes optimizedResult = runSarOperationOptimized(largeShift, value);
 
     // Both should return zero for positive value with large shift
-    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32.ZERO);
-    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32.ZERO);
+    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32Helper.ZERO_BYTES32);
+    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32Helper.ZERO_BYTES32);
   }
 
   @Property(tries = 500)
@@ -313,8 +313,8 @@ public class SarOperationPropertyBasedTest {
     final Bytes optimizedResult = runSarOperationOptimized(shift, value);
 
     // SAR of MAX_VALUE by 255 should be 0
-    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32.ZERO);
-    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32.ZERO);
+    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32Helper.ZERO_BYTES32);
+    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32Helper.ZERO_BYTES32);
   }
 
   @Property(tries = 3000)

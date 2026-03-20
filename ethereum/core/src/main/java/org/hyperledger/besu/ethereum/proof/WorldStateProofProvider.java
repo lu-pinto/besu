@@ -15,6 +15,7 @@
 package org.hyperledger.besu.ethereum.proof;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.ethereum.rlp.RLP;
 import org.hyperledger.besu.ethereum.trie.InnerNodeDiscoveryManager;
@@ -169,7 +170,7 @@ public class WorldStateProofProvider {
     // when proof is empty and we requested the full range, we should
     // have all the keys to reconstruct the trie
     if (proofs.isEmpty()) {
-      if (startKeyHash.equals(Bytes32.ZERO)) {
+      if (startKeyHash.equals(Bytes32Helper.ZERO_BYTES32)) {
         final MerkleTrie<Bytes, Bytes> trie = new SimpleMerklePatriciaTrie<>(Function.identity());
         // add the received keys in the trie
         for (Map.Entry<Bytes32, Bytes> key : keys.entrySet()) {

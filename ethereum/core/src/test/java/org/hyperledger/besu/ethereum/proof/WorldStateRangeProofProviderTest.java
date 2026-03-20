@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.proof;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.hyperledger.besu.datatypes.Hash;
@@ -80,7 +81,7 @@ public class WorldStateRangeProofProviderTest {
     // validate the range proof
     boolean isValidRangeProof =
         worldStateProofProvider.isValidRangeProof(
-            Bytes32.ZERO, accounts.lastKey(), accountStateTrie.getRootHash(), proofs, accounts);
+            Bytes32Helper.ZERO_BYTES32, accounts.lastKey(), accountStateTrie.getRootHash(), proofs, accounts);
     assertThat(isValidRangeProof).isTrue();
   }
 
@@ -119,7 +120,7 @@ public class WorldStateRangeProofProviderTest {
     // validate the range proof
     boolean isValidRangeProof =
         worldStateProofProvider.isValidRangeProof(
-            Bytes32.ZERO, accounts.lastKey(), accountStateTrie.getRootHash(), proofs, accounts);
+            Bytes32Helper.ZERO_BYTES32, accounts.lastKey(), accountStateTrie.getRootHash(), proofs, accounts);
     assertThat(isValidRangeProof).isFalse();
   }
 
@@ -153,7 +154,7 @@ public class WorldStateRangeProofProviderTest {
     // validate the range proof
     boolean isValidRangeProof =
         worldStateProofProvider.isValidRangeProof(
-            Bytes32.ZERO,
+            Bytes32Helper.ZERO_BYTES32,
             accounts.lastKey(),
             accountStateTrie.getRootHash(),
             new ArrayList<>(),
@@ -182,7 +183,7 @@ public class WorldStateRangeProofProviderTest {
     // validate the range proof
     boolean isValidRangeProof =
         worldStateProofProvider.isValidRangeProof(
-            Bytes32.ZERO,
+            Bytes32Helper.ZERO_BYTES32,
             accounts.lastKey(),
             accountStateTrie.getRootHash(),
             new ArrayList<>(),
@@ -211,7 +212,7 @@ public class WorldStateRangeProofProviderTest {
     // validate the range proof
     boolean isValidRangeProof =
         worldStateProofProvider.isValidRangeProof(
-            Bytes32.ZERO,
+            Bytes32Helper.ZERO_BYTES32,
             accounts.lastKey(),
             accountStateTrie.getRootHash(),
             new ArrayList<>(),

@@ -15,6 +15,7 @@
 package org.hyperledger.besu.ethereum.core;
 
 import org.hyperledger.besu.datatypes.Quantity;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 
 import java.math.BigInteger;
 
@@ -29,7 +30,7 @@ public final class Difficulty extends BaseUInt256Value<Difficulty> implements Qu
 
   public static final Difficulty ONE = of(1);
 
-  public static final Difficulty MAX_VALUE = wrap(Bytes32.ZERO.not());
+  public static final Difficulty MAX_VALUE = wrap(Bytes32Helper.ZERO_BYTES32.not());
 
   Difficulty(final UInt256 value) {
     super(value, Difficulty::new);

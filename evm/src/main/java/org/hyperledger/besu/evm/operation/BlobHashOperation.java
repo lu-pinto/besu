@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.VersionedHash;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
@@ -54,7 +55,7 @@ public class BlobHashOperation extends AbstractOperation {
       Bytes trimmedIndex = versionedHashIndexParam.trimLeadingZeros();
       if (trimmedIndex.size() > 4) {
         // won't fit in an int
-        frame.pushStackItem(Bytes32.ZERO);
+        frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
         return new OperationResult(3, null);
       }
       int versionedHashIndex = trimmedIndex.toInt();
@@ -62,10 +63,10 @@ public class BlobHashOperation extends AbstractOperation {
         VersionedHash requested = versionedHashes.get(versionedHashIndex);
         frame.pushStackItem(Bytes32.wrap(requested.getBytes().toArrayUnsafe()));
       } else {
-        frame.pushStackItem(Bytes32.ZERO);
+        frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
       }
     } else {
-      frame.pushStackItem(Bytes32.ZERO);
+      frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
     }
     return new OperationResult(3, null);
   }

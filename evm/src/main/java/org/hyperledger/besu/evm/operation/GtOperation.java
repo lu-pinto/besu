@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
@@ -54,7 +55,7 @@ public class GtOperation extends AbstractFixedCostOperation {
     final Bytes32 result =
         (value0.trimLeadingZeros().compareTo(value1.trimLeadingZeros()) > 0
             ? BYTES_ONE
-            : Bytes32.ZERO);
+            : Bytes32Helper.ZERO_BYTES32);
 
     frame.pushStackItem(result);
 

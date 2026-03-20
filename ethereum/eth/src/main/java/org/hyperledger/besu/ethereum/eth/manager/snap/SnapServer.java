@@ -361,7 +361,7 @@ class SnapServer implements BesuEvents.InitialSyncCompletionListener {
                 Bytes32 startKeyBytes, endKeyBytes;
                 boolean isPartialRange = false;
                 if (range.hashes().size() > 1) {
-                  startKeyBytes = Bytes32.ZERO;
+                  startKeyBytes = Bytes32Helper.ZERO_BYTES32;
                   endKeyBytes = Bytes32.wrap(HASH_LAST.getBytes());
                 } else {
                   startKeyBytes = Bytes32.wrap(range.startKeyHash().getBytes());

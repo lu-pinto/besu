@@ -117,7 +117,7 @@ class StorageFlatDatabaseHealingRangeRequestTest {
     // Create a collector to gather slot entries within a specific range
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(
-            Bytes32.ZERO, RangeManager.MAX_RANGE, 1, Integer.MAX_VALUE);
+            Bytes32Helper.ZERO_BYTES32, RangeManager.MAX_RANGE, 1, Integer.MAX_VALUE);
 
     // Create a visitor for the range collector
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
@@ -128,7 +128,7 @@ class StorageFlatDatabaseHealingRangeRequestTest {
             storageTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
-                        collector, visitor, root, Bytes32.ZERO));
+                        collector, visitor, root, Bytes32Helper.ZERO_BYTES32));
 
     // Retrieve the proof related nodes for the account trie
     final List<Bytes> proofs =
@@ -176,7 +176,7 @@ class StorageFlatDatabaseHealingRangeRequestTest {
     // Create a collector to gather slot entries within a specific range
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(
-            Bytes32.ZERO, RangeManager.MAX_RANGE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+            Bytes32Helper.ZERO_BYTES32, RangeManager.MAX_RANGE, Integer.MAX_VALUE, Integer.MAX_VALUE);
 
     // Create a visitor for the range collector
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
@@ -187,7 +187,7 @@ class StorageFlatDatabaseHealingRangeRequestTest {
             storageTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
-                        collector, visitor, root, Bytes32.ZERO));
+                        collector, visitor, root, Bytes32Helper.ZERO_BYTES32));
 
     // Create a request for healing the flat database with no more slots
     final StorageFlatDatabaseHealingRangeRequest request =
@@ -221,7 +221,7 @@ class StorageFlatDatabaseHealingRangeRequestTest {
     // Create a collector to gather slots entries within a specific range
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(
-            Bytes32.ZERO, RangeManager.MAX_RANGE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+            Bytes32Helper.ZERO_BYTES32, RangeManager.MAX_RANGE, Integer.MAX_VALUE, Integer.MAX_VALUE);
 
     // Create a visitor for the range collector
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
@@ -232,7 +232,7 @@ class StorageFlatDatabaseHealingRangeRequestTest {
             storageTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
-                        collector, visitor, root, Bytes32.ZERO));
+                        collector, visitor, root, Bytes32Helper.ZERO_BYTES32));
 
     // Retrieve the proof related nodes for the account trie
     final List<Bytes> proofs =
@@ -278,7 +278,7 @@ class StorageFlatDatabaseHealingRangeRequestTest {
     // Create a collector to gather slots entries within a specific range
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(
-            Bytes32.ZERO, RangeManager.MAX_RANGE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+            Bytes32Helper.ZERO_BYTES32, RangeManager.MAX_RANGE, Integer.MAX_VALUE, Integer.MAX_VALUE);
 
     // Create a visitor for the range collector
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
@@ -289,7 +289,7 @@ class StorageFlatDatabaseHealingRangeRequestTest {
             storageTrie.entriesFrom(
                 root ->
                     RangeStorageEntriesCollector.collectEntries(
-                        collector, visitor, root, Bytes32.ZERO));
+                        collector, visitor, root, Bytes32Helper.ZERO_BYTES32));
 
     // Retrieve the proof related nodes for the account trie
     final List<Bytes> proofs =

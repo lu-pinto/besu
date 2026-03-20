@@ -15,6 +15,7 @@
 package org.hyperledger.besu.evm.operation;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.account.MutableAccount;
@@ -128,7 +129,7 @@ public class SelfDestructOperation extends AbstractOperation {
     // beneficiary) as well as tag it for later self-destruct cleanup.
     if (willBeDestroyed) {
       frame.addSelfDestruct(originatorAccount.getAddress());
-      originatorAccount.setBalance(Bytes32.ZERO);
+      originatorAccount.setBalance(Bytes32Helper.ZERO_BYTES32);
     }
 
     // Add refund in message frame.

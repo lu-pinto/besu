@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
@@ -49,7 +50,7 @@ public class BlockHashOperation extends AbstractOperation {
     final Bytes32 blockArg32 = frame.popStackItem();
     final Bytes blockArg = blockArg32.trimLeadingZeros();
     if (blockArg.size() > MAX_BLOCK_ARG_SIZE) {
-      frame.pushStackItem(Bytes32.ZERO);
+      frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
       return new OperationResult(cost, null);
     }
 
@@ -63,7 +64,7 @@ public class BlockHashOperation extends AbstractOperation {
     if (soughtBlock < 0
         || soughtBlock >= currentBlockNumber
         || soughtBlock < (currentBlockNumber - blockHashLookup.getLookback())) {
-      frame.pushStackItem(Bytes32.ZERO);
+      frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
     } else {
       final Hash blockHash = blockHashLookup.apply(frame, soughtBlock);
       frame.pushStackItem(Bytes32.wrap(blockHash.getBytes().toArrayUnsafe()));

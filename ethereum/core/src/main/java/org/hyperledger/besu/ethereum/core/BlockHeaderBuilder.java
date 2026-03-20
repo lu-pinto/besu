@@ -19,6 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.BlobGas;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.LogsBloomFilter;
@@ -235,8 +236,8 @@ public class BlockHeaderBuilder {
       baseFee = null;
     }
 
-    final Bytes32 prevRandao = maybePrevRandao.orElse(Bytes32.ZERO);
-    final Bytes32 parentBeaconBlockRoot = maybeParentBeaconBlockRoot.orElse(Bytes32.ZERO);
+    final Bytes32 prevRandao = maybePrevRandao.orElse(Bytes32Helper.ZERO_BYTES32);
+    final Bytes32 parentBeaconBlockRoot = maybeParentBeaconBlockRoot.orElse(Bytes32Helper.ZERO_BYTES32);
 
     // For PoS, coinbase is always configured, but for PoA it is not configured,
     // rather generated for each block via MiningBeneficiaryCalculator.

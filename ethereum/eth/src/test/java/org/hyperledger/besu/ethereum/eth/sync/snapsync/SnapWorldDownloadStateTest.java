@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.eth.sync.snapsync;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -300,7 +301,7 @@ public class SnapWorldDownloadStateTest {
     when(snapSyncState.isHealFlatDatabaseInProgress()).thenReturn(true);
     downloadState.pendingAccountFlatDatabaseHealingRequests.add(
         SnapDataRequest.createAccountFlatHealingRangeRequest(
-            Hash.wrap(Bytes32.random()), Bytes32.ZERO, Bytes32.ZERO));
+            Hash.wrap(Bytes32.random()), Bytes32Helper.ZERO_BYTES32, Bytes32Helper.ZERO_BYTES32));
 
     downloadState.checkCompletion(header);
 
@@ -360,7 +361,7 @@ public class SnapWorldDownloadStateTest {
     downloadState.pendingTrieNodeRequests.add(
         BytecodeRequest.createAccountTrieNodeDataRequest(Hash.EMPTY, Bytes.EMPTY, new HashSet<>()));
     downloadState.pendingCodeRequests.add(
-        BytecodeRequest.createBytecodeRequest(Bytes32.ZERO, Hash.EMPTY, Bytes32.ZERO));
+        BytecodeRequest.createBytecodeRequest(Bytes32Helper.ZERO_BYTES32, Hash.EMPTY, Bytes32Helper.ZERO_BYTES32));
     // reload the heal
     downloadState.reloadTrieHeal();
     verify(snapSyncState).setHealTrieStatus(false);

@@ -160,7 +160,7 @@ class AbstractCreateOperationTest {
     final Deque<MessageFrame> messageFrameStack = messageFrame.getMessageFrameStack();
     messageFrame.pushStackItem(Bytes32Helper.leftPad(Bytes.ofUnsignedLong(contract.size())));
     messageFrame.pushStackItem(memoryOffset);
-    messageFrame.pushStackItem(Bytes32.ZERO);
+    messageFrame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
     messageFrame.expandMemory(0, 500);
     messageFrame.writeMemory(memoryOffset.trimLeadingZeros().toInt(), contract.size(), contract);
 

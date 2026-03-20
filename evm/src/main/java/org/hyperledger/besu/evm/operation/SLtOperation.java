@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
@@ -56,7 +57,7 @@ public class SLtOperation extends AbstractFixedCostOperation {
     final BigInteger b0 = new BigInteger(value0.toArrayUnsafe());
     final BigInteger b1 = new BigInteger(value1.toArrayUnsafe());
 
-    final Bytes32 result = b0.compareTo(b1) < 0 ? BYTES_ONE : Bytes32.ZERO;
+    final Bytes32 result = b0.compareTo(b1) < 0 ? BYTES_ONE : Bytes32Helper.ZERO_BYTES32;
 
     frame.pushStackItem(result);
 

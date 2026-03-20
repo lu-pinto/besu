@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.datatypes;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.hyperledger.besu.crypto.Hash.keccak256;
 import static org.hyperledger.besu.crypto.Hash.sha256;
 
@@ -27,7 +28,7 @@ import org.apache.tuweni.bytes.Bytes32;
 public class Hash extends BytesHolder {
 
   /** The constant ZERO. */
-  public static final Hash ZERO = new Hash(Bytes32.ZERO);
+  public static final Hash ZERO = new Hash(Bytes32Helper.ZERO_BYTES32);
 
   /** Last hash */
   public static final Hash LAST = new Hash(Bytes32.fromHexString("F".repeat(64)));

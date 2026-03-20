@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.api.jsonrpc.internal.methods.testing;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -343,7 +344,7 @@ class TestingBuildBlockV1Test {
     payloadAttributes.put("prevRandao", Hash.ZERO.toHexString());
     payloadAttributes.put("suggestedFeeRecipient", "0x0000000000000000000000000000000000000000");
     payloadAttributes.put("withdrawals", Collections.emptyList());
-    payloadAttributes.put("parentBeaconBlockRoot", Bytes32.ZERO.toHexString());
+    payloadAttributes.put("parentBeaconBlockRoot", Bytes32Helper.ZERO_BYTES32.toHexString());
 
     return new JsonRpcRequestContext(
         new JsonRpcRequest(
@@ -358,7 +359,7 @@ class TestingBuildBlockV1Test {
     payloadAttributes.put("timestamp", Bytes.ofUnsignedLong(timestamp).toQuantityHexString());
     payloadAttributes.put("prevRandao", Hash.ZERO.toHexString());
     payloadAttributes.put("withdrawals", Collections.emptyList());
-    payloadAttributes.put("parentBeaconBlockRoot", Bytes32.ZERO.toHexString());
+    payloadAttributes.put("parentBeaconBlockRoot", Bytes32Helper.ZERO_BYTES32.toHexString());
 
     return new JsonRpcRequestContext(
         new JsonRpcRequest(

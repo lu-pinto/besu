@@ -57,7 +57,7 @@ public class AddModOperation extends AbstractFixedCostOperation {
     final Bytes32 value2 = frame.popStackItem();
 
     if (value2.isZero()) {
-      frame.pushStackItem(Bytes32.ZERO);
+      frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
     } else {
       BigInteger b0 = new BigInteger(1, value0.toArrayUnsafe());
       BigInteger b1 = new BigInteger(1, value1.toArrayUnsafe());

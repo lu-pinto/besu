@@ -15,6 +15,7 @@
 package org.hyperledger.besu.ethereum.api.graphql.internal.pojoadapter;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.api.query.BlockchainQueries;
 import org.hyperledger.besu.ethereum.trie.pathbased.bonsai.BonsaiAccount;
@@ -145,7 +146,7 @@ public class AccountAdapter extends AdapterBase {
               ws -> Optional.of(ws.get(address).getStorageValue(slot)))
           .get();
     } else {
-      return account.map(a -> a.getStorageValue(slot)).orElse(Bytes32.ZERO);
+      return account.map(a -> a.getStorageValue(slot)).orElse(Bytes32Helper.ZERO_BYTES32);
     }
   }
 }

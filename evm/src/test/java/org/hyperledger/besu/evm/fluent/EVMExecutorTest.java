@@ -113,7 +113,7 @@ class EVMExecutorTest {
             .code(Bytes.fromHexString("0x6001600255"))
             .blockValues(new SimpleBlockValues())
             .difficulty(Bytes.ofUnsignedLong(1L))
-            .mixHash(Bytes32.ZERO)
+            .mixHash(Bytes32Helper.ZERO_BYTES32)
             .baseFee(Wei.ONE)
             .number(1)
             .timestamp(100L)
@@ -122,7 +122,7 @@ class EVMExecutorTest {
             .versionedHashes(Optional.empty())
             .warmAddress(Address.ZERO)
             .accessListWarmStorage(
-                Address.ZERO, Bytes32.ZERO, Bytes32Helper.leftPad(Bytes.ofUnsignedLong(2L)))
+                Address.ZERO, Bytes32Helper.ZERO_BYTES32, Bytes32Helper.leftPad(Bytes.ofUnsignedLong(2L)))
             .messageCallProcessor(new MessageCallProcessor(null, null))
             .contractCallProcessor(new ContractCreationProcessor(null, true, null, 1L))
             .execute();
@@ -137,7 +137,7 @@ class EVMExecutorTest {
             .worldUpdater(simpleWorld.updater())
             .messageFrameType(MessageFrame.Type.MESSAGE_CALL)
             .code(Bytes.fromHexString("0x6001600255"))
-            .prevRandao(Bytes32.ZERO)
+            .prevRandao(Bytes32Helper.ZERO_BYTES32)
             .accessListWarmAddresses(Set.of())
             .accessListWarmStorage(MultimapBuilder.linkedHashKeys().arrayListValues().build())
             .execute();

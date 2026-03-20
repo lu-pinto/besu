@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.vm;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
@@ -237,7 +238,7 @@ public class BlockchainReferenceTestTools {
     if (evm.getEvmConfiguration().worldUpdaterMode() == WorldUpdaterMode.JOURNALED) {
       assumeFalse(
               worldState
-                      .streamAccounts(Bytes32.ZERO, Integer.MAX_VALUE).anyMatch(AccountState::isEmpty),
+                      .streamAccounts(Bytes32Helper.ZERO_BYTES32, Integer.MAX_VALUE).anyMatch(AccountState::isEmpty),
               "Journaled account configured and empty account detected");
       assumeFalse(EvmSpecVersion.SPURIOUS_DRAGON.compareTo(evm.getEvmVersion()) > 0,
               "Journaled account configured and fork prior to the merge specified");

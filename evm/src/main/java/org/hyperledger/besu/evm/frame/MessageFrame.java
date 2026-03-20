@@ -21,6 +21,7 @@ import org.hyperledger.besu.collections.undo.UndoScalar;
 import org.hyperledger.besu.collections.undo.UndoSet;
 import org.hyperledger.besu.collections.undo.UndoTable;
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Log;
 import org.hyperledger.besu.datatypes.VersionedHash;
 import org.hyperledger.besu.datatypes.Wei;
@@ -1231,7 +1232,7 @@ public class MessageFrame {
    */
   public Bytes32 getTransientStorageValue(final Address accountAddress, final Bytes32 slot) {
     Bytes32 v = txValues.transientStorage().get(accountAddress, slot);
-    return v == null ? Bytes32.ZERO : v;
+    return v == null ? Bytes32Helper.ZERO_BYTES32 : v;
   }
 
   /**
@@ -1286,7 +1287,7 @@ public class MessageFrame {
     private Address originator;
     private Address contract;
     private Bytes32 gasPrice;
-    private Bytes32 blobGasPrice = Bytes32.ZERO;
+    private Bytes32 blobGasPrice = Bytes32Helper.ZERO_BYTES32;
     private Bytes inputData;
     private Address sender;
     private Bytes32 value;

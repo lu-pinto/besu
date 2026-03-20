@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.precompile;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.hyperledger.besu.evm.precompile.AbstractPrecompiledContract.cacheEventConsumer;
 
 import org.hyperledger.besu.crypto.Hash;
@@ -53,9 +54,9 @@ public class KZGPointEvalPrecompiledContract implements PrecompiledContract {
   private static void loadLib() {
     CKZG4844JNI.loadNativeLibrary();
     Bytes fieldElementsPerBlob =
-        Words.intBytes(CKZG4844JNI.FIELD_ELEMENTS_PER_BLOB).xor(Bytes32.ZERO);
+        Words.intBytes(CKZG4844JNI.FIELD_ELEMENTS_PER_BLOB).xor(Bytes32Helper.ZERO_BYTES32);
     Bytes blsModulus =
-        Bytes32.wrap(Bytes.of(CKZG4844JNI.BLS_MODULUS.toByteArray()).xor(Bytes32.ZERO));
+        Bytes32.wrap(Bytes.of(CKZG4844JNI.BLS_MODULUS.toByteArray()).xor(Bytes32Helper.ZERO_BYTES32));
 
     successResult = Bytes.concatenate(fieldElementsPerBlob, blsModulus);
   }

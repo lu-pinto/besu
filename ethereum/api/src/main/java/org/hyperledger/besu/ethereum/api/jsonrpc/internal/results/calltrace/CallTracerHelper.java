@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.calltrace;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import java.math.BigInteger;
 
 import org.apache.tuweni.bytes.Bytes;
@@ -145,9 +146,9 @@ public final class CallTracerHelper {
   /** Gets a word from memory or returns zero bytes if out of bounds. */
   private static Bytes getMemoryWord(final Bytes[] memory, final int wordIndex) {
     if (memory == null || wordIndex < 0 || wordIndex >= memory.length) {
-      return Bytes32.ZERO;
+      return Bytes32Helper.ZERO_BYTES32;
     }
     final Bytes word = memory[wordIndex];
-    return word != null ? word : Bytes32.ZERO;
+    return word != null ? word : Bytes32Helper.ZERO_BYTES32;
   }
 }

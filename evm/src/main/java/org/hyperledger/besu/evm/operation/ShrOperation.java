@@ -53,13 +53,13 @@ public class ShrOperation extends AbstractFixedCostOperation {
     Bytes shiftAmount = frame.popStackItem();
     if (shiftAmount.size() > 4 && (shiftAmount = shiftAmount.trimLeadingZeros()).size() > 4) {
       frame.popStackItem();
-      frame.pushStackItem(Bytes32.ZERO);
+      frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
     } else {
       final int shiftAmountInt = shiftAmount.toInt();
       final Bytes32 value = Bytes32Helper.leftPad(frame.popStackItem());
 
       if (shiftAmountInt >= 256 || shiftAmountInt < 0) {
-        frame.pushStackItem(Bytes32.ZERO);
+        frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
       } else {
         frame.pushStackItem(value.shiftRight(shiftAmountInt));
       }

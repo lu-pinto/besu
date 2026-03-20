@@ -55,7 +55,7 @@ public class SDivOperation extends AbstractFixedCostOperation {
     final Bytes32 value1 = frame.popStackItem();
 
     if (value1.isZero()) {
-      frame.pushStackItem(Bytes32.ZERO);
+      frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
     } else {
       final BigInteger b1 = new BigInteger(value0.toArrayUnsafe());
       final BigInteger b2 = new BigInteger(value1.toArrayUnsafe());

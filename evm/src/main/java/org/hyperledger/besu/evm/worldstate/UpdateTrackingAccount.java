@@ -80,7 +80,7 @@ public class UpdateTrackingAccount<A extends Account> implements MutableAccount 
     this.account = null;
 
     this.nonce = 0;
-    this.balance = Bytes32.ZERO;
+    this.balance = Bytes32Helper.ZERO_BYTES32;
 
     this.updatedCode = Bytes.EMPTY;
     this.oldCode = Bytes.EMPTY;

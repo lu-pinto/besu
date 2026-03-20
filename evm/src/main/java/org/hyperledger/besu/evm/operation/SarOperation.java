@@ -57,12 +57,12 @@ public class SarOperation extends AbstractFixedCostOperation {
     final Bytes32 value = frame.popStackItem();
     final boolean negativeNumber = value.get(0) < 0;
     if (shiftAmount.size() > 4 && (shiftAmount = shiftAmount.trimLeadingZeros()).size() > 4) {
-      frame.pushStackItem(negativeNumber ? ALL_BITS : Bytes32.ZERO);
+      frame.pushStackItem(negativeNumber ? ALL_BITS : Bytes32Helper.ZERO_BYTES32);
     } else {
       final int shiftAmountInt = shiftAmount.toInt();
 
       if (shiftAmountInt >= 256 || shiftAmountInt < 0) {
-        frame.pushStackItem(negativeNumber ? ALL_BITS : Bytes32.ZERO);
+        frame.pushStackItem(negativeNumber ? ALL_BITS : Bytes32Helper.ZERO_BYTES32);
       } else {
         // first perform standard shift right.
         Bytes result = value.shiftRight(shiftAmountInt);

@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
@@ -50,7 +51,7 @@ public class IsZeroOperation extends AbstractFixedCostOperation {
   public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes32 value = frame.popStackItem();
 
-    frame.pushStackItem((value.trimLeadingZeros().size() == 0) ? BYTES_ONE : Bytes32.ZERO);
+    frame.pushStackItem((value.trimLeadingZeros().size() == 0) ? BYTES_ONE : Bytes32Helper.ZERO_BYTES32);
 
     return isZeroSuccess;
   }

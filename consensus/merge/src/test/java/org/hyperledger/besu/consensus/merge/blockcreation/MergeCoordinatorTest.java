@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.consensus.merge.blockcreation;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.hyperledger.besu.ethereum.core.InMemoryKeyValueStorageProvider.createInMemoryBlockchain;
@@ -263,7 +264,7 @@ public class MergeCoordinatorTest implements MergeGenesisConfigHelper {
         coordinator.preparePayload(
             genesisState.getBlock().getHeader(),
             System.currentTimeMillis() / 1000,
-            Bytes32.ZERO,
+            Bytes32Helper.ZERO_BYTES32,
             suggestedFeeRecipient,
             Optional.empty(),
             Optional.empty(),
@@ -383,7 +384,7 @@ public class MergeCoordinatorTest implements MergeGenesisConfigHelper {
     coordinator.preparePayload(
         invalidParentHeader,
         System.currentTimeMillis() / 1000,
-        Bytes32.ZERO,
+        Bytes32Helper.ZERO_BYTES32,
         suggestedFeeRecipient,
         Optional.empty(),
         Optional.empty(),
@@ -417,7 +418,7 @@ public class MergeCoordinatorTest implements MergeGenesisConfigHelper {
         coordinator.preparePayload(
             genesisState.getBlock().getHeader(),
             System.currentTimeMillis() / 1000,
-            Bytes32.ZERO,
+            Bytes32Helper.ZERO_BYTES32,
             suggestedFeeRecipient,
             Optional.empty(),
             Optional.empty(),
@@ -476,7 +477,7 @@ public class MergeCoordinatorTest implements MergeGenesisConfigHelper {
         coordinator.preparePayload(
             genesisState.getBlock().getHeader(),
             System.currentTimeMillis() / 1000,
-            Bytes32.ZERO,
+            Bytes32Helper.ZERO_BYTES32,
             suggestedFeeRecipient,
             Optional.empty(),
             Optional.empty(),
@@ -528,7 +529,7 @@ public class MergeCoordinatorTest implements MergeGenesisConfigHelper {
         coordinator.preparePayload(
             genesisState.getBlock().getHeader(),
             System.currentTimeMillis() / 1000,
-            Bytes32.ZERO,
+            Bytes32Helper.ZERO_BYTES32,
             suggestedFeeRecipient,
             Optional.empty(),
             Optional.empty(),
@@ -582,7 +583,7 @@ public class MergeCoordinatorTest implements MergeGenesisConfigHelper {
         coordinator.preparePayload(
             genesisState.getBlock().getHeader(),
             System.currentTimeMillis() / 1000,
-            Bytes32.ZERO,
+            Bytes32Helper.ZERO_BYTES32,
             suggestedFeeRecipient,
             Optional.empty(),
             Optional.empty(),
@@ -629,7 +630,7 @@ public class MergeCoordinatorTest implements MergeGenesisConfigHelper {
         coordinator.preparePayload(
             genesisState.getBlock().getHeader(),
             System.currentTimeMillis() / 1000,
-            Bytes32.ZERO,
+            Bytes32Helper.ZERO_BYTES32,
             suggestedFeeRecipient,
             Optional.empty(),
             Optional.empty(),
@@ -686,7 +687,7 @@ public class MergeCoordinatorTest implements MergeGenesisConfigHelper {
         coordinator.preparePayload(
             genesisState.getBlock().getHeader(),
             timestamp,
-            Bytes32.ZERO,
+            Bytes32Helper.ZERO_BYTES32,
             suggestedFeeRecipient,
             Optional.empty(),
             Optional.empty(),
@@ -698,7 +699,7 @@ public class MergeCoordinatorTest implements MergeGenesisConfigHelper {
         coordinator.preparePayload(
             genesisState.getBlock().getHeader(),
             timestamp,
-            Bytes32.ZERO,
+            Bytes32Helper.ZERO_BYTES32,
             suggestedFeeRecipient,
             Optional.empty(),
             Optional.empty(),
@@ -740,7 +741,7 @@ public class MergeCoordinatorTest implements MergeGenesisConfigHelper {
         coordinator.preparePayload(
             genesisState.getBlock().getHeader(),
             timestamp,
-            Bytes32.ZERO,
+            Bytes32Helper.ZERO_BYTES32,
             suggestedFeeRecipient,
             Optional.empty(),
             Optional.empty(),
@@ -752,7 +753,7 @@ public class MergeCoordinatorTest implements MergeGenesisConfigHelper {
         coordinator.preparePayload(
             genesisState.getBlock().getHeader(),
             timestamp + 1,
-            Bytes32.ZERO,
+            Bytes32Helper.ZERO_BYTES32,
             suggestedFeeRecipient,
             Optional.empty(),
             Optional.empty(),
@@ -785,7 +786,7 @@ public class MergeCoordinatorTest implements MergeGenesisConfigHelper {
         this.coordinator.preparePayload(
             genesisState.getBlock().getHeader(),
             1L,
-            Bytes32.ZERO,
+            Bytes32Helper.ZERO_BYTES32,
             suggestedFeeRecipient,
             Optional.empty(),
             Optional.empty(),

@@ -20,6 +20,7 @@ import static org.hyperledger.besu.evm.frame.SoftFailureReason.LEGACY_MAX_CALL_D
 import static org.hyperledger.besu.evm.internal.Words.clampedToLong;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.account.MutableAccount;
@@ -165,7 +166,7 @@ public abstract class AbstractCreateOperation extends AbstractOperation {
     final long inputSize = clampedToLong(frame.getStackItem(2));
     frame.readMutableMemory(inputOffset, inputSize);
     frame.popStackItems(getStackItemsConsumed());
-    frame.pushStackItem(Bytes32.ZERO);
+    frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
   }
 
   private void spawnChildMessage(final MessageFrame parent, final Code code) {
@@ -229,7 +230,7 @@ public abstract class AbstractCreateOperation extends AbstractOperation {
       onSuccess(frame, createdAddress);
     } else {
       frame.setReturnData(childFrame.getOutputData());
-      frame.pushStackItem(Bytes32.ZERO);
+      frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
       onFailure(frame, childFrame.getExceptionalHaltReason());
     }
 

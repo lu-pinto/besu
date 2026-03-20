@@ -228,7 +228,7 @@ public class UInt256PropertyBasedTest {
     // Assert
     BigInteger A = toBigUnsigned(a);
     BigInteger M = toBigUnsigned(m);
-    byte[] exp = (M.signum() == 0) ? Bytes32.ZERO.toArrayUnsafe() : bigUnsignedToBytes32(A.mod(M));
+    byte[] exp = (M.signum() == 0) ? Bytes32Helper.ZERO_BYTES32.toArrayUnsafe() : bigUnsignedToBytes32(A.mod(M));
     assertThat(got).containsExactly(exp);
   }
 
@@ -247,7 +247,7 @@ public class UInt256PropertyBasedTest {
     // Assert
     BigInteger A = toBigUnsigned(a);
     BigInteger M = toBigUnsigned(m);
-    byte[] exp = (M.signum() == 0) ? Bytes32.ZERO.toArrayUnsafe() : bigUnsignedToBytes32(A.mod(M));
+    byte[] exp = (M.signum() == 0) ? Bytes32Helper.ZERO_BYTES32.toArrayUnsafe() : bigUnsignedToBytes32(A.mod(M));
     assertThat(got).containsExactly(exp);
   }
 
@@ -268,7 +268,7 @@ public class UInt256PropertyBasedTest {
 
     // Assert
     byte[] expected =
-        (M.signum() == 0) ? Bytes32.ZERO.toArrayUnsafe() : computeSignedModExpected(A, M);
+        (M.signum() == 0) ? Bytes32Helper.ZERO_BYTES32.toArrayUnsafe() : computeSignedModExpected(A, M);
 
     assertThat(got).containsExactly(expected);
   }
@@ -291,7 +291,7 @@ public class UInt256PropertyBasedTest {
     BigInteger B = toBigUnsigned(b);
     BigInteger M = toBigUnsigned(m);
     byte[] exp =
-        (M.signum() == 0) ? Bytes32.ZERO.toArrayUnsafe() : bigUnsignedToBytes32(A.add(B).mod(M));
+        (M.signum() == 0) ? Bytes32Helper.ZERO_BYTES32.toArrayUnsafe() : bigUnsignedToBytes32(A.add(B).mod(M));
     assertThat(got).containsExactly(exp);
   }
 
@@ -314,7 +314,7 @@ public class UInt256PropertyBasedTest {
     BigInteger M = toBigUnsigned(m);
     byte[] exp =
         (M.signum() == 0)
-            ? Bytes32.ZERO.toArrayUnsafe()
+            ? Bytes32Helper.ZERO_BYTES32.toArrayUnsafe()
             : bigUnsignedToBytes32(A.multiply(B).mod(M));
     assertThat(got).containsExactly(exp);
   }
@@ -326,10 +326,10 @@ public class UInt256PropertyBasedTest {
     UInt256 zero = UInt256.ZERO;
 
     // Act & Assert
-    assertThat(x.mod(zero).toBytesBE()).containsExactly(Bytes32.ZERO.toArrayUnsafe());
-    assertThat(x.signedMod(zero).toBytesBE()).containsExactly(Bytes32.ZERO.toArrayUnsafe());
-    assertThat(x.addMod(x, zero).toBytesBE()).containsExactly(Bytes32.ZERO.toArrayUnsafe());
-    assertThat(x.mulMod(x, zero).toBytesBE()).containsExactly(Bytes32.ZERO.toArrayUnsafe());
+    assertThat(x.mod(zero).toBytesBE()).containsExactly(Bytes32Helper.ZERO_BYTES32.toArrayUnsafe());
+    assertThat(x.signedMod(zero).toBytesBE()).containsExactly(Bytes32Helper.ZERO_BYTES32.toArrayUnsafe());
+    assertThat(x.addMod(x, zero).toBytesBE()).containsExactly(Bytes32Helper.ZERO_BYTES32.toArrayUnsafe());
+    assertThat(x.mulMod(x, zero).toBytesBE()).containsExactly(Bytes32Helper.ZERO_BYTES32.toArrayUnsafe());
   }
 
   // --------------------------------------------------------------------------

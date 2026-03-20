@@ -15,6 +15,7 @@
 package org.hyperledger.besu.evm.operation;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
@@ -64,7 +65,7 @@ public class ExtCodeHashOperation extends AbstractOperation {
       final Account account = getAccount(address, frame);
 
       if (account == null || account.isEmpty()) {
-        frame.pushStackItem(Bytes32.ZERO);
+        frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
       } else {
         frame.pushStackItem(Bytes32.wrap(account.getCodeHash().getBytes().toArrayUnsafe()));
       }

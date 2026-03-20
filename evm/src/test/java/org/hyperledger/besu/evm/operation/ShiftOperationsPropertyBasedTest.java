@@ -209,8 +209,8 @@ public class ShiftOperationsPropertyBasedTest {
     final Bytes originalResult = runShlOperation(largeShift, value);
     final Bytes optimizedResult = runShlOperationOptimized(largeShift, value);
 
-    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32.ZERO);
-    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32.ZERO);
+    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32Helper.ZERO_BYTES32);
+    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32Helper.ZERO_BYTES32);
   }
 
   @Property(tries = 500)
@@ -222,8 +222,8 @@ public class ShiftOperationsPropertyBasedTest {
     final Bytes originalResult = runShrOperation(largeShift, value);
     final Bytes optimizedResult = runShrOperationOptimized(largeShift, value);
 
-    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32.ZERO);
-    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32.ZERO);
+    assertThat(Bytes32Helper.leftPad(optimizedResult)).isEqualTo(Bytes32Helper.ZERO_BYTES32);
+    assertThat(Bytes32Helper.leftPad(originalResult)).isEqualTo(Bytes32Helper.ZERO_BYTES32);
   }
 
   // endregion

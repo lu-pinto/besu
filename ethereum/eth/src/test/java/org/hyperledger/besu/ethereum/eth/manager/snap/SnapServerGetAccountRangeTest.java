@@ -424,7 +424,7 @@ public class SnapServerGetAccountRangeTest {
 
     public static class Builder {
       private Hash rootHash = null;
-      private Bytes32 startHash = Bytes32.ZERO;
+      private Bytes32 startHash = Bytes32Helper.ZERO_BYTES32;
       private Bytes32 limitHash = Bytes32.wrap(Hash.LAST.getBytes());
       private int responseBytes = Integer.MAX_VALUE;
       private int expectedAccounts = 0;

@@ -15,6 +15,7 @@
 package org.hyperledger.besu.evm.operation;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
@@ -62,7 +63,7 @@ public class BalanceOperation extends AbstractOperation {
         return new OperationResult(cost, ExceptionalHaltReason.INSUFFICIENT_GAS);
       } else {
         final Account account = getAccount(address, frame);
-        frame.pushStackItem(account == null ? Bytes32.ZERO : account.getBalance());
+        frame.pushStackItem(account == null ? Bytes32Helper.ZERO_BYTES32 : account.getBalance());
         return new OperationResult(cost, null);
       }
     } catch (final UnderflowException ufe) {

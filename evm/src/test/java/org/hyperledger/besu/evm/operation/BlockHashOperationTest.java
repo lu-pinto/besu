@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.hyperledger.besu.datatypes.Hash;
@@ -39,7 +40,7 @@ class BlockHashOperationTest {
   void shouldReturnZeroWhenArgIsBiggerThanALong() {
     assertBlockHash(
         Bytes32.fromHexString("F".repeat(64)),
-        Bytes32.ZERO,
+        Bytes32Helper.ZERO_BYTES32,
         100,
         (__, ___) -> Hash.EMPTY_LIST_HASH,
         ENOUGH_GAS);

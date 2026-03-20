@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.evm.operation;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.hyperledger.besu.evm.operation.PushOperation.PUSH_BASE;
 
 import org.hyperledger.besu.evm.EVM;
@@ -49,7 +50,7 @@ public class Push0Operation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    frame.pushStackItem(Bytes32.ZERO);
+    frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
     return push0Success;
   }
 }

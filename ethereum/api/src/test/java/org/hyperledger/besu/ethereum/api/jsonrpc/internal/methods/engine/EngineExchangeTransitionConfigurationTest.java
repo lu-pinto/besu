@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.api.jsonrpc.internal.methods.engine;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -249,7 +250,7 @@ public class EngineExchangeTransitionConfigurationTest {
         0,
         Bytes.EMPTY,
         Wei.ZERO,
-        Bytes32.ZERO,
+        Bytes32Helper.ZERO_BYTES32,
         0,
         null,
         null,
