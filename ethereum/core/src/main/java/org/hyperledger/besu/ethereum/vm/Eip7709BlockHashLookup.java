@@ -23,6 +23,9 @@ import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.nio.ByteOrder;
 import java.util.HashMap;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -36,6 +39,8 @@ import org.slf4j.LoggerFactory;
  * BLOCKHASH operation.
  */
 public class Eip7709BlockHashLookup implements BlockHashLookup {
+  private static final VarHandle LONG_BE =
+    MethodHandles.byteArrayViewVarHandle(long[].class, ByteOrder.BIG_ENDIAN);
   private static final Logger LOG = LoggerFactory.getLogger(Eip7709BlockHashLookup.class);
   private static final long BLOCKHASH_SERVE_WINDOW = 256L;
   private static final long HISTORY_SERVE_WINDOW = 8191;
@@ -87,7 +92,9 @@ public class Eip7709BlockHashLookup implements BlockHashLookup {
       return ZERO;
     }
 
-    Bytes32 slot = UInt256.valueOf(blockNumber % historyServeWindow);
+    byte[] bytes = new byte[32];
+    LONG_BE.set(bytes, 24, blockNumber % historyServeWindow);
+    Bytes32 slot = Bytes32.wrap(bytes);
     final Bytes32 value = account.getStorageValue(slot);
     LOG.atTrace()
         .log(
