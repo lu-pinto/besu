@@ -62,7 +62,6 @@ import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.NotNull;
-import org.apache.tuweni.bytes.Bytes32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,7 +143,12 @@ public class TraceFilter extends TraceBlock {
     Optional<Block> block =
         blockchainQueriesSupplier.get().getBlockchain().getBlockByNumber(currentBlockNumber);
     while ((block.isEmpty()
-            || block.get().getHeader().getParentHash().getBytes().equals(Bytes32Helper.ZERO_BYTES32))
+            || block
+                .get()
+                .getHeader()
+                .getParentHash()
+                .getBytes()
+                .equals(Bytes32Helper.ZERO_BYTES32))
         && currentBlockNumber < toBlock) {
       currentBlockNumber++;
       block = blockchainQueriesSupplier.get().getBlockchain().getBlockByNumber(currentBlockNumber);

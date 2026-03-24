@@ -19,7 +19,6 @@ import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.StorageSlotKey;
-import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.rlp.RLP;
 import org.hyperledger.besu.ethereum.trie.MerkleTrieException;
 import org.hyperledger.besu.ethereum.trie.pathbased.common.PathBasedAccount;
@@ -251,7 +250,8 @@ public abstract class PathBasedWorldStateUpdateAccumulator<ACCOUNT extends PathB
   }
 
   @Override
-  public MutableAccount createAccount(final Address address, final long nonce, final Bytes32 balance) {
+  public MutableAccount createAccount(
+      final Address address, final long nonce, final Bytes32 balance) {
     PathBasedValue<ACCOUNT> pathBasedValue = accountsToUpdate.get(address);
 
     if (pathBasedValue == null) {

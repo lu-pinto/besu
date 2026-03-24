@@ -30,7 +30,6 @@ import java.util.HashMap;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.units.bigints.UInt256;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Eip7709BlockHashLookup implements BlockHashLookup {
   private static final VarHandle LONG_BE =
-    MethodHandles.byteArrayViewVarHandle(long[].class, ByteOrder.BIG_ENDIAN);
+      MethodHandles.byteArrayViewVarHandle(long[].class, ByteOrder.BIG_ENDIAN);
   private static final Logger LOG = LoggerFactory.getLogger(Eip7709BlockHashLookup.class);
   private static final long BLOCKHASH_SERVE_WINDOW = 256L;
   private static final long HISTORY_SERVE_WINDOW = 8191;

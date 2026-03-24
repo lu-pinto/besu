@@ -20,8 +20,8 @@ import static org.hyperledger.besu.ethereum.trie.pathbased.common.provider.World
 
 import org.hyperledger.besu.crypto.SECPSignature;
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.BlobGas;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.StateOverride;
 import org.hyperledger.besu.datatypes.StateOverrideMap;
@@ -78,7 +78,6 @@ import java.util.function.Supplier;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
 
 /**
  * Simulates the execution of a block, processing transactions and applying state overrides. This
@@ -596,7 +595,8 @@ public class BlockSimulator {
                                 ? getNextBaseFee(newProtocolSpec, header, blockNumber)
                                 : Wei.ZERO))
             .extraData(blockOverrides.getExtraData().orElse(Bytes.EMPTY))
-            .parentBeaconBlockRoot(blockOverrides.getParentBeaconBlockRoot().orElse(Bytes32Helper.ZERO_BYTES32))
+            .parentBeaconBlockRoot(
+                blockOverrides.getParentBeaconBlockRoot().orElse(Bytes32Helper.ZERO_BYTES32))
             .prevRandao(blockOverrides.getMixHashOrPrevRandao().orElse(Bytes32Helper.ZERO_BYTES32))
             .excessBlobGas(
                 ExcessBlobGasCalculator.calculateExcessBlobGasForParent(newProtocolSpec, header));

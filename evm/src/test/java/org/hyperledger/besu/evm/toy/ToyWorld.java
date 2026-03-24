@@ -58,9 +58,9 @@ public class ToyWorld implements WorldUpdater {
   }
 
   @Override
-  public MutableAccount createAccount(final Address address, final long nonce, final Bytes32 balance) {
-    return createAccount(
-        null, address, nonce, balance, Bytes.EMPTY);
+  public MutableAccount createAccount(
+      final Address address, final long nonce, final Bytes32 balance) {
+    return createAccount(null, address, nonce, balance, Bytes.EMPTY);
   }
 
   public MutableAccount createAccount(

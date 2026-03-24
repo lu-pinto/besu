@@ -14,9 +14,9 @@
  */
 package org.hyperledger.besu.ethereum.vm;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.frame.Memory;
 
 import org.apache.tuweni.bytes.Bytes;
@@ -72,7 +72,8 @@ public class MemoryTest {
     memory.setBytes(0, value.size(), value);
     final int initialActiveWords = memory.getActiveWords();
 
-    assertThat(memory.getBytesWithoutGrowth(64, Bytes32.SIZE)).isEqualTo((Bytes32Helper.ZERO_BYTES32));
+    assertThat(memory.getBytesWithoutGrowth(64, Bytes32.SIZE))
+        .isEqualTo((Bytes32Helper.ZERO_BYTES32));
     assertThat(memory.getActiveWords()).isEqualTo(initialActiveWords);
 
     assertThat(memory.getBytes(32, Bytes32.SIZE)).isEqualTo((WORD2));

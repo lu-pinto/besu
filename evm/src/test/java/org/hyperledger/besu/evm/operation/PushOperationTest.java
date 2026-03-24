@@ -14,11 +14,11 @@
  */
 package org.hyperledger.besu.evm.operation;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hyperledger.besu.evm.operation.PushOperation.staticOperation;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.Code;

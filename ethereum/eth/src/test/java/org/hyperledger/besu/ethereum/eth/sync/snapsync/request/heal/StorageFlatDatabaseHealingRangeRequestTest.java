@@ -176,7 +176,10 @@ class StorageFlatDatabaseHealingRangeRequestTest {
     // Create a collector to gather slot entries within a specific range
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(
-            Bytes32Helper.ZERO_BYTES32, RangeManager.MAX_RANGE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+            Bytes32Helper.ZERO_BYTES32,
+            RangeManager.MAX_RANGE,
+            Integer.MAX_VALUE,
+            Integer.MAX_VALUE);
 
     // Create a visitor for the range collector
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
@@ -221,7 +224,10 @@ class StorageFlatDatabaseHealingRangeRequestTest {
     // Create a collector to gather slots entries within a specific range
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(
-            Bytes32Helper.ZERO_BYTES32, RangeManager.MAX_RANGE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+            Bytes32Helper.ZERO_BYTES32,
+            RangeManager.MAX_RANGE,
+            Integer.MAX_VALUE,
+            Integer.MAX_VALUE);
 
     // Create a visitor for the range collector
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);
@@ -278,7 +284,10 @@ class StorageFlatDatabaseHealingRangeRequestTest {
     // Create a collector to gather slots entries within a specific range
     final RangeStorageEntriesCollector collector =
         RangeStorageEntriesCollector.createCollector(
-            Bytes32Helper.ZERO_BYTES32, RangeManager.MAX_RANGE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+            Bytes32Helper.ZERO_BYTES32,
+            RangeManager.MAX_RANGE,
+            Integer.MAX_VALUE,
+            Integer.MAX_VALUE);
 
     // Create a visitor for the range collector
     final TrieIterator<Bytes> visitor = RangeStorageEntriesCollector.createVisitor(collector);

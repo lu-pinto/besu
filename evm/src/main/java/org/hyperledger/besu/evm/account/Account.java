@@ -14,10 +14,11 @@
  */
 package org.hyperledger.besu.evm.account;
 
-import org.apache.tuweni.bytes.Bytes32;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.evm.internal.CodeCache;
+
+import org.apache.tuweni.bytes.Bytes32;
 
 /**
  * A world state account.

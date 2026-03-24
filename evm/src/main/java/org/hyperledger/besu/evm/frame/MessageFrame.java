@@ -31,6 +31,7 @@ import org.hyperledger.besu.evm.internal.MemoryEntry;
 import org.hyperledger.besu.evm.internal.OperandStack;
 import org.hyperledger.besu.evm.internal.StorageEntry;
 import org.hyperledger.besu.evm.internal.UnderflowException;
+import org.hyperledger.besu.evm.internal.Words;
 import org.hyperledger.besu.evm.operation.Operation;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
 
@@ -224,6 +225,7 @@ public class MessageFrame {
   private final Address sender;
   private final Bytes32 value;
   private final Bytes32 apparentValue;
+
   private final Code code;
 
   private Optional<Bytes> revertReason;
@@ -587,6 +589,14 @@ public class MessageFrame {
   public MutableBytes readMutableMemory(
       final long offset, final long length, final boolean explicitMemoryRead) {
     final MutableBytes memBytes = memory.getMutableBytes(offset, length);
+    if (explicitMemoryRead) {
+      setUpdatedMemory(offset, memBytes);
+    }
+    return memBytes;
+  }
+
+  public Bytes32 readMemoryBytes32(final long offset, final boolean explicitMemoryRead) {
+    final Bytes32 memBytes = memory.getBytes32(offset);
     if (explicitMemoryRead) {
       setUpdatedMemory(offset, memBytes);
     }
@@ -1074,6 +1084,30 @@ public class MessageFrame {
     return apparentValue;
   }
 
+  public Bytes32 getDifficulty() {
+    return txValues.difficulty();
+  }
+
+  public Bytes32 getPrevRandao() {
+    return txValues.prevRanDAO();
+  }
+
+  public Bytes32 getTimestamp() {
+    return txValues.timestamp();
+  }
+
+  public Bytes32 getBlockNumber() {
+    return txValues.number();
+  }
+
+  public Bytes32 getGasLimit() {
+    return txValues.gasLimit();
+  }
+
+  public Bytes32 getSlotNum() {
+    return txValues.slotNum();
+  }
+
   /**
    * Returns the current block header.
    *
@@ -1307,6 +1341,12 @@ public class MessageFrame {
 
     private Optional<List<VersionedHash>> versionedHashes = Optional.empty();
     private Bytes32 baseFee;
+    private Bytes32 difficulty;
+    private Bytes32 prevRandao;
+    private Bytes32 timestamp;
+    private Bytes32 blockNumber;
+    private Bytes32 gasLimit;
+    private Bytes32 slotNum;
 
     /** Instantiates a new Builder. */
     public Builder() {
@@ -1503,6 +1543,12 @@ public class MessageFrame {
      */
     public Builder blockValues(final BlockValues blockValues) {
       this.blockValues = blockValues;
+      this.difficulty = Bytes32.wrap(blockValues.getDifficultyBytes().toArrayUnsafe());
+      this.prevRandao = Bytes32.wrap(blockValues.getMixHashOrPrevRandao().toArrayUnsafe());
+      this.timestamp = Bytes32.wrap(Words.longBytes(blockValues.getTimestamp()).toArrayUnsafe());
+      this.blockNumber = Bytes32.wrap(Words.longBytes(blockValues.getNumber()).toArrayUnsafe());
+      this.gasLimit = Bytes32.wrap(Words.longBytes(blockValues.getGasLimit()).toArrayUnsafe());
+      this.slotNum = Bytes32.wrap(Words.longBytes(blockValues.getSlotNumber()).toArrayUnsafe());
       return this;
     }
 
@@ -1674,6 +1720,12 @@ public class MessageFrame {
                 originator,
                 gasPrice,
                 baseFee,
+                difficulty,
+                prevRandao,
+                timestamp,
+                blockNumber,
+                gasLimit,
+                slotNum,
                 blobGasPrice,
                 blockValues,
                 new ArrayDeque<>(),

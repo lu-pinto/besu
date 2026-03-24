@@ -15,10 +15,10 @@
 package org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.calltrace;
 
 import org.hyperledger.besu.datatypes.Bytes32Helper;
+
 import java.math.BigInteger;
 
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.bytes.MutableBytes;
 
 /**

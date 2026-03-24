@@ -14,11 +14,11 @@
  */
 package org.hyperledger.besu.ethereum.trie.forest.worldview;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hyperledger.besu.ethereum.core.InMemoryKeyValueStorageProvider.createInMemoryWorldState;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.core.MutableWorldState;
@@ -168,7 +168,8 @@ class ForestMutableWorldStateTest {
   @Test
   void streamAccounts_empty() {
     final MutableWorldState worldState = createEmpty();
-    final Stream<StreamableAccount> accounts = worldState.streamAccounts(Bytes32Helper.ZERO_BYTES32, 10);
+    final Stream<StreamableAccount> accounts =
+        worldState.streamAccounts(Bytes32Helper.ZERO_BYTES32, 10);
     assertThat(accounts.count()).isZero();
   }
 
@@ -187,7 +188,8 @@ class ForestMutableWorldStateTest {
 
     // Check again after persisting
     worldState.persist(null);
-    accounts = worldState.streamAccounts(Bytes32Helper.ZERO_BYTES32, 10).collect(Collectors.toList());
+    accounts =
+        worldState.streamAccounts(Bytes32Helper.ZERO_BYTES32, 10).collect(Collectors.toList());
     assertThat(accounts).hasSize(1);
     assertThat(accounts.getFirst().getAddress()).hasValue(ADDRESS);
     assertThat(accounts.getFirst().getBalance()).isEqualTo(Wei.of(100000));
@@ -227,7 +229,8 @@ class ForestMutableWorldStateTest {
         .hasValue(accountAIsFirst ? accountA.getAddress() : accountB.getAddress());
 
     // Get both accounts
-    final List<StreamableAccount> allAccounts = worldState.streamAccounts(Bytes32Helper.ZERO_BYTES32, 2).toList();
+    final List<StreamableAccount> allAccounts =
+        worldState.streamAccounts(Bytes32Helper.ZERO_BYTES32, 2).toList();
     assertThat(allAccounts).hasSize(2);
     assertThat(allAccounts.get(0).getAddress())
         .hasValue(accountAIsFirst ? accountA.getAddress() : accountB.getAddress());

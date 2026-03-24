@@ -18,9 +18,9 @@ import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
-import org.apache.tuweni.bytes.Bytes;
+import java.util.Arrays;
+
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.bytes.MutableBytes32;
 
 /** The Sign extend operation. */
 public class SignExtendOperation extends AbstractFixedCostOperation {
@@ -49,31 +49,30 @@ public class SignExtendOperation extends AbstractFixedCostOperation {
    * @return the operation result
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
-    final Bytes value0 = frame.popStackItem().trimLeadingZeros();
+    final byte[] index = frame.popStackItem().toArrayUnsafe();
     final Bytes32 value1 = frame.popStackItem();
-
-    final MutableBytes32 result = MutableBytes32.create();
 
     // Any value >= 31 imply an index <= 0, so no work to do (note that 0 itself is a valid index,
     // but copying the 0th byte to itself is only so useful).
-    int value0size = value0.size();
-    if (value0size > 1) {
+    if (Shift256Operations.isShiftOverflow(index)) {
       frame.pushStackItem(value1);
       return signExtendSuccess;
     }
 
-    int value0Value = value0.toInt();
-    if (value0Value >= 31) {
+    final int extendFrom = index[31] & 0xFF;
+    if (extendFrom >= 31) {
       frame.pushStackItem(value1);
       return signExtendSuccess;
     }
 
-    final int byteIndex = 31 - value0.toInt();
-    final byte toSet = value1.get(byteIndex) < 0 ? (byte) 0xFF : 0x00;
-    result.mutableSlice(0, byteIndex).fill(toSet);
-    value1.slice(byteIndex).copyTo(result, byteIndex);
-    frame.pushStackItem(result);
-
+    final int byteIndex = 31 - extendFrom;
+    final byte[] result = new byte[32];
+    final byte[] value = value1.toArrayUnsafe();
+    if (value[byteIndex] < 0) {
+      Arrays.fill(result, 0, byteIndex, (byte) 0xFF);
+    }
+    System.arraycopy(value, byteIndex, result, byteIndex, 32 - byteIndex);
+    frame.pushStackItem(Bytes32.wrap(result));
     return signExtendSuccess;
   }
 }

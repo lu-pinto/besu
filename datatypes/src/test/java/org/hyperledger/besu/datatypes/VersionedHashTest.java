@@ -14,11 +14,9 @@
  */
 package org.hyperledger.besu.datatypes;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.Test;
 
 class VersionedHashTest {
@@ -30,7 +28,8 @@ class VersionedHashTest {
 
   @Test
   public void throwsOnParsingUnsupportedHashType() {
-    assertThrows(IllegalArgumentException.class, () -> new VersionedHash(Bytes32Helper.ZERO_BYTES32));
+    assertThrows(
+        IllegalArgumentException.class, () -> new VersionedHash(Bytes32Helper.ZERO_BYTES32));
   }
 
   @Test

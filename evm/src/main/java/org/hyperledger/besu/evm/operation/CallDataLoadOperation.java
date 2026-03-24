@@ -21,7 +21,6 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.apache.tuweni.bytes.MutableBytes32;
 
 /** The Call data load operation. */
 public class CallDataLoadOperation extends AbstractFixedCostOperation {
@@ -55,11 +54,11 @@ public class CallDataLoadOperation extends AbstractFixedCostOperation {
       return successResponse;
     }
     final Bytes data = frame.getInputData();
-    final MutableBytes32 res = MutableBytes32.create();
     if (offset < data.size()) {
-      final Bytes toCopy = data.slice(offset, Math.min(Bytes32.SIZE, data.size() - offset));
-      toCopy.copyTo(res, 0);
-      frame.pushStackItem(res.copy());
+      final byte[] bytes = new byte[32];
+      final int length = Math.min(Bytes32.SIZE, data.size() - offset);
+      System.arraycopy(data.toArrayUnsafe(), offset, bytes, 0, length);
+      frame.pushStackItem(Bytes32.wrap(bytes));
     } else {
       frame.pushStackItem(Bytes32Helper.ZERO_BYTES32);
     }

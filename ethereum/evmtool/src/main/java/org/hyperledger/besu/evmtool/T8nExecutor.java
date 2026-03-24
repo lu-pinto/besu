@@ -27,8 +27,8 @@ import org.hyperledger.besu.crypto.SignatureAlgorithm;
 import org.hyperledger.besu.crypto.SignatureAlgorithmFactory;
 import org.hyperledger.besu.datatypes.AccessListEntry;
 import org.hyperledger.besu.datatypes.Address;
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.BlobGas;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.CodeDelegation;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Log;
@@ -632,7 +632,10 @@ public class T8nExecutor {
                 accountObject.put("code", account.getCode().toHexString());
               }
               List<Entry<Bytes32, Bytes32>> storageEntries =
-                  account.storageEntriesFrom(Bytes32Helper.ZERO_BYTES32, Integer.MAX_VALUE).values().stream()
+                  account
+                      .storageEntriesFrom(Bytes32Helper.ZERO_BYTES32, Integer.MAX_VALUE)
+                      .values()
+                      .stream()
                       .map(
                           e ->
                               Map.entry(

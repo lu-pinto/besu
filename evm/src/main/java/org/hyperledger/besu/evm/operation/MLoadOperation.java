@@ -44,8 +44,7 @@ public class MLoadOperation extends AbstractOperation {
       return new OperationResult(cost, ExceptionalHaltReason.INSUFFICIENT_GAS);
     }
 
-    final Bytes32 value =
-        Bytes32.wrap(frame.readMutableMemory(location, 32, true).copy().toArrayUnsafe());
+    final Bytes32 value = frame.readMemoryBytes32(location, true);
 
     frame.pushStackItem(value);
     return new OperationResult(cost, null);

@@ -389,7 +389,9 @@ public class UInt256Test {
     UInt256 m = UInt256.fromBytesBE(mbig.toByteArray());
     Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(x.addMod(y, m).toBytesBE()));
     Bytes32 expected =
-        BigInteger.ZERO.compareTo(mbig) == 0 ? Bytes32Helper.ZERO_BYTES32 : bigIntTo32B(xbig.add(ybig).mod(mbig));
+        BigInteger.ZERO.compareTo(mbig) == 0
+            ? Bytes32Helper.ZERO_BYTES32
+            : bigIntTo32B(xbig.add(ybig).mod(mbig));
     assertThat(remainder).isEqualTo(expected);
   }
 
@@ -413,7 +415,9 @@ public class UInt256Test {
     UInt256 m = UInt256.fromBytesBE(mArr);
     Bytes32 remainder = Bytes32Helper.leftPad(Bytes.wrap(x.addMod(y, m).toBytesBE()));
     Bytes32 expected =
-        BigInteger.ZERO.compareTo(mbig) == 0 ? Bytes32Helper.ZERO_BYTES32 : bigIntTo32B(xbig.add(ybig).mod(mbig));
+        BigInteger.ZERO.compareTo(mbig) == 0
+            ? Bytes32Helper.ZERO_BYTES32
+            : bigIntTo32B(xbig.add(ybig).mod(mbig));
     assertThat(remainder).isEqualTo(expected);
   }
 

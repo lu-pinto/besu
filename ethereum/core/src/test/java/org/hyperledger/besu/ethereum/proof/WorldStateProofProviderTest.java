@@ -14,10 +14,10 @@
  */
 package org.hyperledger.besu.ethereum.proof;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.rlp.RLP;
@@ -119,7 +119,8 @@ public class WorldStateProofProviderTest {
     assertThat(accountProof.get().getStorageProof(storageKey).size()).isGreaterThanOrEqualTo(1);
     // Check key 6
     storageKey = Bytes32.fromHexStringLenient("0x06");
-    assertThat(accountProof.get().getStorageValue(storageKey)).isEqualTo(Bytes32Helper.ZERO_BYTES32);
+    assertThat(accountProof.get().getStorageValue(storageKey))
+        .isEqualTo(Bytes32Helper.ZERO_BYTES32);
     assertThat(accountProof.get().getStorageProof(storageKey).size()).isGreaterThanOrEqualTo(1);
   }
 

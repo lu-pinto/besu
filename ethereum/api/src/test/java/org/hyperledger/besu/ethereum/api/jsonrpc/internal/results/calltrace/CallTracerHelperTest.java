@@ -14,8 +14,9 @@
  */
 package org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.calltrace;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 
 import java.util.stream.Stream;
 

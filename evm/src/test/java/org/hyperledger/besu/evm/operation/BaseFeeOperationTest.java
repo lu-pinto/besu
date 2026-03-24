@@ -27,7 +27,6 @@ import org.hyperledger.besu.evm.internal.Words;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 
 import org.apache.tuweni.bytes.Bytes32;
-
 import org.junit.jupiter.api.Test;
 
 class BaseFeeOperationTest {
@@ -65,7 +64,7 @@ class BaseFeeOperationTest {
   }
 
   private void assertExceptionalHalt(
-    final OperationResult result, final ExceptionalHaltReason reason) {
+      final OperationResult result, final ExceptionalHaltReason reason) {
     assertThat(result).isNotNull();
     assertThat(result.getHaltReason()).isEqualTo(reason);
   }

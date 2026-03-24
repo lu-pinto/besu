@@ -14,11 +14,11 @@
  */
 package org.hyperledger.besu.ethereum.p2p.discovery.discv4.internal;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.p2p.discovery.discv4.internal.packet.DaggerPacketPackage;
 import org.hyperledger.besu.ethereum.p2p.discovery.discv4.internal.packet.Packet;
 import org.hyperledger.besu.ethereum.p2p.discovery.discv4.internal.packet.PacketData;
@@ -38,7 +38,6 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt64;
 
 class MockPacketDataFactory {

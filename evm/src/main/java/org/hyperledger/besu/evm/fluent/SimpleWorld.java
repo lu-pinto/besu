@@ -14,7 +14,6 @@
  */
 package org.hyperledger.besu.evm.fluent;
 
-import org.apache.tuweni.bytes.Bytes32;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.account.MutableAccount;
@@ -24,6 +23,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Simple world. */
 public class SimpleWorld implements WorldUpdater {
@@ -67,7 +68,8 @@ public class SimpleWorld implements WorldUpdater {
   }
 
   @Override
-  public MutableAccount createAccount(final Address address, final long nonce, final Bytes32 balance) {
+  public MutableAccount createAccount(
+      final Address address, final long nonce, final Bytes32 balance) {
     if (getAccount(address) != null) {
       throw new IllegalStateException("Cannot create an account when one already exists");
     }

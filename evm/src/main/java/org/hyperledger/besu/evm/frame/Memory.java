@@ -257,6 +257,15 @@ public class Memory {
     return MutableBytes.wrap(memBytes, start, length);
   }
 
+  public Bytes32 getBytes32(final long location) {
+    final int start = asByteIndex(location);
+
+    ensureCapacityForBytes(start, 32);
+    final byte[] bytes = new byte[32];
+    System.arraycopy(memBytes, start, bytes, 0, 32);
+    return Bytes32.wrap(bytes);
+  }
+
   /**
    * Copy the bytes from the provided number of bytes from the provided value to memory from the
    * provided offset.

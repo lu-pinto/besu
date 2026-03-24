@@ -29,7 +29,6 @@ import net.jqwik.api.Property;
 import net.jqwik.api.Provide;
 import net.jqwik.api.Tuple;
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
 
 public class UInt256PropertyBasedTest {
   private static final BigInteger TWO_256 = BigInteger.ONE.shiftLeft(256);
@@ -228,7 +227,10 @@ public class UInt256PropertyBasedTest {
     // Assert
     BigInteger A = toBigUnsigned(a);
     BigInteger M = toBigUnsigned(m);
-    byte[] exp = (M.signum() == 0) ? Bytes32Helper.ZERO_BYTES32.toArrayUnsafe() : bigUnsignedToBytes32(A.mod(M));
+    byte[] exp =
+        (M.signum() == 0)
+            ? Bytes32Helper.ZERO_BYTES32.toArrayUnsafe()
+            : bigUnsignedToBytes32(A.mod(M));
     assertThat(got).containsExactly(exp);
   }
 
@@ -247,7 +249,10 @@ public class UInt256PropertyBasedTest {
     // Assert
     BigInteger A = toBigUnsigned(a);
     BigInteger M = toBigUnsigned(m);
-    byte[] exp = (M.signum() == 0) ? Bytes32Helper.ZERO_BYTES32.toArrayUnsafe() : bigUnsignedToBytes32(A.mod(M));
+    byte[] exp =
+        (M.signum() == 0)
+            ? Bytes32Helper.ZERO_BYTES32.toArrayUnsafe()
+            : bigUnsignedToBytes32(A.mod(M));
     assertThat(got).containsExactly(exp);
   }
 
@@ -268,7 +273,9 @@ public class UInt256PropertyBasedTest {
 
     // Assert
     byte[] expected =
-        (M.signum() == 0) ? Bytes32Helper.ZERO_BYTES32.toArrayUnsafe() : computeSignedModExpected(A, M);
+        (M.signum() == 0)
+            ? Bytes32Helper.ZERO_BYTES32.toArrayUnsafe()
+            : computeSignedModExpected(A, M);
 
     assertThat(got).containsExactly(expected);
   }
@@ -291,7 +298,9 @@ public class UInt256PropertyBasedTest {
     BigInteger B = toBigUnsigned(b);
     BigInteger M = toBigUnsigned(m);
     byte[] exp =
-        (M.signum() == 0) ? Bytes32Helper.ZERO_BYTES32.toArrayUnsafe() : bigUnsignedToBytes32(A.add(B).mod(M));
+        (M.signum() == 0)
+            ? Bytes32Helper.ZERO_BYTES32.toArrayUnsafe()
+            : bigUnsignedToBytes32(A.add(B).mod(M));
     assertThat(got).containsExactly(exp);
   }
 
@@ -327,9 +336,12 @@ public class UInt256PropertyBasedTest {
 
     // Act & Assert
     assertThat(x.mod(zero).toBytesBE()).containsExactly(Bytes32Helper.ZERO_BYTES32.toArrayUnsafe());
-    assertThat(x.signedMod(zero).toBytesBE()).containsExactly(Bytes32Helper.ZERO_BYTES32.toArrayUnsafe());
-    assertThat(x.addMod(x, zero).toBytesBE()).containsExactly(Bytes32Helper.ZERO_BYTES32.toArrayUnsafe());
-    assertThat(x.mulMod(x, zero).toBytesBE()).containsExactly(Bytes32Helper.ZERO_BYTES32.toArrayUnsafe());
+    assertThat(x.signedMod(zero).toBytesBE())
+        .containsExactly(Bytes32Helper.ZERO_BYTES32.toArrayUnsafe());
+    assertThat(x.addMod(x, zero).toBytesBE())
+        .containsExactly(Bytes32Helper.ZERO_BYTES32.toArrayUnsafe());
+    assertThat(x.mulMod(x, zero).toBytesBE())
+        .containsExactly(Bytes32Helper.ZERO_BYTES32.toArrayUnsafe());
   }
 
   // --------------------------------------------------------------------------

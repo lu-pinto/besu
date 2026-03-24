@@ -14,10 +14,10 @@
  */
 package org.hyperledger.besu.evm.frame;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.hyperledger.besu.datatypes.Address;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.Code;
@@ -71,7 +71,8 @@ class MessageFrameTest {
     int initialActiveWords = messageFrame.memoryWordSize();
 
     // Fully in bounds read
-    assertThat(messageFrame.shadowReadMemory(64, Bytes32.SIZE)).isEqualTo(Bytes32Helper.ZERO_BYTES32);
+    assertThat(messageFrame.shadowReadMemory(64, Bytes32.SIZE))
+        .isEqualTo(Bytes32Helper.ZERO_BYTES32);
     assertThat(messageFrame.memoryWordSize()).isEqualTo(initialActiveWords);
 
     // Straddling read
@@ -83,7 +84,8 @@ class MessageFrameTest {
     assertThat(straddlingRead.get(20)).isEqualTo((byte) 0); // In uninitialized memory
 
     // Fully out of bounds read
-    assertThat(messageFrame.shadowReadMemory(64, Bytes32.SIZE)).isEqualTo(Bytes32Helper.ZERO_BYTES32);
+    assertThat(messageFrame.shadowReadMemory(64, Bytes32.SIZE))
+        .isEqualTo(Bytes32Helper.ZERO_BYTES32);
     assertThat(messageFrame.memoryWordSize()).isEqualTo(initialActiveWords);
 
     assertThat(messageFrame.shadowReadMemory(32, Bytes32.SIZE)).isEqualTo(WORD2);

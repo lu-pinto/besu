@@ -14,11 +14,11 @@
  */
 package org.hyperledger.besu.ethereum.trie;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 import static org.hyperledger.besu.ethereum.trie.CompactEncoding.bytesToPath;
 
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.trie.patricia.DefaultNodeFactory;
 
 import java.util.List;

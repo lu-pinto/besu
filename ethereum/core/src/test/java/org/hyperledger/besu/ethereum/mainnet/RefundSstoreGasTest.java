@@ -14,9 +14,8 @@
  */
 package org.hyperledger.besu.ethereum.mainnet;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
-import static org.hyperledger.besu.datatypes.Bytes32Helper.ZERO_BYTES32;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hyperledger.besu.datatypes.Bytes32Helper.ZERO_BYTES32;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

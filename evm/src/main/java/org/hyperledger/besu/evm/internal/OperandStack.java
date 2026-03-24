@@ -185,6 +185,7 @@ public class OperandStack {
       final int newCapacity = newLength(currentCapacity, currentCapacity >> 1);
       expandEntries(newCapacity);
     }
+    assert operand.getClass().toString().endsWith("ArrayWrappingBytes32");
     entries[nextTop] = operand;
     top = nextTop;
   }
@@ -210,6 +211,7 @@ public class OperandStack {
       throw new OverflowException();
     }
 
+    assert operand.getClass().toString().endsWith("ArrayWrappingBytes32");
     entries[top - offset] = operand;
   }
 

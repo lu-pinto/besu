@@ -14,7 +14,6 @@
  */
 package org.hyperledger.besu.datatypes;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.hyperledger.besu.crypto.Hash.keccak256;
 import static org.hyperledger.besu.crypto.Hash.sha256;
 

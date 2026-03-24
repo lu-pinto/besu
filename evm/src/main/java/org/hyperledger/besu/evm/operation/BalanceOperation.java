@@ -25,8 +25,6 @@ import org.hyperledger.besu.evm.internal.OverflowException;
 import org.hyperledger.besu.evm.internal.UnderflowException;
 import org.hyperledger.besu.evm.internal.Words;
 
-import org.apache.tuweni.bytes.Bytes32;
-
 /** The Balance operation. */
 public class BalanceOperation extends AbstractOperation {
 

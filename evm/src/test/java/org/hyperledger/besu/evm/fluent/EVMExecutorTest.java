@@ -41,7 +41,6 @@ import java.util.Set;
 import com.google.common.collect.MultimapBuilder;
 import jakarta.validation.constraints.NotNull;
 import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.Test;
 
 class EVMExecutorTest {
@@ -122,7 +121,9 @@ class EVMExecutorTest {
             .versionedHashes(Optional.empty())
             .warmAddress(Address.ZERO)
             .accessListWarmStorage(
-                Address.ZERO, Bytes32Helper.ZERO_BYTES32, Bytes32Helper.leftPad(Bytes.ofUnsignedLong(2L)))
+                Address.ZERO,
+                Bytes32Helper.ZERO_BYTES32,
+                Bytes32Helper.leftPad(Bytes.ofUnsignedLong(2L)))
             .messageCallProcessor(new MessageCallProcessor(null, null))
             .contractCallProcessor(new ContractCreationProcessor(null, true, null, 1L))
             .execute();

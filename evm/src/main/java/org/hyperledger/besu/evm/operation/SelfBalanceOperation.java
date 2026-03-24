@@ -21,8 +21,6 @@ import org.hyperledger.besu.evm.account.Account;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
-import org.apache.tuweni.bytes.Bytes32;
-
 /** The Self balance operation. */
 public class SelfBalanceOperation extends AbstractFixedCostOperation {
 

@@ -14,7 +14,6 @@
  */
 package org.hyperledger.besu.ethereum.trie;
 
-import org.hyperledger.besu.datatypes.Bytes32Helper;
 import static org.hyperledger.besu.ethereum.trie.CompactEncoding.bytesToPath;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -26,6 +25,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.hyperledger.besu.crypto.Hash;
+import org.hyperledger.besu.datatypes.Bytes32Helper;
 import org.hyperledger.besu.ethereum.trie.TrieIterator.LeafHandler;
 import org.hyperledger.besu.ethereum.trie.TrieIterator.State;
 import org.hyperledger.besu.ethereum.trie.patricia.DefaultNodeFactory;
