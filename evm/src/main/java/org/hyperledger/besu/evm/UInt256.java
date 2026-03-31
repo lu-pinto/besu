@@ -1491,8 +1491,7 @@ public record UInt256(long u3, long u2, long u1, long u0) {
 
     private UInt256 modReduceNormalised(final UInt384 that, final int shift, final long inv) {
       UInt448 v = that.shiftLeftWide(shift);
-      if ((v.u6 | v.u5) == 0
-        && Long.compareUnsigned(v.u4, u1) < 0) {
+      if ((v.u6 | v.u5) == 0 && Long.compareUnsigned(v.u4, u1) < 0) {
         QR128 qr = reduceStep(v.u4, v.u3, v.u2, inv);
         qr = reduceStep(qr.r.u1, qr.r.u0, v.u1, inv);
         qr = reduceStep(qr.r.u1, qr.r.u0, v.u0, inv);
@@ -1518,8 +1517,7 @@ public record UInt256(long u3, long u2, long u1, long u0) {
     private UInt256 modReduceNormalised(final UInt512 that, final int shift, final long inv) {
       UInt576 v = that.shiftLeftWide(shift);
       QR128 qr;
-      if ((v.u8 | v.u7 | v.u6) == 0
-      && Long.compareUnsigned(v.u5, u1) < 0) {
+      if ((v.u8 | v.u7 | v.u6) == 0 && Long.compareUnsigned(v.u5, u1) < 0) {
         if (v.u5 != 0 || Long.compareUnsigned(v.u4, u1) >= 0) {
           qr = reduceStep(v.u5, v.u4, v.u3, inv);
           qr = reduceStep(qr.r.u1, qr.r.u0, v.u2, inv);
@@ -1586,7 +1584,7 @@ public record UInt256(long u3, long u2, long u1, long u0) {
   }
 
   record UInt192(long u2, long u1, long u0) {
-    static final UInt192 ZERO =  new UInt192(0, 0, 0);
+    static final UInt192 ZERO = new UInt192(0, 0, 0);
 
     UInt192 shiftLeft(final int shift) {
       if (shift == 0) return this;
@@ -1647,7 +1645,7 @@ public record UInt256(long u3, long u2, long u1, long u0) {
     UInt256 mul(final UInt256 a, final UInt256 b) {
       // smaller allocation path: multiply-reduce with UInt448 prod
       if (b.isUInt192()) {
-          return modReduce(b.mul192(a));
+        return modReduce(b.mul192(a));
       } else if (a.isUInt192()) {
         return modReduce(a.mul192(b));
       }
