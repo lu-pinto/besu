@@ -1375,13 +1375,13 @@ public record UInt256(long u3, long u2, long u1, long u0) {
     }
 
     UInt256 mul(final UInt256 a, final UInt256 b) {
-      // multiply-reduce
+      // smaller allocation path: multiply-reduce with UInt256 prod
       if (b.isUInt128()) {
         return modReduce(b.mul128(a));
       } else if (a.isUInt128()) {
         return modReduce(a.mul128(b));
       }
-      // At least one input exceeds 128 bits: full multiply then single reduce with UInt512 prod
+      // Both inputs exceed 128 bits: full multiply then single reduce with UInt512 prod
       UInt512 prod = a.mul256(b);
       int shift = Long.numberOfLeadingZeros(u1);
       UInt128 m = shiftLeft(shift);
@@ -1651,7 +1651,7 @@ public record UInt256(long u3, long u2, long u1, long u0) {
       } else if (a.isUInt192()) {
         return modReduce(a.mul192(b));
       }
-      // At least one input exceeds 192 bits: full multiply then single reduce with UInt512 prod
+      // Both inputs exceed 192 bits: full multiply then single reduce with UInt512 prod
       UInt512 prod = a.mul256(b);
       int shift = Long.numberOfLeadingZeros(u2);
       UInt192 m = shiftLeft(shift);
