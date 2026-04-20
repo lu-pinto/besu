@@ -35,7 +35,7 @@ public class OsakaTargetingGasLimitCalculator extends CancunTargetingGasLimitCal
   private static final long BLOB_BASE_COST = 1 << 13; // 2^13
 
   /** The mainnet transaction gas limit cap for Osaka */
-  private static final long DEFAULT_TRANSACTION_GAS_LIMIT_CAP_OSAKA = 16_777_216L;
+  private static final long DEFAULT_TRANSACTION_GAS_LIMIT_CAP_OSAKA =  80_000_000L;
 
   private final long transactionGasLimitCap;
   private final long transactionBlobGasLimitCap;
