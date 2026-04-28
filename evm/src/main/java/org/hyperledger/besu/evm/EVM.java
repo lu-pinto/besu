@@ -126,9 +126,6 @@ public class EVM {
 
   // Optimized operation flags
   private final boolean enableConstantinople;
-  private final boolean enableShanghai;
-  private final boolean enableAmsterdam;
-  private final boolean enableOsaka;
 
   private final JumpDestOnlyCodeCache jumpDestOnlyCodeCache;
 
@@ -153,9 +150,6 @@ public class EVM {
     this.jumpDestOnlyCodeCache = new JumpDestOnlyCodeCache(evmConfiguration);
 
     enableConstantinople = EvmSpecVersion.CONSTANTINOPLE.ordinal() <= evmSpecVersion.ordinal();
-    enableShanghai = EvmSpecVersion.SHANGHAI.ordinal() <= evmSpecVersion.ordinal();
-    enableAmsterdam = EvmSpecVersion.AMSTERDAM.ordinal() <= evmSpecVersion.ordinal();
-    enableOsaka = EvmSpecVersion.OSAKA.ordinal() <= evmSpecVersion.ordinal();
   }
 
   /**
@@ -258,184 +252,269 @@ public class EVM {
       try {
         result =
             switch (opcode) {
-              case 0x00 -> StopOperation.staticOperation(frame);
-              case 0x01 ->
-                  evmConfiguration.enableOptimizedOpcodes()
-                      ? AddOperationOptimized.staticOperation(frame)
-                      : AddOperation.staticOperation(frame);
-              case 0x02 ->
-                  evmConfiguration.enableOptimizedOpcodes()
-                      ? MulOperationOptimized.staticOperation(frame)
-                      : MulOperation.staticOperation(frame);
-              case 0x03 ->
-                  evmConfiguration.enableOptimizedOpcodes()
-                      ? SubOperationOptimized.staticOperation(frame)
-                      : SubOperation.staticOperation(frame);
-              case 0x04 ->
-                  evmConfiguration.enableOptimizedOpcodes()
-                      ? DivOperationOptimized.staticOperation(frame)
-                      : DivOperation.staticOperation(frame);
-              case 0x05 ->
-                  evmConfiguration.enableOptimizedOpcodes()
-                      ? SDivOperationOptimized.staticOperation(frame)
-                      : SDivOperation.staticOperation(frame);
-              case 0x06 ->
-                  evmConfiguration.enableOptimizedOpcodes()
-                      ? ModOperationOptimized.staticOperation(frame)
-                      : ModOperation.staticOperation(frame);
-              case 0x07 ->
-                  evmConfiguration.enableOptimizedOpcodes()
-                      ? SModOperationOptimized.staticOperation(frame)
-                      : SModOperation.staticOperation(frame);
-              case 0x08 ->
-                  evmConfiguration.enableOptimizedOpcodes()
-                      ? AddModOperationOptimized.staticOperation(frame)
-                      : AddModOperation.staticOperation(frame);
-              case 0x09 ->
-                  evmConfiguration.enableOptimizedOpcodes()
-                      ? MulModOperationOptimized.staticOperation(frame)
-                      : MulModOperation.staticOperation(frame);
-              case 0x0a -> ExpOperation.staticOperation(frame, gasCalculator);
-              case 0x0b -> SignExtendOperation.staticOperation(frame);
-              case 0x0c, 0x0d, 0x0e, 0x0f -> InvalidOperation.invalidOperationResult(opcode);
-              case 0x10 -> LtOperation.staticOperation(frame);
-              case 0x11 -> GtOperation.staticOperation(frame);
-              case 0x12 -> SLtOperation.staticOperation(frame);
-              case 0x13 -> SGtOperation.staticOperation(frame);
-              case 0x15 -> IsZeroOperation.staticOperation(frame);
-              case 0x16 ->
-                  evmConfiguration.enableOptimizedOpcodes()
-                      ? AndOperationOptimized.staticOperation(frame)
-                      : AndOperation.staticOperation(frame);
-              case 0x17 ->
-                  evmConfiguration.enableOptimizedOpcodes()
-                      ? OrOperationOptimized.staticOperation(frame)
-                      : OrOperation.staticOperation(frame);
-              case 0x18 ->
-                  evmConfiguration.enableOptimizedOpcodes()
-                      ? XorOperationOptimized.staticOperation(frame)
-                      : XorOperation.staticOperation(frame);
-              case 0x19 ->
-                  evmConfiguration.enableOptimizedOpcodes()
-                      ? NotOperationOptimized.staticOperation(frame)
-                      : NotOperation.staticOperation(frame);
-              case 0x1a -> ByteOperation.staticOperation(frame);
-              case 0x1b ->
-                  enableConstantinople
-                      ? shiftOperation(
-                          frame,
-                          ShlOperation::staticOperation,
-                          ShlOperationOptimized::staticOperation)
-                      : InvalidOperation.invalidOperationResult(opcode);
-              case 0x1c ->
-                  enableConstantinople
-                      ? shiftOperation(
-                          frame,
-                          ShrOperation::staticOperation,
-                          ShrOperationOptimized::staticOperation)
-                      : InvalidOperation.invalidOperationResult(opcode);
-              case 0x1d ->
-                  enableConstantinople
-                      ? shiftOperation(
-                          frame,
-                          SarOperation::staticOperation,
-                          SarOperationOptimized::staticOperation)
-                      : InvalidOperation.invalidOperationResult(opcode);
-              case 0x1e ->
-                  enableOsaka
-                      ? CountLeadingZerosOperation.staticOperation(frame)
-                      : InvalidOperation.invalidOperationResult(opcode);
-              case 0x50 -> PopOperation.staticOperation(frame);
-              case 0x56 -> JumpOperation.staticOperation(frame);
-              case 0x57 -> JumpiOperation.staticOperation(frame);
-              case 0x5b -> JumpDestOperation.JUMPDEST_SUCCESS;
-              case 0x5f ->
-                  enableShanghai
-                      ? Push0Operation.staticOperation(frame)
-                      : InvalidOperation.invalidOperationResult(opcode);
-              case 0x60, // PUSH1-32
-                  0x61,
-                  0x62,
-                  0x63,
-                  0x64,
-                  0x65,
-                  0x66,
-                  0x67,
-                  0x68,
-                  0x69,
-                  0x6a,
-                  0x6b,
-                  0x6c,
-                  0x6d,
-                  0x6e,
-                  0x6f,
-                  0x70,
-                  0x71,
-                  0x72,
-                  0x73,
-                  0x74,
-                  0x75,
-                  0x76,
-                  0x77,
-                  0x78,
-                  0x79,
-                  0x7a,
-                  0x7b,
-                  0x7c,
-                  0x7d,
-                  0x7e,
-                  0x7f ->
-                  PushOperation.staticOperation(frame, code, pc, opcode - PUSH_BASE);
-              case 0x80, // DUP1-16
-                  0x81,
-                  0x82,
-                  0x83,
-                  0x84,
-                  0x85,
-                  0x86,
-                  0x87,
-                  0x88,
-                  0x89,
-                  0x8a,
-                  0x8b,
-                  0x8c,
-                  0x8d,
-                  0x8e,
-                  0x8f ->
-                  DupOperation.staticOperation(frame, opcode - DupOperation.DUP_BASE);
-              case 0x90, // SWAP1-16
-                  0x91,
-                  0x92,
-                  0x93,
-                  0x94,
-                  0x95,
-                  0x96,
-                  0x97,
-                  0x98,
-                  0x99,
-                  0x9a,
-                  0x9b,
-                  0x9c,
-                  0x9d,
-                  0x9e,
-                  0x9f ->
-                  SwapOperation.staticOperation(frame, opcode - SWAP_BASE);
-              case 0xe6 -> // DUPN (EIP-8024)
-                  enableAmsterdam
-                      ? DupNOperation.staticOperation(frame, code, pc)
-                      : InvalidOperation.invalidOperationResult(opcode);
-              case 0xe7 -> // SWAPN (EIP-8024)
-                  enableAmsterdam
-                      ? SwapNOperation.staticOperation(frame, code, pc)
-                      : InvalidOperation.invalidOperationResult(opcode);
-              case 0xe8 -> // EXCHANGE (EIP-8024)
-                  enableAmsterdam
-                      ? ExchangeOperation.staticOperation(frame, code, pc)
-                      : InvalidOperation.invalidOperationResult(opcode);
-              default -> { // unoptimized operations
-                frame.setCurrentOperation(currentOperation);
-                yield currentOperation.execute(frame, this);
-              }
+              case 0x00 -> currentOperation.execute(frame, this);
+              case 0x01 -> currentOperation.execute(frame, this);
+              case 0x02 -> currentOperation.execute(frame, this);
+              case 0x03 -> currentOperation.execute(frame, this);
+              case 0x04 -> currentOperation.execute(frame, this);
+              case 0x05 -> currentOperation.execute(frame, this);
+              case 0x06 -> currentOperation.execute(frame, this);
+              case 0x07 -> currentOperation.execute(frame, this);
+              case 0x08 -> currentOperation.execute(frame, this);
+              case 0x09 -> currentOperation.execute(frame, this);
+              case 0x0a -> currentOperation.execute(frame, this);
+              case 0x0b -> currentOperation.execute(frame, this);
+              case 0x0c -> currentOperation.execute(frame, this);
+              case 0x0d -> currentOperation.execute(frame, this);
+              case 0x0e -> currentOperation.execute(frame, this);
+              case 0x0f -> currentOperation.execute(frame, this);
+              case 0x10 -> currentOperation.execute(frame, this);
+              case 0x11 -> currentOperation.execute(frame, this);
+              case 0x12 -> currentOperation.execute(frame, this);
+              case 0x13 -> currentOperation.execute(frame, this);
+              case 0x14 -> currentOperation.execute(frame, this);
+              case 0x15 -> currentOperation.execute(frame, this);
+              case 0x16 -> currentOperation.execute(frame, this);
+              case 0x17 -> currentOperation.execute(frame, this);
+              case 0x18 -> currentOperation.execute(frame, this);
+              case 0x19 -> currentOperation.execute(frame, this);
+              case 0x1a -> currentOperation.execute(frame, this);
+              case 0x1b -> currentOperation.execute(frame, this);
+              case 0x1c -> currentOperation.execute(frame, this);
+              case 0x1d -> currentOperation.execute(frame, this);
+              case 0x1e -> currentOperation.execute(frame, this);
+              case 0x1f -> currentOperation.execute(frame, this);
+              case 0x20 -> currentOperation.execute(frame, this);
+              case 0x21 -> currentOperation.execute(frame, this);
+              case 0x22 -> currentOperation.execute(frame, this);
+              case 0x23 -> currentOperation.execute(frame, this);
+              case 0x24 -> currentOperation.execute(frame, this);
+              case 0x25 -> currentOperation.execute(frame, this);
+              case 0x26 -> currentOperation.execute(frame, this);
+              case 0x27 -> currentOperation.execute(frame, this);
+              case 0x28 -> currentOperation.execute(frame, this);
+              case 0x29 -> currentOperation.execute(frame, this);
+              case 0x2a -> currentOperation.execute(frame, this);
+              case 0x2b -> currentOperation.execute(frame, this);
+              case 0x2c -> currentOperation.execute(frame, this);
+              case 0x2d -> currentOperation.execute(frame, this);
+              case 0x2e -> currentOperation.execute(frame, this);
+              case 0x2f -> currentOperation.execute(frame, this);
+              case 0x30 -> currentOperation.execute(frame, this);
+              case 0x31 -> currentOperation.execute(frame, this);
+              case 0x32 -> currentOperation.execute(frame, this);
+              case 0x33 -> currentOperation.execute(frame, this);
+              case 0x34 -> currentOperation.execute(frame, this);
+              case 0x35 -> currentOperation.execute(frame, this);
+              case 0x36 -> currentOperation.execute(frame, this);
+              case 0x37 -> currentOperation.execute(frame, this);
+              case 0x38 -> currentOperation.execute(frame, this);
+              case 0x39 -> currentOperation.execute(frame, this);
+              case 0x3a -> currentOperation.execute(frame, this);
+              case 0x3b -> currentOperation.execute(frame, this);
+              case 0x3c -> currentOperation.execute(frame, this);
+              case 0x3d -> currentOperation.execute(frame, this);
+              case 0x3e -> currentOperation.execute(frame, this);
+              case 0x3f -> currentOperation.execute(frame, this);
+              case 0x40 -> currentOperation.execute(frame, this);
+              case 0x41 -> currentOperation.execute(frame, this);
+              case 0x42 -> currentOperation.execute(frame, this);
+              case 0x43 -> currentOperation.execute(frame, this);
+              case 0x44 -> currentOperation.execute(frame, this);
+              case 0x45 -> currentOperation.execute(frame, this);
+              case 0x46 -> currentOperation.execute(frame, this);
+              case 0x47 -> currentOperation.execute(frame, this);
+              case 0x48 -> currentOperation.execute(frame, this);
+              case 0x49 -> currentOperation.execute(frame, this);
+              case 0x4a -> currentOperation.execute(frame, this);
+              case 0x4b -> currentOperation.execute(frame, this);
+              case 0x4c -> currentOperation.execute(frame, this);
+              case 0x4d -> currentOperation.execute(frame, this);
+              case 0x4e -> currentOperation.execute(frame, this);
+              case 0x4f -> currentOperation.execute(frame, this);
+              case 0x50 -> currentOperation.execute(frame, this);
+              case 0x51 -> currentOperation.execute(frame, this);
+              case 0x52 -> currentOperation.execute(frame, this);
+              case 0x53 -> currentOperation.execute(frame, this);
+              case 0x54 -> currentOperation.execute(frame, this);
+              case 0x55 -> currentOperation.execute(frame, this);
+              case 0x56 -> currentOperation.execute(frame, this);
+              case 0x57 -> currentOperation.execute(frame, this);
+              case 0x58 -> currentOperation.execute(frame, this);
+              case 0x59 -> currentOperation.execute(frame, this);
+              case 0x5a -> currentOperation.execute(frame, this);
+              case 0x5b -> currentOperation.execute(frame, this);
+              case 0x5c -> currentOperation.execute(frame, this);
+              case 0x5d -> currentOperation.execute(frame, this);
+              case 0x5e -> currentOperation.execute(frame, this);
+              case 0x5f -> currentOperation.execute(frame, this);
+              // PUSH1-32
+              case 0x60 -> currentOperation.execute(frame, this);
+              case 0x61 -> currentOperation.execute(frame, this);
+              case 0x62 -> currentOperation.execute(frame, this);
+              case 0x63 -> currentOperation.execute(frame, this);
+              case 0x64 -> currentOperation.execute(frame, this);
+              case 0x65 -> currentOperation.execute(frame, this);
+              case 0x66 -> currentOperation.execute(frame, this);
+              case 0x67 -> currentOperation.execute(frame, this);
+              case 0x68 -> currentOperation.execute(frame, this);
+              case 0x69 -> currentOperation.execute(frame, this);
+              case 0x6a -> currentOperation.execute(frame, this);
+              case 0x6b -> currentOperation.execute(frame, this);
+              case 0x6c -> currentOperation.execute(frame, this);
+              case 0x6d -> currentOperation.execute(frame, this);
+              case 0x6e -> currentOperation.execute(frame, this);
+              case 0x6f -> currentOperation.execute(frame, this);
+              case 0x70 -> currentOperation.execute(frame, this);
+              case 0x71 -> currentOperation.execute(frame, this);
+              case 0x72 -> currentOperation.execute(frame, this);
+              case 0x73 -> currentOperation.execute(frame, this);
+              case 0x74 -> currentOperation.execute(frame, this);
+              case 0x75 -> currentOperation.execute(frame, this);
+              case 0x76 -> currentOperation.execute(frame, this);
+              case 0x77 -> currentOperation.execute(frame, this);
+              case 0x78 -> currentOperation.execute(frame, this);
+              case 0x79 -> currentOperation.execute(frame, this);
+              case 0x7a -> currentOperation.execute(frame, this);
+              case 0x7b -> currentOperation.execute(frame, this);
+              case 0x7c -> currentOperation.execute(frame, this);
+              case 0x7d -> currentOperation.execute(frame, this);
+              case 0x7e -> currentOperation.execute(frame, this);
+              case 0x7f -> currentOperation.execute(frame, this);
+              // DUP1-16
+              case 0x80 -> currentOperation.execute(frame, this);
+              case 0x81 -> currentOperation.execute(frame, this);
+              case 0x82 -> currentOperation.execute(frame, this);
+              case 0x83 -> currentOperation.execute(frame, this);
+              case 0x84 -> currentOperation.execute(frame, this);
+              case 0x85 -> currentOperation.execute(frame, this);
+              case 0x86 -> currentOperation.execute(frame, this);
+              case 0x87 -> currentOperation.execute(frame, this);
+              case 0x88 -> currentOperation.execute(frame, this);
+              case 0x89 -> currentOperation.execute(frame, this);
+              case 0x8a -> currentOperation.execute(frame, this);
+              case 0x8b -> currentOperation.execute(frame, this);
+              case 0x8c -> currentOperation.execute(frame, this);
+              case 0x8d -> currentOperation.execute(frame, this);
+              case 0x8e -> currentOperation.execute(frame, this);
+              case 0x8f -> currentOperation.execute(frame, this);
+              // SWAP1-16
+              case 0x90 -> currentOperation.execute(frame, this);
+              case 0x91 -> currentOperation.execute(frame, this);
+              case 0x92 -> currentOperation.execute(frame, this);
+              case 0x93 -> currentOperation.execute(frame, this);
+              case 0x94 -> currentOperation.execute(frame, this);
+              case 0x95 -> currentOperation.execute(frame, this);
+              case 0x96 -> currentOperation.execute(frame, this);
+              case 0x97 -> currentOperation.execute(frame, this);
+              case 0x98 -> currentOperation.execute(frame, this);
+              case 0x99 -> currentOperation.execute(frame, this);
+              case 0x9a -> currentOperation.execute(frame, this);
+              case 0x9b -> currentOperation.execute(frame, this);
+              case 0x9c -> currentOperation.execute(frame, this);
+              case 0x9d -> currentOperation.execute(frame, this);
+              case 0x9e -> currentOperation.execute(frame, this);
+              case 0x9f -> currentOperation.execute(frame, this);
+              case 0xa0 -> currentOperation.execute(frame, this);
+              case 0xa1 -> currentOperation.execute(frame, this);
+              case 0xa2 -> currentOperation.execute(frame, this);
+              case 0xa3 -> currentOperation.execute(frame, this);
+              case 0xa4 -> currentOperation.execute(frame, this);
+              case 0xa5 -> currentOperation.execute(frame, this);
+              case 0xa6 -> currentOperation.execute(frame, this);
+              case 0xa7 -> currentOperation.execute(frame, this);
+              case 0xa8 -> currentOperation.execute(frame, this);
+              case 0xa9 -> currentOperation.execute(frame, this);
+              case 0xaa -> currentOperation.execute(frame, this);
+              case 0xab -> currentOperation.execute(frame, this);
+              case 0xac -> currentOperation.execute(frame, this);
+              case 0xad -> currentOperation.execute(frame, this);
+              case 0xae -> currentOperation.execute(frame, this);
+              case 0xaf -> currentOperation.execute(frame, this);
+              case 0xb0 -> currentOperation.execute(frame, this);
+              case 0xb1 -> currentOperation.execute(frame, this);
+              case 0xb2 -> currentOperation.execute(frame, this);
+              case 0xb3 -> currentOperation.execute(frame, this);
+              case 0xb4 -> currentOperation.execute(frame, this);
+              case 0xb5 -> currentOperation.execute(frame, this);
+              case 0xb6 -> currentOperation.execute(frame, this);
+              case 0xb7 -> currentOperation.execute(frame, this);
+              case 0xb8 -> currentOperation.execute(frame, this);
+              case 0xb9 -> currentOperation.execute(frame, this);
+              case 0xba -> currentOperation.execute(frame, this);
+              case 0xbb -> currentOperation.execute(frame, this);
+              case 0xbc -> currentOperation.execute(frame, this);
+              case 0xbd -> currentOperation.execute(frame, this);
+              case 0xbe -> currentOperation.execute(frame, this);
+              case 0xbf -> currentOperation.execute(frame, this);
+              case 0xc0 -> currentOperation.execute(frame, this);
+              case 0xc1 -> currentOperation.execute(frame, this);
+              case 0xc2 -> currentOperation.execute(frame, this);
+              case 0xc3 -> currentOperation.execute(frame, this);
+              case 0xc4 -> currentOperation.execute(frame, this);
+              case 0xc5 -> currentOperation.execute(frame, this);
+              case 0xc6 -> currentOperation.execute(frame, this);
+              case 0xc7 -> currentOperation.execute(frame, this);
+              case 0xc8 -> currentOperation.execute(frame, this);
+              case 0xc9 -> currentOperation.execute(frame, this);
+              case 0xca -> currentOperation.execute(frame, this);
+              case 0xcb -> currentOperation.execute(frame, this);
+              case 0xcc -> currentOperation.execute(frame, this);
+              case 0xcd -> currentOperation.execute(frame, this);
+              case 0xce -> currentOperation.execute(frame, this);
+              case 0xcf -> currentOperation.execute(frame, this);
+              case 0xd0 -> currentOperation.execute(frame, this);
+              case 0xd1 -> currentOperation.execute(frame, this);
+              case 0xd2 -> currentOperation.execute(frame, this);
+              case 0xd3 -> currentOperation.execute(frame, this);
+              case 0xd4 -> currentOperation.execute(frame, this);
+              case 0xd5 -> currentOperation.execute(frame, this);
+              case 0xd6 -> currentOperation.execute(frame, this);
+              case 0xd7 -> currentOperation.execute(frame, this);
+              case 0xd8 -> currentOperation.execute(frame, this);
+              case 0xd9 -> currentOperation.execute(frame, this);
+              case 0xda -> currentOperation.execute(frame, this);
+              case 0xdb -> currentOperation.execute(frame, this);
+              case 0xdc -> currentOperation.execute(frame, this);
+              case 0xdd -> currentOperation.execute(frame, this);
+              case 0xde -> currentOperation.execute(frame, this);
+              case 0xdf -> currentOperation.execute(frame, this);
+              case 0xe0 -> currentOperation.execute(frame, this);
+              case 0xe1 -> currentOperation.execute(frame, this);
+              case 0xe2 -> currentOperation.execute(frame, this);
+              case 0xe3 -> currentOperation.execute(frame, this);
+              case 0xe4 -> currentOperation.execute(frame, this);
+              case 0xe5 -> currentOperation.execute(frame, this);
+              // DUPN (EIP-8024)
+              case 0xe6 -> currentOperation.execute(frame, this);
+              // SWAPN (EIP-8024)
+              case 0xe7 -> currentOperation.execute(frame, this);
+              // EXCHANGE (EIP-8024)
+              case 0xe8 -> currentOperation.execute(frame, this);
+              case 0xe9 -> currentOperation.execute(frame, this);
+              case 0xea -> currentOperation.execute(frame, this);
+              case 0xeb -> currentOperation.execute(frame, this);
+              case 0xec -> currentOperation.execute(frame, this);
+              case 0xed -> currentOperation.execute(frame, this);
+              case 0xee -> currentOperation.execute(frame, this);
+              case 0xef -> currentOperation.execute(frame, this);
+              case 0xf0 -> currentOperation.execute(frame, this);
+              case 0xf1 -> currentOperation.execute(frame, this);
+              case 0xf2 -> currentOperation.execute(frame, this);
+              case 0xf3 -> currentOperation.execute(frame, this);
+              case 0xf4 -> currentOperation.execute(frame, this);
+              case 0xf5 -> currentOperation.execute(frame, this);
+              case 0xf6 -> currentOperation.execute(frame, this);
+              case 0xf7 -> currentOperation.execute(frame, this);
+              case 0xf8 -> currentOperation.execute(frame, this);
+              case 0xf9 -> currentOperation.execute(frame, this);
+              case 0xfa -> currentOperation.execute(frame, this);
+              case 0xfb -> currentOperation.execute(frame, this);
+              case 0xfc -> currentOperation.execute(frame, this);
+              case 0xfd -> currentOperation.execute(frame, this);
+              case 0xfe -> currentOperation.execute(frame, this);
+              case 0xff -> currentOperation.execute(frame, this);
+              default -> throw new IllegalStateException("invalid opcode " + Integer.toHexString(opcode));
             };
       } catch (final OverflowException oe) {
         result = OVERFLOW_RESPONSE;
@@ -552,15 +631,6 @@ public class EVM {
    */
   public Operation[] getOperationsUnsafe() {
     return operations.getOperations();
-  }
-
-  private OperationResult shiftOperation(
-      final MessageFrame frame,
-      final Function<MessageFrame, OperationResult> standard,
-      final Function<MessageFrame, OperationResult> optimized) {
-    return evmConfiguration.enableOptimizedOpcodes()
-        ? optimized.apply(frame)
-        : standard.apply(frame);
   }
 
   /**
