@@ -16,10 +16,8 @@ package org.hyperledger.besu.evm.operation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.ConstantinopleGasCalculator;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 
 import java.util.List;
@@ -38,21 +36,19 @@ class ChainIdOperationTest {
 
   static Iterable<Arguments> params() {
     return List.of(
-        Arguments.of("0x01", 2),
-        Arguments.of("0x03", 2),
-        Arguments.of("0x04", 2),
-        Arguments.of("0x05", 2));
+        Arguments.of("0x01"),
+        Arguments.of("0x03"),
+        Arguments.of("0x04"),
+        Arguments.of("0x05"));
   }
 
   @ParameterizedTest
   @MethodSource("params")
-  void shouldReturnChainId(final String chainIdString, final int expectedGas) {
+  void shouldReturnChainId(final String chainIdString) {
     Bytes32 chainId = Bytes32.fromHexString(chainIdString);
-    ChainIdOperation operation = new ChainIdOperation(new ConstantinopleGasCalculator(), chainId);
+    ChainIdOperation operation = new ChainIdOperation(chainId);
     final ArgumentCaptor<Bytes> arg = ArgumentCaptor.forClass(Bytes.class);
-    when(messageFrame.getRemainingGas()).thenReturn(100L);
     operation.execute(messageFrame, null);
-    Mockito.verify(messageFrame).getRemainingGas();
     Mockito.verify(messageFrame).pushStackItem(arg.capture());
     Mockito.verifyNoMoreInteractions(messageFrame);
     assertThat(arg.getValue()).isEqualTo(chainId);
@@ -60,10 +56,10 @@ class ChainIdOperationTest {
 
   @ParameterizedTest
   @MethodSource("params")
-  void shouldCalculateGasPrice(final String chainIdString, final int expectedGas) {
+  void shouldReturnZeroGasCost(final String chainIdString) {
     Bytes32 chainId = Bytes32.fromHexString(chainIdString);
-    ChainIdOperation operation = new ChainIdOperation(new ConstantinopleGasCalculator(), chainId);
+    ChainIdOperation operation = new ChainIdOperation(chainId);
     final OperationResult result = operation.execute(messageFrame, null);
-    assertThat(result.getGasCost()).isEqualTo(expectedGas);
+    assertThat(result.getGasCost()).isZero();
   }
 }

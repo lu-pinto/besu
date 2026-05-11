@@ -19,7 +19,6 @@ import static org.mockito.Mockito.mock;
 
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.testutils.TestMessageFrameBuilder;
 
 import java.util.Arrays;
@@ -43,7 +42,7 @@ public class EqOperationTest {
 
   @BeforeEach
   void setUp() {
-    operation = new EqOperation(mock(GasCalculator.class));
+    operation = new EqOperation();
   }
 
   static Collection<Object[]> provideEqTestCases() {
@@ -98,7 +97,7 @@ public class EqOperationTest {
             .pushStackItem(Bytes.fromHexString(value0))
             .build();
 
-    operation.executeFixedCostOperation(frame, mock(EVM.class));
+    operation.execute(frame, mock(EVM.class));
 
     assertThat(UInt256.valueOf(expectedResult.ordinal())).isEqualTo(frame.popStackItem());
   }

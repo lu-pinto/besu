@@ -15,14 +15,16 @@
 package org.hyperledger.besu.ethereum.vm.operations;
 
 import org.hyperledger.besu.evm.frame.MessageFrame;
+import org.hyperledger.besu.evm.operation.AndOperationOptimized;
 import org.hyperledger.besu.evm.operation.Operation;
 import org.hyperledger.besu.evm.operation.SarOperation;
 
 /** JMH benchmark for the original SAR (Shift Arithmetic Right) operation. */
 public class SarOperationBenchmark extends AbstractSarOperationBenchmark {
+  private final Operation operation = new SarOperation();
 
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
-    return SarOperation.staticOperation(frame);
+    return operation.execute(frame, null);
   }
 }

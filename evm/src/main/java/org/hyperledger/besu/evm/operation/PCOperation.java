@@ -20,22 +20,21 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
 
 /** The PC operation. */
-public class PCOperation extends AbstractFixedCostOperation {
+public class PCOperation extends AbstractOperation {
 
   /**
    * Instantiates a new Pc operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public PCOperation(final GasCalculator gasCalculator) {
-    super(0x58, "PC", 0, 1, gasCalculator, gasCalculator.getBaseTierGasCost());
+  public PCOperation() {
+    super(0x58, "PC", 0, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public OperationResult execute(
       final MessageFrame frame, final EVM evm) {
     frame.pushStackItem(Words.intBytes(frame.getPC()));
 
-    return successResponse;
+    return new OperationResult();
   }
 }

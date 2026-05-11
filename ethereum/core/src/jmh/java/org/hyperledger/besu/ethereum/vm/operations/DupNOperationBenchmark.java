@@ -20,6 +20,7 @@ import org.hyperledger.besu.evm.operation.Operation;
 
 /** JMH benchmark for the DUPN operation (EIP-8024). */
 public class DupNOperationBenchmark extends ImmediateByteOperationBenchmark {
+  private final Operation operation = new DupNOperation();
 
   @Override
   protected int getOpcode() {
@@ -33,9 +34,13 @@ public class DupNOperationBenchmark extends ImmediateByteOperationBenchmark {
   }
 
   @Override
-  protected Operation.OperationResult invoke(
-      final MessageFrame frame, final byte[] code, final int pc) {
-    return DupNOperation.staticOperation(frame, code, pc);
+  protected Operation getOperation() {
+    return operation;
+  }
+
+  @Override
+  protected Operation.OperationResult invoke(final MessageFrame frame) {
+    return operation.execute(frame, null);
   }
 
   @Override

@@ -32,67 +32,40 @@ import org.apache.tuweni.bytes.Bytes;
  * <p>The immediate operand uses a special encoding to preserve backward compatibility by avoiding
  * bytes that could be confused with JUMPDEST (0x5b) or PUSH opcodes (0x60-0x7f).
  */
-public class SwapNOperation extends AbstractFixedCostOperation {
+public class SwapNOperation extends AbstractOperation {
 
   /** The SWAPN opcode value. */
   public static final int OPCODE = 0xe7;
 
-  /** Pre-computed success result with pcIncrement = 2. */
-  static final OperationResult SWAPN_SUCCESS = new OperationResult(3, null, 2);
-
-  /** Pre-computed invalid immediate result. */
-  static final OperationResult INVALID_IMMEDIATE =
-      new OperationResult(3, ExceptionalHaltReason.INVALID_OPERATION, 2);
-
-  /** Pre-computed underflow result with pcIncrement = 2. */
-  static final OperationResult UNDERFLOW_RESPONSE =
-      new OperationResult(3, ExceptionalHaltReason.INSUFFICIENT_STACK_ITEMS, 2);
-
   /**
    * Instantiates a new SWAPN operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public SwapNOperation(final GasCalculator gasCalculator) {
-    super(OPCODE, "SWAPN", 0, 0, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public SwapNOperation() {
+    super(OPCODE, "SWAPN", 0, 0, null);
   }
 
   @Override
-  public OperationResult executeFixedCostOperation(final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame, frame.getCode().getBytes().toArrayUnsafe(), frame.getPC());
-  }
-
-  /**
-   * Performs SWAPN operation directly for hot-path execution.
-   *
-   * @param frame the message frame
-   * @param code the bytecode array
-   * @param pc the current program counter
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(
-      final MessageFrame frame, final byte[] code, final int pc) {
+  public OperationResult execute(final MessageFrame frame, final EVM evm) {
+    final byte[] code = frame.getCode().getBytes().toArrayUnsafe();
+    final int pc = frame.getPC();
     // Get immediate byte, treating end-of-code as 0
     final int imm = (pc + 1 >= code.length) ? 0 : code[pc + 1] & 0xFF;
 
     // Check for invalid immediate range (91-127)
     if (!Eip8024Decoder.VALID_SINGLE[imm]) {
-      return INVALID_IMMEDIATE;
+      return new OperationResult(0, ExceptionalHaltReason.INVALID_OPERATION);
     }
 
     final int n = Eip8024Decoder.DECODE_SINGLE[imm];
 
-    try {
-      // Swap the top of stack (index 0) with the (n+1)'th item (index n)
-      // In Besu's 0-indexed stack, top is index 0, (n+1)'th is index n
-      final Bytes top = frame.getStackItem(0);
-      final Bytes nthItem = frame.getStackItem(n);
-      frame.setStackItem(0, nthItem);
-      frame.setStackItem(n, top);
-      return SWAPN_SUCCESS;
-    } catch (final UnderflowException ufe) {
-      return UNDERFLOW_RESPONSE;
-    }
+    // Swap the top of stack (index 0) with the (n+1)'th item (index n)
+    // In Besu's 0-indexed stack, top is index 0, (n+1)'th is index n
+    final Bytes top = frame.getStackItem(0);
+    final Bytes nthItem = frame.getStackItem(n);
+    frame.setStackItem(0, nthItem);
+    frame.setStackItem(n, top);
+    return new OperationResult();
   }
 
   /**

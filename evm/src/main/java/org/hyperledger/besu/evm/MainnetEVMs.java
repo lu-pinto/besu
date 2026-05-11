@@ -203,102 +203,102 @@ public class MainnetEVMs {
       final GasCalculator gasCalculator,
       final EvmConfiguration evmConfiguration) {
     for (int i = 0; i < 255; i++) {
-      registry.put(new InvalidOperation(i, gasCalculator));
+      registry.put(new InvalidOperation(i), -1, 1);
     }
-    registry.put(new MulOperation(gasCalculator));
-    registry.put(new SubOperation(gasCalculator));
+    registry.put(new MulOperation(), 5, 1);
+    registry.put(new SubOperation(), 5, 1);
     if (evmConfiguration.enableOptimizedOpcodes()) {
-      registry.put(new AddOperationOptimized(gasCalculator));
-      registry.put(new ModOperationOptimized(gasCalculator));
-      registry.put(new SModOperationOptimized(gasCalculator));
-      registry.put(new AddModOperationOptimized(gasCalculator));
-      registry.put(new MulModOperationOptimized(gasCalculator));
-      registry.put(new AndOperationOptimized(gasCalculator));
-      registry.put(new XorOperationOptimized(gasCalculator));
-      registry.put(new OrOperationOptimized(gasCalculator));
-      registry.put(new NotOperationOptimized(gasCalculator));
-      registry.put(new DivOperationOptimized(gasCalculator));
-      registry.put(new SDivOperationOptimized(gasCalculator));
+      registry.put(new AddOperationOptimized(), 3, 1);
+      registry.put(new ModOperationOptimized(), 5, 1);
+      registry.put(new SModOperationOptimized(), 5, 1);
+      registry.put(new AddModOperationOptimized(), 8, 1);
+      registry.put(new MulModOperationOptimized(), 8, 1);
+      registry.put(new AndOperationOptimized(), 3, 1);
+      registry.put(new XorOperationOptimized(), 3, 1);
+      registry.put(new OrOperationOptimized(), 3, 1);
+      registry.put(new NotOperationOptimized(), 3, 1);
+      registry.put(new DivOperationOptimized(), 5, 1);
+      registry.put(new SDivOperationOptimized(), 5, 1);
     } else {
-      registry.put(new AddOperation(gasCalculator));
-      registry.put(new ModOperation(gasCalculator));
-      registry.put(new SModOperation(gasCalculator));
-      registry.put(new AddModOperation(gasCalculator));
-      registry.put(new MulModOperation(gasCalculator));
-      registry.put(new AndOperation(gasCalculator));
-      registry.put(new XorOperation(gasCalculator));
-      registry.put(new OrOperation(gasCalculator));
-      registry.put(new NotOperation(gasCalculator));
-      registry.put(new DivOperation(gasCalculator));
-      registry.put(new SDivOperation(gasCalculator));
+      registry.put(new AddOperation(), 3, 1);
+      registry.put(new ModOperation(), 5, 1);
+      registry.put(new SModOperation(), 5, 1);
+      registry.put(new AddModOperation(), 8, 1);
+      registry.put(new MulModOperation(), 8, 1);
+      registry.put(new AndOperation(), 3, 1);
+      registry.put(new XorOperation(), 3, 1);
+      registry.put(new OrOperation(), 3, 1);
+      registry.put(new NotOperation(), 3, 1);
+      registry.put(new DivOperation(), 5, 1);
+      registry.put(new SDivOperation(), 5, 1);
     }
-    registry.put(new ExpOperation(gasCalculator));
-    registry.put(new SignExtendOperation(gasCalculator));
-    registry.put(new LtOperation(gasCalculator));
-    registry.put(new GtOperation(gasCalculator));
-    registry.put(new SLtOperation(gasCalculator));
-    registry.put(new SGtOperation(gasCalculator));
-    registry.put(new EqOperation(gasCalculator));
-    registry.put(new IsZeroOperation(gasCalculator));
-    registry.put(new ByteOperation(gasCalculator));
-    registry.put(new Keccak256Operation(gasCalculator));
-    registry.put(new AddressOperation(gasCalculator));
-    registry.put(new BalanceOperation(gasCalculator));
-    registry.put(new OriginOperation(gasCalculator));
-    registry.put(new CallerOperation(gasCalculator));
-    registry.put(new CallValueOperation(gasCalculator));
-    registry.put(new CallDataLoadOperation(gasCalculator));
-    registry.put(new CallDataSizeOperation(gasCalculator));
-    registry.put(new CallDataCopyOperation(gasCalculator));
-    registry.put(new CodeSizeOperation(gasCalculator));
-    registry.put(new CodeCopyOperation(gasCalculator));
-    registry.put(new GasPriceOperation(gasCalculator));
-    registry.put(new ExtCodeCopyOperation(gasCalculator));
-    registry.put(new ExtCodeSizeOperation(gasCalculator));
-    registry.put(new BlockHashOperation(gasCalculator));
-    registry.put(new CoinbaseOperation(gasCalculator));
-    registry.put(new TimestampOperation(gasCalculator));
-    registry.put(new NumberOperation(gasCalculator));
-    registry.put(new DifficultyOperation(gasCalculator));
-    registry.put(new GasLimitOperation(gasCalculator));
-    registry.put(new PopOperation(gasCalculator));
-    registry.put(new MLoadOperation(gasCalculator));
-    registry.put(new MStoreOperation(gasCalculator));
-    registry.put(new MStore8Operation(gasCalculator));
-    registry.put(new SLoadOperation(gasCalculator));
-    registry.put(new SStoreOperation(gasCalculator, SStoreOperation.FRONTIER_MINIMUM));
-    registry.put(new JumpOperation(gasCalculator));
-    registry.put(new JumpiOperation(gasCalculator));
-    registry.put(new PCOperation(gasCalculator));
-    registry.put(new MSizeOperation(gasCalculator));
-    registry.put(new GasOperation(gasCalculator));
-    registry.put(new JumpDestOperation(gasCalculator));
-    registry.put(new ReturnOperation(gasCalculator));
-    registry.put(new InvalidOperation(gasCalculator));
-    registry.put(new StopOperation(gasCalculator));
-    registry.put(new SelfDestructOperation(gasCalculator));
-    registry.put(new CreateOperation(gasCalculator));
-    registry.put(new CallOperation(gasCalculator));
-    registry.put(new CallCodeOperation(gasCalculator));
+    registry.put(new ExpOperation(gasCalculator), -1, 1);
+    registry.put(new SignExtendOperation(), 5, 1);
+    registry.put(new LtOperation(), 3, 1);
+    registry.put(new GtOperation(), 3, 1);
+    registry.put(new SLtOperation(), 3, 1);
+    registry.put(new SGtOperation(), 3, 1);
+    registry.put(new EqOperation(), 3, 1);
+    registry.put(new IsZeroOperation(), 3, 1);
+    registry.put(new ByteOperation(), 3, 1);
+    registry.put(new Keccak256Operation(gasCalculator), -1, 1);
+    registry.put(new AddressOperation(), 2, 1);
+    registry.put(new BalanceOperation(gasCalculator), -1, 1);
+    registry.put(new OriginOperation(), 2, 1);
+    registry.put(new CallerOperation(), 2, 1);
+    registry.put(new CallValueOperation(), 2, 1);
+    registry.put(new CallDataLoadOperation(), 3, 1);
+    registry.put(new CallDataSizeOperation(), 2, 1);
+    registry.put(new CallDataCopyOperation(gasCalculator), -1, 1);
+    registry.put(new CodeSizeOperation(), 2, 1);
+    registry.put(new CodeCopyOperation(gasCalculator), -1, 1);
+    registry.put(new GasPriceOperation(), 2, 1);
+    registry.put(new ExtCodeCopyOperation(gasCalculator), -1, 1);
+    registry.put(new ExtCodeSizeOperation(gasCalculator), -1, 1);
+    registry.put(new BlockHashOperation(), 20, 1);
+    registry.put(new CoinbaseOperation(), 2, 1);
+    registry.put(new TimestampOperation(), 2, 1);
+    registry.put(new NumberOperation(), 2, 1);
+    registry.put(new DifficultyOperation(), 2, 1);
+    registry.put(new GasLimitOperation(), 2, 1);
+    registry.put(new PopOperation(), 2, 1);
+    registry.put(new MLoadOperation(gasCalculator), -1, 1);
+    registry.put(new MStoreOperation(gasCalculator), -1, 1);
+    registry.put(new MStore8Operation(gasCalculator), -1, 1);
+    registry.put(new SLoadOperation(gasCalculator), -1, 1);
+    registry.put(new SStoreOperation(gasCalculator, SStoreOperation.FRONTIER_MINIMUM), -1, 1);
+    registry.put(new JumpOperation(), 8, -1);
+    registry.put(new JumpiOperation(), 10, -1);
+    registry.put(new PCOperation(), 2, 1);
+    registry.put(new MSizeOperation(gasCalculator), -1, 1);
+    registry.put(new GasOperation(), 2, 1);
+    registry.put(new JumpDestOperation(), 1, 1);
+    registry.put(new ReturnOperation(gasCalculator), -1, 1);
+    registry.put(new InvalidOperation(), -1, 1);
+    registry.put(new StopOperation(), 0, 1);
+    registry.put(new SelfDestructOperation(gasCalculator), -1, 1);
+    registry.put(new CreateOperation(gasCalculator), -1, 1);
+    registry.put(new CallOperation(gasCalculator), -1, -1);
+    registry.put(new CallCodeOperation(gasCalculator), -1, -1);
 
     // Register the PUSH1, PUSH2, ..., PUSH32 operations.
     for (int i = 1; i <= 32; ++i) {
-      registry.put(new PushOperation(i, gasCalculator));
+      registry.put(new PushOperation(i), 3, i + 1);
     }
 
     // Register the DUP1, DUP2, ..., DUP16 operations.
     for (int i = 1; i <= 16; ++i) {
-      registry.put(new DupOperation(i, gasCalculator));
+      registry.put(new DupOperation(i), 3, 1);
     }
 
     // Register the SWAP1, SWAP2, ..., SWAP16 operations.
     for (int i = 1; i <= 16; ++i) {
-      registry.put(new SwapOperation(i, gasCalculator));
+      registry.put(new SwapOperation(i), 3, 1);
     }
 
     // Register the LOG0, LOG1, ..., LOG4 operations.
     for (int i = 0; i < 5; ++i) {
-      registry.put(new LogOperation(i, gasCalculator));
+      registry.put(new LogOperation(i, gasCalculator), -1, 1);
     }
   }
 
@@ -352,7 +352,7 @@ public class MainnetEVMs {
       final GasCalculator gasCalculator,
       final EvmConfiguration evmConfiguration) {
     registerFrontierOperations(registry, gasCalculator, evmConfiguration);
-    registry.put(new DelegateCallOperation(gasCalculator));
+    registry.put(new DelegateCallOperation(gasCalculator), -1, -1);
   }
 
   /**
@@ -435,10 +435,10 @@ public class MainnetEVMs {
       final GasCalculator gasCalculator,
       final EvmConfiguration evmConfiguration) {
     registerHomesteadOperations(registry, gasCalculator, evmConfiguration);
-    registry.put(new ReturnDataCopyOperation(gasCalculator));
-    registry.put(new ReturnDataSizeOperation(gasCalculator));
-    registry.put(new RevertOperation(gasCalculator));
-    registry.put(new StaticCallOperation(gasCalculator));
+    registry.put(new ReturnDataCopyOperation(gasCalculator), -1, 1);
+    registry.put(new ReturnDataSizeOperation(), 2, 1);
+    registry.put(new RevertOperation(gasCalculator), -1, 1);
+    registry.put(new StaticCallOperation(gasCalculator), -1, -1);
   }
 
   /**
@@ -499,17 +499,17 @@ public class MainnetEVMs {
       final GasCalculator gasCalculator,
       final EvmConfiguration evmConfiguration) {
     registerByzantiumOperations(registry, gasCalculator, evmConfiguration);
-    registry.put(new Create2Operation(gasCalculator));
+    registry.put(new Create2Operation(gasCalculator), -1, 1);
     if (evmConfiguration.enableOptimizedOpcodes()) {
-      registry.put(new ShlOperationOptimized(gasCalculator));
-      registry.put(new ShrOperationOptimized(gasCalculator));
-      registry.put(new SarOperationOptimized(gasCalculator));
+      registry.put(new ShlOperationOptimized(), 3, 1);
+      registry.put(new ShrOperationOptimized(), 3, 1);
+      registry.put(new SarOperationOptimized(), 3, 1);
     } else {
-      registry.put(new ShlOperation(gasCalculator));
-      registry.put(new ShrOperation(gasCalculator));
-      registry.put(new SarOperation(gasCalculator));
+      registry.put(new ShlOperation(), 3, 1);
+      registry.put(new ShrOperation(), 3, 1);
+      registry.put(new SarOperation(), 3, 1);
     }
-    registry.put(new ExtCodeHashOperation(gasCalculator));
+    registry.put(new ExtCodeHashOperation(gasCalculator), -1, 1);
   }
 
   /**
@@ -593,9 +593,9 @@ public class MainnetEVMs {
       final EvmConfiguration evmConfiguration) {
     registerConstantinopleOperations(registry, gasCalculator, evmConfiguration);
     registry.put(
-        new ChainIdOperation(gasCalculator, Bytes32.leftPad(Bytes.of(chainId.toByteArray()))));
-    registry.put(new SelfBalanceOperation(gasCalculator));
-    registry.put(new SStoreOperation(gasCalculator, SStoreOperation.EIP_1706_MINIMUM));
+        new ChainIdOperation(Bytes32.leftPad(Bytes.of(chainId.toByteArray()))), 2, 1);
+    registry.put(new SelfBalanceOperation(), 5, 1);
+    registry.put(new SStoreOperation(gasCalculator, SStoreOperation.EIP_1706_MINIMUM), -1, 1);
   }
 
   /**
@@ -707,7 +707,7 @@ public class MainnetEVMs {
       final BigInteger chainId,
       final EvmConfiguration evmConfiguration) {
     registerIstanbulOperations(registry, gasCalculator, chainId, evmConfiguration);
-    registry.put(new BaseFeeOperation(gasCalculator));
+    registry.put(new BaseFeeOperation(), 2, 1);
   }
 
   /**
@@ -779,7 +779,7 @@ public class MainnetEVMs {
       final BigInteger chainID,
       final EvmConfiguration evmConfiguration) {
     registerLondonOperations(registry, gasCalculator, chainID, evmConfiguration);
-    registry.put(new PrevRanDaoOperation(gasCalculator));
+    registry.put(new PrevRanDaoOperation(), 2, 1);
   }
 
   /**
@@ -851,7 +851,7 @@ public class MainnetEVMs {
       final BigInteger chainID,
       final EvmConfiguration evmConfiguration) {
     registerParisOperations(registry, gasCalculator, chainID, evmConfiguration);
-    registry.put(new Push0Operation(gasCalculator));
+    registry.put(new Push0Operation(), 2, 1);
   }
 
   /**
@@ -925,20 +925,20 @@ public class MainnetEVMs {
     registerShanghaiOperations(registry, gasCalculator, chainID, evmConfiguration);
 
     // EIP-1153 TSTORE/TLOAD
-    registry.put(new TStoreOperation(gasCalculator));
-    registry.put(new TLoadOperation(gasCalculator));
+    registry.put(new TStoreOperation(gasCalculator), -1, 1);
+    registry.put(new TLoadOperation(gasCalculator), -1, 1);
 
     // EIP-4844 BLOBHASH
-    registry.put(new BlobHashOperation(gasCalculator));
+    registry.put(new BlobHashOperation(), 3, 1);
 
     // EIP-5656 MCOPY
-    registry.put(new MCopyOperation(gasCalculator));
+    registry.put(new MCopyOperation(gasCalculator), -1, 1);
 
     // EIP-6780 nerf self destruct
-    registry.put(new SelfDestructOperation(gasCalculator, true));
+    registry.put(new SelfDestructOperation(gasCalculator, true), -1, 1);
 
     // EIP-7516 BLOBBASEFEE
-    registry.put(new BlobBaseFeeOperation(gasCalculator));
+    registry.put(new BlobBaseFeeOperation(), 2, 1);
   }
 
   /**
@@ -1073,7 +1073,7 @@ public class MainnetEVMs {
     registerPragueOperations(registry, gasCalculator, chainID, evmConfiguration);
 
     // EIP-7939: CLZ opcode
-    registry.put(new CountLeadingZerosOperation(gasCalculator));
+    registry.put(new CountLeadingZerosOperation(), 5, 1);
   }
 
   /**
@@ -1148,15 +1148,15 @@ public class MainnetEVMs {
 
     // EIP-7708: SelfDestruct with transfer log emission
     registry.put(
-        new SelfDestructOperation(gasCalculator, true, EIP7708TransferLogEmitter.INSTANCE));
+        new SelfDestructOperation(gasCalculator, true, EIP7708TransferLogEmitter.INSTANCE), -1, 1);
 
     // EIP-7843 SLOTNUM opcode
-    registry.put(new SlotNumOperation(gasCalculator));
+    registry.put(new SlotNumOperation(), 2, 1);
 
     // EIP-8024: DUPN, SWAPN, EXCHANGE
-    registry.put(new DupNOperation(gasCalculator));
-    registry.put(new SwapNOperation(gasCalculator));
-    registry.put(new ExchangeOperation(gasCalculator));
+    registry.put(new DupNOperation(), 3, 2);
+    registry.put(new SwapNOperation(), 3, 2);
+    registry.put(new ExchangeOperation(), 3, 2);
   }
 
   /**
@@ -1443,7 +1443,7 @@ public class MainnetEVMs {
     registerBogotaOperations(registry, gasCalculator, chainID, evmConfiguration);
 
     // EIP-5920 PAY opcode
-    registry.put(new PayOperation(gasCalculator));
+    registry.put(new PayOperation(gasCalculator), -1, 1);
   }
 
   /**

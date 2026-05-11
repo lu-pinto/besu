@@ -479,16 +479,20 @@ public class ShiftOperationsV2PropertyBasedTest {
 
   // region V1 Oracle Helpers (mock-based, Bytes stack)
 
+  private static final ShlOperation ORIGINAL_SHL = new ShlOperation();
+  private static final ShrOperation ORIGINAL_SHR = new ShrOperation();
+  private static final SarOperation ORIGINAL_SAR = new SarOperation();
+
   private Bytes runOriginalShl(final Bytes shift, final Bytes value) {
-    return runOriginalOperation(shift, value, ShlOperation::staticOperation);
+    return runOriginalOperation(shift, value, frame -> ORIGINAL_SHL.execute(frame, null));
   }
 
   private Bytes runOriginalShr(final Bytes shift, final Bytes value) {
-    return runOriginalOperation(shift, value, ShrOperation::staticOperation);
+    return runOriginalOperation(shift, value, frame -> ORIGINAL_SHR.execute(frame, null));
   }
 
   private Bytes runOriginalSar(final Bytes shift, final Bytes value) {
-    return runOriginalOperation(shift, value, SarOperation::staticOperation);
+    return runOriginalOperation(shift, value, frame -> ORIGINAL_SAR.execute(frame, null));
   }
 
   @FunctionalInterface

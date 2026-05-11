@@ -22,33 +22,19 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The Mul operation. */
-public class MulOperationOptimized extends AbstractFixedCostOperation {
-
-  /** The Mul operation success result. */
-  static final OperationResult mulSuccess = new OperationResult(5, null);
-
+public class MulOperationOptimized extends AbstractOperation {
   /**
    * Instantiates a new Mul operation.
    *
    * @param gasCalculator the gas calculator
    */
   public MulOperationOptimized(final GasCalculator gasCalculator) {
-    super(0x02, "MUL", 2, 1, gasCalculator, gasCalculator.getLowTierGasCost());
+    super(0x02, "MUL", 2, 1, gasCalculator);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs mul operation
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes value0 = frame.popStackItem();
     final Bytes value1 = frame.popStackItem();
 
@@ -57,6 +43,6 @@ public class MulOperationOptimized extends AbstractFixedCostOperation {
     Bytes resultBytes = Bytes.wrap(u0.mul(u1).toBytesBE());
 
     frame.pushStackItem(resultBytes);
-    return mulSuccess;
+    return new OperationResult();
   }
 }

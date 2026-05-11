@@ -22,7 +22,7 @@ import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
 /** The Chain id operation. */
-public class ChainIdOperation extends AbstractFixedCostOperation {
+public class ChainIdOperation extends AbstractOperation {
 
   /** The CHAINID Opcode number */
   public static final int OPCODE = 0x46;
@@ -32,11 +32,10 @@ public class ChainIdOperation extends AbstractFixedCostOperation {
   /**
    * Instantiates a new Chain id operation.
    *
-   * @param gasCalculator the gas calculator
    * @param chainId the chain id
    */
-  public ChainIdOperation(final GasCalculator gasCalculator, final Bytes32 chainId) {
-    super(OPCODE, "CHAINID", 0, 1, gasCalculator, gasCalculator.getBaseTierGasCost());
+  public ChainIdOperation(final Bytes32 chainId) {
+    super(OPCODE, "CHAINID", 0, 1, null);
     this.chainId = chainId;
   }
 
@@ -50,10 +49,10 @@ public class ChainIdOperation extends AbstractFixedCostOperation {
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
     frame.pushStackItem(chainId);
 
-    return successResponse;
+    return new OperationResult();
   }
 }

@@ -21,22 +21,19 @@ import static org.mockito.Mockito.when;
 
 import org.hyperledger.besu.evm.frame.BlockValues;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.BerlinGasCalculator;
-import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 
 import org.junit.jupiter.api.Test;
 
 class SlotNumOperationTest {
-  private final GasCalculator gasCalculator = new BerlinGasCalculator();
 
   @Test
   void shouldReturnGasCost() {
     final MessageFrame frame = createMessageFrame(100L, 42L);
-    final Operation operation = new SlotNumOperation(gasCalculator);
+    final Operation operation = new SlotNumOperation();
     final OperationResult result = operation.execute(frame, null);
-    assertThat(result.getGasCost()).isEqualTo(gasCalculator.getBaseTierGasCost());
+    assertThat(result.getGasCost()).isZero();
     assertSuccessResult(result);
   }
 
@@ -44,7 +41,7 @@ class SlotNumOperationTest {
   void shouldWriteSlotNumberToStack() {
     final long expectedSlotNumber = 12345L;
     final MessageFrame frame = createMessageFrame(100L, expectedSlotNumber);
-    final Operation operation = new SlotNumOperation(gasCalculator);
+    final Operation operation = new SlotNumOperation();
     final OperationResult result = operation.execute(frame, null);
     verify(frame).pushStackItem(Words.longBytes(expectedSlotNumber));
     assertSuccessResult(result);
@@ -53,7 +50,7 @@ class SlotNumOperationTest {
   @Test
   void shouldHandleZeroSlotNumber() {
     final MessageFrame frame = createMessageFrame(100L, 0L);
-    final Operation operation = new SlotNumOperation(gasCalculator);
+    final Operation operation = new SlotNumOperation();
     final OperationResult result = operation.execute(frame, null);
     verify(frame).pushStackItem(Words.longBytes(0L));
     assertSuccessResult(result);
@@ -63,7 +60,7 @@ class SlotNumOperationTest {
   void shouldHandleLargeSlotNumber() {
     final long maxSlotNumber = Long.MAX_VALUE;
     final MessageFrame frame = createMessageFrame(100L, maxSlotNumber);
-    final Operation operation = new SlotNumOperation(gasCalculator);
+    final Operation operation = new SlotNumOperation();
     final OperationResult result = operation.execute(frame, null);
     verify(frame).pushStackItem(Words.longBytes(maxSlotNumber));
     assertSuccessResult(result);
@@ -71,19 +68,19 @@ class SlotNumOperationTest {
 
   @Test
   void shouldHaveCorrectOpcode() {
-    final Operation operation = new SlotNumOperation(gasCalculator);
+    final Operation operation = new SlotNumOperation();
     assertThat(operation.getOpcode()).isEqualTo(0x4b);
   }
 
   @Test
   void shouldHaveCorrectName() {
-    final Operation operation = new SlotNumOperation(gasCalculator);
+    final Operation operation = new SlotNumOperation();
     assertThat(operation.getName()).isEqualTo("SLOTNUM");
   }
 
   @Test
   void shouldHaveCorrectStackBehavior() {
-    final Operation operation = new SlotNumOperation(gasCalculator);
+    final Operation operation = new SlotNumOperation();
     assertThat(operation.getStackItemsConsumed()).isZero();
     assertThat(operation.getStackItemsProduced()).isEqualTo(1);
   }

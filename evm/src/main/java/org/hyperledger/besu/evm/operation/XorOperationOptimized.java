@@ -22,32 +22,18 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The XOR operation. */
-public class XorOperationOptimized extends AbstractFixedCostOperation {
-
-  /** The XOR operation success result. */
-  static final OperationResult xorSuccess = new OperationResult(3, null);
+public class XorOperationOptimized extends AbstractOperation {
 
   /**
    * Instantiates a new Xor operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public XorOperationOptimized(final GasCalculator gasCalculator) {
-    super(0x18, "XOR", 2, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public XorOperationOptimized() {
+    super(0x18, "XOR", 2, 1, null);
   }
 
   @Override
-  public OperationResult executeFixedCostOperation(final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs XOR operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
+  public OperationResult execute(final MessageFrame frame, final EVM evm) {
     final Bytes value0 = frame.popStackItem();
     final Bytes value1 = frame.popStackItem();
     UInt256 b0 = UInt256.fromBytesBE(value0.toArrayUnsafe());
@@ -55,6 +41,6 @@ public class XorOperationOptimized extends AbstractFixedCostOperation {
     UInt256 result = b0.xor(b1);
     byte[] resultArray = result.toBytesBE();
     frame.pushStackItem(Bytes.wrap(resultArray));
-    return xorSuccess;
+    return new OperationResult();
   }
 }

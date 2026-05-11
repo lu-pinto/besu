@@ -20,6 +20,7 @@ import org.hyperledger.besu.evm.operation.Operation;
 
 /** JMH benchmark for the EXCHANGE operation (EIP-8024). */
 public class ExchangeOperationBenchmark extends ImmediateByteOperationBenchmark {
+  private final Operation operation = new ExchangeOperation();
 
   @Override
   protected int getOpcode() {
@@ -34,9 +35,13 @@ public class ExchangeOperationBenchmark extends ImmediateByteOperationBenchmark 
   }
 
   @Override
-  protected Operation.OperationResult invoke(
-      final MessageFrame frame, final byte[] code, final int pc) {
-    return ExchangeOperation.staticOperation(frame, code, pc);
+  protected Operation getOperation() {
+    return operation;
+  }
+
+  @Override
+  protected Operation.OperationResult invoke(final MessageFrame frame) {
+    return operation.execute(frame, null);
   }
 
   @Override

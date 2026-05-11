@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.PragueGasCalculator;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 import org.hyperledger.besu.evm.testutils.TestMessageFrameBuilder;
 
@@ -31,7 +30,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 /** Unit tests for {@link SwapNOperation}. */
 class SwapNOperationTest {
 
-  private final SwapNOperation operation = new SwapNOperation(new PragueGasCalculator());
+  private final SwapNOperation operation = new SwapNOperation();
 
   @Test
   void testDecodeSingle_validLowRange() {

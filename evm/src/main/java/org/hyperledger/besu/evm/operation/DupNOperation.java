@@ -18,8 +18,6 @@ import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
-import org.hyperledger.besu.evm.internal.OverflowException;
-import org.hyperledger.besu.evm.internal.UnderflowException;
 
 /**
  * The DUPN operation (EIP-8024).
@@ -31,70 +29,38 @@ import org.hyperledger.besu.evm.internal.UnderflowException;
  * <p>The immediate operand uses a special encoding to preserve backward compatibility by avoiding
  * bytes that could be confused with JUMPDEST (0x5b) or PUSH opcodes (0x60-0x7f).
  */
-public class DupNOperation extends AbstractFixedCostOperation {
+public class DupNOperation extends AbstractOperation {
 
   /** The DUPN opcode value. */
   public static final int OPCODE = 0xe6;
 
-  /** Pre-computed success result with pcIncrement = 2. */
-  static final OperationResult DUPN_SUCCESS = new OperationResult(3, null, 2);
-
-  /** Pre-computed invalid immediate result. */
-  static final OperationResult INVALID_IMMEDIATE =
-      new OperationResult(3, ExceptionalHaltReason.INVALID_OPERATION, 2);
-
-  /** Pre-computed underflow result with pcIncrement = 2. */
-  static final OperationResult UNDERFLOW_RESPONSE =
-      new OperationResult(3, ExceptionalHaltReason.INSUFFICIENT_STACK_ITEMS, 2);
-
-  /** Pre-computed overflow result with pcIncrement = 2. */
-  static final OperationResult OVERFLOW_RESPONSE =
-      new OperationResult(3, ExceptionalHaltReason.TOO_MANY_STACK_ITEMS, 2);
-
   /**
    * Instantiates a new DUPN operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public DupNOperation(final GasCalculator gasCalculator) {
-    super(OPCODE, "DUPN", 0, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public DupNOperation() {
+    super(OPCODE, "DUPN", 0, 1, null);
   }
 
   @Override
-  public OperationResult executeFixedCostOperation(final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame, frame.getCode().getBytes().toArrayUnsafe(), frame.getPC());
-  }
-
-  /**
-   * Performs DUPN operation directly for hot-path execution.
-   *
-   * @param frame the message frame
-   * @param code the bytecode array
-   * @param pc the current program counter
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(
-      final MessageFrame frame, final byte[] code, final int pc) {
+  public OperationResult execute(final MessageFrame frame, final EVM evm) {
+    final int pc = frame.getPC();
+    //TODO: make MessageFrame::code a byte[] directly
+    final byte[] code = frame.getCode().getBytes().toArrayUnsafe();
     // Get immediate byte, treating end-of-code as 0
     final int imm = (pc + 1 >= code.length) ? 0 : code[pc + 1] & 0xFF;
 
     // Check for invalid immediate range (91-127)
     if (!Eip8024Decoder.VALID_SINGLE[imm]) {
-      return INVALID_IMMEDIATE;
+      return new OperationResult(0, ExceptionalHaltReason.INVALID_OPERATION);
     }
 
     final int n = Eip8024Decoder.DECODE_SINGLE[imm];
 
-    try {
-      // Duplicate the n'th stack item (1-indexed) to the top
-      // In Besu's 0-indexed stack, the n'th item is at index n-1
-      frame.pushStackItem(frame.getStackItem(n - 1));
-      return DUPN_SUCCESS;
-    } catch (final UnderflowException ufe) {
-      return UNDERFLOW_RESPONSE;
-    } catch (final OverflowException ofe) {
-      return OVERFLOW_RESPONSE;
-    }
+    // Duplicate the n'th stack item (1-indexed) to the top
+    // In Besu's 0-indexed stack, the n'th item is at index n-1
+    frame.pushStackItem(frame.getStackItem(n - 1));
+    return new OperationResult();
   }
 
   /**

@@ -15,6 +15,8 @@
 package org.hyperledger.besu.ethereum.vm.operations;
 
 import org.hyperledger.besu.evm.frame.MessageFrame;
+import org.hyperledger.besu.evm.operation.AndOperationOptimized;
+import org.hyperledger.besu.evm.operation.DivOperation;
 import org.hyperledger.besu.evm.operation.DivOperationOptimized;
 import org.hyperledger.besu.evm.operation.Operation;
 
@@ -44,10 +46,11 @@ public class DivOperationBenchmark extends BinaryArithmeticOperationBenchmark {
     "DIV_RANDOM_RANDOM"
   })
   private String caseName;
+  private final Operation operation = new DivOperationOptimized();
 
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
-    return DivOperationOptimized.staticOperation(frame);
+    return operation.execute(frame, null);
   }
 
   @Override

@@ -17,15 +17,16 @@ package org.hyperledger.besu.ethereum.vm.operations;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.gascalculator.PragueGasCalculator;
+import org.hyperledger.besu.evm.operation.AndOperationOptimized;
 import org.hyperledger.besu.evm.operation.ExpOperation;
 import org.hyperledger.besu.evm.operation.Operation;
 
 public class ExpOperationBenchmark extends BinaryOperationBenchmark {
-
   private static final GasCalculator PRAGUE_GAS_CALCULATOR = new PragueGasCalculator();
+  private final Operation operation = new ExpOperation(PRAGUE_GAS_CALCULATOR);
 
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
-    return ExpOperation.staticOperation(frame, PRAGUE_GAS_CALCULATOR);
+    return operation.execute(frame, null);
   }
 }

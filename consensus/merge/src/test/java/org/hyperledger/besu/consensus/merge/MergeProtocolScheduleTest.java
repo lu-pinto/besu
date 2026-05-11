@@ -101,9 +101,9 @@ public class MergeProtocolScheduleTest {
 
     // ensure PUSH0 is enabled in Shanghai
     final int PUSH0 = 0x5f;
-    assertThat(parisSpec.getEvm().getOperationsUnsafe()[PUSH0])
+    assertThat(parisSpec.getEvm().getOperations()[PUSH0])
         .isInstanceOf(InvalidOperation.class);
-    assertThat(shanghaiSpec.getEvm().getOperationsUnsafe()[PUSH0])
+    assertThat(shanghaiSpec.getEvm().getOperations()[PUSH0])
         .isInstanceOf(Push0Operation.class);
 
     assertProofOfStakeConfigIsEnabled(parisSpec);
@@ -145,9 +145,9 @@ public class MergeProtocolScheduleTest {
     // ensure PUSH0 is enabled in Cancun (i.e. it has picked up the Shanghai change rather than been
     // reverted to Paris)
     final int PUSH0 = 0x5f;
-    assertThat(parisSpec.getEvm().getOperationsUnsafe()[PUSH0])
+    assertThat(parisSpec.getEvm().getOperations()[PUSH0])
         .isInstanceOf(InvalidOperation.class);
-    assertThat(cancunSpec.getEvm().getOperationsUnsafe()[PUSH0]).isInstanceOf(Push0Operation.class);
+    assertThat(cancunSpec.getEvm().getOperations()[PUSH0]).isInstanceOf(Push0Operation.class);
 
     assertProofOfStakeConfigIsEnabled(parisSpec);
     assertProofOfStakeConfigIsEnabled(cancunSpec);
@@ -180,9 +180,9 @@ public class MergeProtocolScheduleTest {
       assertThat(postParisSpec.getHardforkId()).isNotEqualTo(PARIS);
       // ensure PUSH0 is enabled from Shanghai onwards
       final int PUSH0 = 0x5f;
-      assertThat(parisSpec.getEvm().getOperationsUnsafe()[PUSH0])
+      assertThat(parisSpec.getEvm().getOperations()[PUSH0])
           .isInstanceOf(InvalidOperation.class);
-      assertThat(postParisSpec.getEvm().getOperationsUnsafe()[PUSH0])
+      assertThat(postParisSpec.getEvm().getOperations()[PUSH0])
           .isInstanceOf(Push0Operation.class);
 
       assertProofOfStakeConfigIsEnabled(parisSpec);
@@ -210,7 +210,7 @@ public class MergeProtocolScheduleTest {
 
   private static void assertProofOfStakeConfigIsEnabled(final ProtocolSpec spec) {
     assertThat(spec.isPoS()).isTrue();
-    assertThat(spec.getEvm().getOperationsUnsafe()[0x44]).isInstanceOf(PrevRanDaoOperation.class);
+    assertThat(spec.getEvm().getOperations()[0x44]).isInstanceOf(PrevRanDaoOperation.class);
     assertThat(spec.getDifficultyCalculator().nextDifficulty(-1, null)).isEqualTo(BigInteger.ZERO);
     assertThat(spec.getBlockReward()).isEqualTo(Wei.ZERO);
     assertThat(spec.isSkipZeroBlockRewards()).isTrue();

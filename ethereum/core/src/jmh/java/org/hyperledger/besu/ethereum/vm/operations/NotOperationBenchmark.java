@@ -15,13 +15,15 @@
 package org.hyperledger.besu.ethereum.vm.operations;
 
 import org.hyperledger.besu.evm.frame.MessageFrame;
+import org.hyperledger.besu.evm.operation.AndOperationOptimized;
 import org.hyperledger.besu.evm.operation.NotOperation;
 import org.hyperledger.besu.evm.operation.Operation;
 
 public class NotOperationBenchmark extends UnaryOperationBenchmark {
+  private final Operation operation = new NotOperation();
 
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
-    return NotOperation.staticOperation(frame);
+    return operation.execute(frame, null);
   }
 }

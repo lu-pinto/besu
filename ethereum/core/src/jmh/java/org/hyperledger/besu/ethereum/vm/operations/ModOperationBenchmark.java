@@ -15,6 +15,7 @@
 package org.hyperledger.besu.ethereum.vm.operations;
 
 import org.hyperledger.besu.evm.frame.MessageFrame;
+import org.hyperledger.besu.evm.operation.ModOperation;
 import org.hyperledger.besu.evm.operation.ModOperationOptimized;
 import org.hyperledger.besu.evm.operation.Operation;
 
@@ -42,10 +43,11 @@ public class ModOperationBenchmark extends BinaryArithmeticOperationBenchmark {
     "MOD_RANDOM_RANDOM"
   })
   private String caseName;
+  private final Operation operation = new ModOperationOptimized();
 
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
-    return ModOperationOptimized.staticOperation(frame);
+    return operation.execute(frame, null);
   }
 
   @Override

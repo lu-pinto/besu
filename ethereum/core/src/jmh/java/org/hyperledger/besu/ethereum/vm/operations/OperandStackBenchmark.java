@@ -49,7 +49,7 @@ public class OperandStackBenchmark {
   @OperationsPerInvocation(OPERATIONS_PER_INVOCATION)
   public void fillUp() {
     for (int i = 0; i < OPERATIONS_PER_INVOCATION; i++) {
-      OperandStack stack = new OperandStack(MessageFrame.DEFAULT_MAX_STACK_SIZE);
+      OperandStack stack = new OperandStack();
       for (int j = 0; j < stackDepth; j++) {
         stack.push(BYTES);
       }

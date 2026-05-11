@@ -229,20 +229,25 @@ public class ShiftOperationsPropertyBasedTest {
 
   // region Helper Methods
 
+  private static final ShlOperation SHL = new ShlOperation();
+  private static final ShlOperationOptimized SHL_OPTIMIZED = new ShlOperationOptimized();
+  private static final ShrOperation SHR = new ShrOperation();
+  private static final ShrOperationOptimized SHR_OPTIMIZED = new ShrOperationOptimized();
+
   private Bytes runShlOperation(final Bytes shift, final Bytes value) {
-    return runOperation(shift, value, ShlOperation::staticOperation);
+    return runOperation(shift, value, frame -> SHL.execute(frame, null));
   }
 
   private Bytes runShlOperationOptimized(final Bytes shift, final Bytes value) {
-    return runOperation(shift, value, ShlOperationOptimized::staticOperation);
+    return runOperation(shift, value, frame -> SHL_OPTIMIZED.execute(frame, null));
   }
 
   private Bytes runShrOperation(final Bytes shift, final Bytes value) {
-    return runOperation(shift, value, ShrOperation::staticOperation);
+    return runOperation(shift, value, frame -> SHR.execute(frame, null));
   }
 
   private Bytes runShrOperationOptimized(final Bytes shift, final Bytes value) {
-    return runOperation(shift, value, ShrOperationOptimized::staticOperation);
+    return runOperation(shift, value, frame -> SHR_OPTIMIZED.execute(frame, null));
   }
 
   @FunctionalInterface

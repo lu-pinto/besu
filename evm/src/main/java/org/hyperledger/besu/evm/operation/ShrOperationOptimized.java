@@ -32,38 +32,23 @@ import org.apache.tuweni.bytes.Bytes32;
  * <p>This implementation uses direct byte[] manipulation instead of Tuweni's Bytes.shiftRight() to
  * avoid intermediate object allocation and improve performance.
  */
-public class ShrOperationOptimized extends AbstractFixedCostOperation {
-
-  /** The Shr operation success result. */
-  static final OperationResult shrSuccess = new OperationResult(3, null);
-
+public class ShrOperationOptimized extends AbstractOperation {
   /**
    * Instantiates a new optimized Shr operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public ShrOperationOptimized(final GasCalculator gasCalculator) {
-    super(0x1c, "SHR", 2, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public ShrOperationOptimized() {
+    super(0x1c, "SHR", 2, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs optimized Shift Right Logical operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes shiftAmount = frame.popStackItem();
     final Bytes value = frame.popStackItem();
     if (value.isZero()) {
       frame.pushStackItem(Bytes.EMPTY);
-      return shrSuccess;
+      return new OperationResult();
     }
 
     final byte[] valueBytes = Bytes32.leftPad(value).toArrayUnsafe();
@@ -72,13 +57,13 @@ public class ShrOperationOptimized extends AbstractFixedCostOperation {
     // shift >= 256, push All 0s
     if (isShiftOverflow(shiftBytes)) {
       frame.pushStackItem(Bytes.EMPTY);
-      return shrSuccess;
+      return new OperationResult();
     }
 
     final int shift = shiftBytes.length == 0 ? 0 : (shiftBytes[shiftBytes.length - 1] & 0xFF);
 
     frame.pushStackItem(shr256(valueBytes, shift));
-    return shrSuccess;
+    return new OperationResult();
   }
 
   /**

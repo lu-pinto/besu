@@ -23,19 +23,18 @@ import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.bytes.MutableBytes32;
 
 /** The Call data load operation. */
-public class CallDataLoadOperation extends AbstractFixedCostOperation {
+public class CallDataLoadOperation extends AbstractOperation {
 
   /**
    * Instantiates a new Call data load operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public CallDataLoadOperation(final GasCalculator gasCalculator) {
-    super(0x35, "CALLDATALOAD", 1, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public CallDataLoadOperation() {
+    super(0x35, "CALLDATALOAD", 1, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
     final Bytes startWord = frame.popStackItem().trimLeadingZeros();
 
@@ -44,13 +43,13 @@ public class CallDataLoadOperation extends AbstractFixedCostOperation {
     // word should be zero.
     if (startWord.size() > 4) {
       frame.pushStackItem(Bytes.EMPTY);
-      return successResponse;
+      return new OperationResult();
     }
 
     final int offset = startWord.toInt();
     if (offset < 0) {
       frame.pushStackItem(Bytes.EMPTY);
-      return successResponse;
+      return new OperationResult();
     }
     final Bytes data = frame.getInputData();
     final MutableBytes32 res = MutableBytes32.create();
@@ -62,6 +61,6 @@ public class CallDataLoadOperation extends AbstractFixedCostOperation {
       frame.pushStackItem(Bytes.EMPTY);
     }
 
-    return successResponse;
+    return new OperationResult();
   }
 }

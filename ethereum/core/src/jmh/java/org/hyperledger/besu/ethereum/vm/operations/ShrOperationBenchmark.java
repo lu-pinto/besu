@@ -15,14 +15,16 @@
 package org.hyperledger.besu.ethereum.vm.operations;
 
 import org.hyperledger.besu.evm.frame.MessageFrame;
+import org.hyperledger.besu.evm.operation.AndOperationOptimized;
 import org.hyperledger.besu.evm.operation.Operation;
 import org.hyperledger.besu.evm.operation.ShrOperation;
 
 /** JMH benchmark for the original SHR (Shift Right Logical) operation. */
 public class ShrOperationBenchmark extends AbstractShiftOperationBenchmark {
+  private final Operation operation = new ShrOperation();
 
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
-    return ShrOperation.staticOperation(frame);
+    return operation.execute(frame, null);
   }
 }

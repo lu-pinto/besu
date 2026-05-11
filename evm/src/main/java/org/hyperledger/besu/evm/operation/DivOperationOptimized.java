@@ -23,33 +23,17 @@ import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
 /** The Div operation. */
-public class DivOperationOptimized extends AbstractFixedCostOperation {
-
-  /** The Div success. */
-  static final OperationResult divSuccess = new OperationResult(5, null);
-
+public class DivOperationOptimized extends AbstractOperation {
   /**
    * Instantiates a new Div operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public DivOperationOptimized(final GasCalculator gasCalculator) {
-    super(0x04, "DIV", 2, 1, gasCalculator, gasCalculator.getLowTierGasCost());
+  public DivOperationOptimized() {
+    super(0x04, "DIV", 2, 1, null);
   }
 
   @Override
-  public OperationResult executeFixedCostOperation(final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs Div operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
-
+  public OperationResult execute(final MessageFrame frame, final EVM evm) {
     final Bytes value0 = frame.popStackItem();
     final Bytes value1 = frame.popStackItem();
 
@@ -60,6 +44,6 @@ public class DivOperationOptimized extends AbstractFixedCostOperation {
       UInt256 b1 = UInt256.fromBytesBE(value1.toArrayUnsafe());
       frame.pushStackItem(Bytes.wrap(b0.div(b1).toBytesBE()));
     }
-    return divSuccess;
+    return new OperationResult();
   }
 }

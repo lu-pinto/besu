@@ -30,7 +30,6 @@ import org.hyperledger.besu.ethereum.core.BlockHeaderTestFixture;
 import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
 import org.hyperledger.besu.evm.frame.BlockValues;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.CancunGasCalculator;
 import org.hyperledger.besu.evm.operation.BlockHashOperation;
 
 import java.util.Optional;
@@ -146,7 +145,7 @@ class BlockchainBasedBlockHashLookupTest {
   private void assertHashForBlockNumber(final int blockNumber, final Hash hash) {
     clearInvocations(messageFrameMock, blockValuesMock);
 
-    BlockHashOperation op = new BlockHashOperation(new CancunGasCalculator());
+    BlockHashOperation op = new BlockHashOperation();
     when(messageFrameMock.getRemainingGas()).thenReturn(10_000_000L);
     when(messageFrameMock.popStackItem()).thenReturn(Bytes.ofUnsignedInt(blockNumber));
     when(messageFrameMock.getBlockValues()).thenReturn(blockValuesMock);

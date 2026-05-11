@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.PragueGasCalculator;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 import org.hyperledger.besu.evm.testutils.TestMessageFrameBuilder;
 
@@ -31,7 +30,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 /** Unit tests for {@link ExchangeOperation}. */
 class ExchangeOperationTest {
 
-  private final ExchangeOperation operation = new ExchangeOperation(new PragueGasCalculator());
+  private final ExchangeOperation operation = new ExchangeOperation();
 
   @Test
   void testDecodePair_immediate0x9d() {

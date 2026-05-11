@@ -20,8 +20,9 @@ import org.hyperledger.besu.evm.operation.Operation;
 
 public class AndOperationOptimizedBenchmark extends BinaryOperationBenchmark {
 
+  private final Operation operation = new AndOperationOptimized();
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
-    return AndOperationOptimized.staticOperation(frame);
+    return operation.execute(frame, null);
   }
 }

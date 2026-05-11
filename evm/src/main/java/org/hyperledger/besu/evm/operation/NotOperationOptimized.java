@@ -22,38 +22,24 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The Not operation. */
-public class NotOperationOptimized extends AbstractFixedCostOperation {
-
-  /** The Not operation success result. */
-  static final OperationResult notSuccess = new OperationResult(3, null);
+public class NotOperationOptimized extends AbstractOperation {
 
   /**
    * Instantiates a new Not operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public NotOperationOptimized(final GasCalculator gasCalculator) {
-    super(0x19, "NOT", 1, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public NotOperationOptimized() {
+    super(0x19, "NOT", 1, 1, null);
   }
 
   @Override
-  public OperationResult executeFixedCostOperation(final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs Not operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
+  public OperationResult execute(final MessageFrame frame, final EVM evm) {
     final Bytes value = frame.popStackItem();
     UInt256 uint256 = UInt256.fromBytesBE(value.toArrayUnsafe());
 
     final UInt256 result = uint256.not();
     byte[] resultArray = result.toBytesBE();
     frame.pushStackItem(Bytes.wrap(resultArray));
-    return notSuccess;
+    return new OperationResult();
   }
 }

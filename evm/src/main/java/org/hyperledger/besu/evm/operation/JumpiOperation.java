@@ -22,44 +22,28 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The JUMPI operation. */
-public class JumpiOperation extends AbstractFixedCostOperation {
-
-  private static final OperationResult invalidJumpResponse =
-      new Operation.OperationResult(10L, ExceptionalHaltReason.INVALID_JUMP_DESTINATION);
-  private static final OperationResult jumpiResponse = new OperationResult(10L, null, 0);
-  private static final OperationResult nojumpResponse = new OperationResult(10L, null);
+public class JumpiOperation extends AbstractOperation {
 
   private static final JumpService jumpService = new JumpService();
 
   /**
    * Instantiates a new JUMPI operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public JumpiOperation(final GasCalculator gasCalculator) {
-    super(0x57, "JUMPI", 2, 0, gasCalculator, gasCalculator.getHighTierGasCost());
+  public JumpiOperation() {
+    super(0x57, "JUMPI", 2, 0, null);
   }
 
   @Override
-  public OperationResult executeFixedCostOperation(final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs Jump operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
+  public OperationResult execute(final MessageFrame frame, final EVM evm) {
     final Bytes dest = frame.popStackItem().trimLeadingZeros();
     final Bytes condition = frame.popStackItem().trimLeadingZeros();
 
     // If condition is zero (false), no jump is will be performed. Therefore, skip the test.
-    if (condition.size() == 0) {
-      return nojumpResponse;
+    if (condition.isEmpty()) {
+      return new OperationResult(10L, null);
     }
 
-    return jumpService.performJump(frame, dest, jumpiResponse, invalidJumpResponse);
+    return jumpService.performJump(frame, dest);
   }
 }

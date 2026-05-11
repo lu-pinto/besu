@@ -26,7 +26,6 @@ import org.hyperledger.besu.ethereum.core.ExecutionContextTestFixture;
 import org.hyperledger.besu.ethereum.core.MessageFrameTestFixture;
 import org.hyperledger.besu.ethereum.worldstate.WorldStateArchive;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.operation.SelfBalanceOperation;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
 
@@ -55,7 +54,7 @@ public class SelfBalanceOperationBenchmark {
 
   @Setup
   public void prepare() throws Exception {
-    operation = new SelfBalanceOperation(mock(GasCalculator.class));
+    operation = new SelfBalanceOperation();
     final Blockchain blockchain = mock(Blockchain.class);
     final Address address = Address.fromHexString("0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef");
 

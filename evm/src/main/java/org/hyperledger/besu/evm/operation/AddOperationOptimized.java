@@ -22,34 +22,18 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The Add operation. */
-public class AddOperationOptimized extends AbstractFixedCostOperation {
-
-  /** The Add operation success result. */
-  static final OperationResult addSuccess = new OperationResult(3, null);
-
+public class AddOperationOptimized extends AbstractOperation {
   /**
    * Instantiates a new Add operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public AddOperationOptimized(final GasCalculator gasCalculator) {
-    super(0x01, "ADD", 2, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public AddOperationOptimized() {
+    super(0x01, "ADD", 2, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Static operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
-
     final Bytes value0 = frame.popStackItem();
     final Bytes value1 = frame.popStackItem();
 
@@ -58,6 +42,6 @@ public class AddOperationOptimized extends AbstractFixedCostOperation {
     byte[] resultArray = UInt256.add(b0, b1);
     frame.pushStackItem(Bytes.wrap(resultArray));
 
-    return addSuccess;
+    return new OperationResult();
   }
 }

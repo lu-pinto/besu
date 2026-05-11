@@ -15,42 +15,26 @@
 package org.hyperledger.besu.evm.operation;
 
 import org.hyperledger.besu.evm.EVM;
-import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 /** The Jump operation. */
-public class JumpOperation extends AbstractFixedCostOperation {
-
-  private static final Operation.OperationResult invalidJumpResponse =
-      new Operation.OperationResult(8L, ExceptionalHaltReason.INVALID_JUMP_DESTINATION);
-  private static final OperationResult jumpResponse = new OperationResult(8L, null, 0);
+public class JumpOperation extends AbstractOperation {
 
   private static final JumpService jumpService = new JumpService();
 
   /**
    * Instantiates a new Jump operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public JumpOperation(final GasCalculator gasCalculator) {
-    super(0x56, "JUMP", 2, 0, gasCalculator, gasCalculator.getMidTierGasCost());
+  public JumpOperation() {
+    super(0x56, "JUMP", 2, 0, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs Jump operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     return jumpService.performJump(
-        frame, frame.popStackItem().trimLeadingZeros(), jumpResponse, invalidJumpResponse);
+      frame, frame.popStackItem().trimLeadingZeros());
   }
 }

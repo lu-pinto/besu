@@ -22,23 +22,22 @@ import org.hyperledger.besu.evm.internal.Words;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The Return data size operation. */
-public class ReturnDataSizeOperation extends AbstractFixedCostOperation {
+public class ReturnDataSizeOperation extends AbstractOperation {
 
   /**
    * Instantiates a new Return data size operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public ReturnDataSizeOperation(final GasCalculator gasCalculator) {
-    super(0x3D, "RETURNDATASIZE", 0, 1, gasCalculator, gasCalculator.getBaseTierGasCost());
+  public ReturnDataSizeOperation() {
+    super(0x3D, "RETURNDATASIZE", 0, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
     final Bytes returnData = frame.getReturnData();
     frame.pushStackItem(Words.longBytes(returnData.size()));
 
-    return successResponse;
+    return new OperationResult();
   }
 }

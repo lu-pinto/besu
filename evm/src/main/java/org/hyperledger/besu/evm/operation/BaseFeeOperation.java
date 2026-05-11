@@ -23,25 +23,24 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import java.util.Optional;
 
 /** The Base fee operation. */
-public class BaseFeeOperation extends AbstractFixedCostOperation {
+public class BaseFeeOperation extends AbstractOperation {
 
   /**
    * Instantiates a new Base fee operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public BaseFeeOperation(final GasCalculator gasCalculator) {
-    super(0x48, "BASEFEE", 0, 1, gasCalculator, gasCalculator.getBaseTierGasCost());
+  public BaseFeeOperation() {
+    super(0x48, "BASEFEE", 0, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
     final Optional<Wei> maybeBaseFee = frame.getBlockValues().getBaseFee();
     if (maybeBaseFee.isEmpty()) {
-      return new Operation.OperationResult(gasCost, ExceptionalHaltReason.INVALID_OPERATION);
+      return new OperationResult(0, ExceptionalHaltReason.INVALID_OPERATION);
     }
     frame.pushStackItem(maybeBaseFee.orElseThrow());
-    return successResponse;
+    return new OperationResult();
   }
 }

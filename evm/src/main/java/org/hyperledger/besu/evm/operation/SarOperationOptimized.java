@@ -31,39 +31,24 @@ import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
 /** The Sar operation. */
-public class SarOperationOptimized extends AbstractFixedCostOperation {
-
-  /** The Sar operation success result. */
-  static final OperationResult sarSuccess = new OperationResult(3, null);
-
+public class SarOperationOptimized extends AbstractOperation {
   /**
    * Instantiates a new Sar operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public SarOperationOptimized(final GasCalculator gasCalculator) {
-    super(0x1d, "SAR", 2, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public SarOperationOptimized() {
+    super(0x1d, "SAR", 2, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs sar operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes shiftAmount = frame.popStackItem();
     final Bytes value = frame.popStackItem();
     byte[] valueBytes = value.toArrayUnsafe();
     if (Arrays.equals(valueBytes, ALL_ONES_BYTES)) {
       frame.pushStackItem(ALL_ONES);
-      return sarSuccess;
+      return new OperationResult();
     }
     valueBytes = Bytes32.leftPad(value).toArrayUnsafe();
     final byte[] shiftBytes = shiftAmount.toArrayUnsafe();
@@ -72,12 +57,12 @@ public class SarOperationOptimized extends AbstractFixedCostOperation {
     // shift >= 256, push All 1s if negative, All 0s otherwise
     if (isShiftOverflow(shiftBytes)) {
       frame.pushStackItem(negative ? ALL_ONES : Bytes.EMPTY);
-      return sarSuccess;
+      return new OperationResult();
     }
     final int shift = shiftBytes.length == 0 ? 0 : (shiftBytes[shiftBytes.length - 1] & 0xFF);
 
     frame.pushStackItem(sar256(valueBytes, shift, negative));
-    return sarSuccess;
+    return new OperationResult();
   }
 
   /**

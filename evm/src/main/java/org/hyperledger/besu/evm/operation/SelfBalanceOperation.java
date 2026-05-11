@@ -23,24 +23,23 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The Self balance operation. */
-public class SelfBalanceOperation extends AbstractFixedCostOperation {
+public class SelfBalanceOperation extends AbstractOperation {
 
   /**
    * Instantiates a new Self balance operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public SelfBalanceOperation(final GasCalculator gasCalculator) {
-    super(0x47, "SELFBALANCE", 0, 1, gasCalculator, gasCalculator.getLowTierGasCost());
+  public SelfBalanceOperation() {
+    super(0x47, "SELFBALANCE", 0, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
     final Address accountAddress = frame.getRecipientAddress();
     final Account account = getAccount(accountAddress, frame);
     frame.pushStackItem(account == null ? Bytes.EMPTY : account.getBalance());
 
-    return successResponse;
+    return new OperationResult();
   }
 }

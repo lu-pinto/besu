@@ -17,13 +17,17 @@ package org.hyperledger.besu.evm.operation;
 /** Encapsulates a group of {@link Operation}s used together. */
 public class OperationRegistry {
 
-  private static final int NUM_OPERATIONS = 256;
+  public static final int NUM_OPERATIONS = 256;
 
   private final Operation[] operations;
+  private final int[] staticGas;
+  private final int[] pcIncrements;
 
   /** Instantiates a new Operation registry. */
   public OperationRegistry() {
     this.operations = new Operation[NUM_OPERATIONS];
+    this.staticGas = new int[NUM_OPERATIONS];
+    this.pcIncrements = new int[NUM_OPERATIONS];
   }
 
   /**
@@ -32,17 +36,7 @@ public class OperationRegistry {
    * @param opcode the opcode
    * @return the operation
    */
-  public Operation get(final byte opcode) {
-    return get(opcode & 0xff);
-  }
-
-  /**
-   * Get operation.
-   *
-   * @param opcode the opcode
-   * @return the operation
-   */
-  public Operation get(final int opcode) {
+  public Operation getOperation(final int opcode) {
     return operations[opcode];
   }
 
@@ -51,33 +45,18 @@ public class OperationRegistry {
    *
    * @param operation the operation
    */
-  public void put(final Operation operation) {
+  public void put(final Operation operation, final int staticGas, final int pcIncrement) {
     operations[operation.getOpcode()] = operation;
+    this.staticGas[operation.getOpcode()] = staticGas;
+    pcIncrements[operation.getOpcode()] = pcIncrement;
   }
 
-  /**
-   * Gets or default.
-   *
-   * @param opcode the opcode
-   * @param defaultOperation the default operation
-   * @return the or default
-   */
-  public Operation getOrDefault(final byte opcode, final Operation defaultOperation) {
-    final Operation operation = get(opcode);
-
-    if (operation == null) {
-      return defaultOperation;
-    }
-
-    return operation;
+  public int getStaticGas(final int opcode) {
+    return staticGas[opcode];
   }
 
-  /**
-   * Get operations.
-   *
-   * @return the operation [ ]
-   */
-  public Operation[] getOperations() {
-    return operations;
+  public int getPcIncrement(final int opcode) {
+    return pcIncrements[opcode];
   }
+
 }

@@ -22,23 +22,22 @@ import org.hyperledger.besu.evm.internal.Words;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The Call data size operation. */
-public class CallDataSizeOperation extends AbstractFixedCostOperation {
+public class CallDataSizeOperation extends AbstractOperation {
 
   /**
    * Instantiates a new Call data size operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public CallDataSizeOperation(final GasCalculator gasCalculator) {
-    super(0x36, "CALLDATASIZE", 0, 1, gasCalculator, gasCalculator.getBaseTierGasCost());
+  public CallDataSizeOperation() {
+    super(0x36, "CALLDATASIZE", 0, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
     final Bytes callData = frame.getInputData();
     frame.pushStackItem(Words.intBytes(callData.size()));
 
-    return successResponse;
+    return new OperationResult();
   }
 }

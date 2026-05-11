@@ -15,7 +15,6 @@
 package org.hyperledger.besu.evm.operation;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hyperledger.besu.evm.operation.PushOperation.staticOperation;
 
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
@@ -34,50 +33,59 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class PushOperationTest {
 
-  private static final byte[] byteCode = new byte[] {0x00, 0x01, 0x02, 0x03};
-  private static final MessageFrame frame =
-      MessageFrame.builder()
-          .worldUpdater(new ToyWorld())
-          .originator(Address.ZERO)
-          .gasPrice(Wei.ONE)
-          .blobGasPrice(Wei.ONE)
-          .blockValues(new ToyBlockValues())
-          .miningBeneficiary(Address.ZERO)
-          .blockHashLookup((__, ___) -> Hash.ZERO)
-          .type(MessageFrame.Type.MESSAGE_CALL)
-          .initialGas(1)
-          .address(Address.ZERO)
-          .contract(Address.ZERO)
-          .inputData(Bytes32.ZERO)
-          .sender(Address.ZERO)
-          .value(Wei.ZERO)
-          .apparentValue(Wei.ZERO)
-          .code(Code.EMPTY_CODE)
-          .completer(messageFrame -> {})
-          .build();
-  ;
+  private static final Bytes BYTE_CODE = Bytes.wrap(new byte[] {0x00, 0x01, 0x02, 0x03});
+
+  private static MessageFrame buildFrame(final int pc, final int pushSize) {
+    final MessageFrame frame =
+        MessageFrame.builder()
+            .worldUpdater(new ToyWorld())
+            .originator(Address.ZERO)
+            .gasPrice(Wei.ONE)
+            .blobGasPrice(Wei.ONE)
+            .blockValues(new ToyBlockValues())
+            .miningBeneficiary(Address.ZERO)
+            .blockHashLookup((__, ___) -> Hash.ZERO)
+            .type(MessageFrame.Type.MESSAGE_CALL)
+            .initialGas(1)
+            .address(Address.ZERO)
+            .contract(Address.ZERO)
+            .inputData(Bytes32.ZERO)
+            .sender(Address.ZERO)
+            .value(Wei.ZERO)
+            .apparentValue(Wei.ZERO)
+            .code(new Code(BYTE_CODE))
+            .completer(messageFrame -> {})
+            .build();
+    frame.setCurrentOperation(new PushOperation(pushSize));
+    frame.setPC(pc);
+    return frame;
+  }
 
   @Test
   void unpaddedPushDoesntReachEndCode() {
-    staticOperation(frame, byteCode, 0, byteCode.length - 2);
-    assertThat(frame.getStackItem(0).equals(Bytes.fromHexString("0x0102"))).isTrue();
+    final MessageFrame frame = buildFrame(0, 2);
+    new PushOperation(2).execute(frame, null);
+    assertThat(frame.getStackItem(0)).isEqualTo(Bytes.fromHexString("0x0102"));
   }
 
   @Test
   void unpaddedPushUpReachesEndCode() {
-    staticOperation(frame, byteCode, 0, byteCode.length - 1);
-    assertThat(frame.getStackItem(0).equals(Bytes.fromHexString("0x010203"))).isTrue();
+    final MessageFrame frame = buildFrame(0, 3);
+    new PushOperation(3).execute(frame, null);
+    assertThat(frame.getStackItem(0)).isEqualTo(Bytes.fromHexString("0x010203"));
   }
 
   @Test
   void paddedPush() {
-    staticOperation(frame, byteCode, 1, byteCode.length - 1);
-    assertThat(frame.getStackItem(0).equals(Bytes.fromHexString("0x020300"))).isTrue();
+    final MessageFrame frame = buildFrame(1, 3);
+    new PushOperation(3).execute(frame, null);
+    assertThat(frame.getStackItem(0)).isEqualTo(Bytes.fromHexString("0x020300"));
   }
 
   @Test
   void oobPush() {
-    staticOperation(frame, byteCode, byteCode.length, byteCode.length - 1);
-    assertThat(frame.getStackItem(0).equals(Bytes.EMPTY)).isTrue();
+    final MessageFrame frame = buildFrame(BYTE_CODE.size(), 3);
+    new PushOperation(3).execute(frame, null);
+    assertThat(frame.getStackItem(0)).isEqualTo(Bytes.EMPTY);
   }
 }

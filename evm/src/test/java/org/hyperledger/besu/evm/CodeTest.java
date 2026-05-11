@@ -49,7 +49,7 @@ class CodeTest {
 
   @Test
   void shouldReuseJumpDestMap() {
-    final JumpOperation operation = new JumpOperation(evm.getGasCalculator());
+    final JumpOperation operation = new JumpOperation();
     final Bytes jumpBytes = Bytes.fromHexString("0x6003565b00");
     final Code getsCached = spy(new Code(jumpBytes));
     MessageFrame frame = createJumpFrame(getsCached);

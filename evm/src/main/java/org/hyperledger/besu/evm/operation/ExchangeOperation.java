@@ -18,7 +18,6 @@ import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
-import org.hyperledger.besu.evm.internal.UnderflowException;
 
 import org.apache.tuweni.bytes.Bytes;
 
@@ -32,46 +31,23 @@ import org.apache.tuweni.bytes.Bytes;
  * <p>The immediate operand uses a special encoding to preserve backward compatibility by avoiding
  * bytes that could be confused with JUMPDEST (0x5b) or PUSH opcodes (0x60-0x7f).
  */
-public class ExchangeOperation extends AbstractFixedCostOperation {
+public class ExchangeOperation extends AbstractOperation {
 
   /** The EXCHANGE opcode value. */
   public static final int OPCODE = 0xe8;
 
-  /** Pre-computed success result with pcIncrement = 2. */
-  static final OperationResult EXCHANGE_SUCCESS = new OperationResult(3, null, 2);
-
-  /** Pre-computed invalid immediate result. */
-  static final OperationResult INVALID_IMMEDIATE =
-      new OperationResult(3, ExceptionalHaltReason.INVALID_OPERATION, 2);
-
-  /** Pre-computed underflow result with pcIncrement = 2. */
-  static final OperationResult UNDERFLOW_RESPONSE =
-      new OperationResult(3, ExceptionalHaltReason.INSUFFICIENT_STACK_ITEMS, 2);
-
   /**
    * Instantiates a new EXCHANGE operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public ExchangeOperation(final GasCalculator gasCalculator) {
-    super(OPCODE, "EXCHANGE", 0, 0, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public ExchangeOperation() {
+    super(OPCODE, "EXCHANGE", 0, 0, null);
   }
 
   @Override
-  public OperationResult executeFixedCostOperation(final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame, frame.getCode().getBytes().toArrayUnsafe(), frame.getPC());
-  }
-
-  /**
-   * Performs EXCHANGE operation directly for hot-path execution.
-   *
-   * @param frame the message frame
-   * @param code the bytecode array
-   * @param pc the current program counter
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(
-      final MessageFrame frame, final byte[] code, final int pc) {
+  public OperationResult execute(final MessageFrame frame, final EVM evm) {
+    final byte[] code = frame.getCode().getBytes().toArrayUnsafe();
+    final int pc = frame.getPC();
     // Get immediate byte, treating end-of-code as 0
     final int imm = (pc + 1 >= code.length) ? 0 : code[pc + 1] & 0xFF;
 
@@ -80,24 +56,20 @@ public class ExchangeOperation extends AbstractFixedCostOperation {
 
     // Check for invalid immediate range (80-127)
     if (packed == Eip8024Decoder.INVALID_PAIR) {
-      return INVALID_IMMEDIATE;
+      return new OperationResult(0, ExceptionalHaltReason.INVALID_OPERATION);
     }
 
     // Extract n and m from packed value
     final int n = packed & 0xFF;
     final int m = (packed >>> 8) & 0xFF;
 
-    try {
-      // Swap the (n+1)'th item (index n) with the (m+1)'th item (index m)
-      // In Besu's 0-indexed stack, (n+1)'th is index n, (m+1)'th is index m
-      final Bytes itemN = frame.getStackItem(n);
-      final Bytes itemM = frame.getStackItem(m);
-      frame.setStackItem(n, itemM);
-      frame.setStackItem(m, itemN);
-      return EXCHANGE_SUCCESS;
-    } catch (final UnderflowException ufe) {
-      return UNDERFLOW_RESPONSE;
-    }
+    // Swap the (n+1)'th item (index n) with the (m+1)'th item (index m)
+    // In Besu's 0-indexed stack, (n+1)'th is index n, (m+1)'th is index m
+    final Bytes itemN = frame.getStackItem(n);
+    final Bytes itemM = frame.getStackItem(m);
+    frame.setStackItem(n, itemM);
+    frame.setStackItem(m, itemN);
+    return new OperationResult();
   }
 
   /**

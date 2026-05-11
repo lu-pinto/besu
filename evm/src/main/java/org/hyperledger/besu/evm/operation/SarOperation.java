@@ -23,10 +23,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The Sar operation. */
-public class SarOperation extends AbstractFixedCostOperation {
-
-  /** The Sar operation success result. */
-  static final OperationResult sarSuccess = new OperationResult(3, null);
+public class SarOperation extends AbstractOperation {
 
   private static final Bytes ALL_BITS =
       Bytes.fromHexString("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -34,25 +31,14 @@ public class SarOperation extends AbstractFixedCostOperation {
   /**
    * Instantiates a new Sar operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public SarOperation(final GasCalculator gasCalculator) {
-    super(0x1d, "SAR", 2, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public SarOperation() {
+    super(0x1d, "SAR", 2, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs sar operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     Bytes shiftAmount = frame.popStackItem();
     final Bytes value = leftPad(frame.popStackItem());
     final boolean negativeNumber = value.get(0) < 0;
@@ -75,6 +61,6 @@ public class SarOperation extends AbstractFixedCostOperation {
         frame.pushStackItem(result);
       }
     }
-    return sarSuccess;
+    return new OperationResult();
   }
 }

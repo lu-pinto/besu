@@ -39,10 +39,9 @@ public class BlobHashOperation extends AbstractOperation {
   /**
    * Instantiates a new BlobHash operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public BlobHashOperation(final GasCalculator gasCalculator) {
-    super(OPCODE, "BLOBHASH", 1, 1, gasCalculator);
+  public BlobHashOperation() {
+    super(OPCODE, "BLOBHASH", 1, 1, null);
   }
 
   @Override

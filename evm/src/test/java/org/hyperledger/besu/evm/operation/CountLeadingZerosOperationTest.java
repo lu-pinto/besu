@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
 
 import java.util.stream.Stream;
@@ -38,7 +37,7 @@ class CountLeadingZerosOperationTest {
 
   @BeforeEach
   void setUp() {
-    operation = new CountLeadingZerosOperation(mock(GasCalculator.class));
+    operation = new CountLeadingZerosOperation();
     frame = mock(MessageFrame.class);
   }
 
@@ -63,7 +62,7 @@ class CountLeadingZerosOperationTest {
 
     when(frame.popStackItem()).thenReturn(input);
 
-    operation.executeFixedCostOperation(frame, mock(EVM.class));
+    operation.execute(frame, mock(EVM.class));
     verify(frame).pushStackItem(expected);
   }
 }

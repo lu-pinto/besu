@@ -15,6 +15,7 @@
 package org.hyperledger.besu.ethereum.vm.operations;
 
 import org.hyperledger.besu.evm.frame.MessageFrame;
+import org.hyperledger.besu.evm.operation.AndOperationOptimized;
 import org.hyperledger.besu.evm.operation.EqOperation;
 import org.hyperledger.besu.evm.operation.Operation;
 
@@ -48,6 +49,7 @@ public class EqOperationBenchmark extends BinaryOperationBenchmark {
   }
 
   @Param private MODE mode;
+  private final Operation operation = new EqOperation();
 
   @Setup
   @Override
@@ -172,6 +174,6 @@ public class EqOperationBenchmark extends BinaryOperationBenchmark {
 
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
-    return EqOperation.staticOperation(frame);
+    return operation.execute(frame, null);
   }
 }

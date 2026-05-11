@@ -14,6 +14,7 @@
  */
 package org.hyperledger.besu.ethereum.vm.operations;
 
+import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.operation.Operation;
 
@@ -54,17 +55,25 @@ public abstract class ImmediateByteOperationBenchmark {
 
   @Setup
   public void setUp() {
-    frame = BenchmarkHelper.createMessageCallFrame();
+    code = new byte[] {(byte) getOpcode(), getImmediate()};
+    frame = BenchmarkHelper.createMessageCallFrameWithCode(new Code(Bytes.wrap(code)));
+    frame.setCurrentOperation(getOperation());
+    frame.setPC(0);
     valuePool = new Bytes[SAMPLE_SIZE];
     BenchmarkHelper.fillPool(valuePool);
     index = 0;
-
-    code = new byte[] {(byte) getOpcode(), getImmediate()};
 
     for (int i = 0; i < STACK_DEPTH; i++) {
       frame.pushStackItem(valuePool[i]);
     }
   }
+
+  /**
+   * Returns the operation instance used by this benchmark.
+   *
+   * @return the operation
+   */
+  protected abstract Operation getOperation();
 
   /**
    * Returns the opcode for this operation.
@@ -81,14 +90,13 @@ public abstract class ImmediateByteOperationBenchmark {
   protected abstract byte getImmediate();
 
   /**
-   * Invokes the operation.
+   * Invokes the operation. The frame is pre-configured with the test code, current operation, and
+   * PC=0.
    *
    * @param frame the message frame
-   * @param code the bytecode array containing opcode and immediate
-   * @param pc the program counter (typically 0 for benchmarks)
    * @return the operation result
    */
-  protected abstract Operation.OperationResult invoke(MessageFrame frame, byte[] code, int pc);
+  protected abstract Operation.OperationResult invoke(MessageFrame frame);
 
   /**
    * Returns the stack size change after operation execution. Positive means items were added,
@@ -100,7 +108,8 @@ public abstract class ImmediateByteOperationBenchmark {
 
   @Benchmark
   public void executeOperation(final Blackhole blackhole) {
-    blackhole.consume(invoke(frame, code, 0));
+    frame.setPC(0);
+    blackhole.consume(invoke(frame));
 
     int delta = getStackDelta();
     if (delta > 0) {

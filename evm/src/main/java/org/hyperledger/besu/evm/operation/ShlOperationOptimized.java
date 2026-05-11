@@ -31,38 +31,24 @@ import org.apache.tuweni.bytes.Bytes32;
  * <p>This implementation uses direct byte[] manipulation instead of Tuweni's Bytes.shiftLeft() to
  * avoid intermediate object allocation and improve performance.
  */
-public class ShlOperationOptimized extends AbstractFixedCostOperation {
-
-  /** The Shl operation success result. */
-  static final OperationResult shlSuccess = new OperationResult(3, null);
+public class ShlOperationOptimized extends AbstractOperation {
 
   /**
    * Instantiates a new optimized Shl operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public ShlOperationOptimized(final GasCalculator gasCalculator) {
-    super(0x1b, "SHL", 2, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public ShlOperationOptimized() {
+    super(0x1b, "SHL", 2, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs optimized Shift Left operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes shiftAmount = frame.popStackItem();
     final Bytes value = frame.popStackItem();
     if (value.isZero()) {
       frame.pushStackItem(Bytes.EMPTY);
-      return shlSuccess;
+      return new OperationResult();
     }
 
     final byte[] valueBytes = Bytes32.leftPad(value).toArrayUnsafe();
@@ -71,13 +57,13 @@ public class ShlOperationOptimized extends AbstractFixedCostOperation {
     // shift >= 256, push All 0s
     if (isShiftOverflow(shiftBytes)) {
       frame.pushStackItem(Bytes.EMPTY);
-      return shlSuccess;
+      return new OperationResult();
     }
 
     final int shift = shiftBytes.length == 0 ? 0 : (shiftBytes[shiftBytes.length - 1] & 0xFF);
 
     frame.pushStackItem(shl256(valueBytes, shift));
-    return shlSuccess;
+    return new OperationResult();
   }
 
   /**

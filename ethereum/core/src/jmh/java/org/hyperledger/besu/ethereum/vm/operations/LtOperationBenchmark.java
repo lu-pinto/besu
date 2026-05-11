@@ -15,13 +15,15 @@
 package org.hyperledger.besu.ethereum.vm.operations;
 
 import org.hyperledger.besu.evm.frame.MessageFrame;
+import org.hyperledger.besu.evm.operation.AndOperationOptimized;
 import org.hyperledger.besu.evm.operation.LtOperation;
 import org.hyperledger.besu.evm.operation.Operation;
 
 public class LtOperationBenchmark extends BinaryOperationBenchmark {
+  private final Operation operation = new LtOperation();
 
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
-    return LtOperation.staticOperation(frame);
+    return operation.execute(frame, null);
   }
 }

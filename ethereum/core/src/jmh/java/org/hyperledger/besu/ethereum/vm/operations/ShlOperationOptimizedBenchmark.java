@@ -20,9 +20,10 @@ import org.hyperledger.besu.evm.operation.ShlOperationOptimized;
 
 /** JMH benchmark for the optimized SHL (Shift Left) operation. */
 public class ShlOperationOptimizedBenchmark extends AbstractShiftOperationBenchmark {
+  private final Operation operation = new ShlOperationOptimized();
 
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
-    return ShlOperationOptimized.staticOperation(frame);
+    return operation.execute(frame, null);
   }
 }

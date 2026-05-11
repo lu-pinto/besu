@@ -22,24 +22,22 @@ import org.hyperledger.besu.evm.internal.Words;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The Gas operation. */
-public class GasOperation extends AbstractFixedCostOperation {
+public class GasOperation extends AbstractOperation {
 
   /**
    * Instantiates a new Gas operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public GasOperation(final GasCalculator gasCalculator) {
-    super(0x5A, "GAS", 0, 1, gasCalculator, gasCalculator.getBaseTierGasCost());
+  public GasOperation() {
+    super(0x5A, "GAS", 0, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    final long gasRemaining = frame.getRemainingGas() - gasCost;
-    final Bytes value = Words.longBytes(gasRemaining);
+    final Bytes value = Words.longBytes(frame.getRemainingGas() - evm.getStaticGas(getOpcode()));
     frame.pushStackItem(value);
 
-    return successResponse;
+    return new OperationResult();
   }
 }

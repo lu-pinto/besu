@@ -350,12 +350,15 @@ public class SarOperationPropertyBasedTest {
 
   // region Helper Methods
 
+  private static final SarOperation SAR = new SarOperation();
+  private static final SarOperationOptimized SAR_OPTIMIZED = new SarOperationOptimized();
+
   private Bytes runSarOperation(final Bytes shift, final Bytes value) {
-    return runOperation(shift, value, SarOperation::staticOperation);
+    return runOperation(shift, value, frame -> SAR.execute(frame, null));
   }
 
   private Bytes runSarOperationOptimized(final Bytes shift, final Bytes value) {
-    return runOperation(shift, value, SarOperationOptimized::staticOperation);
+    return runOperation(shift, value, frame -> SAR_OPTIMIZED.execute(frame, null));
   }
 
   @FunctionalInterface

@@ -44,6 +44,7 @@ public class SDivOperationBenchmark extends SignedBinaryArithmeticOperationBench
     "SDIV_RANDOM_RANDOM"
   })
   private String caseName;
+  private final Operation operation = new SDivOperationOptimized();
 
   @Override
   protected String opCode() {
@@ -57,6 +58,6 @@ public class SDivOperationBenchmark extends SignedBinaryArithmeticOperationBench
 
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
-    return SDivOperationOptimized.staticOperation(frame);
+    return operation.execute(frame, null);
   }
 }

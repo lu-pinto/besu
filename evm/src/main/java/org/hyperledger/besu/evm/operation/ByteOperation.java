@@ -21,18 +21,13 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The Byte operation. */
-public class ByteOperation extends AbstractFixedCostOperation {
-
-  /** The Byte operation success result. */
-  static final OperationResult byteSuccess = new OperationResult(3, null);
-
+public class ByteOperation extends AbstractOperation {
   /**
    * Instantiates a new Byte operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public ByteOperation(final GasCalculator gasCalculator) {
-    super(0x1A, "BYTE", 2, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public ByteOperation() {
+    super(0x1A, "BYTE", 2, 1, null);
   }
 
   private static Bytes getByte(final Bytes seq, final Bytes offset) {
@@ -53,18 +48,8 @@ public class ByteOperation extends AbstractFixedCostOperation {
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Static Byte operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes value0 = frame.popStackItem();
     final Bytes value1 = frame.popStackItem();
 
@@ -73,6 +58,6 @@ public class ByteOperation extends AbstractFixedCostOperation {
 
     frame.pushStackItem(result);
 
-    return byteSuccess;
+    return new OperationResult();
   }
 }

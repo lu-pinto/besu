@@ -20,23 +20,22 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
 
 /** The Number operation. */
-public class NumberOperation extends AbstractFixedCostOperation {
+public class NumberOperation extends AbstractOperation {
 
   /**
    * Instantiates a new Number operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public NumberOperation(final GasCalculator gasCalculator) {
-    super(0x43, "NUMBER", 0, 1, gasCalculator, gasCalculator.getBaseTierGasCost());
+  public NumberOperation() {
+    super(0x43, "NUMBER", 0, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public OperationResult execute(
       final MessageFrame frame, final EVM evm) {
     final long number = frame.getBlockValues().getNumber();
     frame.pushStackItem(Words.longBytes(number));
 
-    return successResponse;
+    return new OperationResult();
   }
 }

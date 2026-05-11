@@ -21,33 +21,18 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The XOR operation. */
-public class XorOperation extends AbstractFixedCostOperation {
-
-  /** The XOR operation success result. */
-  static final OperationResult xorSuccess = new OperationResult(3, null);
-
+public class XorOperation extends AbstractOperation {
   /**
    * Instantiates a new Xor operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public XorOperation(final GasCalculator gasCalculator) {
-    super(0x18, "XOR", 2, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public XorOperation() {
+    super(0x18, "XOR", 2, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs XOR operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes value0 = frame.popStackItem();
     final Bytes value1 = frame.popStackItem();
 
@@ -55,6 +40,6 @@ public class XorOperation extends AbstractFixedCostOperation {
 
     frame.pushStackItem(result);
 
-    return xorSuccess;
+    return new OperationResult();
   }
 }

@@ -22,33 +22,18 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The Sub (Subtract) operation. */
-public class SubOperationOptimized extends AbstractFixedCostOperation {
-
-  /** The Sub operation success result. */
-  static final OperationResult subSuccess = new OperationResult(3, null);
-
+public class SubOperationOptimized extends AbstractOperation {
   /**
    * Instantiates a new Sub operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public SubOperationOptimized(final GasCalculator gasCalculator) {
-    super(0x03, "SUB", 2, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public SubOperationOptimized() {
+    super(0x03, "SUB", 2, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs Sub operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes value0 = frame.popStackItem();
     final Bytes value1 = frame.popStackItem();
 
@@ -57,6 +42,6 @@ public class SubOperationOptimized extends AbstractFixedCostOperation {
     Bytes resultBytes = Bytes.wrap(UInt256.sub(b0, b1));
 
     frame.pushStackItem(resultBytes);
-    return subSuccess;
+    return new OperationResult();
   }
 }

@@ -23,10 +23,11 @@ import org.openjdk.jmh.annotations.Param;
 public class AddOperationBenchmark extends BinaryArithmeticOperationBenchmark {
   @Param("ADD_RANDOM_RANDOM")
   private String caseName;
+  private final Operation operation = new AddOperationOptimized();
 
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
-    return AddOperationOptimized.staticOperation(frame);
+    return operation.execute(frame, null);
   }
 
   @Override

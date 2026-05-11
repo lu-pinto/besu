@@ -65,6 +65,34 @@ public class BenchmarkHelper {
   }
 
   /**
+   * Creates a minimal {@link MessageFrame} carrying the given bytecode.
+   *
+   * @param code the bytecode to attach to the frame
+   * @return a message-call frame initialized with {@code code}
+   */
+  public static MessageFrame createMessageCallFrameWithCode(final Code code) {
+    return MessageFrame.builder()
+        .worldUpdater(mock(WorldUpdater.class))
+        .originator(Address.ZERO)
+        .gasPrice(Wei.ONE)
+        .blobGasPrice(Wei.ONE)
+        .blockValues(mock(BlockValues.class))
+        .miningBeneficiary(Address.ZERO)
+        .blockHashLookup((__, ___) -> Hash.ZERO)
+        .type(MessageFrame.Type.MESSAGE_CALL)
+        .initialGas(Long.MAX_VALUE)
+        .address(Address.ZERO)
+        .contract(Address.ZERO)
+        .inputData(Bytes32.ZERO)
+        .sender(Address.ZERO)
+        .value(Wei.ZERO)
+        .apparentValue(Wei.ZERO)
+        .code(code)
+        .completer(__ -> {})
+        .build();
+  }
+
+  /**
    * Creates a minimal {@link MessageFrame} with custom call data for benchmarks.
    *
    * @param callData the input data to attach to the frame

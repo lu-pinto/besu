@@ -15,6 +15,8 @@
 package org.hyperledger.besu.ethereum.vm.operations;
 
 import org.hyperledger.besu.evm.frame.MessageFrame;
+import org.hyperledger.besu.evm.operation.AndOperationOptimized;
+import org.hyperledger.besu.evm.operation.MulModOperationOptimized;
 import org.hyperledger.besu.evm.operation.MulOperationOptimized;
 import org.hyperledger.besu.evm.operation.Operation;
 
@@ -23,10 +25,11 @@ import org.openjdk.jmh.annotations.Param;
 public class MulOperationOptimizedBenchmark extends BinaryArithmeticOperationBenchmark {
   @Param("MUL_RANDOM_RANDOM")
   private String caseName;
+  private final Operation operation = new MulModOperationOptimized();
 
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
-    return MulOperationOptimized.staticOperation(frame);
+    return operation.execute(frame, null);
   }
 
   @Override

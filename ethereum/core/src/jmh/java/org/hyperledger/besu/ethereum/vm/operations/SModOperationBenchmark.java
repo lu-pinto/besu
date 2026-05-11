@@ -43,6 +43,7 @@ public class SModOperationBenchmark extends SignedBinaryArithmeticOperationBench
     "SMOD_RANDOM_RANDOM"
   })
   private String caseName;
+  private final Operation operation = new SModOperationOptimized();
 
   @Override
   protected String opCode() {
@@ -56,6 +57,6 @@ public class SModOperationBenchmark extends SignedBinaryArithmeticOperationBench
 
   @Override
   protected Operation.OperationResult invoke(final MessageFrame frame) {
-    return SModOperationOptimized.staticOperation(frame);
+    return operation.execute(frame, null);
   }
 }

@@ -23,31 +23,17 @@ import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
 /** The SDiv operation. */
-public class SDivOperationOptimized extends AbstractFixedCostOperation {
-
-  private static final OperationResult sdivSuccess = new OperationResult(5, null);
-
+public class SDivOperationOptimized extends AbstractOperation {
   /**
    * Instantiates a new SDiv operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public SDivOperationOptimized(final GasCalculator gasCalculator) {
-    super(0x05, "SDIV", 2, 1, gasCalculator, gasCalculator.getLowTierGasCost());
+  public SDivOperationOptimized() {
+    super(0x05, "SDIV", 2, 1, null);
   }
 
   @Override
-  public OperationResult executeFixedCostOperation(final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs SDiv operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
+  public OperationResult execute(final MessageFrame frame, final EVM evm) {
     final Bytes value0 = frame.popStackItem();
     final Bytes value1 = frame.popStackItem();
 
@@ -58,6 +44,6 @@ public class SDivOperationOptimized extends AbstractFixedCostOperation {
       UInt256 b1 = UInt256.fromBytesBE(value1.toArrayUnsafe());
       frame.pushStackItem(Bytes.wrap(b0.signedDiv(b1).toBytesBE()));
     }
-    return sdivSuccess;
+    return new OperationResult();
   }
 }

@@ -19,21 +19,20 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 /** The Difficulty operation. */
-public class DifficultyOperation extends AbstractFixedCostOperation {
+public class DifficultyOperation extends AbstractOperation {
 
   /**
    * Instantiates a new Difficulty operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public DifficultyOperation(final GasCalculator gasCalculator) {
-    super(0x44, "DIFFICULTY", 0, 1, gasCalculator, gasCalculator.getBaseTierGasCost());
+  public DifficultyOperation() {
+    super(0x44, "DIFFICULTY", 0, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
     frame.pushStackItem(frame.getBlockValues().getDifficultyBytes());
-    return successResponse;
+    return new OperationResult();
   }
 }

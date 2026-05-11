@@ -121,7 +121,7 @@ public abstract class AbstractCreateOperation extends AbstractOperation {
           insufficientBalance
               ? LEGACY_INSUFFICIENT_BALANCE
               : (maxDepthReached ? LEGACY_MAX_CALL_DEPTH : INVALID_STATE);
-      return new OperationResult(cost, getPcIncrement(), softFailureReason);
+      return new OperationResult(cost, 1, softFailureReason);
     }
 
     account.incrementNonce();
@@ -130,16 +130,7 @@ public abstract class AbstractCreateOperation extends AbstractOperation {
     spawnChildMessage(frame, code);
     frame.incrementRemainingGas(cost);
 
-    return new OperationResult(cost, null, getPcIncrement());
-  }
-
-  /**
-   * How many bytes does this operation occupy?
-   *
-   * @return The number of bytes the operation and immediate arguments occupy
-   */
-  protected int getPcIncrement() {
-    return 1;
+    return new OperationResult(cost, null, 1);
   }
 
   /**
@@ -249,7 +240,7 @@ public abstract class AbstractCreateOperation extends AbstractOperation {
     }
 
     final int currentPC = frame.getPC();
-    frame.setPC(currentPC + getPcIncrement());
+    frame.setPC(currentPC + 1);
   }
 
   /**

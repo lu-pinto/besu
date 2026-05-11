@@ -19,8 +19,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.GasCalculator;
-import org.hyperledger.besu.evm.gascalculator.SpuriousDragonGasCalculator;
 
 import java.util.Arrays;
 
@@ -33,8 +31,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class ShlOperationTest {
 
-  private final GasCalculator gasCalculator = new SpuriousDragonGasCalculator();
-  private final ShlOperation operation = new ShlOperation(gasCalculator);
+  private final ShlOperation operation = new ShlOperation();
 
   static Iterable<Arguments> data() {
     return Arrays.asList(

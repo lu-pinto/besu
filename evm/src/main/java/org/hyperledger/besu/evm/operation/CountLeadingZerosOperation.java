@@ -23,32 +23,17 @@ import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
 /** The CLZ operation. */
-public class CountLeadingZerosOperation extends AbstractFixedCostOperation {
-
-  /** The CLZ operation success result. */
-  static final OperationResult clzSuccess = new OperationResult(5, null);
-
+public class CountLeadingZerosOperation extends AbstractOperation {
   /**
    * Instantiates a new Count Leading Zeros Operation
    *
-   * @param gasCalculator the gas calculator
    */
-  public CountLeadingZerosOperation(final GasCalculator gasCalculator) {
-    super(0x1e, "CLZ", 1, 1, gasCalculator, gasCalculator.getLowTierGasCost());
+  public CountLeadingZerosOperation() {
+    super(0x1e, "CLZ", 1, 1, null);
   }
 
   @Override
-  public OperationResult executeFixedCostOperation(final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Static operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
+  public OperationResult execute(final MessageFrame frame, final EVM evm) {
     Bytes value = frame.popStackItem();
     final int numberOfLeadingZeros;
     if (value.size() > Bytes32.SIZE) {
@@ -57,6 +42,6 @@ public class CountLeadingZerosOperation extends AbstractFixedCostOperation {
     }
     numberOfLeadingZeros = value.numberOfLeadingZeros() + (Bytes32.SIZE - value.size()) * 8;
     frame.pushStackItem(Words.intBytes(numberOfLeadingZeros));
-    return clzSuccess;
+    return new OperationResult();
   }
 }

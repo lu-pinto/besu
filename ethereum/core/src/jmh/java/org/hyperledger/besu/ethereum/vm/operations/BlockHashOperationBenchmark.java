@@ -17,7 +17,6 @@ package org.hyperledger.besu.ethereum.vm.operations;
 import org.hyperledger.besu.ethereum.core.ProcessableBlockHeader;
 import org.hyperledger.besu.ethereum.vm.BlockchainBasedBlockHashLookup;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.PetersburgGasCalculator;
 import org.hyperledger.besu.evm.operation.BlockHashOperation;
 
 import org.apache.tuweni.bytes.Bytes;
@@ -46,7 +45,7 @@ public class BlockHashOperationBenchmark {
   @Setup
   public void prepare() throws Exception {
     operationBenchmarkHelper = OperationBenchmarkHelper.create();
-    operation = new BlockHashOperation(new PetersburgGasCalculator());
+    operation = new BlockHashOperation();
     frame = operationBenchmarkHelper.createMessageFrame();
   }
 

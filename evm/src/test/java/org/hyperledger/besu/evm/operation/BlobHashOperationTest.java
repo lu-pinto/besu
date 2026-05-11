@@ -23,8 +23,6 @@ import static org.mockito.Mockito.when;
 import org.hyperledger.besu.datatypes.VersionedHash;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.CancunGasCalculator;
-import org.hyperledger.besu.evm.gascalculator.LondonGasCalculator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,13 +42,13 @@ class BlobHashOperationTest {
   void putsHashOnStack() {
     VersionedHash version0Hash = new VersionedHash(Bytes32.fromHexStringStrict(testVersionedHash));
     List<VersionedHash> versionedHashes = Arrays.asList(version0Hash);
-    BlobHashOperation getHash = new BlobHashOperation(new LondonGasCalculator());
+    BlobHashOperation getHash = new BlobHashOperation();
     MessageFrame frame = mock(MessageFrame.class);
     when(frame.popStackItem()).thenReturn(Bytes.of(0));
     when(frame.getVersionedHashes()).thenReturn(Optional.of(versionedHashes));
     EVM fakeEVM = mock(EVM.class);
     Operation.OperationResult r = getHash.execute(frame, fakeEVM);
-    assertThat(r.getGasCost()).isEqualTo(3);
+    assertThat(r.getGasCost()).isZero();
     assertThat(r.getHaltReason()).isNull();
     verify(frame).pushStackItem(version0Hash.getBytes());
   }
@@ -60,19 +58,19 @@ class BlobHashOperationTest {
 
     EVM fakeEVM = mock(EVM.class);
 
-    BlobHashOperation getHash = new BlobHashOperation(new CancunGasCalculator());
+    BlobHashOperation getHash = new BlobHashOperation();
     MessageFrame frame = mock(MessageFrame.class);
     when(frame.popStackItem()).thenReturn(Bytes.of(0));
     when(frame.getVersionedHashes()).thenReturn(Optional.empty());
 
     Operation.OperationResult failed1 = getHash.execute(frame, fakeEVM);
-    assertThat(failed1.getGasCost()).isEqualTo(3);
+    assertThat(failed1.getGasCost()).isZero();
     assertThat(failed1.getHaltReason()).isNull();
 
     when(frame.popStackItem()).thenReturn(Bytes.of(0));
     when(frame.getVersionedHashes()).thenReturn(Optional.of(new ArrayList<>()));
     Operation.OperationResult failed2 = getHash.execute(frame, fakeEVM);
-    assertThat(failed2.getGasCost()).isEqualTo(3);
+    assertThat(failed2.getGasCost()).isZero();
     assertThat(failed2.getHaltReason()).isNull();
     verify(frame, times(2)).pushStackItem(Bytes.EMPTY);
   }
@@ -81,13 +79,13 @@ class BlobHashOperationTest {
   void pushZeroOnVersionIndexOutOFBounds() {
     VersionedHash version0Hash = new VersionedHash(Bytes32.fromHexStringStrict(testVersionedHash));
     List<VersionedHash> versionedHashes = Arrays.asList(version0Hash);
-    BlobHashOperation getHash = new BlobHashOperation(new CancunGasCalculator());
+    BlobHashOperation getHash = new BlobHashOperation();
     MessageFrame frame = mock(MessageFrame.class);
     when(frame.popStackItem()).thenReturn(Bytes.of(1));
     when(frame.getVersionedHashes()).thenReturn(Optional.of(versionedHashes));
     EVM fakeEVM = mock(EVM.class);
     Operation.OperationResult r = getHash.execute(frame, fakeEVM);
-    assertThat(r.getGasCost()).isEqualTo(3);
+    assertThat(r.getGasCost()).isZero();
     assertThat(r.getHaltReason()).isNull();
     verify(frame).pushStackItem(Bytes.EMPTY);
   }
@@ -96,13 +94,13 @@ class BlobHashOperationTest {
   public void pushZeroWhenPopsMissingUint256SizedIndex() {
     VersionedHash version0Hash = new VersionedHash(Bytes32.fromHexStringStrict(testVersionedHash));
     List<VersionedHash> versionedHashes = Arrays.asList(version0Hash);
-    BlobHashOperation getHash = new BlobHashOperation(new CancunGasCalculator());
+    BlobHashOperation getHash = new BlobHashOperation();
     MessageFrame frame = mock(MessageFrame.class);
     when(frame.popStackItem()).thenReturn(Bytes32.repeat((byte) 0x2C));
     when(frame.getVersionedHashes()).thenReturn(Optional.of(versionedHashes));
     EVM fakeEVM = mock(EVM.class);
     Operation.OperationResult r = getHash.execute(frame, fakeEVM);
-    assertThat(r.getGasCost()).isEqualTo(3);
+    assertThat(r.getGasCost()).isZero();
     assertThat(r.getHaltReason()).isNull();
     verify(frame).pushStackItem(Bytes.EMPTY);
   }

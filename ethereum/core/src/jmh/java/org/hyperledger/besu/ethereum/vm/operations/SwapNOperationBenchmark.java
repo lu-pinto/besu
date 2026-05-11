@@ -20,6 +20,7 @@ import org.hyperledger.besu.evm.operation.SwapNOperation;
 
 /** JMH benchmark for the SWAPN operation (EIP-8024). */
 public class SwapNOperationBenchmark extends ImmediateByteOperationBenchmark {
+  private final Operation operation = new SwapNOperation();
 
   @Override
   protected int getOpcode() {
@@ -33,9 +34,13 @@ public class SwapNOperationBenchmark extends ImmediateByteOperationBenchmark {
   }
 
   @Override
-  protected Operation.OperationResult invoke(
-      final MessageFrame frame, final byte[] code, final int pc) {
-    return SwapNOperation.staticOperation(frame, code, pc);
+  protected Operation getOperation() {
+    return operation;
+  }
+
+  @Override
+  protected Operation.OperationResult invoke(final MessageFrame frame) {
+    return operation.execute(frame, null);
   }
 
   @Override

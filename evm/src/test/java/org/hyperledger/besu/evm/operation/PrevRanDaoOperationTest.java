@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 import org.hyperledger.besu.evm.EVM;
 import org.hyperledger.besu.evm.frame.BlockValues;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.LondonGasCalculator;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
@@ -33,7 +32,7 @@ class PrevRanDaoOperationTest {
 
   @Test
   void pushesPrevRandaoWhenDifficultyZero() {
-    PrevRanDaoOperation op = new PrevRanDaoOperation(new LondonGasCalculator());
+    PrevRanDaoOperation op = new PrevRanDaoOperation();
     MessageFrame messageFrame = mock(MessageFrame.class);
     BlockValues blockHeader = mock(BlockValues.class);
     Bytes32 prevRandao = Bytes32.fromHexString("0xb0b0face");
@@ -41,14 +40,14 @@ class PrevRanDaoOperationTest {
     when(blockHeader.getMixHashOrPrevRandao()).thenReturn(prevRandao);
     when(messageFrame.getBlockValues()).thenReturn(blockHeader);
     EVM evm = mock(EVM.class);
-    Operation.OperationResult r = op.executeFixedCostOperation(messageFrame, evm);
+    Operation.OperationResult r = op.execute(messageFrame, evm);
     assertThat(r.getHaltReason()).isNull();
     verify(messageFrame).pushStackItem(prevRandao);
   }
 
   @Test
   void pushesPrevRandDaoWhenDifficultyPresent() {
-    PrevRanDaoOperation op = new PrevRanDaoOperation(new LondonGasCalculator());
+    PrevRanDaoOperation op = new PrevRanDaoOperation();
     MessageFrame messageFrame = mock(MessageFrame.class);
     BlockValues blockHeader = mock(BlockValues.class);
     Bytes32 prevRandao = Bytes32.fromHexString("0xb0b0face");
@@ -57,7 +56,7 @@ class PrevRanDaoOperationTest {
     when(blockHeader.getMixHashOrPrevRandao()).thenReturn(prevRandao);
     when(messageFrame.getBlockValues()).thenReturn(blockHeader);
     EVM evm = mock(EVM.class);
-    Operation.OperationResult r = op.executeFixedCostOperation(messageFrame, evm);
+    Operation.OperationResult r = op.execute(messageFrame, evm);
     assertThat(r.getHaltReason()).isNull();
     verify(messageFrame).pushStackItem(prevRandao);
   }

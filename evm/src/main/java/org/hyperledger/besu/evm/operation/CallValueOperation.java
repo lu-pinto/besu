@@ -20,23 +20,22 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 /** The Call value operation. */
-public class CallValueOperation extends AbstractFixedCostOperation {
+public class CallValueOperation extends AbstractOperation {
 
   /**
    * Instantiates a new Call value operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public CallValueOperation(final GasCalculator gasCalculator) {
-    super(0x34, "CALLVALUE", 0, 1, gasCalculator, gasCalculator.getBaseTierGasCost());
+  public CallValueOperation() {
+    super(0x34, "CALLVALUE", 0, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
     final Wei value = frame.getApparentValue();
     frame.pushStackItem(value.toBytes());
 
-    return successResponse;
+    return new OperationResult();
   }
 }

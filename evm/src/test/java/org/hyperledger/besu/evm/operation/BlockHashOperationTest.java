@@ -20,7 +20,6 @@ import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.FrontierGasCalculator;
 import org.hyperledger.besu.evm.testutils.FakeBlockValues;
 import org.hyperledger.besu.evm.testutils.TestMessageFrameBuilder;
 
@@ -32,8 +31,7 @@ import org.junit.jupiter.api.Test;
 class BlockHashOperationTest {
   private static final long ENOUGH_GAS = 30_000_000L;
 
-  private final BlockHashOperation blockHashOperation =
-      new BlockHashOperation(new FrontierGasCalculator());
+  private final BlockHashOperation blockHashOperation = new BlockHashOperation();
 
   @Test
   void shouldReturnZeroWhenArgIsBiggerThanALong() {

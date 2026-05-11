@@ -22,32 +22,18 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The Mod operation. */
-public class ModOperationOptimized extends AbstractFixedCostOperation {
-
-  private static final OperationResult modSuccess = new OperationResult(5, null);
-
+public class ModOperationOptimized extends AbstractOperation {
   /**
    * Instantiates a new Mod operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public ModOperationOptimized(final GasCalculator gasCalculator) {
-    super(0x06, "MOD", 2, 1, gasCalculator, gasCalculator.getLowTierGasCost());
+  public ModOperationOptimized() {
+    super(0x06, "MOD", 2, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs Mod operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes value0 = frame.popStackItem();
     final Bytes value1 = frame.popStackItem();
 
@@ -56,6 +42,6 @@ public class ModOperationOptimized extends AbstractFixedCostOperation {
     Bytes resultBytes = Bytes.wrap(b0.mod(b1).toBytesBE());
 
     frame.pushStackItem(resultBytes);
-    return modSuccess;
+    return new OperationResult();
   }
 }

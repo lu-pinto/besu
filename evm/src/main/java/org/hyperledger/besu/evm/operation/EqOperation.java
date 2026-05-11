@@ -24,35 +24,21 @@ import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.units.bigints.UInt256;
 
 /** The Eq operation. */
-public class EqOperation extends AbstractFixedCostOperation {
+public class EqOperation extends AbstractOperation {
 
   private static final byte[] ZEROS = new byte[32];
-
-  /** The Eq operation success result. */
-  static final OperationResult eqSuccess = new OperationResult(3, null);
 
   /**
    * Instantiates a new Eq operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public EqOperation(final GasCalculator gasCalculator) {
-    super(0x14, "EQ", 2, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public EqOperation() {
+    super(0x14, "EQ", 2, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs Eq operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     final byte[] a = frame.popStackItem().toArrayUnsafe();
     final byte[] b = frame.popStackItem().toArrayUnsafe();
     final int nonZeroA = firstNonZeroIndex(a);
@@ -63,7 +49,7 @@ public class EqOperation extends AbstractFixedCostOperation {
     }
 
     frame.pushStackItem(result);
-    return eqSuccess;
+    return new OperationResult();
   }
 
   private static int firstNonZeroIndex(final byte[] value) {

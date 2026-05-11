@@ -32,10 +32,9 @@ public class BlockHashOperation extends AbstractOperation {
   /**
    * Instantiates a new Block hash operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public BlockHashOperation(final GasCalculator gasCalculator) {
-    super(0x40, "BLOCKHASH", 1, 1, gasCalculator);
+  public BlockHashOperation() {
+    super(0x40, "BLOCKHASH", 1, 1, null);
   }
 
   @Override

@@ -22,7 +22,9 @@ import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.frame.BlockValues;
 import org.hyperledger.besu.evm.frame.MessageFrame;
+import org.hyperledger.besu.evm.operation.AndOperationOptimized;
 import org.hyperledger.besu.evm.operation.CountLeadingZerosOperation;
+import org.hyperledger.besu.evm.operation.Operation;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
 
 import java.util.concurrent.TimeUnit;
@@ -66,6 +68,7 @@ public class CountLeadingZerosOperationBenchmark {
   private Bytes bytes;
 
   private MessageFrame frame;
+  private final Operation operation = new CountLeadingZerosOperation();
 
   @Setup
   public void setUp() {
@@ -97,7 +100,7 @@ public class CountLeadingZerosOperationBenchmark {
   public void executeOperation() {
     for (int i = 0; i < OPERATIONS_PER_INVOCATION; i++) {
       frame.pushStackItem(bytes);
-      CountLeadingZerosOperation.staticOperation(frame);
+      operation.execute(frame, null);
       frame.popStackItem();
     }
   }

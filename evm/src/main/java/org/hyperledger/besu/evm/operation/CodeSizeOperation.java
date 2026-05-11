@@ -21,23 +21,22 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
 
 /** The Code size operation. */
-public class CodeSizeOperation extends AbstractFixedCostOperation {
+public class CodeSizeOperation extends AbstractOperation {
 
   /**
    * Instantiates a new Code size operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public CodeSizeOperation(final GasCalculator gasCalculator) {
-    super(0x38, "CODESIZE", 0, 1, gasCalculator, gasCalculator.getBaseTierGasCost());
+  public CodeSizeOperation() {
+    super(0x38, "CODESIZE", 0, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
     final Code code = frame.getCode();
     frame.pushStackItem(Words.intBytes(code.getSize()));
 
-    return successResponse;
+    return new OperationResult();
   }
 }

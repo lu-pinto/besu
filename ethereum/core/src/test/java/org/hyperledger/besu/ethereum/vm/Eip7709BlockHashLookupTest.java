@@ -34,7 +34,6 @@ import org.hyperledger.besu.evm.fluent.SimpleAccount;
 import org.hyperledger.besu.evm.fluent.SimpleWorld;
 import org.hyperledger.besu.evm.frame.BlockValues;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.CancunGasCalculator;
 import org.hyperledger.besu.evm.operation.BlockHashOperation;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
 
@@ -180,7 +179,7 @@ class Eip7709BlockHashLookupTest {
   private void assertHashForBlockNumber(final int blockNumber, final Hash hash) {
     clearInvocations(frame);
 
-    BlockHashOperation op = new BlockHashOperation(new CancunGasCalculator());
+    BlockHashOperation op = new BlockHashOperation();
     when(frame.popStackItem()).thenReturn(Bytes.ofUnsignedInt(blockNumber));
 
     op.execute(frame, null);

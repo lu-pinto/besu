@@ -42,6 +42,10 @@ public interface Operation {
     /** Gas allocated for child call, if applicable. Used in conjunction to soft failure reason. */
     private final OptionalLong gasAvailableForChildCall;
 
+    public OperationResult() {
+      this(0, null);
+    }
+
     /**
      * Instantiates a new Operation result.
      *
@@ -61,11 +65,7 @@ public interface Operation {
      */
     public OperationResult(
         final long gasCost, final ExceptionalHaltReason haltReason, final int pcIncrement) {
-      this.gasCost = gasCost;
-      this.haltReason = haltReason;
-      this.pcIncrement = pcIncrement;
-      this.softFailureReason = null;
-      this.gasAvailableForChildCall = OptionalLong.empty();
+      this(gasCost, haltReason, pcIncrement, null, OptionalLong.empty());
     }
 
     /**
@@ -81,11 +81,20 @@ public interface Operation {
         final int pcIncrement,
         final SoftFailureReason softFailureReason,
         final long gasAvailableForChildCall) {
+      this(gasCost, null, pcIncrement, softFailureReason, OptionalLong.of(gasAvailableForChildCall));
+    }
+
+    private OperationResult(
+      final long gasCost,
+      final ExceptionalHaltReason haltReason,
+      final int pcIncrement,
+      final SoftFailureReason softFailureReason,
+      final OptionalLong gasAvailableForChildCall) {
       this.gasCost = gasCost;
-      this.haltReason = null;
+      this.haltReason = haltReason;
       this.pcIncrement = pcIncrement;
       this.softFailureReason = softFailureReason;
-      this.gasAvailableForChildCall = OptionalLong.of(gasAvailableForChildCall);
+      this.gasAvailableForChildCall = gasAvailableForChildCall;
     }
 
     /**
@@ -97,11 +106,7 @@ public interface Operation {
      */
     public OperationResult(
         final long gasCost, final int pcIncrement, final SoftFailureReason softFailureReason) {
-      this.gasCost = gasCost;
-      this.pcIncrement = pcIncrement;
-      this.softFailureReason = softFailureReason;
-      this.haltReason = null;
-      this.gasAvailableForChildCall = OptionalLong.empty();
+      this(gasCost, null, pcIncrement, softFailureReason, OptionalLong.empty());
     }
 
     /**

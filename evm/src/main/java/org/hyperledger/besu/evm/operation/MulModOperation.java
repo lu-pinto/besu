@@ -24,32 +24,19 @@ import java.util.Arrays;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The Mul mod operation. */
-public class MulModOperation extends AbstractFixedCostOperation {
-
-  private static final OperationResult mulModSuccess = new OperationResult(8, null);
+public class MulModOperation extends AbstractOperation {
 
   /**
    * Instantiates a new Mul mod operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public MulModOperation(final GasCalculator gasCalculator) {
-    super(0x09, "MULMOD", 3, 1, gasCalculator, gasCalculator.getMidTierGasCost());
+  public MulModOperation() {
+    super(0x09, "MULMOD", 3, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs MulMod operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes value0 = frame.popStackItem();
     final Bytes value1 = frame.popStackItem();
     final Bytes value2 = frame.popStackItem();
@@ -73,6 +60,6 @@ public class MulModOperation extends AbstractFixedCostOperation {
       frame.pushStackItem(Bytes.concatenate(Bytes.wrap(padding), resultBytes));
     }
 
-    return mulModSuccess;
+    return new OperationResult();
   }
 }

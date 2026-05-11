@@ -15,59 +15,33 @@
 package org.hyperledger.besu.evm.operation;
 
 import org.hyperledger.besu.evm.EVM;
-import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 /** The Dup operation. */
-public class DupOperation extends AbstractFixedCostOperation {
+public class DupOperation extends AbstractOperation {
 
   /** The constant DUP_BASE. */
-  public static final int DUP_BASE = 0x7F;
-
-  /** The Dup success operation result. */
-  static final OperationResult dupSuccess = new OperationResult(3, null);
-
-  /** The Underflow response. */
-  protected final Operation.OperationResult underflowResponse;
-
-  private final int index;
-
+  private static final int DUP_BASE = 0x7F;
   /**
    * Instantiates a new Dup operation.
    *
    * @param index the index
-   * @param gasCalculator the gas calculator
    */
-  public DupOperation(final int index, final GasCalculator gasCalculator) {
+  public DupOperation(final int index) {
     super(
         0x80 + index - 1,
         "DUP" + index,
         index,
         index + 1,
-        gasCalculator,
-        gasCalculator.getVeryLowTierGasCost());
-    this.index = index;
-    this.underflowResponse =
-        new Operation.OperationResult(gasCost, ExceptionalHaltReason.INSUFFICIENT_STACK_ITEMS);
+      null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame, index);
-  }
-
-  /**
-   * Performs Dup operation.
-   *
-   * @param frame the frame
-   * @param index the index
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame, final int index) {
+    final int index = frame.getCurrentOperation().getOpcode() - DUP_BASE;
     frame.pushStackItem(frame.getStackItem(index - 1));
 
-    return dupSuccess;
+    return new OperationResult();
   }
 }

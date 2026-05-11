@@ -19,20 +19,19 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 /** The Prev randao operation. */
-public class PrevRanDaoOperation extends AbstractFixedCostOperation {
+public class PrevRanDaoOperation extends AbstractOperation {
 
   /**
    * Instantiates a new Prev randao operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public PrevRanDaoOperation(final GasCalculator gasCalculator) {
-    super(0x44, "PREVRANDAO", 0, 1, gasCalculator, gasCalculator.getBaseTierGasCost());
+  public PrevRanDaoOperation() {
+    super(0x44, "PREVRANDAO", 0, 1, null);
   }
 
   @Override
-  public OperationResult executeFixedCostOperation(final MessageFrame frame, final EVM evm) {
+  public OperationResult execute(final MessageFrame frame, final EVM evm) {
     frame.pushStackItem(frame.getBlockValues().getMixHashOrPrevRandao());
-    return successResponse;
+    return new OperationResult();
   }
 }

@@ -21,33 +21,18 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The GT operation. */
-public class GtOperation extends AbstractFixedCostOperation {
-
-  /** The GT operation success result. */
-  static final OperationResult gtSuccess = new OperationResult(3, null);
-
+public class GtOperation extends AbstractOperation {
   /**
    * Instantiates a new GT operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public GtOperation(final GasCalculator gasCalculator) {
-    super(0x11, "GT", 2, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public GtOperation() {
+    super(0x11, "GT", 2, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs GT operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes value0 = frame.popStackItem().trimLeadingZeros();
     final Bytes value1 = frame.popStackItem().trimLeadingZeros();
 
@@ -55,6 +40,6 @@ public class GtOperation extends AbstractFixedCostOperation {
 
     frame.pushStackItem(result);
 
-    return gtSuccess;
+    return new OperationResult();
   }
 }

@@ -23,32 +23,19 @@ import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.bytes.MutableBytes32;
 
 /** The Sign extend operation. */
-public class SignExtendOperation extends AbstractFixedCostOperation {
-
-  private static final OperationResult signExtendSuccess = new OperationResult(5, null);
+public class SignExtendOperation extends AbstractOperation {
 
   /**
    * Instantiates a new Sign extend operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public SignExtendOperation(final GasCalculator gasCalculator) {
-    super(0x0B, "SIGNEXTEND", 2, 1, gasCalculator, gasCalculator.getLowTierGasCost());
+  public SignExtendOperation() {
+    super(0x0B, "SIGNEXTEND", 2, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs Sign Extend operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes value0 = frame.popStackItem().trimLeadingZeros();
     final Bytes value1 = Bytes32.leftPad(frame.popStackItem());
 
@@ -59,13 +46,13 @@ public class SignExtendOperation extends AbstractFixedCostOperation {
     int value0size = value0.size();
     if (value0size > 1) {
       frame.pushStackItem(value1);
-      return signExtendSuccess;
+      return new OperationResult();
     }
 
     int value0Value = value0.toInt();
     if (value0Value >= 31) {
       frame.pushStackItem(value1);
-      return signExtendSuccess;
+      return new OperationResult();
     }
 
     final int byteIndex = 31 - value0.toInt();
@@ -74,6 +61,6 @@ public class SignExtendOperation extends AbstractFixedCostOperation {
     value1.slice(byteIndex).copyTo(result, byteIndex);
     frame.pushStackItem(result);
 
-    return signExtendSuccess;
+    return new OperationResult();
   }
 }

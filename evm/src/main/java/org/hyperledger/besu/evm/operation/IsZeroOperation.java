@@ -21,7 +21,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The Is zero operation. */
-public class IsZeroOperation extends AbstractFixedCostOperation {
+public class IsZeroOperation extends AbstractOperation {
 
   /** The Is zero operation success result. */
   static final OperationResult isZeroSuccess = new OperationResult(3, null);
@@ -29,28 +29,17 @@ public class IsZeroOperation extends AbstractFixedCostOperation {
   /**
    * Instantiates a new Is zero operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public IsZeroOperation(final GasCalculator gasCalculator) {
-    super(0x15, "ISZERO", 1, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public IsZeroOperation() {
+    super(0x15, "ISZERO", 1, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Performs Is Zero operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes value = frame.popStackItem().trimLeadingZeros();
 
-    frame.pushStackItem((value.size() == 0) ? BYTES_ONE : Bytes.EMPTY);
+    frame.pushStackItem((value.isEmpty()) ? BYTES_ONE : Bytes.EMPTY);
 
     return isZeroSuccess;
   }

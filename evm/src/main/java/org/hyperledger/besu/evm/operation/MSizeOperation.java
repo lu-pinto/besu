@@ -20,7 +20,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
 
 /** The M size operation. */
-public class MSizeOperation extends AbstractFixedCostOperation {
+public class MSizeOperation extends AbstractOperation {
 
   /**
    * Instantiates a new M size operation.
@@ -28,14 +28,14 @@ public class MSizeOperation extends AbstractFixedCostOperation {
    * @param gasCalculator the gas calculator
    */
   public MSizeOperation(final GasCalculator gasCalculator) {
-    super(0x59, "MSIZE", 0, 1, gasCalculator, gasCalculator.getBaseTierGasCost());
+    super(0x59, "MSIZE", 0, 1, gasCalculator);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
     frame.pushStackItem(Words.longBytes(frame.memoryByteSize()));
 
-    return successResponse;
+    return new OperationResult();
   }
 }

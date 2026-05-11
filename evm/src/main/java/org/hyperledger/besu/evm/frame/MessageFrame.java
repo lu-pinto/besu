@@ -280,7 +280,7 @@ public class MessageFrame {
     this.type = type;
     this.worldUpdater = worldUpdater;
     this.gasRemaining = initialGas;
-    this.stack = new OperandStack(txValues.maxStackSize());
+    this.stack = new OperandStack();
     this.stackDataV2 = enableEvmV2 ? new long[txValues.maxStackSize() * 4] : null;
     this.stackTopV2 = 0;
     this.stackMaxSizeV2 = txValues.maxStackSize();
@@ -423,6 +423,10 @@ public class MessageFrame {
   /** Clear the return data buffer. */
   public void clearReturnData() {
     setReturnData(Bytes.EMPTY);
+  }
+
+  public OperandStack getStack() {
+    return stack;
   }
 
   /**

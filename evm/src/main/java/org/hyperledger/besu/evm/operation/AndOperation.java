@@ -21,39 +21,25 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.apache.tuweni.bytes.Bytes;
 
 /** The And operation. */
-public class AndOperation extends AbstractFixedCostOperation {
-
-  /** The And operation success result. */
-  static final OperationResult andSuccess = new OperationResult(3, null);
+public class AndOperation extends AbstractOperation {
 
   /**
    * Instantiates a new And operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public AndOperation(final GasCalculator gasCalculator) {
-    super(0x16, "AND", 2, 1, gasCalculator, gasCalculator.getVeryLowTierGasCost());
+  public AndOperation() {
+    super(0x16, "AND", 2, 1, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return staticOperation(frame);
-  }
-
-  /**
-   * Static And operation.
-   *
-   * @param frame the frame
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(final MessageFrame frame) {
     final Bytes value0 = frame.popStackItem();
     final Bytes value1 = frame.popStackItem();
 
     final Bytes result = value0.and(value1);
     frame.pushStackItem(result);
 
-    return andSuccess;
+    return new OperationResult();
   }
 }

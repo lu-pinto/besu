@@ -22,8 +22,6 @@ import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.frame.BlockValues;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.BerlinGasCalculator;
-import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 import org.hyperledger.besu.evm.testutils.FakeBlockValues;
 
@@ -35,15 +33,13 @@ import org.mockito.Mockito;
 
 class Push0OperationTest {
 
-  private final GasCalculator gasCalculator = new BerlinGasCalculator();
-
   @Test
   void shouldPush0OntoStack() {
     final MessageFrame frame = createMessageFrame(100, Optional.of(Wei.of(5L)));
-    final Operation operation = new Push0Operation(gasCalculator);
+    final Operation operation = new Push0Operation();
     final OperationResult result = operation.execute(frame, null);
     Mockito.verify(frame).pushStackItem(Bytes.EMPTY);
-    assertThat(result.getGasCost()).isEqualTo(gasCalculator.getBaseTierGasCost());
+    assertThat(result.getGasCost()).isZero();
     assertSuccessResult(result);
   }
 

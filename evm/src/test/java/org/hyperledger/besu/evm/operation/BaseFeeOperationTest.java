@@ -23,8 +23,6 @@ import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.frame.BlockValues;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.gascalculator.BerlinGasCalculator;
-import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.Words;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 
@@ -35,21 +33,20 @@ import org.apache.tuweni.units.bigints.UInt256;
 import org.junit.jupiter.api.Test;
 
 class BaseFeeOperationTest {
-  private final GasCalculator gasCalculator = new BerlinGasCalculator();
 
   @Test
   void shouldReturnGasCost() {
     final MessageFrame frame = createMessageFrame(100, Optional.of(Wei.of(5L)));
-    final Operation operation = new BaseFeeOperation(gasCalculator);
+    final Operation operation = new BaseFeeOperation();
     final OperationResult result = operation.execute(frame, null);
-    assertThat(result.getGasCost()).isEqualTo(gasCalculator.getBaseTierGasCost());
+    assertThat(result.getGasCost()).isZero();
     assertSuccessResult(result);
   }
 
   @Test
   void shouldWriteBaseFeeToStack() {
     final MessageFrame frame = createMessageFrame(100, Optional.of(Wei.of(5L)));
-    final Operation operation = new BaseFeeOperation(gasCalculator);
+    final Operation operation = new BaseFeeOperation();
     final OperationResult result = operation.execute(frame, null);
     verify(frame).pushStackItem(UInt256.fromBytes(Bytes32.leftPad(Words.longBytes(5L))));
     assertSuccessResult(result);
@@ -58,7 +55,7 @@ class BaseFeeOperationTest {
   @Test
   void shouldHaltIfNoBaseFeeInBlockHeader() {
     final MessageFrame frame = createMessageFrame(100, Optional.empty());
-    final Operation operation = new BaseFeeOperation(gasCalculator);
+    final Operation operation = new BaseFeeOperation();
     final OperationResult result = operation.execute(frame, null);
     assertExceptionalHalt(result, ExceptionalHaltReason.INVALID_OPERATION);
   }

@@ -15,7 +15,9 @@
 package org.hyperledger.besu.evm.operation;
 
 import org.hyperledger.besu.evm.Code;
+import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
+import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 
 import org.apache.tuweni.bytes.Bytes;
 
@@ -31,29 +33,24 @@ public class JumpService {
    *
    * @param frame the MessageFrame containing the code and PC
    * @param dest the jump destination
-   * @param validJumpResponse the response to return in case the jump is successful
-   * @param invalidJumpResponse the response to return in case the jump failed
    * @return either @validJumpResponse or @invalidJumpResponse depending on the result
    */
   public Operation.OperationResult performJump(
       final MessageFrame frame,
-      final Bytes dest,
-      final Operation.OperationResult validJumpResponse,
-      final Operation.OperationResult invalidJumpResponse) {
+      final Bytes dest) {
     final int jumpDestination;
     try {
       jumpDestination = dest.toInt();
     } catch (final RuntimeException re) {
-      return invalidJumpResponse;
+      return new OperationResult(0, ExceptionalHaltReason.INVALID_JUMP_DESTINATION);
     }
 
     final Code code = frame.getCode();
 
     if (code.isJumpDestInvalid(jumpDestination)) {
-      return invalidJumpResponse;
+      return new OperationResult(0, ExceptionalHaltReason.INVALID_JUMP_DESTINATION);
     }
 
-    frame.setPC(jumpDestination);
-    return validJumpResponse;
+    return new OperationResult(0, null, jumpDestination - frame.getPC());
   }
 }

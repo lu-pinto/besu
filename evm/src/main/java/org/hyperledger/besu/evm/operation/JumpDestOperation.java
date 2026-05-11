@@ -19,26 +19,21 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 
 /** The Jump dest operation. */
-public class JumpDestOperation extends AbstractFixedCostOperation {
-
-  /** constant for a successful jumpdest * */
-  public static final OperationResult JUMPDEST_SUCCESS = new OperationResult(1L, null);
-
+public class JumpDestOperation extends AbstractOperation {
   /** The constant OPCODE. */
   public static final int OPCODE = 0x5B;
 
   /**
    * Instantiates a new Jump dest operation.
    *
-   * @param gasCalculator the gas calculator
    */
-  public JumpDestOperation(final GasCalculator gasCalculator) {
-    super(OPCODE, "JUMPDEST", 0, 0, gasCalculator, gasCalculator.getJumpDestOperationGasCost());
+  public JumpDestOperation() {
+    super(OPCODE, "JUMPDEST", 0, 0, null);
   }
 
   @Override
-  public Operation.OperationResult executeFixedCostOperation(
+  public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    return successResponse;
+    return new OperationResult();
   }
 }
