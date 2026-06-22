@@ -605,34 +605,10 @@ public record UInt256(long u3, long u2, long u1, long u0) {
    */
   public UInt256 div(final UInt256 divisor) {
     if (isZero()) return ZERO;
-    // Fast path: when the divisor is a power of two, division is a right-shift by its exponent.
-    // A non-zero value x is a power of two iff (x & (x - 1)) == 0. Subtracting 1 from a power of
-    // two flips its single set bit to 0 and sets all lower bits to 1 (e.g. 0b1000 - 1 == 0b0111),
-    // so x and x - 1 share no bits and the AND is 0. For any non-power-of-two there are at least
-    // two set bits; the lowest stays set in x - 1, so the AND is non-zero. The highest non-zero
-    // limb must be a power of two and every lower limb must be zero for the whole value to qualify.
-    if (divisor.u3 != 0) {
-      if ((divisor.u3 & (divisor.u3 - 1)) == 0 && (divisor.u2 | divisor.u1 | divisor.u0) == 0) {
-        return shiftRightWide(192 + Long.numberOfTrailingZeros(divisor.u3));
-      }
-      return divisor.divReduce(this);
-    }
-    if (divisor.u2 != 0) {
-      if ((divisor.u2 & (divisor.u2 - 1)) == 0 && (divisor.u1 | divisor.u0) == 0) {
-        return shiftRightWide(128 + Long.numberOfTrailingZeros(divisor.u2));
-      }
-      return divisor.asUInt192().divReduce(this);
-    }
-    if (divisor.u1 != 0) {
-      if ((divisor.u1 & (divisor.u1 - 1)) == 0 && divisor.u0 == 0) {
-        return shiftRightWide(64 + Long.numberOfTrailingZeros(divisor.u1));
-      }
-      return divisor.asUInt128().divReduce(this);
-    }
+    if (divisor.u3 != 0) return divisor.divReduce(this);
+    if (divisor.u2 != 0) return divisor.asUInt192().divReduce(this);
+    if (divisor.u1 != 0) return divisor.asUInt128().divReduce(this);
     if ((divisor.u0 == 0) || (divisor.u0 == 1)) return (divisor.u0 == 1) ? this : ZERO;
-    if ((divisor.u0 & (divisor.u0 - 1)) == 0) {
-      return shiftRightWide(Long.numberOfTrailingZeros(divisor.u0));
-    }
     return divisor.asUInt64().divReduce(this);
   }
 
@@ -1380,6 +1356,11 @@ public record UInt256(long u3, long u2, long u1, long u0) {
     int cmp = compareTo(that);
     if (cmp == 0) return ONE;
     if (cmp > 0) return ZERO;
+    // Fast path: when the divisor is a power of two, division is a right-shift by its exponent.
+    // A non-zero value x is a power of two iff (x & (x - 1)) == 0
+    if ((u3 & (u3 - 1)) == 0 && (u2 | u1 | u0) == 0) {
+      return that.shiftRightWide(192 + Long.numberOfTrailingZeros(u3));
+    }
     int shift = Long.numberOfLeadingZeros(u3);
     UInt256 m = shiftLeft(shift);
     long inv = reciprocal(m.u3);
@@ -1578,6 +1559,11 @@ public record UInt256(long u3, long u2, long u1, long u0) {
     UInt256 divReduce(final UInt256 that) {
       if (that.isUInt64()) {
         return UInt256.fromLong(Long.divideUnsigned(that.u0, u0));
+      }
+      // Fast path: when the divisor is a power of two, division is a right-shift by its exponent.
+      // A non-zero value x is a power of two iff (x & (x - 1)) == 0
+      if ((u0 & (u0 - 1)) == 0) {
+        return that.shiftRightWide(Long.numberOfTrailingZeros(u0));
       }
       int shift = Long.numberOfLeadingZeros(u0);
       UInt64 m = shiftLeft(shift);
@@ -1809,6 +1795,11 @@ public record UInt256(long u3, long u2, long u1, long u0) {
       int cmp = compareTo(that);
       if (cmp == 0) return ONE;
       if (cmp > 0) return ZERO;
+      // Fast path: when the divisor is a power of two, division is a right-shift by its exponent.
+      // A non-zero value x is a power of two iff (x & (x - 1)) == 0
+      if ((u1 & (u1 - 1)) == 0 && u0 == 0) {
+        return that.shiftRightWide(64 + Long.numberOfTrailingZeros(u1));
+      }
       int shift = Long.numberOfLeadingZeros(u1);
       UInt128 m = shiftLeft(shift);
       long inv = reciprocal(m.u1);
@@ -2098,6 +2089,11 @@ public record UInt256(long u3, long u2, long u1, long u0) {
       int cmp = compareTo(that);
       if (cmp == 0) return ONE;
       if (cmp > 0) return ZERO;
+      // Fast path: when the divisor is a power of two, division is a right-shift by its exponent.
+      // A non-zero value x is a power of two iff (x & (x - 1)) == 0
+      if ((u2 & (u2 - 1)) == 0 && (u1 | u0) == 0) {
+        return that.shiftRightWide(128 + Long.numberOfTrailingZeros(u2));
+      }
       int shift = Long.numberOfLeadingZeros(u2);
       UInt192 m = shiftLeft(shift);
       long inv = reciprocal(m.u2);
