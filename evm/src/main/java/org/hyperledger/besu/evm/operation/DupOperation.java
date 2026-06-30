@@ -22,6 +22,8 @@ public class DupOperation extends AbstractOperation {
 
   /** The constant DUP_BASE. */
   private static final int DUP_BASE = 0x7F;
+
+  private final int index;
   /**
    * Instantiates a new Dup operation.
    *
@@ -29,17 +31,17 @@ public class DupOperation extends AbstractOperation {
    */
   public DupOperation(final int index) {
     super(
-        0x80 + index - 1,
+        DUP_BASE + index,
         "DUP" + index,
         index,
         index + 1,
       null);
+    this.index = index;
   }
 
   @Override
   public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    final int index = frame.getCurrentOperation().getOpcode() - DUP_BASE;
     frame.pushStackItem(frame.getStackItem(index - 1));
 
     return new OperationResult();

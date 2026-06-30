@@ -27,6 +27,7 @@ public class SwapOperation extends AbstractOperation {
   /** The constant SWAP_BASE. */
   private static final int SWAP_BASE = 0x8F;
 
+  private final int index;
   /**
    * Instantiates a new Swap operation.
    *
@@ -39,12 +40,12 @@ public class SwapOperation extends AbstractOperation {
         index + 1,
         index + 1,
       null);
+    this.index = index;
   }
 
   @Override
   public Operation.OperationResult execute(
       final MessageFrame frame, final EVM evm) {
-    final int index = frame.getCurrentOperation().getOpcode() - SWAP_BASE;
     final Bytes tmp = frame.getStackItem(0);
     frame.setStackItem(0, frame.getStackItem(index));
     frame.setStackItem(index, tmp);

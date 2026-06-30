@@ -179,23 +179,26 @@ public class EVM {
     var operationTracer = tracing == OperationTracer.NO_TRACING ? null : tracing;
     byte[] code = frame.getCode().getBytes().toArrayUnsafe();
     while (frame.getState() == MessageFrame.State.CODE_EXECUTING) {
-      try {
-        if (runFusedCode(frame, code)) {
-          continue;
+      // tracing not supported
+      if (operationTracer == null) {
+        try {
+          if (runFusedCode(frame, code)) {
+            continue;
+          }
+        } catch (ArrayIndexOutOfBoundsException aiiobe) {
+          ExceptionalHaltReason reason;
+          if (frame.getStack().isFull()) {
+            reason = ExceptionalHaltReason.TOO_MANY_STACK_ITEMS;
+          } else if (frame.getStack().isEmpty()) {
+            reason = ExceptionalHaltReason.INSUFFICIENT_STACK_ITEMS;
+          } else {
+            throw aiiobe;
+          }
+          LOG.trace("MessageFrame evaluation halted because of {}", reason);
+          frame.setExceptionalHaltReason(Optional.of(reason));
+          frame.setState(State.EXCEPTIONAL_HALT);
+          return;
         }
-      } catch (ArrayIndexOutOfBoundsException aiiobe) {
-        ExceptionalHaltReason reason;
-        if (frame.getStack().isFull()) {
-          reason = ExceptionalHaltReason.TOO_MANY_STACK_ITEMS;
-        } else if (frame.getStack().isEmpty()) {
-          reason = ExceptionalHaltReason.INSUFFICIENT_STACK_ITEMS;
-        } else {
-          throw aiiobe;
-        }
-        LOG.trace("MessageFrame evaluation halted because of {}", reason);
-        frame.setExceptionalHaltReason(Optional.of(reason));
-        frame.setState(State.EXCEPTIONAL_HALT);
-        return;
       }
 
       int opcode = code[frame.getPC()] & 0xff;
@@ -267,17 +270,15 @@ public class EVM {
   private boolean runFusedCode(final MessageFrame frame, final byte[] code) {
     int pc = frame.getPC();
     int endPc = getNextPc(frame, code, pc);
-    OperationResult result = null;
     boolean status = endPc < 0;
     while (pc < endPc) {
       int opcode = pc >= code.length ? StopOperation.OPCODE : code[pc] & 0xff;
       Operation currentOperation = operations.getOperation(opcode);
-      frame.setCurrentOperation(currentOperation);
       int pcIncrement = operations.getPcIncrement(opcode);
-      result = switch (opcode) {
+      switch (opcode) {
         case 0x00 -> {
           status = true;
-          yield currentOperation.execute(frame, this);
+          currentOperation.execute(frame, this);
         }
         case 0x01 -> currentOperation.execute(frame, this);
         case 0x02 -> currentOperation.execute(frame, this);
@@ -328,15 +329,17 @@ public class EVM {
         case 0x50 -> currentOperation.execute(frame, this);
      	// JUMP and JUMPI
         case 0x56, 0x57 -> {
-          var r = currentOperation.execute(frame, this);
+          var result = currentOperation.execute(frame, this);
           endPc = pc;
           pcIncrement = 0;
-          if (r.getHaltReason() == null) {
-             pcIncrement = r.getPcIncrement();
+          status = true;
+          if (result.getHaltReason() == null) {
+             pcIncrement = result.getPcIncrement();
              endPc = getNextPc(frame, code, pc + pcIncrement);
-             status = true;
+          } else {
+            frame.setExceptionalHaltReason(Optional.of(result.getHaltReason()));
+            frame.setState(State.EXCEPTIONAL_HALT);
           }
-          yield r;
         }
         case 0x58 -> currentOperation.execute(frame, this);
         case 0x5a -> currentOperation.execute(frame, this);
@@ -421,11 +424,6 @@ public class EVM {
       frame.setPC(pc);
     }
 
-    if (result != null && result.getHaltReason() != null) {
-      frame.setExceptionalHaltReason(Optional.of(result.getHaltReason()));
-      frame.setState(State.EXCEPTIONAL_HALT);
-      status = true;
-    }
     return status;
   }
 
