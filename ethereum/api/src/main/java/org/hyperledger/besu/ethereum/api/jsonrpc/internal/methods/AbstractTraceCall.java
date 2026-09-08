@@ -93,7 +93,7 @@ public abstract class AbstractTraceCall extends AbstractTraceByBlock {
 
     final TraceOptions effectiveTraceOptions = applyServerStepLimit(traceOptions);
     final OperationTracer tracer =
-        DebugOperationTracerFactory.create(effectiveTraceOptions, recordChildCallGas);
+        DebugTraceTransactionStep.createTracer(effectiveTraceOptions, recordChildCallGas);
     return transactionSimulator
         .process(
             callParams,

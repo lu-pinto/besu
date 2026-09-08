@@ -118,9 +118,9 @@ public class DebugTraceCall extends AbstractTraceCall {
               final TransactionTrace transactionTrace =
                   new TransactionTrace(
                       result.transaction(), result.result(), tracer.getTraceFrames());
-              return DebugTraceTransactionStepFactory.create(
+              return DebugTraceTransactionStep.of(
                       getTraceOptions(requestContext), protocolSpec, tracer)
-                  .apply(transactionTrace)
+                  .buildResult(transactionTrace)
                   .getResult();
             });
   }

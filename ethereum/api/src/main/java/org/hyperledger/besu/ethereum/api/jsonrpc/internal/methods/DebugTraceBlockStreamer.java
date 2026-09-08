@@ -34,15 +34,12 @@ import org.hyperledger.besu.ethereum.mainnet.ProtocolSpec;
 import org.hyperledger.besu.ethereum.mainnet.block.access.list.AccessLocationTracker;
 import org.hyperledger.besu.ethereum.mainnet.block.access.list.BlockAccessList;
 import org.hyperledger.besu.ethereum.processing.TransactionProcessingResult;
-import org.hyperledger.besu.ethereum.vm.DebugOperationTracer;
 import org.hyperledger.besu.ethereum.vm.StreamingDebugOperationTracer;
 import org.hyperledger.besu.evm.ModificationNotAllowedException;
 import org.hyperledger.besu.evm.account.MutableAccount;
 import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
 import org.hyperledger.besu.evm.frame.ExceptionalHaltReason;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.tracing.OperationTracer;
-import org.hyperledger.besu.evm.tracing.TraceFrame;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -329,7 +326,8 @@ public class DebugTraceBlockStreamer {
       final BlockHeader header,
       final Wei blobGasPrice,
       final BlockHashLookup blockHashLookup) {
-    final OperationTracer tracer = DebugOperationTracerFactory.create(traceOptions, true);
+    final DebugTraceTransactionStep step =
+        DebugTraceTransactionStep.of(traceOptions, protocolSpec, true);
 
     final AccessLocationTracker accessListTracker =
         BlockAccessList.BlockAccessListBuilder.createTransactionAccessLocationTracker(0);
@@ -340,30 +338,21 @@ public class DebugTraceBlockStreamer {
             header,
             transaction,
             header.getCoinbase(),
-            tracer,
+            step.getOperationTracer(),
             blockHashLookup,
             ImmutableTransactionValidationParams.builder().build(),
             blobGasPrice,
             Optional.of(accessListTracker));
 
-    // Opcode tracers collect trace frames needed by TransactionTrace; CallTracer builds its call
-    // tree internally and produces no frames. Because the tracer is instantiated per transaction,
-    // getTraceFrames() is handed directly without defensive copying or resetting.
-    final List<TraceFrame> traceFrames =
-        tracer instanceof DebugOperationTracer debugTracer
-            ? debugTracer.getTraceFrames()
-            : List.of();
-
     final TransactionTrace transactionTrace =
         new TransactionTrace(
             transaction,
             result,
-            traceFrames,
+            step.getOperationTracer().getTraceFrames(),
             Optional.empty(),
             accessListTracker.getTouchedAccounts());
 
-    return DebugTraceTransactionStepFactory.create(traceOptions, protocolSpec, tracer)
-        .apply(transactionTrace);
+    return step.buildResult(transactionTrace);
   }
 
   // ── struct log writer (hot path) ──────────────────────────────────
