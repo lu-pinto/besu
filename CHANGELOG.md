@@ -32,6 +32,7 @@
 - Serialize `BftMiningCoordinator` `enable()`/`disable()` with `start()`/`stop()` so the mining state flips and their surrounding checks can no longer interleave with concurrent lifecycle transitions. [#10887](https://github.com/besu-eth/besu/pull/10887)
 
 ### Additions and Improvements
+- Implement native `callTracer` execution tracing, reducing memory use for `debug_trace*`. [#11077](https://github.com/besu-eth/besu/pull/11077)
 
 ## 26.8.1
 
