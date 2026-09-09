@@ -93,11 +93,6 @@ public class CallTracer implements OperationTracer {
   }
 
   @Override
-  public boolean isExtendedTracing() {
-    return false;
-  }
-
-  @Override
   public void traceStartTransaction(final WorldView worldView, final Transaction transaction) {
     this.rootType = transaction.isContractCreation() ? CREATE : CALL;
     this.rootGas = transaction.getGasLimit();
@@ -204,13 +199,14 @@ public class CallTracer implements OperationTracer {
     if (!isCreate) {
       if (!hadPending) {
         callBuilder.to(frame.getContractAddress().getBytes().toHexString());
-        if (STATICCALL.equals(type)) {
-          // value intentionally omitted (null) for STATICCALL
-        } else if (DELEGATECALL.equals(type)) {
-          callBuilder.value(frame.getApparentValue().toShortHexString());
-        } else {
-          callBuilder.value(frame.getValue().toShortHexString());
-        }
+
+        final String value =
+            switch (type) {
+              case STATICCALL -> null; // staticcall value is intentionally null
+              case DELEGATECALL -> frame.getApparentValue().toShortHexString();
+              default -> frame.getValue().toShortHexString();
+            };
+        callBuilder.value(value);
       }
       callBuilder.input(frame.getInputData().toHexString());
     } else {

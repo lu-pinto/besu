@@ -27,16 +27,13 @@ import org.hyperledger.besu.ethereum.mainnet.ProtocolSpec;
 import org.hyperledger.besu.ethereum.vm.DebugOperationTracer;
 import org.hyperledger.besu.evm.tracing.OperationTracer;
 
-import java.util.function.Function;
-
 import com.fasterxml.jackson.annotation.JsonGetter;
 
 /**
  * Encapsulates both the {@link OperationTracer} and the logic to build a {@link
  * DebugTraceTransactionResult} for a debug trace request.
  */
-public interface DebugTraceTransactionStep
-    extends Function<TransactionTrace, DebugTraceTransactionResult> {
+public interface DebugTraceTransactionStep {
 
   /**
    * The operation tracer to drive transaction execution with.
@@ -52,11 +49,6 @@ public interface DebugTraceTransactionStep
    * @return the completed debug trace transaction result
    */
   DebugTraceTransactionResult buildResult(TransactionTrace transactionTrace);
-
-  @Override
-  default DebugTraceTransactionResult apply(final TransactionTrace transactionTrace) {
-    return buildResult(transactionTrace);
-  }
 
   /**
    * Creates a {@link DebugTraceTransactionStep} for the given trace options and protocol spec.
