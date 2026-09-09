@@ -28,11 +28,12 @@ import org.hyperledger.besu.ethereum.api.jsonrpc.internal.response.JsonRpcError;
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.response.JsonRpcErrorResponse;
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.response.RpcErrorType;
 import org.hyperledger.besu.ethereum.api.query.BlockchainQueries;
+import org.hyperledger.besu.ethereum.core.BlockHeader;
 import org.hyperledger.besu.ethereum.debug.TraceOptions;
-import org.hyperledger.besu.ethereum.mainnet.ImmutableTransactionValidationParams;
 import org.hyperledger.besu.ethereum.mainnet.ProtocolSchedule;
 import org.hyperledger.besu.ethereum.mainnet.ProtocolSpec;
 import org.hyperledger.besu.ethereum.mainnet.TransactionValidationParams;
+import org.hyperledger.besu.ethereum.transaction.CallParameter;
 import org.hyperledger.besu.ethereum.transaction.PreCloseStateHandler;
 import org.hyperledger.besu.ethereum.transaction.TransactionSimulator;
 import org.hyperledger.besu.evm.tracing.OperationTracer;
@@ -40,13 +41,6 @@ import org.hyperledger.besu.evm.tracing.OperationTracer;
 import java.util.Optional;
 
 public class DebugTraceCall extends AbstractTraceCall {
-  private static final TransactionValidationParams TRANSACTION_VALIDATION_PARAMS =
-      ImmutableTransactionValidationParams.builder()
-          .from(TransactionValidationParams.transactionSimulator())
-          .isAllowFutureNonce(true)
-          .isAllowExceedingBalance(true)
-          .allowUnderpriced(true)
-          .build();
 
   public DebugTraceCall(
       final BlockchainQueries blockchainQueries,
@@ -126,7 +120,10 @@ public class DebugTraceCall extends AbstractTraceCall {
   }
 
   @Override
-  protected TransactionValidationParams buildTransactionValidationParams() {
-    return TRANSACTION_VALIDATION_PARAMS;
+  protected TransactionValidationParams buildTransactionValidationParams(
+      final BlockHeader header, final CallParameter callParams) {
+    return CallParameterUtil.isAllowExceedingBalance(header, callParams)
+        ? TransactionValidationParams.transactionSimulatorAllowExceedingBalanceAndFutureNonce()
+        : TransactionValidationParams.transactionSimulatorAllowFutureNonce();
   }
 }
