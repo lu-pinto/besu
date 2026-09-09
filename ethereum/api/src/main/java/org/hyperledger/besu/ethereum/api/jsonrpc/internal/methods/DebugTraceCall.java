@@ -36,7 +36,6 @@ import org.hyperledger.besu.ethereum.mainnet.TransactionValidationParams;
 import org.hyperledger.besu.ethereum.transaction.CallParameter;
 import org.hyperledger.besu.ethereum.transaction.PreCloseStateHandler;
 import org.hyperledger.besu.ethereum.transaction.TransactionSimulator;
-import org.hyperledger.besu.evm.tracing.OperationTracer;
 
 import java.util.Optional;
 
@@ -54,7 +53,7 @@ public class DebugTraceCall extends AbstractTraceCall {
       final ProtocolSchedule protocolSchedule,
       final TransactionSimulator transactionSimulator,
       final ApiConfiguration apiConfiguration) {
-    super(blockchainQueries, protocolSchedule, transactionSimulator, true, apiConfiguration);
+    super(blockchainQueries, protocolSchedule, transactionSimulator, apiConfiguration);
   }
 
   @Override
@@ -95,28 +94,30 @@ public class DebugTraceCall extends AbstractTraceCall {
   }
 
   @Override
-  protected PreCloseStateHandler<Object> getSimulatorResultHandler(
+  protected TraceExecution createTraceExecution(
       final JsonRpcRequestContext requestContext,
-      final OperationTracer tracer,
+      final TraceOptions traceOptions,
       final ProtocolSpec protocolSpec) {
-    return (mutableWorldState, maybeSimulatorResult) ->
-        maybeSimulatorResult.map(
-            result -> {
-              if (result.isInvalid()) {
-                final JsonRpcError error =
-                    new JsonRpcError(
-                        INTERNAL_ERROR, result.getValidationResult().getErrorMessage());
-                return new JsonRpcErrorResponse(requestContext.getRequest().getId(), error);
-              }
+    final DebugTraceTransactionStep step = DebugTraceTransactionStep.of(traceOptions, protocolSpec);
+    final PreCloseStateHandler<Object> handler =
+        (mutableWorldState, maybeSimulatorResult) ->
+            maybeSimulatorResult.map(
+                result -> {
+                  if (result.isInvalid()) {
+                    final JsonRpcError error =
+                        new JsonRpcError(
+                            INTERNAL_ERROR, result.getValidationResult().getErrorMessage());
+                    return new JsonRpcErrorResponse(requestContext.getRequest().getId(), error);
+                  }
 
-              final TransactionTrace transactionTrace =
-                  new TransactionTrace(
-                      result.transaction(), result.result(), tracer.getTraceFrames());
-              return DebugTraceTransactionStep.of(
-                      getTraceOptions(requestContext), protocolSpec, tracer)
-                  .buildResult(transactionTrace)
-                  .getResult();
-            });
+                  final TransactionTrace transactionTrace =
+                      new TransactionTrace(
+                          result.transaction(),
+                          result.result(),
+                          step.getOperationTracer().getTraceFrames());
+                  return step.buildResult(transactionTrace).getResult();
+                });
+    return new TraceExecution(step.getOperationTracer(), handler);
   }
 
   @Override

@@ -23,7 +23,6 @@ import org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.tracing.diff.S
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.tracing.diff.StateTraceGenerator;
 import org.hyperledger.besu.ethereum.api.jsonrpc.internal.results.tracing.diff.StateTraceResult;
 import org.hyperledger.besu.ethereum.debug.TraceOptions;
-import org.hyperledger.besu.ethereum.debug.TracerType;
 import org.hyperledger.besu.ethereum.mainnet.ProtocolSpec;
 import org.hyperledger.besu.ethereum.vm.DebugOperationTracer;
 import org.hyperledger.besu.evm.tracing.OperationTracer;
@@ -60,8 +59,7 @@ public interface DebugTraceTransactionStep
   }
 
   /**
-   * Creates a {@link DebugTraceTransactionStep} for the given trace options and protocol spec,
-   * recording child call gas by default.
+   * Creates a {@link DebugTraceTransactionStep} for the given trace options and protocol spec.
    *
    * @param traceOptions the trace options
    * @param protocolSpec the protocol spec
@@ -69,22 +67,7 @@ public interface DebugTraceTransactionStep
    */
   static DebugTraceTransactionStep of(
       final TraceOptions traceOptions, final ProtocolSpec protocolSpec) {
-    return of(traceOptions, protocolSpec, true);
-  }
-
-  /**
-   * Creates a {@link DebugTraceTransactionStep} for the given trace options, protocol spec, and
-   * child call gas recording flag.
-   *
-   * @param traceOptions the trace options
-   * @param protocolSpec the protocol spec
-   * @param recordChildCallGas whether opcode tracers should record child call gas
-   * @return the step
-   */
-  static DebugTraceTransactionStep of(
-      final TraceOptions traceOptions,
-      final ProtocolSpec protocolSpec,
-      final boolean recordChildCallGas) {
+    final boolean recordChildCallGas = true;
     return switch (traceOptions.tracerType()) {
       case CALL_TRACER -> {
         final CallTracer tracer = new CallTracer(traceOptions);
@@ -172,118 +155,6 @@ public interface DebugTraceTransactionStep
         };
       }
     };
-  }
-
-  /**
-   * Binds an externally provided {@link OperationTracer} to a result builder step.
-   *
-   * @param traceOptions the trace options
-   * @param protocolSpec the protocol spec
-   * @param tracer the operation tracer used to execute the transaction
-   * @return the step
-   */
-  static DebugTraceTransactionStep of(
-      final TraceOptions traceOptions,
-      final ProtocolSpec protocolSpec,
-      final OperationTracer tracer) {
-    return switch (traceOptions.tracerType()) {
-      case CALL_TRACER -> {
-        if (!(tracer instanceof CallTracer callTracer)) {
-          throw new IllegalArgumentException("CALL_TRACER requires CallTracer");
-        }
-        yield new DebugTraceTransactionStep() {
-          @Override
-          public OperationTracer getOperationTracer() {
-            return callTracer;
-          }
-
-          @Override
-          public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
-            return new DebugTraceTransactionResult(
-                trace, callTracer.buildResult(trace.getTransaction(), trace.getResult()));
-          }
-        };
-      }
-      case OPCODE_TRACER -> {
-        if (!(tracer instanceof DebugOperationTracer debugTracer)) {
-          throw new IllegalArgumentException("OPCODE_TRACER requires DebugOperationTracer");
-        }
-        yield new DebugTraceTransactionStep() {
-          @Override
-          public OperationTracer getOperationTracer() {
-            return debugTracer;
-          }
-
-          @Override
-          public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
-            return new DebugTraceTransactionResult(
-                trace, new OpCodeLoggerTracerResult(trace, debugTracer.isLimitReached()));
-          }
-        };
-      }
-      case PRESTATE_TRACER -> {
-        final var generator = new StateTraceGenerator();
-        final boolean diffMode =
-            Boolean.TRUE.equals(traceOptions.tracerConfig().getOrDefault("diffMode", false));
-        yield new DebugTraceTransactionStep() {
-          @Override
-          public OperationTracer getOperationTracer() {
-            return tracer;
-          }
-
-          @Override
-          public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
-            final StateDiffTrace diffTrace =
-                (diffMode ? generator.generateStateDiff(trace) : generator.generatePreState(trace))
-                    .findFirst()
-                    .orElseGet(StateDiffTrace::new);
-            return new DebugTraceTransactionResult(
-                trace, new StateTraceResult(diffTrace, diffMode));
-          }
-        };
-      }
-      case FOUR_BYTE_TRACER ->
-          new DebugTraceTransactionStep() {
-            @Override
-            public OperationTracer getOperationTracer() {
-              return tracer;
-            }
-
-            @Override
-            public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
-              return new DebugTraceTransactionResult(
-                  trace, FourByteTracerResultConverter.convert(trace, protocolSpec));
-            }
-          };
-      case FLAT_CALL_TRACER ->
-          new DebugTraceTransactionStep() {
-            @Override
-            public OperationTracer getOperationTracer() {
-              return tracer;
-            }
-
-            @Override
-            public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
-              return new DebugTraceTransactionResult(trace, new UnimplementedTracerResult());
-            }
-          };
-    };
-  }
-
-  /**
-   * Helper to create an {@link OperationTracer} directly for callers that only require execution
-   * tracing without result building.
-   *
-   * @param traceOptions the trace options
-   * @param recordChildCallGas whether opcode tracers should record child call gas
-   * @return the operation tracer
-   */
-  static OperationTracer createTracer(
-      final TraceOptions traceOptions, final boolean recordChildCallGas) {
-    if (traceOptions.tracerType() == TracerType.CALL_TRACER) {
-      return new CallTracer(traceOptions);
-    }
-    return new DebugOperationTracer(traceOptions.opCodeTracerConfig(), recordChildCallGas);
   }
 
   class UnimplementedTracerResult {

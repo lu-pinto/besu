@@ -32,7 +32,7 @@ import org.hyperledger.besu.ethereum.mainnet.ProtocolSchedule;
 import org.hyperledger.besu.ethereum.mainnet.ProtocolSpec;
 import org.hyperledger.besu.ethereum.transaction.PreCloseStateHandler;
 import org.hyperledger.besu.ethereum.transaction.TransactionSimulator;
-import org.hyperledger.besu.evm.tracing.OperationTracer;
+import org.hyperledger.besu.ethereum.vm.DebugOperationTracer;
 
 import java.util.Set;
 
@@ -54,7 +54,7 @@ public class TraceCall extends AbstractTraceCall {
       final ProtocolSchedule protocolSchedule,
       final TransactionSimulator transactionSimulator,
       final ApiConfiguration apiConfiguration) {
-    super(blockchainQueries, protocolSchedule, transactionSimulator, false, apiConfiguration);
+    super(blockchainQueries, protocolSchedule, transactionSimulator, apiConfiguration);
   }
 
   @Override
@@ -78,27 +78,35 @@ public class TraceCall extends AbstractTraceCall {
   }
 
   @Override
-  protected PreCloseStateHandler<Object> getSimulatorResultHandler(
+  protected TraceExecution createTraceExecution(
       final JsonRpcRequestContext requestContext,
-      final OperationTracer tracer,
+      final TraceOptions traceOptions,
       final ProtocolSpec protocolSpec) {
-    return (mutableWorldState, maybeSimulatorResult) ->
-        maybeSimulatorResult.map(
-            result -> {
-              if (result.isInvalid()) {
-                LOG.error("Invalid simulator result {}", result);
-                return new JsonRpcErrorResponse(
-                    requestContext.getRequest().getId(), INTERNAL_ERROR);
-              }
+    final DebugOperationTracer tracer =
+        new DebugOperationTracer(traceOptions.opCodeTracerConfig(), false);
+    final PreCloseStateHandler<Object> handler =
+        (mutableWorldState, maybeSimulatorResult) ->
+            maybeSimulatorResult.map(
+                result -> {
+                  if (result.isInvalid()) {
+                    LOG.error("Invalid simulator result {}", result);
+                    return new JsonRpcErrorResponse(
+                        requestContext.getRequest().getId(), INTERNAL_ERROR);
+                  }
 
-              final TransactionTrace transactionTrace =
-                  new TransactionTrace(
-                      result.transaction(), result.result(), tracer.getTraceFrames());
+                  final TransactionTrace transactionTrace =
+                      new TransactionTrace(
+                          result.transaction(), result.result(), tracer.getTraceFrames());
 
-              final Block block =
-                  blockchainQueriesSupplier.get().getBlockchain().getChainHeadBlock();
-              return getTraceCallResult(
-                  protocolSchedule, getTraceTypes(requestContext), result, transactionTrace, block);
-            });
+                  final Block block =
+                      blockchainQueriesSupplier.get().getBlockchain().getChainHeadBlock();
+                  return getTraceCallResult(
+                      protocolSchedule,
+                      getTraceTypes(requestContext),
+                      result,
+                      transactionTrace,
+                      block);
+                });
+    return new TraceExecution(tracer, handler);
   }
 }
