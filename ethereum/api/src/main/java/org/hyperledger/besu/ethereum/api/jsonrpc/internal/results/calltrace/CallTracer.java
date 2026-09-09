@@ -180,22 +180,22 @@ public class CallTracer implements OperationTracer {
     }
     final boolean isRoot = callStack.isEmpty();
     final boolean hadPending = pendingBuilder != null;
-    final CallTracerResult.Builder b;
+    final CallTracerResult.Builder callBuilder;
     final String type;
     if (isRoot) {
       type = rootType;
-      b = CallTracerResult.builder().type(type).gas(rootGas);
+      callBuilder = CallTracerResult.builder().type(type).gas(rootGas);
     } else {
       if (hadPending) {
-        b = pendingBuilder;
-        type = b.getType();
+        callBuilder = pendingBuilder;
+        type = callBuilder.getType();
       } else {
         type = frame.getType() == MessageFrame.Type.CONTRACT_CREATION ? CREATE : CALL;
-        b = CallTracerResult.builder().type(type);
+        callBuilder = CallTracerResult.builder().type(type);
       }
-      b.gas(frame.getRemainingGas());
+      callBuilder.gas(frame.getRemainingGas());
     }
-    b.from(
+    callBuilder.from(
         isRoot
             ? frame.getSenderAddress().getBytes().toHexString()
             : callStack.peek().ownAddress.getBytes().toHexString());
@@ -203,28 +203,28 @@ public class CallTracer implements OperationTracer {
     final boolean isCreate = isCreateType(type);
     if (!isCreate) {
       if (!hadPending) {
-        b.to(frame.getContractAddress().getBytes().toHexString());
+        callBuilder.to(frame.getContractAddress().getBytes().toHexString());
         if (STATICCALL.equals(type)) {
           // value intentionally omitted (null) for STATICCALL
         } else if (DELEGATECALL.equals(type)) {
-          b.value(frame.getApparentValue().toShortHexString());
+          callBuilder.value(frame.getApparentValue().toShortHexString());
         } else {
-          b.value(frame.getValue().toShortHexString());
+          callBuilder.value(frame.getValue().toShortHexString());
         }
       }
-      b.input(frame.getInputData().toHexString());
+      callBuilder.input(frame.getInputData().toHexString());
     } else {
       if (!hadPending) {
-        b.value(frame.getValue().toShortHexString());
+        callBuilder.value(frame.getValue().toShortHexString());
       }
-      b.input(frame.getCode().getBytes().toHexString());
+      callBuilder.input(frame.getCode().getBytes().toHexString());
     }
 
     if (isRoot) {
-      rootBuilder = b;
+      rootBuilder = callBuilder;
     }
     pendingBuilder = null;
-    callStack.push(new Node(b, frame.getRemainingGas(), frame.getRecipientAddress()));
+    callStack.push(new Node(callBuilder, frame.getRemainingGas(), frame.getRecipientAddress()));
   }
 
   @Override
@@ -304,10 +304,10 @@ public class CallTracer implements OperationTracer {
   // ------------------------------------------------------------------------------------------
 
   private void finalizeNode(final Node node, final MessageFrame frame) {
-    final CallTracerResult.Builder b = node.builder;
+    final CallTracerResult.Builder callBuilder = node.builder;
     final Bytes output = frame.getOutputData();
     if (output != null && !output.isEmpty()) {
-      b.output(output.toHexString());
+      callBuilder.output(output.toHexString());
     }
     if (node.isPrecompile
         && (frame.getExceptionalHaltReason().isPresent()
@@ -317,25 +317,26 @@ public class CallTracer implements OperationTracer {
 
     final Optional<ExceptionalHaltReason> halt = frame.getExceptionalHaltReason();
     if (halt.isPresent()) {
-      b.error(halt.get().getDescription());
-      frame.getRevertReason().ifPresent(b::revertReason);
+      callBuilder.error(halt.get().getDescription());
+      frame.getRevertReason().ifPresent(callBuilder::revertReason);
     } else if (frame.getState() == MessageFrame.State.COMPLETED_FAILED) {
       // Completed-failed without an exceptional halt reason only happens via REVERT.
-      b.error(EXECUTION_REVERTED);
+      callBuilder.error(EXECUTION_REVERTED);
       Bytes revertBytes = frame.getRevertReason().orElse(null);
       if ((revertBytes == null || revertBytes.isEmpty()) && output != null && !output.isEmpty()) {
         revertBytes = output;
       }
       if (revertBytes != null && !revertBytes.isEmpty()) {
         if (output == null || output.isEmpty()) {
-          b.output(revertBytes.toHexString());
+          callBuilder.output(revertBytes.toHexString());
         }
-        JsonRpcErrorResponse.decodeRevertReason(revertBytes).ifPresent(b::revertReasonDecoded);
+        JsonRpcErrorResponse.decodeRevertReason(revertBytes)
+            .ifPresent(callBuilder::revertReasonDecoded);
       }
-    } else if (isCreateType(b.getType())) {
-      b.to(frame.getContractAddress().getBytes().toHexString());
+    } else if (isCreateType(callBuilder.getType())) {
+      callBuilder.to(frame.getContractAddress().getBytes().toHexString());
     }
-    b.gasUsed(Math.max(0L, node.entryGas - frame.getRemainingGas()));
+    callBuilder.gasUsed(Math.max(0L, node.entryGas - frame.getRemainingGas()));
   }
 
   /**
