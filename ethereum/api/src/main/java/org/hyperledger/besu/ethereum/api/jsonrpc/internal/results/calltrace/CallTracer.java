@@ -71,14 +71,10 @@ public class CallTracer implements OperationTracer {
   private final boolean onlyTopCall;
   private final Deque<Node> callStack = new ArrayDeque<>();
 
-  private String rootType;
-  private long rootGas;
-  private CallTracerResult.Builder rootBuilder;
-
   // Captured in tracePreExecution for the CALL/CREATE/SELFDESTRUCT opcode about to run on the
   // *current* frame; consumed immediately afterwards by traceContextEnter (real entry),
   // tracePostExecution (soft/hard failure to enter, or self-destruct).
-  private CallTracerResult.Builder pendingBuilder;
+  private CallTracerResult.Builder callBuilder;
   private long pendingInOffset;
   private long pendingInLength;
 
@@ -94,10 +90,9 @@ public class CallTracer implements OperationTracer {
 
   @Override
   public void traceStartTransaction(final WorldView worldView, final Transaction transaction) {
-    this.rootType = transaction.isContractCreation() ? CREATE : CALL;
-    this.rootGas = transaction.getGasLimit();
-    this.rootBuilder = null;
-    this.pendingBuilder = null;
+    callBuilder = CallTracerResult.builder()
+      .type(transaction.isContractCreation() ? CREATE : CALL)
+      .gas(transaction.getGasLimit());
     this.pendingInOffset = 0L;
     this.pendingInLength = 0L;
     this.callStack.clear();
@@ -174,15 +169,12 @@ public class CallTracer implements OperationTracer {
       return;
     }
     final boolean isRoot = callStack.isEmpty();
-    final boolean hadPending = pendingBuilder != null;
-    final CallTracerResult.Builder callBuilder;
+    final boolean hadPending = !isRoot && callBuilder != null;
     final String type;
     if (isRoot) {
-      type = rootType;
-      callBuilder = CallTracerResult.builder().type(type).gas(rootGas);
+      type = callBuilder.getType();
     } else {
       if (hadPending) {
-        callBuilder = pendingBuilder;
         type = callBuilder.getType();
       } else {
         type = frame.getType() == MessageFrame.Type.CONTRACT_CREATION ? CREATE : CALL;
@@ -216,11 +208,8 @@ public class CallTracer implements OperationTracer {
       callBuilder.input(frame.getCode().getBytes().toHexString());
     }
 
-    if (isRoot) {
-      rootBuilder = callBuilder;
-    }
-    pendingBuilder = null;
     callStack.push(new Node(callBuilder, frame.getRemainingGas(), frame.getRecipientAddress()));
+    callBuilder = null;
   }
 
   @Override
@@ -231,7 +220,7 @@ public class CallTracer implements OperationTracer {
     final Node node = callStack.pop();
     finalizeNode(node, frame);
     if (callStack.isEmpty()) {
-      rootBuilder = node.builder;
+      callBuilder = node.builder;
     } else {
       callStack.peek().builder.addCall(node.builder.build());
     }
@@ -251,11 +240,11 @@ public class CallTracer implements OperationTracer {
    */
   public CallTracerResult buildResult(
       final Transaction tx, final TransactionProcessingResult result) {
-    if (rootBuilder == null) {
+    if (callBuilder == null || callBuilder.getFrom() == null) {
       // Validation failed before any frame was traced (e.g. debug_traceBlock replaying an
       // invalid transaction) - synthesize the root call from the transaction itself, like the
       // legacy converter did.
-      rootBuilder =
+      callBuilder =
           CallTracerResult.builder()
               .type(tx.isContractCreation() ? CREATE : CALL)
               .from(tx.getSender().getBytes().toHexString())
@@ -267,14 +256,14 @@ public class CallTracer implements OperationTracer {
               .gas(tx.getGasLimit())
               .input(tx.getPayload().toHexString());
       if (result.getOutput() != null && !result.getOutput().isEmpty()) {
-        rootBuilder.output(result.getOutput().toHexString());
+        callBuilder.output(result.getOutput().toHexString());
       }
     }
-    rootBuilder.gasUsed(tx.getGasLimit() - result.getGasRemaining());
+    callBuilder.gasUsed(tx.getGasLimit() - result.getGasRemaining());
     if (!result.isSuccessful()) {
       applyRootError(tx, result);
     }
-    return rootBuilder.build();
+    return callBuilder.build();
   }
 
   private void applyRootError(final Transaction tx, final TransactionProcessingResult result) {
@@ -283,15 +272,15 @@ public class CallTracer implements OperationTracer {
             .getExceptionalHaltReason()
             .map(ExceptionalHaltReason::getDescription)
             .orElse(EXECUTION_REVERTED);
-    rootBuilder.error(errorMessage);
+    callBuilder.error(errorMessage);
     if (tx.isContractCreation()) {
-      rootBuilder.to(null);
-      result.getRevertReason().ifPresent(rootBuilder::revertReason);
+      callBuilder.to(null);
+      result.getRevertReason().ifPresent(callBuilder::revertReason);
     } else if (result.getExceptionalHaltReason().isEmpty()
         && result.getRevertReason().isPresent()) {
-      rootBuilder.output(result.getRevertReason().get().toHexString());
+      callBuilder.output(result.getRevertReason().get().toHexString());
       JsonRpcErrorResponse.decodeRevertReason(result.getRevertReason().get())
-          .ifPresent(rootBuilder::revertReasonDecoded);
+          .ifPresent(callBuilder::revertReasonDecoded);
     }
   }
 
@@ -344,13 +333,13 @@ public class CallTracer implements OperationTracer {
       final MessageFrame frame, final Operation.OperationResult result, final String opcode) {
     if (result.getHaltReason() == ExceptionalHaltReason.INSUFFICIENT_STACK_ITEMS) {
       // Operand validation failed before a child call was attempted.
-      pendingBuilder = null;
+      callBuilder = null;
       return;
     }
     final CallTracerResult.Builder cb =
-        pendingBuilder != null ? pendingBuilder : CallTracerResult.builder().type(opcode);
+        callBuilder != null ? callBuilder : CallTracerResult.builder().type(opcode);
     cb.from(callStack.isEmpty() ? null : callStack.peek().ownAddress.getBytes().toHexString());
-    if (pendingBuilder == null) {
+    if (callBuilder == null) {
       if (STATICCALL.equals(opcode)) {
         // value intentionally omitted (null) for STATICCALL
       } else if (DELEGATECALL.equals(opcode)) {
@@ -393,20 +382,20 @@ public class CallTracer implements OperationTracer {
     if (!callStack.isEmpty()) {
       callStack.peek().builder.addCall(cb.build());
     }
-    pendingBuilder = null;
+    callBuilder = null;
   }
 
   private void handleSelfDestructPostExecution(
       final MessageFrame frame, final Operation.OperationResult result) {
-    if (result.getHaltReason() != null || pendingBuilder == null || callStack.isEmpty()) {
-      pendingBuilder = null;
+    if (result.getHaltReason() != null || callBuilder == null || callStack.isEmpty()) {
+      callBuilder = null;
       return;
     }
-    final Address beneficiary = Address.fromHexString(pendingBuilder.getTo());
+    final Address beneficiary = Address.fromHexString(callBuilder.getTo());
     final Address from = frame.getRecipientAddress();
     final Wei value = frame.getRefunds().getOrDefault(beneficiary, Wei.ZERO);
     final CallTracerResult selfDestructCall =
-        pendingBuilder
+        callBuilder
             .from(from.getBytes().toHexString())
             .gas(0L)
             .gasUsed(0L)
@@ -414,7 +403,7 @@ public class CallTracer implements OperationTracer {
             .input("0x")
             .build();
     callStack.peek().builder.addCall(selfDestructCall);
-    pendingBuilder = null;
+    callBuilder = null;
   }
 
   // ------------------------------------------------------------------------------------------
@@ -423,19 +412,17 @@ public class CallTracer implements OperationTracer {
 
   private void capturePendingCall(final MessageFrame frame, final Operation op) {
     if (frame.stackSize() < op.getStackItemsConsumed()) {
-      pendingBuilder = null;
-      pendingInOffset = 0L;
-      pendingInLength = 0L;
+      callBuilder = null;
       return;
     }
     final String opcode = op.getName();
     final boolean hasValue = CALL.equals(opcode) || CALLCODE.equals(opcode);
     final String toHex = Words.toAddress(frame.getStackItem(1)).getBytes().toHexString();
-    pendingBuilder = CallTracerResult.builder().type(opcode).to(toHex);
+    callBuilder = CallTracerResult.builder().type(opcode).to(toHex);
     if (CALL.equals(opcode) || CALLCODE.equals(opcode)) {
-      pendingBuilder.value(Wei.wrap(frame.getStackItem(2)).toShortHexString());
+      callBuilder.value(Wei.wrap(frame.getStackItem(2)).toShortHexString());
     } else if (DELEGATECALL.equals(opcode)) {
-      pendingBuilder.value(frame.getApparentValue().toShortHexString());
+      callBuilder.value(frame.getApparentValue().toShortHexString());
     }
     final int offsetIdx = hasValue ? 3 : 2;
     final int lengthIdx = hasValue ? 4 : 3;
@@ -445,13 +432,11 @@ public class CallTracer implements OperationTracer {
 
   private void capturePendingCreate(final MessageFrame frame, final Operation op) {
     if (frame.stackSize() < op.getStackItemsConsumed()) {
-      pendingBuilder = null;
-      pendingInOffset = 0L;
-      pendingInLength = 0L;
+      callBuilder = null;
       return;
     }
     final String opcode = op.getName();
-    pendingBuilder =
+    callBuilder =
         CallTracerResult.builder()
             .type(opcode)
             .value(Wei.wrap(frame.getStackItem(0)).toShortHexString());
@@ -461,13 +446,11 @@ public class CallTracer implements OperationTracer {
 
   private void capturePendingSelfDestruct(final MessageFrame frame, final Operation op) {
     if (frame.stackSize() < op.getStackItemsConsumed()) {
-      pendingBuilder = null;
-      pendingInOffset = 0L;
-      pendingInLength = 0L;
+      callBuilder = null;
       return;
     }
     final Address beneficiary = Words.toAddress(frame.getStackItem(0));
-    pendingBuilder =
+    callBuilder =
         CallTracerResult.builder().type(SELFDESTRUCT).to(beneficiary.getBytes().toHexString());
   }
 
