@@ -61,91 +61,93 @@ public interface DebugTraceTransactionStep {
       final TraceOptions traceOptions, final ProtocolSpec protocolSpec) {
     final boolean recordChildCallGas = true;
     return switch (traceOptions.tracerType()) {
-      case CALL_TRACER -> {
-        final CallTracer tracer = new CallTracer(traceOptions);
-        yield new DebugTraceTransactionStep() {
-          @Override
-          public OperationTracer getOperationTracer() {
-            return tracer;
-          }
+      case CALL_TRACER ->
+          new DebugTraceTransactionStep() {
+            private final CallTracer tracer = new CallTracer(traceOptions);
 
-          @Override
-          public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
-            return new DebugTraceTransactionResult(
-                trace, tracer.buildResult(trace.getTransaction(), trace.getResult()));
-          }
-        };
-      }
-      case OPCODE_TRACER -> {
-        final DebugOperationTracer tracer =
-            new DebugOperationTracer(traceOptions.opCodeTracerConfig(), recordChildCallGas);
-        yield new DebugTraceTransactionStep() {
-          @Override
-          public OperationTracer getOperationTracer() {
-            return tracer;
-          }
+            @Override
+            public OperationTracer getOperationTracer() {
+              return tracer;
+            }
 
-          @Override
-          public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
-            return new DebugTraceTransactionResult(
-                trace, new OpCodeLoggerTracerResult(trace, tracer.isLimitReached()));
-          }
-        };
-      }
-      case PRESTATE_TRACER -> {
-        final DebugOperationTracer tracer =
-            new DebugOperationTracer(traceOptions.opCodeTracerConfig(), recordChildCallGas);
-        final var generator = new StateTraceGenerator();
-        final boolean diffMode =
-            Boolean.TRUE.equals(traceOptions.tracerConfig().getOrDefault("diffMode", false));
-        yield new DebugTraceTransactionStep() {
-          @Override
-          public OperationTracer getOperationTracer() {
-            return tracer;
-          }
+            @Override
+            public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
+              return new DebugTraceTransactionResult(
+                  trace, tracer.buildResult(trace.getTransaction(), trace.getResult()));
+            }
+          };
+      case OPCODE_TRACER ->
+          new DebugTraceTransactionStep() {
+            private final DebugOperationTracer tracer =
+                new DebugOperationTracer(traceOptions.opCodeTracerConfig(), recordChildCallGas);
 
-          @Override
-          public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
-            final StateDiffTrace diffTrace =
-                (diffMode ? generator.generateStateDiff(trace) : generator.generatePreState(trace))
-                    .findFirst()
-                    .orElseGet(StateDiffTrace::new);
-            return new DebugTraceTransactionResult(
-                trace, new StateTraceResult(diffTrace, diffMode));
-          }
-        };
-      }
-      case FOUR_BYTE_TRACER -> {
-        final DebugOperationTracer tracer =
-            new DebugOperationTracer(traceOptions.opCodeTracerConfig(), recordChildCallGas);
-        yield new DebugTraceTransactionStep() {
-          @Override
-          public OperationTracer getOperationTracer() {
-            return tracer;
-          }
+            @Override
+            public OperationTracer getOperationTracer() {
+              return tracer;
+            }
 
-          @Override
-          public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
-            return new DebugTraceTransactionResult(
-                trace, FourByteTracerResultConverter.convert(trace, protocolSpec));
-          }
-        };
-      }
-      case FLAT_CALL_TRACER -> {
-        final DebugOperationTracer tracer =
-            new DebugOperationTracer(traceOptions.opCodeTracerConfig(), recordChildCallGas);
-        yield new DebugTraceTransactionStep() {
-          @Override
-          public OperationTracer getOperationTracer() {
-            return tracer;
-          }
+            @Override
+            public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
+              return new DebugTraceTransactionResult(
+                  trace, new OpCodeLoggerTracerResult(trace, tracer.isLimitReached()));
+            }
+          };
+      case PRESTATE_TRACER ->
+          new DebugTraceTransactionStep() {
+            private final DebugOperationTracer tracer =
+                new DebugOperationTracer(traceOptions.opCodeTracerConfig(), recordChildCallGas);
+            private final StateTraceGenerator generator = new StateTraceGenerator();
+            private final boolean diffMode =
+                Boolean.TRUE.equals(traceOptions.tracerConfig().getOrDefault("diffMode", false));
 
-          @Override
-          public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
-            return new DebugTraceTransactionResult(trace, new UnimplementedTracerResult());
-          }
-        };
-      }
+            @Override
+            public OperationTracer getOperationTracer() {
+              return tracer;
+            }
+
+            @Override
+            public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
+              final StateDiffTrace diffTrace =
+                  (diffMode
+                          ? generator.generateStateDiff(trace)
+                          : generator.generatePreState(trace))
+                      .findFirst()
+                      .orElseGet(StateDiffTrace::new);
+              return new DebugTraceTransactionResult(
+                  trace, new StateTraceResult(diffTrace, diffMode));
+            }
+          };
+      case FOUR_BYTE_TRACER ->
+          new DebugTraceTransactionStep() {
+            private final DebugOperationTracer tracer =
+                new DebugOperationTracer(traceOptions.opCodeTracerConfig(), recordChildCallGas);
+
+            @Override
+            public OperationTracer getOperationTracer() {
+              return tracer;
+            }
+
+            @Override
+            public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
+              return new DebugTraceTransactionResult(
+                  trace, FourByteTracerResultConverter.convert(trace, protocolSpec));
+            }
+          };
+      case FLAT_CALL_TRACER ->
+          new DebugTraceTransactionStep() {
+            private final DebugOperationTracer tracer =
+                new DebugOperationTracer(traceOptions.opCodeTracerConfig(), recordChildCallGas);
+
+            @Override
+            public OperationTracer getOperationTracer() {
+              return tracer;
+            }
+
+            @Override
+            public DebugTraceTransactionResult buildResult(final TransactionTrace trace) {
+              return new DebugTraceTransactionResult(trace, new UnimplementedTracerResult());
+            }
+          };
     };
   }
 
