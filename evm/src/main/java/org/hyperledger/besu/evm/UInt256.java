@@ -123,12 +123,12 @@ public record UInt256(long u3, long u2, long u1, long u0) {
     if (bytes.length == 0 || length <= 0) {
       return ZERO;
     }
-    if (length < 8) {
+    if (bytes.length < 8) {
       return fromBytesSingleLimb(bytes, offset, length);
     }
     int end = offset + length;
     int prevIndex = end;
-    int nextIndex = prevIndex - 8;
+    int nextIndex = Math.max(offset, prevIndex - 8);
     final long u0 = getLong(bytes, nextIndex, prevIndex);
     prevIndex = nextIndex;
 
@@ -147,9 +147,15 @@ public record UInt256(long u3, long u2, long u1, long u0) {
   }
 
   private static long getLong(final byte[] bytes, final int from, final int to) {
-    int shift = (N_BYTES_PER_LIMB + from - to) * 8;
-    final long value = (long) LONG_BE.get(bytes, from);
-    return shift == N_BITS_PER_LIMB ? 0L : value >>> shift;
+    if (from >= to) return 0L;
+    int start = Math.max(0, to - 8);
+    long value = (long) LONG_BE.get(bytes, start);
+    // shift value to trim off any suffix of bits
+    int shift = (N_BYTES_PER_LIMB - (to - start)) * 8;
+    value >>>= shift;
+    // mask out value to trim off any prefix of bits
+    shift = (N_BYTES_PER_LIMB - (to - from)) * 8;
+    return value & (-1L >>> shift);
   }
 
   private static UInt256 fromBytesSingleLimb(
