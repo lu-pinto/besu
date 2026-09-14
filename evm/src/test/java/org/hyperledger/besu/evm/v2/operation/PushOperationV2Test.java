@@ -60,6 +60,14 @@ public class PushOperationV2Test {
   }
 
   @Test
+  void pushThenPushZero() {
+    final byte[] code = generateCode(4);
+    staticOperation(frame, code, 0, 2);
+    staticOperation(frame, code, 0, 0);
+    assertThat(frame.getStackItemV2(0)).isEqualTo(UInt256.ZERO);
+  }
+
+  @Test
   void unpaddedPushDoesntReachEndCode() {
     final byte[] code = generateCode(4);
     staticOperation(frame, code, 0, code.length - 2);

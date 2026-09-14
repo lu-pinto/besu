@@ -61,7 +61,7 @@ public class PushOperationBenchmarkV2 {
     RANDOM
   }
 
-  @Param({"1", "8", "20", "32", "RANDOM"})
+  @Param({"0", "1", "4", "14", "20", "32", "RANDOM"})
   private String pushSize;
 
   @Param protected Position pc;
