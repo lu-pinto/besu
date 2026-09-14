@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import org.hyperledger.besu.evm.operation.Push0Operation;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Measurement;
@@ -123,5 +124,25 @@ public class PushOperationBenchmark {
     frame.popStackItem();
 
     index = (index + 1) % SAMPLE_SIZE;
+  }
+
+  @State(Scope.Thread)
+  @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+  @OutputTimeUnit(value = TimeUnit.NANOSECONDS)
+  @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
+  @BenchmarkMode(Mode.AverageTime)
+  public static class PushZeroOperationBenchmark {
+    private MessageFrame frame;
+
+    @Setup
+    public void setUp() {
+      frame = BenchmarkHelper.createMessageCallFrame();
+    }
+
+    @Benchmark
+    public void executeOperation(final Blackhole blackhole) {
+      blackhole.consume(Push0Operation.staticOperation(frame));
+      frame.popStackItem();
+    }
   }
 }
