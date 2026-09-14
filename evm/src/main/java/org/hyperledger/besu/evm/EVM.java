@@ -517,7 +517,8 @@ public class EVM {
                       ? SarOperationV2.staticOperation(frame)
                       : InvalidOperation.invalidOperationResult(opcode);
               case 0x50 -> PopOperationV2.staticOperation(frame);
-              case 0x60, // PUSH1-32
+              case 0x5F, // PUSH0-32
+                  0x60,
                   0x61,
                   0x62,
                   0x63,

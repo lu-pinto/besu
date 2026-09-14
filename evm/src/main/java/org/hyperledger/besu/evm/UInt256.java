@@ -116,34 +116,24 @@ public record UInt256(long u3, long u2, long u1, long u0) {
    *
    * @param bytes raw bytes in BigEndian order.
    * @param offset start index of the bytes array to convert, inclusive
-   * @param length amount of bytes to take for conversion
+   * @param length amount of bytes to take for conversion, caller must ensure >= 0 - unguarded
    * @return Big-endian UInt256 represented by the bytes.
    */
   public static UInt256 fromBytesBE(final byte[] bytes, final int offset, final int length) {
-    if (bytes.length == 0 || length <= 0) {
-      return ZERO;
+    if (bytes.length >= 8) {
+      int end = offset + length;
+      int i0 = Math.max(offset, end - 8);
+      int i1 = Math.max(offset, end - 16);
+      int i2 = Math.max(offset, end - 24);
+      int i3 = Math.max(offset, end - 32);
+      final long u0 = getLong(bytes, i0, end);
+      final long u1 = getLong(bytes, i1, i0);
+      final long u2 = getLong(bytes, i2, i1);
+      final long u3 = getLong(bytes, i3, i2);
+      return new UInt256(u3, u2, u1, u0);
     }
-    if (bytes.length < 8) {
-      return fromBytesSingleLimb(bytes, offset, length);
-    }
-    int end = offset + length;
-    int prevIndex = end;
-    int nextIndex = Math.max(offset, prevIndex - 8);
-    final long u0 = getLong(bytes, nextIndex, prevIndex);
-    prevIndex = nextIndex;
-
-    nextIndex = Math.max(offset, prevIndex - 8);
-    final long u1 = getLong(bytes, nextIndex, prevIndex);
-    prevIndex = nextIndex;
-
-    nextIndex = Math.max(offset, prevIndex - 8);
-    final long u2 = getLong(bytes, nextIndex, prevIndex);
-    prevIndex = nextIndex;
-
-    nextIndex = Math.max(offset, end - BYTESIZE);
-    final long u3 = getLong(bytes, nextIndex, prevIndex);
-
-    return new UInt256(u3, u2, u1, u0);
+    // Slow-path does for loop which is slow compared to vectorized conversion
+    return fromBytesSingleLimb(bytes, offset, length);
   }
 
   private static long getLong(final byte[] bytes, final int from, final int to) {
@@ -160,6 +150,9 @@ public record UInt256(long u3, long u2, long u1, long u0) {
 
   private static UInt256 fromBytesSingleLimb(
       final byte[] bytes, final int offset, final int length) {
+    if (bytes.length == 0) {
+      return ZERO;
+    }
     long value = 0;
     for (int i = offset + length - 1, shift = 0; i >= offset; i--, shift += 8) {
       value |= ((bytes[i] & 0xFFL) << shift);
