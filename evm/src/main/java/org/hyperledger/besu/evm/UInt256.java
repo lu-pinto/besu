@@ -136,7 +136,7 @@ public record UInt256(long u3, long u2, long u1, long u0) {
     return fromBytesSingleLimb(bytes, offset, length);
   }
 
-  private static long getLong(final byte[] bytes, final int from, final int to) {
+  public static long getLong(final byte[] bytes, final int from, final int to) {
     if (from >= to) return 0L;
     int start = Math.max(0, to - 8);
     long value = (long) LONG_BE.get(bytes, start);

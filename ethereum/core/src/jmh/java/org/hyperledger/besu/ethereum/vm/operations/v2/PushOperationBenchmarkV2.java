@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import org.hyperledger.besu.evm.v2.operation.PushOperationV2;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Measurement;
@@ -62,18 +63,21 @@ public class PushOperationBenchmarkV2 {
   }
 
   @Param({"0", "1", "4", "14", "20", "32", "RANDOM"})
-  private String pushSize;
+  protected String pushSize;
 
   @Param protected Position pc;
 
   @Param({"SMALL", "BIG"})
   private String codeSize;
 
-  private MessageFrame frame;
-  private byte[] code;
-  private int[] pcPool;
-  private int[] pushSizePool;
-  private int index;
+  protected MessageFrame frame;
+  protected byte[] code;
+  protected int[] pcPool;
+  protected int[] pushSizePool;
+  protected int index;
+
+  protected int randomStart = 0;
+  protected int randomEnd = 33;
 
   @Setup
   public void setUp() {
@@ -94,7 +98,7 @@ public class PushOperationBenchmarkV2 {
     pcPool = new int[SAMPLE_SIZE];
     pushSizePool = new int[SAMPLE_SIZE];
     for (int i = 0; i < SAMPLE_SIZE; i++) {
-      final int size = randomSize ? random.nextInt(1, 33) : fixedSize;
+      final int size = randomSize ? random.nextInt(randomStart, randomEnd) : fixedSize;
       if (pc == Position.RANDOM) {
         pc =
             Arrays.stream(Position.values())
@@ -123,5 +127,41 @@ public class PushOperationBenchmarkV2 {
     frame.setTopV2(frame.stackTopV2() - 1);
 
     index = (index + 1) % SAMPLE_SIZE;
+  }
+
+  public static class PushOperationZeroV2 extends PushOperationBenchmarkV2 {
+    @Override
+    public void setUp() {
+      randomStart = 0;
+      randomEnd = 2;
+      super.setUp();
+    }
+
+    @Override
+    public void executeOperation(final Blackhole blackhole) {
+      blackhole.consume(PushOperationV2.SingleByte.staticOperation(frame, code, pcPool[index], pushSizePool[index]));
+
+      frame.setTopV2(frame.stackTopV2() - 1);
+
+      index = (index + 1) % SAMPLE_SIZE;
+    }
+  }
+
+  public static class PushOperationSingleLimbV2 extends PushOperationBenchmarkV2 {
+    @Override
+    public void setUp() {
+      randomStart = 2;
+      randomEnd = 9;
+      super.setUp();
+    }
+
+    @Override
+    public void executeOperation(final Blackhole blackhole) {
+      blackhole.consume(PushOperationV2.SingleLimb.staticOperation(frame, code, pcPool[index], pushSizePool[index]));
+
+      frame.setTopV2(frame.stackTopV2() - 1);
+
+      index = (index + 1) % SAMPLE_SIZE;
+    }
   }
 }

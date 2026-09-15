@@ -19,7 +19,7 @@ import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.OverflowException;
 
-/** The Push operation. */
+/** The Push operation - it runs only PUSH9 to PUSH32. */
 public class PushOperationV2 extends AbstractFixedCostOperationV2 {
   /** The constant PUSH_BASE. */
   public static final int PUSH_BASE = 0x5F;
@@ -27,7 +27,7 @@ public class PushOperationV2 extends AbstractFixedCostOperationV2 {
   private final int length;
 
   /** The Push operation success result. */
-  static final OperationResult pushSuccess = new OperationResult(3, null);
+  private static final OperationResult pushSuccess = new OperationResult(3, null);
 
   /**
    * Instantiates a new Push operation.
@@ -73,6 +73,13 @@ public class PushOperationV2 extends AbstractFixedCostOperationV2 {
       pushValue = pushValue.shiftLeft((pushSize - remainingSize) * 8);
     }
 
+    pushStackLong(frame, pushValue);
+
+    frame.setPC(pc + pushSize);
+    return pushSuccess;
+  }
+
+  private static void pushStackLong(final MessageFrame frame, final UInt256 pushValue) {
     final long[] stack = frame.stackDataV2();
     final int top = frame.stackTopV2();
     final int offset = top << 2;
@@ -85,8 +92,81 @@ public class PushOperationV2 extends AbstractFixedCostOperationV2 {
       throw new OverflowException();
     }
     frame.setTopV2(top + 1);
+  }
 
-    frame.setPC(pc + pushSize);
-    return pushSuccess;
+  private static void pushStackLong(final MessageFrame frame, final long u0) {
+    final long[] stack = frame.stackDataV2();
+    final int top = frame.stackTopV2();
+    final int offset = top << 2;
+    try {
+      stack[offset] = 0;
+      stack[offset + 1] = 0;
+      stack[offset + 2] = 0;
+      stack[offset + 3] = u0;
+    } catch (ArrayIndexOutOfBoundsException aiobe) {
+      throw new OverflowException();
+    }
+    frame.setTopV2(top + 1);
+  }
+
+  /**
+   * Optimized version of PUSH opcode for PUSH0 and PUSH1 only.
+   */
+  public class SingleByte extends PushOperationV2  {
+
+    public SingleByte(final int length, final GasCalculator gasCalculator) {
+      super(length, gasCalculator);
+    }
+
+    @Override
+    public OperationResult executeFixedCostOperation(final MessageFrame frame) {
+      final byte[] code = frame.getCode().getBytes().toArrayUnsafe();
+      return staticOperation(frame, code, frame.getPC(), length);
+    }
+
+    public static OperationResult staticOperation(
+      final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
+      long u0 = 0;
+      final int start = pc + 1;
+      if (pushSize != 0 && start < code.length) {
+        u0 = code[start] & 0xFFL;
+      }
+      pushStackLong(frame, u0);
+      frame.setPC(pc + pushSize);
+      return pushSuccess;
+    }
+  }
+
+  /**
+   * Optimized version for PUSH opcode for PUSH2 to PUSH8.
+   */
+  public class SingleLimb extends PushOperationV2  {
+
+    public SingleLimb(final int length, final GasCalculator gasCalculator) {
+      super(length, gasCalculator);
+    }
+
+    @Override
+    public OperationResult executeFixedCostOperation(final MessageFrame frame) {
+      final byte[] code = frame.getCode().getBytes().toArrayUnsafe();
+      return staticOperation(frame, code, frame.getPC(), length);
+    }
+
+    public static OperationResult staticOperation(
+      final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
+      final int start = pc + 1;
+      final int end = start + pushSize;
+      long u0 = UInt256.getLong(code, start, Math.min(end, code.length));
+
+      // Slow-path - when push is truncated and zeros need to be appended
+      if (end > code.length) {
+        final int remainingSize = code.length - start;
+        final int shift = (pushSize - remainingSize) * 8;
+        u0 <<= shift;
+      }
+      pushStackLong(frame, u0);
+      frame.setPC(pc + pushSize);
+      return pushSuccess;
+    }
   }
 }
