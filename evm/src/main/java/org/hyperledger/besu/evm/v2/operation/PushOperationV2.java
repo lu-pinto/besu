@@ -20,7 +20,7 @@ import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.internal.OverflowException;
 
 /** The Push operation - it runs only PUSH9 to PUSH32. */
-public class PushOperationV2 extends AbstractFixedCostOperationV2 {
+public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
   /** The constant PUSH_BASE. */
   public static final int PUSH_BASE = 0x5F;
 
@@ -46,40 +46,7 @@ public class PushOperationV2 extends AbstractFixedCostOperationV2 {
     this.length = length;
   }
 
-  @Override
-  public OperationResult executeFixedCostOperation(final MessageFrame frame) {
-    final byte[] code = frame.getCode().getBytes().toArrayUnsafe();
-    return staticOperation(frame, code, frame.getPC(), length);
-  }
-
-  /**
-   * Performs Push operation. {@code pushSize} must be in 1..32.
-   *
-   * @param frame the frame
-   * @param code the code
-   * @param pc the pc
-   * @param pushSize the push size
-   * @return the operation result
-   */
-  public static OperationResult staticOperation(
-      final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
-    final int start = pc + 1;
-    final int end = start + pushSize;
-    final int remainingSize = Math.min(end, code.length) - start;
-    UInt256 pushValue = UInt256.fromBytesBE(code, start, remainingSize);
-
-    // Slow-path - when push is truncated and zeros need to be appended
-    if (end > code.length) {
-      pushValue = pushValue.shiftLeft((pushSize - remainingSize) * 8);
-    }
-
-    pushStackLong(frame, pushValue);
-
-    frame.setPC(pc + pushSize);
-    return pushSuccess;
-  }
-
-  private static void pushStackLong(final MessageFrame frame, final UInt256 pushValue) {
+  private static void pushUInt256ToStack(final MessageFrame frame, final UInt256 pushValue) {
     final long[] stack = frame.stackDataV2();
     final int top = frame.stackTopV2();
     final int offset = top << 2;
@@ -94,7 +61,7 @@ public class PushOperationV2 extends AbstractFixedCostOperationV2 {
     frame.setTopV2(top + 1);
   }
 
-  private static void pushStackLong(final MessageFrame frame, final long u0) {
+  private static void pushLongToStack(final MessageFrame frame, final long u0) {
     final long[] stack = frame.stackDataV2();
     final int top = frame.stackTopV2();
     final int offset = top << 2;
@@ -131,7 +98,8 @@ public class PushOperationV2 extends AbstractFixedCostOperationV2 {
       if (pushSize != 0 && start < code.length) {
         u0 = code[start] & 0xFFL;
       }
-      pushStackLong(frame, u0);
+
+      pushLongToStack(frame, u0);
       frame.setPC(pc + pushSize);
       return pushSuccess;
     }
@@ -164,7 +132,42 @@ public class PushOperationV2 extends AbstractFixedCostOperationV2 {
         final int shift = (pushSize - remainingSize) * 8;
         u0 <<= shift;
       }
-      pushStackLong(frame, u0);
+
+      pushLongToStack(frame, u0);
+      frame.setPC(pc + pushSize);
+      return pushSuccess;
+    }
+  }
+
+  /**
+   * Generic multi limb version of PUSH opcode, can execute PUSH0-32, but it should only be used for multiple long limbs
+   * because of performance.
+   */
+  public class MultiLimb extends PushOperationV2 {
+
+    public MultiLimb(final int length, final GasCalculator gasCalculator) {
+      super(length, gasCalculator);
+    }
+
+    @Override
+    public OperationResult executeFixedCostOperation(final MessageFrame frame) {
+      final byte[] code = frame.getCode().getBytes().toArrayUnsafe();
+      return staticOperation(frame, code, frame.getPC(), length);
+    }
+
+    public static OperationResult staticOperation(
+      final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
+      final int start = pc + 1;
+      final int end = start + pushSize;
+      final int remainingSize = Math.min(end, code.length) - start;
+      UInt256 pushValue = UInt256.fromBytesBE(code, start, remainingSize);
+
+      // Slow-path - when push is truncated and zeros need to be appended
+      if (end > code.length) {
+        pushValue = pushValue.shiftLeft((pushSize - remainingSize) * 8);
+      }
+
+      pushUInt256ToStack(frame, pushValue);
       frame.setPC(pc + pushSize);
       return pushSuccess;
     }

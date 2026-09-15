@@ -553,7 +553,7 @@ public class EVM {
                    0x7c,
                    0x7d,
                    0x7e,
-                   0x7f -> PushOperationV2.staticOperation(frame, code, pc, opcode - PUSH_BASE);
+                   0x7f -> PushOperationV2.MultiLimb.staticOperation(frame, code, pc, opcode - PUSH_BASE);
               // TODO EVMv2: implement remaining opcodes in v2; until then fall through to v1
               default -> {
                 frame.setCurrentOperation(currentOperation);

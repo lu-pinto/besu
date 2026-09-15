@@ -14,21 +14,18 @@
  */
 package org.hyperledger.besu.ethereum.vm.operations.v2;
 
-import static org.hyperledger.besu.evm.v2.operation.PushOperationV2.staticOperation;
-
 import org.hyperledger.besu.evm.frame.MessageFrame;
 
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import org.hyperledger.besu.evm.v2.operation.PushOperationV2;
+import org.hyperledger.besu.evm.operation.Operation;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -40,8 +37,7 @@ import org.openjdk.jmh.infra.Blackhole;
 @OutputTimeUnit(value = TimeUnit.NANOSECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @BenchmarkMode(Mode.AverageTime)
-public class PushOperationBenchmarkV2 {
-
+public abstract class PushOperationBenchmarkBaseV2 {
   private static final int SAMPLE_SIZE = 30_000;
   private static final int SMALL_CODE_SIZE = 64;
   private static final int LARGE_CODE_SIZE = 24_576;
@@ -62,45 +58,40 @@ public class PushOperationBenchmarkV2 {
     RANDOM
   }
 
-  @Param({"0", "1", "4", "14", "20", "32", "RANDOM"})
-  protected String pushSize;
+  private MessageFrame frame;
+  private byte[] code;
+  private int[] pcPool;
+  private int[] pushSizePool;
+  private int index;
 
-  @Param protected Position pc;
-
-  @Param({"SMALL", "BIG"})
-  private String codeSize;
-
-  protected MessageFrame frame;
-  protected byte[] code;
-  protected int[] pcPool;
-  protected int[] pushSizePool;
-  protected int index;
-
-  protected int randomStart = 0;
-  protected int randomEnd = 33;
+  protected abstract Position getPc();
+  protected abstract String getPushSize();
+  protected abstract String getCodeSize();
+  protected abstract int[] getPushRandomization();
 
   @Setup
   public void setUp() {
     frame = BenchmarkHelperV2.createMessageCallFrame();
-    final Random random = new Random();
     code =
         new byte
-            [switch (codeSize) {
+            [switch (getCodeSize()) {
               case "SMALL" -> SMALL_CODE_SIZE;
               case "BIG" -> LARGE_CODE_SIZE;
-              default -> throw new IllegalArgumentException("unknown code size " + codeSize);
+              default -> throw new IllegalArgumentException("unknown code size " + getCodeSize());
             }];
+    final Random random = new Random();
     random.nextBytes(code);
 
-    final boolean randomSize = "RANDOM".equals(pushSize);
-    final int fixedSize = randomSize ? -1 : Integer.parseInt(pushSize);
+    final boolean randomSize = "RANDOM".equals(getPushSize());
+    final int fixedSize = randomSize ? -1 : Integer.parseInt(getPushSize());
 
     pcPool = new int[SAMPLE_SIZE];
     pushSizePool = new int[SAMPLE_SIZE];
     for (int i = 0; i < SAMPLE_SIZE; i++) {
-      final int size = randomSize ? random.nextInt(randomStart, randomEnd) : fixedSize;
-      if (pc == Position.RANDOM) {
-        pc =
+      final int size = randomSize ? random.nextInt(getPushRandomization()[0], getPushRandomization()[1]) : fixedSize;
+      Position pcType = getPc();
+      if (getPc() == Position.RANDOM) {
+        pcType =
             Arrays.stream(Position.values())
                 .filter(x -> x != Position.RANDOM)
                 .toList()
@@ -108,13 +99,13 @@ public class PushOperationBenchmarkV2 {
       }
       pushSizePool[i] = size;
       pcPool[i] =
-          switch (pc) {
+          switch (pcType) {
             case FIRST_16BYTES -> random.nextInt(16);
             case MID -> random.nextInt(code.length - size);
             case END -> code.length - 1 - size;
             case TRUNCATED -> code.length - 1 - (size > 1 ? random.nextInt(1, size) : 0);
             case OOB -> code.length - 1;
-            default -> throw new IllegalArgumentException("unknown position " + pc);
+            default -> throw new IllegalArgumentException("unknown position " + getPc());
           };
     }
     index = 0;
@@ -122,46 +113,12 @@ public class PushOperationBenchmarkV2 {
 
   @Benchmark
   public void executeOperation(final Blackhole blackhole) {
-    blackhole.consume(staticOperation(frame, code, pcPool[index], pushSizePool[index]));
+    blackhole.consume(invoke(frame, code, pcPool[index], pushSizePool[index]));
 
     frame.setTopV2(frame.stackTopV2() - 1);
 
     index = (index + 1) % SAMPLE_SIZE;
   }
 
-  public static class PushOperationZeroV2 extends PushOperationBenchmarkV2 {
-    @Override
-    public void setUp() {
-      randomStart = 0;
-      randomEnd = 2;
-      super.setUp();
-    }
-
-    @Override
-    public void executeOperation(final Blackhole blackhole) {
-      blackhole.consume(PushOperationV2.SingleByte.staticOperation(frame, code, pcPool[index], pushSizePool[index]));
-
-      frame.setTopV2(frame.stackTopV2() - 1);
-
-      index = (index + 1) % SAMPLE_SIZE;
-    }
-  }
-
-  public static class PushOperationSingleLimbV2 extends PushOperationBenchmarkV2 {
-    @Override
-    public void setUp() {
-      randomStart = 2;
-      randomEnd = 9;
-      super.setUp();
-    }
-
-    @Override
-    public void executeOperation(final Blackhole blackhole) {
-      blackhole.consume(PushOperationV2.SingleLimb.staticOperation(frame, code, pcPool[index], pushSizePool[index]));
-
-      frame.setTopV2(frame.stackTopV2() - 1);
-
-      index = (index + 1) % SAMPLE_SIZE;
-    }
-  }
+  protected abstract Operation.OperationResult invoke(final MessageFrame frame, final byte[] code, final int pc, final int pushSize);
 }
