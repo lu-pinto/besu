@@ -12,26 +12,28 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-package org.hyperledger.besu.ethereum.vm.operations.v2;
+package org.hyperledger.besu.ethereum.vm.operations;
+
+import static org.hyperledger.besu.evm.operation.Push0Operation.staticOperation;
 
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.operation.Operation;
-import org.hyperledger.besu.evm.v2.operation.PushOperationV2;
 
 import org.openjdk.jmh.annotations.Param;
 
-public class PushOperationMultiLimbV2 extends PushOperationBenchmarkBaseV2 {
-  @Param({"9", "14", "20", "32", "RANDOM"})
-  protected String pushSize;
+public class Push0OperationBenchmark extends PushOperationBenchmarkBase {
+  @Param({"0"})
+  private String pushSize;
 
-  @Param protected Position pc;
+  @Param({"MID"})
+  private String pc;
 
-  @Param({"SMALL", "BIG"})
+  @Param({"SMALL"})
   private String codeSize;
 
   @Override
   protected Position getPc() {
-    return pc;
+    return Position.valueOf(pc);
   }
 
   @Override
@@ -46,12 +48,12 @@ public class PushOperationMultiLimbV2 extends PushOperationBenchmarkBaseV2 {
 
   @Override
   protected int[] getPushRandomization() {
-    return new int[] {9, 33};
+    return new int[] {1, 33};
   }
 
   @Override
   protected Operation.OperationResult invoke(
       final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
-    return PushOperationV2.MultiLimb.staticOperation(frame, code, pc, pushSize);
+    return staticOperation(frame);
   }
 }

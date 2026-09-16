@@ -12,7 +12,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-package org.hyperledger.besu.ethereum.vm.operations.v2;
+package org.hyperledger.besu.ethereum.vm.operations;
 
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.operation.Operation;
@@ -37,7 +37,7 @@ import org.openjdk.jmh.infra.Blackhole;
 @OutputTimeUnit(value = TimeUnit.NANOSECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @BenchmarkMode(Mode.AverageTime)
-public abstract class PushOperationBenchmarkBaseV2 {
+public abstract class PushOperationBenchmarkBase {
   private static final int SAMPLE_SIZE = 30_000;
   private static final int SMALL_CODE_SIZE = 64;
   private static final int LARGE_CODE_SIZE = 24_576;
@@ -74,7 +74,7 @@ public abstract class PushOperationBenchmarkBaseV2 {
 
   @Setup
   public void setUp() {
-    frame = BenchmarkHelperV2.createMessageCallFrame();
+    frame = BenchmarkHelper.createMessageCallFrame();
     code =
         new byte
             [switch (getCodeSize()) {
@@ -121,7 +121,7 @@ public abstract class PushOperationBenchmarkBaseV2 {
   public void executeOperation(final Blackhole blackhole) {
     blackhole.consume(invoke(frame, code, pcPool[index], pushSizePool[index]));
 
-    frame.setTopV2(frame.stackTopV2() - 1);
+    frame.popStackItem();
 
     index = (index + 1) % SAMPLE_SIZE;
   }
