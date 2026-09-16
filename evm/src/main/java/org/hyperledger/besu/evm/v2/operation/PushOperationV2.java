@@ -76,10 +76,8 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
     frame.setTopV2(top + 1);
   }
 
-  /**
-   * Optimized version of PUSH opcode for PUSH0 and PUSH1 only.
-   */
-  public class SingleByte extends PushOperationV2  {
+  /** Optimized version of PUSH opcode for PUSH0 and PUSH1 only. */
+  public class SingleByte extends PushOperationV2 {
 
     public SingleByte(final int length, final GasCalculator gasCalculator) {
       super(length, gasCalculator);
@@ -92,7 +90,7 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
     }
 
     public static OperationResult staticOperation(
-      final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
+        final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
       long u0 = 0;
       final int start = pc + 1;
       if (pushSize != 0 && start < code.length) {
@@ -105,10 +103,8 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
     }
   }
 
-  /**
-   * Optimized version for PUSH opcode for PUSH2 to PUSH8.
-   */
-  public class SingleLimb extends PushOperationV2  {
+  /** Optimized version for PUSH opcode for PUSH2 to PUSH8. */
+  public class SingleLimb extends PushOperationV2 {
 
     public SingleLimb(final int length, final GasCalculator gasCalculator) {
       super(length, gasCalculator);
@@ -121,10 +117,10 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
     }
 
     public static OperationResult staticOperation(
-      final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
+        final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
       final int start = pc + 1;
       final int end = start + pushSize;
-      long u0 = UInt256.getLong(code, start, Math.min(end, code.length));
+      long u0 = UInt256.getLongBE(code, start, Math.min(end, code.length));
 
       // Slow-path - when push is truncated and zeros need to be appended
       if (end > code.length) {
@@ -140,8 +136,8 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
   }
 
   /**
-   * Generic multi limb version of PUSH opcode, can execute PUSH0-32, but it should only be used for multiple long limbs
-   * because of performance.
+   * Generic multi limb version of PUSH opcode, can execute PUSH0-32, but it should only be used for
+   * multiple long limbs because of performance.
    */
   public class MultiLimb extends PushOperationV2 {
 
@@ -156,7 +152,7 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
     }
 
     public static OperationResult staticOperation(
-      final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
+        final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
       final int start = pc + 1;
       final int end = start + pushSize;
       final int remainingSize = Math.min(end, code.length) - start;

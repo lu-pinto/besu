@@ -1014,4 +1014,111 @@ public class UInt256Test {
     assertThat(UInt256.compare(UInt256.ONE, UInt256.ZERO)).isEqualTo(1);
     assertThat(UInt256.compare(UInt256.ZERO, UInt256.ONE)).isEqualTo(-1);
   }
+
+  private static Stream<Arguments> getLongBECases() {
+    return Stream.of(
+        // ── empty array → 0 regardless of from/to ───────────────────────────────
+        arguments(new byte[0], 0, 0, 0L),
+
+        // ── empty range (from == to) → 0 ────────────────────────────────────────
+        // slow path (bytes.length < 8)
+        arguments(hex("0x0102"), 0, 0, 0L),
+        arguments(hex("0x0102"), 1, 1, 0L),
+        // from == to == bytes.length (OOB-pc edge case that must not crash)
+        arguments(hex("0x010203"), 3, 3, 0L),
+        // fast path (bytes.length >= 8)
+        arguments(hex("0x0102030405060708"), 4, 4, 0L),
+        arguments(hex("0x0102030405060708"), 8, 8, 0L),
+
+        // ── span 1, slow path (bytes.length < 8) ────────────────────────────────
+        arguments(hex("0x42"), 0, 1, 0x42L),
+        // high bit must NOT sign-extend
+        arguments(hex("0x80"), 0, 1, 0x80L),
+        // all-ones byte
+        arguments(hex("0xff"), 0, 1, 0xffL),
+        // byte not at index 0; flanking 0xff bytes must not leak into result
+        arguments(hex("0xff42ff"), 1, 2, 0x42L),
+        arguments(hex("0xff80ff"), 1, 2, 0x80L),
+
+        // ── span 1, fast path (bytes.length >= 8) ───────────────────────────────
+        // embedded mid-array; 0xff neighbours must not contaminate
+        arguments(hex("0xffff42ffffffffff"), 2, 3, 0x42L),
+        arguments(hex("0xffff80ffffffffff"), 2, 3, 0x80L),
+        // to == bytes.length: boundary read, no overrun
+        arguments(hex("0xffffffffffffff42"), 7, 8, 0x42L),
+        arguments(hex("0xffffffffffffff80"), 7, 8, 0x80L),
+
+        // ── span 2 ───────────────────────────────────────────────────────────────
+        // slow path, full array
+        arguments(hex("0x0102"), 0, 2, 0x0102L),
+        // slow path, 0xff isolation
+        arguments(hex("0xff0102ff"), 1, 3, 0x0102L),
+        // fast path, mid-array
+        arguments(hex("0xff0102ffffffffff"), 1, 3, 0x0102L),
+        // fast path, to == bytes.length
+        arguments(hex("0xffffffffffffff0102"), 7, 9, 0x0102L),
+
+        // ── span 4 ───────────────────────────────────────────────────────────────
+        // slow path
+        arguments(hex("0x01020304"), 0, 4, 0x01020304L),
+        // fast path, mid-array
+        arguments(hex("0xff01020304ffffffff"), 1, 5, 0x01020304L),
+        // fast path, to == bytes.length
+        arguments(hex("0xffffffff01020304"), 4, 8, 0x01020304L),
+
+        // ── span 7 ───────────────────────────────────────────────────────────────
+        // slow path, full array
+        arguments(hex("0x01020304050607"), 0, 7, 0x01020304050607L),
+        // fast path, 0xff isolation
+        arguments(hex("0xff01020304050607ff"), 1, 8, 0x01020304050607L),
+        // fast path, to == bytes.length (common truncation boundary)
+        arguments(hex("0xff01020304050607"), 1, 8, 0x01020304050607L),
+        // high bit in MSB of range: result must be positive (unsigned)
+        arguments(hex("0xff80000000000000ff"), 1, 8, 0x80000000000000L),
+
+        // ── span 8, fast path only ───────────────────────────────────────────────
+        // standard full-array read
+        arguments(hex("0x0102030405060708"), 0, 8, 0x0102030405060708L),
+        // to == bytes.length
+        arguments(hex("0xff0102030405060708"), 1, 9, 0x0102030405060708L),
+        // all-ones: must produce -1L
+        arguments(hex("0xffffffffffffffff"), 0, 8, -1L),
+        // high bit in MSB → Long.MIN_VALUE (unsigned semantics)
+        arguments(hex("0x8000000000000000"), 0, 8, 0x8000000000000000L),
+        // 0xff guards around the range
+        arguments(hex("0xff0102030405060708ff"), 1, 9, 0x0102030405060708L),
+
+        // ── all-zeros ────────────────────────────────────────────────────────────
+        arguments(hex("0x000000"), 0, 3, 0L),
+        arguments(hex("0x0000000000000000"), 0, 8, 0L),
+
+        // ── cross-path consistency ───────────────────────────────────────────────
+        // Same logical range must produce the same result on both paths.
+        // span 3, slow (length 3)
+        arguments(hex("0x010203"), 0, 3, 0x010203L),
+        // span 3, fast (same bytes at offset 0)
+        arguments(hex("0x0102035555555555"), 0, 3, 0x010203L),
+        // span 5, slow
+        arguments(hex("0x0102030405"), 0, 5, 0x0102030405L),
+        // span 5, fast (offset 1, flanked by 0x55)
+        arguments(hex("0x5501020304055555"), 1, 6, 0x0102030405L),
+        // span 7, slow
+        arguments(hex("0x01020304050607"), 0, 7, 0x01020304050607L),
+        // span 7, fast (same bytes at offset 1)
+        arguments(hex("0x550102030405060755"), 1, 8, 0x01020304050607L));
+  }
+
+  @ParameterizedTest
+  @MethodSource("getLongBECases")
+  void getLongBE(final byte[] bytes, final int from, final int to, final long expected) {
+    assertThat(UInt256.getLongBE(bytes, from, to))
+        .withFailMessage(
+            "getLongBE(bytes[%d], from=%d, to=%d): expected 0x%016x",
+            bytes.length, from, to, expected)
+        .isEqualTo(expected);
+  }
+
+  private static byte[] hex(final String s) {
+    return Bytes.fromHexString(s).toArray();
+  }
 }

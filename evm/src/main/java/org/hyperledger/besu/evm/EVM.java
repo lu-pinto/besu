@@ -519,41 +519,43 @@ public class EVM {
               case 0x50 -> PopOperationV2.staticOperation(frame);
               case 0x5F -> // PUSH0
                   enableShanghai
-                       ? PushOperationV2.SingleByte.staticOperation(frame, code, pc, 0)
-                       : InvalidOperation.invalidOperationResult(opcode);
+                      ? PushOperationV2.SingleByte.staticOperation(frame, code, pc, 0)
+                      : InvalidOperation.invalidOperationResult(opcode);
               case 0x60 -> // PUSH1
-                        PushOperationV2.SingleByte.staticOperation(frame, code, pc, 1);
+                  PushOperationV2.SingleByte.staticOperation(frame, code, pc, 1);
               case 0x61, // PUSH2-8
-                   0x62,
-                   0x63,
-                   0x64,
-                   0x65,
-                   0x66,
-                   0x67 -> PushOperationV2.SingleLimb.staticOperation(frame, code, pc, opcode - PUSH_BASE);
+                  0x62,
+                  0x63,
+                  0x64,
+                  0x65,
+                  0x66,
+                  0x67 ->
+                  PushOperationV2.SingleLimb.staticOperation(frame, code, pc, opcode - PUSH_BASE);
               case 0x68, // PUSH9-32
-                   0x69,
-                   0x6a,
-                   0x6b,
-                   0x6c,
-                   0x6d,
-                   0x6e,
-                   0x6f,
-                   0x70,
-                   0x71,
-                   0x72,
-                   0x73,
-                   0x74,
-                   0x75,
-                   0x76,
-                   0x77,
-                   0x78,
-                   0x79,
-                   0x7a,
-                   0x7b,
-                   0x7c,
-                   0x7d,
-                   0x7e,
-                   0x7f -> PushOperationV2.MultiLimb.staticOperation(frame, code, pc, opcode - PUSH_BASE);
+                  0x69,
+                  0x6a,
+                  0x6b,
+                  0x6c,
+                  0x6d,
+                  0x6e,
+                  0x6f,
+                  0x70,
+                  0x71,
+                  0x72,
+                  0x73,
+                  0x74,
+                  0x75,
+                  0x76,
+                  0x77,
+                  0x78,
+                  0x79,
+                  0x7a,
+                  0x7b,
+                  0x7c,
+                  0x7d,
+                  0x7e,
+                  0x7f ->
+                  PushOperationV2.MultiLimb.staticOperation(frame, code, pc, opcode - PUSH_BASE);
               // TODO EVMv2: implement remaining opcodes in v2; until then fall through to v1
               default -> {
                 frame.setCurrentOperation(currentOperation);

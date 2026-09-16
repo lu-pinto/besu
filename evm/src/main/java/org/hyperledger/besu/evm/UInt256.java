@@ -119,8 +119,8 @@ public record UInt256(long u3, long u2, long u1, long u0) {
    */
   public static UInt256 fromBytesBE(final byte[] bytes, final int offset, final int length) {
     long u0 = 0, u1 = 0, u2 = 0, u3 = 0;
+    int end = offset + length;
     if (bytes.length >= 8) {
-      int end = offset + length;
       int i0 = Math.max(offset, end - 8);
       int i1 = Math.max(offset, end - 16);
       int i2 = Math.max(offset, end - 24);
@@ -131,22 +131,36 @@ public record UInt256(long u3, long u2, long u1, long u0) {
       u3 = getLongUnsafe(bytes, i3, i2);
       return new UInt256(u3, u2, u1, u0);
     } else if (bytes.length != 0) {
-      u0 = getLongSlow(bytes, offset, length);
+      u0 = getLongSlow(bytes, offset, end);
     }
     return new UInt256(u3, u2, u1, u0);
   }
 
-  public static long getLong(final byte[] bytes, final int from, final int to) {
+  /**
+   * Convert a sequence of bytes starting at {@code from} (inclusive) to {@code to} (exclusive) to a
+   * long value. If {@code to - from < 8}, the most significant bytes are set to 0. This method
+   * cannot be used when {@code to - from > 8} or {@code to >= bytes.length} as it will give
+   * incorrect results, or it may crash.
+   *
+   * @param bytes raw bytes in BigEndian order
+   * @param from start index of the bytes array to convert, inclusive
+   * @param to end index of the bytes array, exclusive
+   * @return Big-endian long value
+   */
+  public static long getLongBE(final byte[] bytes, final int from, final int to) {
     long value = 0;
     if (bytes.length >= 8) {
       value = getLongUnsafe(bytes, from, to);
     } else if (bytes.length != 0) {
-      value = getLongSlow(bytes, from, to - from);
+      value = getLongSlow(bytes, from, to);
     }
     return value;
   }
 
   private static long getLongUnsafe(final byte[] bytes, final int from, final int to) {
+    assert to <= bytes.length && to - from <= 8
+        : "to=" + to + " from=" + from + " indices out of bounds";
+
     if (from >= to) return 0L;
     int start = Math.max(0, to - 8);
     long value = (long) LONG_BE.get(bytes, start);
@@ -158,10 +172,12 @@ public record UInt256(long u3, long u2, long u1, long u0) {
     return value & (-1L >>> shift);
   }
 
-  private static long getLongSlow(
-      final byte[] bytes, final int offset, final int length) {
+  private static long getLongSlow(final byte[] bytes, final int from, final int to) {
+    assert to <= bytes.length && to - from <= 8
+        : "to=" + to + " from=" + from + " indices out of bounds";
+
     long value = 0;
-    for (int i = offset + length - 1, shift = 0; i >= offset; i--, shift += 8) {
+    for (int i = to - 1, shift = 0; i >= from; i--, shift += 8) {
       value |= ((bytes[i] & 0xFFL) << shift);
     }
     return value;
