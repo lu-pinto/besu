@@ -83,28 +83,26 @@ public record UInt256(long u3, long u2, long u1, long u0) {
    * @return Big-endian UInt256 represented by the bytes.
    */
   public static UInt256 fromBytesBE(final byte[] bytes) {
-    if (bytes.length == 0) {
-      return ZERO;
+    long u0 = 0, u1 = 0, u2 = 0, u3 = 0;
+    if (bytes.length >= 8) {
+      int prevIndex = bytes.length;
+      int nextIndex = prevIndex - 8;
+      u0 = getLongUnsafe(bytes, nextIndex, prevIndex);
+      prevIndex = nextIndex;
+
+      nextIndex = Math.max(0, prevIndex - 8);
+      u1 = getLongUnsafe(bytes, nextIndex, prevIndex);
+      prevIndex = nextIndex;
+
+      nextIndex = Math.max(0, prevIndex - 8);
+      u2 = getLongUnsafe(bytes, nextIndex, prevIndex);
+      prevIndex = nextIndex;
+
+      nextIndex = Math.max(0, bytes.length - BYTESIZE);
+      u3 = getLongUnsafe(bytes, nextIndex, prevIndex);
+    } else if (bytes.length != 0) {
+      u0 = getLongSlow(bytes, 0, bytes.length);
     }
-    if (bytes.length < 8) {
-      return fromBytesSingleLimb(bytes, 0, bytes.length);
-    }
-    int prevIndex = bytes.length;
-    int nextIndex = prevIndex - 8;
-    final long u0 = getLong(bytes, nextIndex, prevIndex);
-    prevIndex = nextIndex;
-
-    nextIndex = Math.max(0, prevIndex - 8);
-    final long u1 = getLong(bytes, nextIndex, prevIndex);
-    prevIndex = nextIndex;
-
-    nextIndex = Math.max(0, prevIndex - 8);
-    final long u2 = getLong(bytes, nextIndex, prevIndex);
-    prevIndex = nextIndex;
-
-    nextIndex = Math.max(0, bytes.length - BYTESIZE);
-    final long u3 = getLong(bytes, nextIndex, prevIndex);
-
     return new UInt256(u3, u2, u1, u0);
   }
 
@@ -120,23 +118,35 @@ public record UInt256(long u3, long u2, long u1, long u0) {
    * @return Big-endian UInt256 represented by the bytes.
    */
   public static UInt256 fromBytesBE(final byte[] bytes, final int offset, final int length) {
+    long u0 = 0, u1 = 0, u2 = 0, u3 = 0;
     if (bytes.length >= 8) {
       int end = offset + length;
       int i0 = Math.max(offset, end - 8);
       int i1 = Math.max(offset, end - 16);
       int i2 = Math.max(offset, end - 24);
       int i3 = Math.max(offset, end - 32);
-      final long u0 = getLong(bytes, i0, end);
-      final long u1 = getLong(bytes, i1, i0);
-      final long u2 = getLong(bytes, i2, i1);
-      final long u3 = getLong(bytes, i3, i2);
+      u0 = getLongUnsafe(bytes, i0, end);
+      u1 = getLongUnsafe(bytes, i1, i0);
+      u2 = getLongUnsafe(bytes, i2, i1);
+      u3 = getLongUnsafe(bytes, i3, i2);
       return new UInt256(u3, u2, u1, u0);
+    } else if (bytes.length != 0) {
+      u0 = getLongSlow(bytes, offset, length);
     }
-    // Slow-path does for loop which is slow compared to vectorized conversion
-    return fromBytesSingleLimb(bytes, offset, length);
+    return new UInt256(u3, u2, u1, u0);
   }
 
   public static long getLong(final byte[] bytes, final int from, final int to) {
+    long value = 0;
+    if (bytes.length >= 8) {
+      value = getLongUnsafe(bytes, from, to);
+    } else if (bytes.length != 0) {
+      value = getLongSlow(bytes, from, to - from);
+    }
+    return value;
+  }
+
+  private static long getLongUnsafe(final byte[] bytes, final int from, final int to) {
     if (from >= to) return 0L;
     int start = Math.max(0, to - 8);
     long value = (long) LONG_BE.get(bytes, start);
@@ -148,16 +158,13 @@ public record UInt256(long u3, long u2, long u1, long u0) {
     return value & (-1L >>> shift);
   }
 
-  private static UInt256 fromBytesSingleLimb(
+  private static long getLongSlow(
       final byte[] bytes, final int offset, final int length) {
-    if (bytes.length == 0) {
-      return ZERO;
-    }
     long value = 0;
     for (int i = offset + length - 1, shift = 0; i >= offset; i--, shift += 8) {
       value |= ((bytes[i] & 0xFFL) << shift);
     }
-    return new UInt256(0, 0, 0, value);
+    return value;
   }
 
   /**
