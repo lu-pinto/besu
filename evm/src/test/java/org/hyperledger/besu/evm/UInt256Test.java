@@ -116,101 +116,67 @@ public class UInt256Test {
         // ---- zero length ----------------------------------------------
         arguments(new byte[0], new int[] {0, 0}, UInt256.ZERO),
         arguments(new byte[0], new int[] {0, 2}, UInt256.ZERO),
-        arguments(Bytes.fromHexString("0x55ab55").toArray(), new int[] {0, 0}, UInt256.ZERO),
-        arguments(Bytes.fromHexString("0x55ab55").toArray(), new int[] {2, 0}, UInt256.ZERO),
-        arguments(
-            Bytes.fromHexString("0x010203040506070809").toArray(), new int[] {0, -1}, UInt256.ZERO),
-        arguments(
-            Bytes.fromHexString("0x010203040506070809").toArray(), new int[] {4, 0}, UInt256.ZERO),
+        arguments(hex("0x55ab55"), new int[] {0, 0}, UInt256.ZERO),
+        arguments(hex("0x55ab55"), new int[] {2, 0}, UInt256.ZERO),
+        arguments(hex("0x010203040506070809"), new int[] {0, -1}, UInt256.ZERO),
+        arguments(hex("0x010203040506070809"), new int[] {4, 0}, UInt256.ZERO),
 
         // ---- single-limb path (length < 8) ----------------------------------------------
         // 0x55 bytes sit outside the converted range and must never leak into the result
-        arguments(
-            Bytes.fromHexString("0x55ab55").toArray(),
-            new int[] {1, 1},
-            new UInt256(0, 0, 0, 0xabL)),
-        arguments(
-            Bytes.fromHexString("0x55ffff55").toArray(),
-            new int[] {1, 2},
-            new UInt256(0, 0, 0, 0xffffL)),
+        arguments(hex("0x55ab55"), new int[] {1, 1}, new UInt256(0, 0, 0, 0xabL)),
+        arguments(hex("0x55ffff55"), new int[] {1, 2}, new UInt256(0, 0, 0, 0xffffL)),
         // pins big-endian byte order inside the limb
-        arguments(
-            Bytes.fromHexString("0x550102030455").toArray(),
-            new int[] {1, 4},
-            new UInt256(0, 0, 0, 0x01020304L)),
+        arguments(hex("0x550102030455"), new int[] {1, 4}, new UInt256(0, 0, 0, 0x01020304L)),
         // widest single-limb range
         arguments(
-            Bytes.fromHexString("0x55ffffffffffffff55").toArray(),
+            hex("0x55ffffffffffffff55"),
             new int[] {1, 7},
             new UInt256(0, 0, 0, 0x00ffffffffffffffL)),
         // high bit set in the most significant byte of the range
         arguments(
-            Bytes.fromHexString("0x8000000000000055").toArray(),
-            new int[] {0, 7},
-            new UInt256(0, 0, 0, 0x80000000000000L)),
+            hex("0x8000000000000055"), new int[] {0, 7}, new UInt256(0, 0, 0, 0x80000000000000L)),
         // range starting on the last byte of the array
-        arguments(
-            Bytes.fromHexString("0x0102030405060708090a").toArray(),
-            new int[] {9, 1},
-            new UInt256(0, 0, 0, 0x0aL)),
+        arguments(hex("0x0102030405060708090a"), new int[] {9, 1}, new UInt256(0, 0, 0, 0x0aL)),
 
         // ---- exactly one limb (length == 8), the multi-limb path boundary ---------------
         // pins big-endian byte order across the whole limb
         arguments(
-            Bytes.fromHexString("0x55010203040506070855").toArray(),
+            hex("0x55010203040506070855"),
             new int[] {1, 8},
             new UInt256(0, 0, 0, 0x0102030405060708L)),
-        arguments(
-            Bytes.fromHexString("0x55ffffffffffffffff55").toArray(),
-            new int[] {1, 8},
-            new UInt256(0, 0, 0, -1L)),
+        arguments(hex("0x55ffffffffffffffff55"), new int[] {1, 8}, new UInt256(0, 0, 0, -1L)),
         // range ends exactly at bytes.length, so the 8-byte VarHandle read must not overrun
-        arguments(
-            Bytes.fromHexString("0x5555ffffffffffffffff").toArray(),
-            new int[] {2, 8},
-            new UInt256(0, 0, 0, -1L)),
+        arguments(hex("0x5555ffffffffffffffff"), new int[] {2, 8}, new UInt256(0, 0, 0, -1L)),
         // all-zero range inside a non-zero array
-        arguments(
-            Bytes.fromHexString("0x55000000000000000055").toArray(),
-            new int[] {1, 8},
-            UInt256.ZERO),
+        arguments(hex("0x55000000000000000055"), new int[] {1, 8}, UInt256.ZERO),
 
         // ---- length 9, one byte spills into u1 -----------------------------------------
-        arguments(
-            Bytes.fromHexString("0x5501ffffffffffffffff55").toArray(),
-            new int[] {1, 9},
-            new UInt256(0, 0, 1, -1L)),
+        arguments(hex("0x5501ffffffffffffffff55"), new int[] {1, 9}, new UInt256(0, 0, 1, -1L)),
         // same range, but ending exactly at bytes.length
-        arguments(
-            Bytes.fromHexString("0x5501ffffffffffffffff").toArray(),
-            new int[] {1, 9},
-            new UInt256(0, 0, 1, -1L)),
+        arguments(hex("0x5501ffffffffffffffff"), new int[] {1, 9}, new UInt256(0, 0, 1, -1L)),
 
         // ---- two and three whole limbs, and the partial limb above each --------------
         arguments(
-            Bytes.fromHexString("0x550102030405060708090a0b0c0d0e0f1055").toArray(),
+            hex("0x550102030405060708090a0b0c0d0e0f1055"),
             new int[] {1, 16},
             new UInt256(0, 0, 0x0102030405060708L, 0x090a0b0c0d0e0f10L)),
         arguments(
-            Bytes.fromHexString("0x55ff0102030405060708090a0b0c0d0e0f1055").toArray(),
+            hex("0x55ff0102030405060708090a0b0c0d0e0f1055"),
             new int[] {1, 17},
             new UInt256(0, 0xff, 0x0102030405060708L, 0x090a0b0c0d0e0f10L)),
         arguments(
-            Bytes.fromHexString("0x550102030405060708090a0b0c0d0e0f10111213141516171855").toArray(),
+            hex("0x550102030405060708090a0b0c0d0e0f10111213141516171855"),
             new int[] {1, 24},
             new UInt256(0, 0x0102030405060708L, 0x090a0b0c0d0e0f10L, 0x1112131415161718L)),
         arguments(
-            Bytes.fromHexString("0x55ff0102030405060708090a0b0c0d0e0f10111213141516171855")
-                .toArray(),
+            hex("0x55ff0102030405060708090a0b0c0d0e0f10111213141516171855"),
             new int[] {1, 25},
             new UInt256(0xff, 0x0102030405060708L, 0x090a0b0c0d0e0f10L, 0x1112131415161718L)),
 
         // ---- full width (length == 32) ------------------------------------------------
         // four distinct limbs, pins limb ordering end to end
         arguments(
-            Bytes.fromHexString(
-                    "0x55550102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f205555")
-                .toArray(),
+            hex("0x55550102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f205555"),
             new int[] {2, 32},
             new UInt256(
                 0x0102030405060708L,
@@ -219,9 +185,7 @@ public class UInt256Test {
                 0x191a1b1c1d1e1f20L)),
         // whole array is the range: offset 0 and end == bytes.length
         arguments(
-            Bytes.fromHexString(
-                    "0x0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20")
-                .toArray(),
+            hex("0x0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20"),
             new int[] {0, 32},
             new UInt256(
                 0x0102030405060708L,
@@ -229,46 +193,35 @@ public class UInt256Test {
                 0x1112131415161718L,
                 0x191a1b1c1d1e1f20L)),
         arguments(
-            Bytes.fromHexString(
-                    "0x55ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff55")
-                .toArray(),
+            hex("0x55ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff55"),
             new int[] {1, 32},
             UInt256.MAX),
         // 32-byte range ending exactly at bytes.length
         arguments(
-            Bytes.fromHexString(
-                    "0x55ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
-                .toArray(),
+            hex("0x55ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"),
             new int[] {1, 32},
             UInt256.MAX),
         // high bit set in every limb, catches sign extension between limbs
         arguments(
-            Bytes.fromHexString(
-                    "0x55800000000000000080000000000000008000000000000000800000000000000055")
-                .toArray(),
+            hex("0x55800000000000000080000000000000008000000000000000800000000000000055"),
             new int[] {1, 32},
             new UInt256(Long.MIN_VALUE, Long.MIN_VALUE, Long.MIN_VALUE, Long.MIN_VALUE)),
 
         // ---- length > 32 truncates the most significant bytes -------------------------
         // the leading 0xaa is dropped, leaving 32 x 0xff
         arguments(
-            Bytes.fromHexString(
-                    "0xaaffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
-                .toArray(),
+            hex("0xaaffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"),
             new int[] {0, 33},
             UInt256.MAX),
         // same, with a non-zero offset
         arguments(
-            Bytes.fromHexString(
-                    "0x55aaffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff55")
-                .toArray(),
+            hex("0x55aaffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff55"),
             new int[] {1, 33},
             UInt256.MAX),
         // 40-byte range: the leading 8 x 0xaa are dropped, leaving 32 x 0x01
         arguments(
-            Bytes.fromHexString(
-                    "0xaaaaaaaaaaaaaaaa0101010101010101010101010101010101010101010101010101010101010101")
-                .toArray(),
+            hex(
+                "0xaaaaaaaaaaaaaaaa0101010101010101010101010101010101010101010101010101010101010101"),
             new int[] {0, 40},
             new UInt256(
                 0x0101010101010101L,
@@ -277,9 +230,7 @@ public class UInt256Test {
                 0x0101010101010101L)),
         // 36-byte range: the kept low 32 bytes straddle the 0x01 / 0xbb boundary
         arguments(
-            Bytes.fromHexString(
-                    "0x0101010101010101010101010101010101010101010101010101010101010101bbbbbbbb")
-                .toArray(),
+            hex("0x0101010101010101010101010101010101010101010101010101010101010101bbbbbbbb"),
             new int[] {0, 36},
             new UInt256(
                 0x0101010101010101L,
@@ -536,15 +487,15 @@ public class UInt256Test {
   @ParameterizedTest
   @MethodSource("mulModTestCases")
   public void mulMod(final String a, final String b, final String modulus) {
-    Bytes aBytes = Bytes.fromHexString(a);
-    Bytes bBytes = Bytes.fromHexString(b);
-    Bytes modBytes = Bytes.fromHexString(modulus);
-    BigInteger aInt = new BigInteger(1, aBytes.toArrayUnsafe());
-    BigInteger bInt = new BigInteger(1, bBytes.toArrayUnsafe());
-    BigInteger mInt = new BigInteger(1, modBytes.toArrayUnsafe());
-    UInt256 x = UInt256.fromBytesBE(aBytes.toArrayUnsafe());
-    UInt256 y = UInt256.fromBytesBE(bBytes.toArrayUnsafe());
-    UInt256 m = UInt256.fromBytesBE(modBytes.toArrayUnsafe());
+    byte[] aBytes = hex(a);
+    byte[] bBytes = hex(b);
+    byte[] modBytes = hex(modulus);
+    BigInteger aInt = new BigInteger(1, aBytes);
+    BigInteger bInt = new BigInteger(1, bBytes);
+    BigInteger mInt = new BigInteger(1, modBytes);
+    UInt256 x = UInt256.fromBytesBE(aBytes);
+    UInt256 y = UInt256.fromBytesBE(bBytes);
+    UInt256 m = UInt256.fromBytesBE(modBytes);
     Bytes32 remainder = Bytes32.leftPad(Bytes.wrap(x.mulMod(y, m).toBytesBE()));
     Bytes32 expected = bigIntTo32B(aInt.multiply(bInt).mod(mInt));
     assertThat(remainder).isEqualTo(expected);
