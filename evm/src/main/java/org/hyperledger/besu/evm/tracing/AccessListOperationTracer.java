@@ -14,7 +14,6 @@
  */
 package org.hyperledger.besu.evm.tracing;
 
-import org.apache.tuweni.bytes.Bytes32;
 import org.hyperledger.besu.collections.undo.UndoSet;
 import org.hyperledger.besu.datatypes.AccessListEntry;
 import org.hyperledger.besu.datatypes.Address;
@@ -25,6 +24,8 @@ import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.apache.tuweni.bytes.Bytes32;
 
 /** The Access List Operation Tracer. */
 public class AccessListOperationTracer implements OperationTracer {
@@ -51,8 +52,7 @@ public class AccessListOperationTracer implements OperationTracer {
       return List.of();
     }
     final HashMap<Address, List<Bytes32>> storageKeysByAddress = new HashMap<>();
-    warmedUpStorage
-      .forEach(
+    warmedUpStorage.forEach(
         transientStorageKey -> {
           final Address address = transientStorageKey.address();
           final Bytes32 slot = transientStorageKey.slot();
@@ -60,11 +60,8 @@ public class AccessListOperationTracer implements OperationTracer {
         });
     final List<AccessListEntry> list = new ArrayList<>(storageKeysByAddress.size());
     storageKeysByAddress.forEach(
-      (address, storageKeys) ->
-        list.add(
-          new AccessListEntry(
-            address,
-            storageKeys.stream().sorted().toList())));
+        (address, storageKeys) ->
+            list.add(new AccessListEntry(address, storageKeys.stream().sorted().toList())));
     return list;
   }
 

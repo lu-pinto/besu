@@ -17,12 +17,12 @@ package org.hyperledger.besu.datatypes;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.hyperledger.besu.crypto.Hash.keccak256;
 
-import java.util.Objects;
-
 import org.hyperledger.besu.crypto.SECPPublicKey;
 import org.hyperledger.besu.ethereum.rlp.RLP;
 import org.hyperledger.besu.ethereum.rlp.RLPException;
 import org.hyperledger.besu.ethereum.rlp.RLPInput;
+
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -239,8 +239,8 @@ public final class Address extends BytesHolder implements Comparable<Address> {
    * <p>The comparison is performed lexicographically on the underlying byte sequences.
    *
    * @param address the Address to compare with
-   * @return a negative integer, zero, or a positive integer as this Address is less than, equal
-   *     to, or greater than the specified Address
+   * @return a negative integer, zero, or a positive integer as this Address is less than, equal to,
+   *     or greater than the specified Address
    * @throws NullPointerException if address is null
    */
   @Override

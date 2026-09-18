@@ -167,7 +167,8 @@ class WarmStorageHashDosTest {
         });
 
     for (final Bytes32 slot : slots) {
-      assertThat(frame.getWarmedUpStorage().contains(new TransientStorageKey(Address.ZERO, slot))).isTrue();
+      assertThat(frame.getWarmedUpStorage().contains(new TransientStorageKey(Address.ZERO, slot)))
+          .isTrue();
     }
   }
 

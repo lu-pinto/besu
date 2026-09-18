@@ -22,6 +22,7 @@ import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.VersionedHash;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
+import org.hyperledger.besu.evm.internal.TransientStorageKey;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -31,7 +32,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.tuweni.bytes.Bytes32;
-import org.hyperledger.besu.evm.internal.TransientStorageKey;
 
 /**
  * Transaction-lifetime values shared across all message frames of a transaction.
