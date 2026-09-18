@@ -69,7 +69,7 @@ class WarmStorageHashDosTest {
     }
   }
 
-  private static Bytes32 collidingSlot(final long index) {
+  private static Bytes32 collidingSlot(final int index) {
     final byte[] bytes = new byte[32];
     long remaining = index;
     for (int pair = 0; pair < 16; pair++) {
@@ -112,19 +112,20 @@ class WarmStorageHashDosTest {
   }
 
   @Test
-  void generatedSlotsActuallyCollide() {
-    final int hash0 = collidingSlot(0).hashCode();
-    for (long i = 1; i < 1_000; i++) {
-      assertThat(collidingSlot(i).hashCode()).isEqualTo(hash0);
+  void generatedTransientStorageKeysActuallyCollide() {
+    final int hash0 = new TransientStorageKey(Address.ZERO, collidingSlot(0)).hashCode();
+    for (int i = 1; i < 1_000; i++) {
+      assertThat(new TransientStorageKey(Address.ZERO, collidingSlot(i)).hashCode())
+          .isEqualTo(hash0);
       assertThat(collidingSlot(i)).isNotEqualTo(collidingSlot(0));
     }
   }
 
   @Test
   void generatedAddressesActuallyCollide() {
-    final int hash0 = collidingAddress(0).hashCode();
-    for (long i = 1; i < 1_000; i++) {
-      assertThat(collidingAddress(i).hashCode()).isEqualTo(hash0);
+    final int hash0 = collidingAddress(0).getBytes().hashCode();
+    for (int i = 1; i < 1_000; i++) {
+      assertThat(collidingAddress(i).getBytes().hashCode()).isEqualTo(hash0);
       assertThat(collidingAddress(i)).isNotEqualTo(collidingAddress(0));
     }
   }
@@ -133,7 +134,7 @@ class WarmStorageHashDosTest {
   void transientStorageResistsHashCollisionFlood() {
     final MessageFrame frame = newFrame();
     final List<Bytes32> slots = new ArrayList<>(SLOT_COUNT);
-    for (long i = 0; i < SLOT_COUNT; i++) {
+    for (int i = 0; i < SLOT_COUNT; i++) {
       slots.add(collidingSlot(i));
     }
 
@@ -154,7 +155,7 @@ class WarmStorageHashDosTest {
   void warmedUpStorageResistsHashCollisionFlood() {
     final MessageFrame frame = newFrame();
     final List<Bytes32> slots = new ArrayList<>(SLOT_COUNT);
-    for (long i = 0; i < SLOT_COUNT; i++) {
+    for (int i = 0; i < SLOT_COUNT; i++) {
       slots.add(collidingSlot(i));
     }
 
