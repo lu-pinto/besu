@@ -55,26 +55,7 @@ public class TStoreOperationBenchmark extends BinaryOperationNoPushBenchmark
   @Override
   public void setUp() {
     operation = new TStoreOperation(new CancunGasCalculator());
-    frame =
-        MessageFrame.builder()
-            .worldUpdater(mock(WorldUpdater.class))
-            .originator(Address.ZERO)
-            .gasPrice(Wei.ONE)
-            .blobGasPrice(Wei.ONE)
-            .blockValues(mock(BlockValues.class))
-            .miningBeneficiary(Address.ZERO)
-            .blockHashLookup((__, ___) -> Hash.ZERO)
-            .type(MessageFrame.Type.MESSAGE_CALL)
-            .initialGas(Long.MAX_VALUE)
-            .address(Address.fromHexString("0x0102030405"))
-            .contract(Address.ZERO)
-            .inputData(Bytes32.ZERO)
-            .sender(Address.ZERO)
-            .value(Wei.ZERO)
-            .apparentValue(Wei.ZERO)
-            .code(Code.EMPTY_CODE)
-            .completer(__ -> {})
-            .build();
+    frame = buildFrame();
     aPool = new Bytes[getSampleSize()];
     bPool = new Bytes[getSampleSize()];
 
@@ -87,8 +68,9 @@ public class TStoreOperationBenchmark extends BinaryOperationNoPushBenchmark
   }
 
   @TearDown(Level.Iteration)
-  public void rollback() {
-    frame.rollback();
+  public void tearDown() {
+    // create new frame - way of rolling back without calling rollback (big overhead)
+    frame = buildFrame();
   }
 
   @Override
@@ -123,16 +105,43 @@ public class TStoreOperationBenchmark extends BinaryOperationNoPushBenchmark
         operation.execute(frame, null);
       }
     }
-  }
 
-  @Benchmark
-  @Measurement(iterations = 5, time = 5, timeUnit = TimeUnit.SECONDS)
-  public void rollback(final FilledSlots slots) {
-    frame.rollback();
+    @Benchmark
+    @Measurement(iterations = 5, time = 5, timeUnit = TimeUnit.SECONDS)
+    public void rollback() {
+      frame.rollback();
+    }
+
+    @TearDown(Level.Invocation)
+    public void emptySlots() {
+      tearDown();
+    }
   }
 
   @Override
   protected int getSampleSize() {
     return slotCount;
+  }
+
+  private static MessageFrame buildFrame() {
+    return MessageFrame.builder()
+      .worldUpdater(mock(WorldUpdater.class))
+      .originator(Address.ZERO)
+      .gasPrice(Wei.ONE)
+      .blobGasPrice(Wei.ONE)
+      .blockValues(mock(BlockValues.class))
+      .miningBeneficiary(Address.ZERO)
+      .blockHashLookup((__, ___) -> Hash.ZERO)
+      .type(MessageFrame.Type.MESSAGE_CALL)
+      .initialGas(Long.MAX_VALUE)
+      .address(Address.fromHexString("0x0102030405"))
+      .contract(Address.ZERO)
+      .inputData(Bytes32.ZERO)
+      .sender(Address.ZERO)
+      .value(Wei.ZERO)
+      .apparentValue(Wei.ZERO)
+      .code(Code.EMPTY_CODE)
+      .completer(__ -> {})
+      .build();
   }
 }
