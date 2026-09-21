@@ -14,7 +14,6 @@
  */
 package org.hyperledger.besu.evm.frame;
 
-import com.google.common.collect.TreeBasedTable;
 import org.hyperledger.besu.collections.undo.UndoMap;
 import org.hyperledger.besu.collections.undo.UndoScalar;
 import org.hyperledger.besu.collections.undo.UndoSet;
@@ -32,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.common.collect.TreeBasedTable;
 import org.apache.tuweni.bytes.Bytes32;
 
 /**
