@@ -14,23 +14,21 @@
  */
 package org.hyperledger.besu.evm.tracing;
 
-import org.hyperledger.besu.collections.undo.UndoSet;
 import org.hyperledger.besu.datatypes.AccessListEntry;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.internal.AdrressStorageSlotKey;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
+import com.google.common.collect.Table;
 import org.apache.tuweni.bytes.Bytes32;
 
 /** The Access List Operation Tracer. */
 public class AccessListOperationTracer implements OperationTracer {
 
-  private UndoSet<AdrressStorageSlotKey> warmedUpStorage;
+  private Table<Address, Bytes32, Boolean> warmedUpStorage;
 
   /** Default constructor. */
   private AccessListOperationTracer() {
@@ -48,21 +46,19 @@ public class AccessListOperationTracer implements OperationTracer {
    * @return the access list
    */
   public List<AccessListEntry> getAccessList() {
-    if (warmedUpStorage == null || warmedUpStorage.isEmpty()) {
-      return List.of();
+    if (warmedUpStorage != null && !warmedUpStorage.isEmpty()) {
+      final List<AccessListEntry> list = new ArrayList<>(warmedUpStorage.size());
+      warmedUpStorage
+          .rowMap()
+          .forEach(
+              (address, storageKeys) ->
+                  list.add(
+                      new AccessListEntry(
+                          address,
+                          new ArrayList<>(storageKeys.keySet().stream().sorted().toList()))));
+      return list;
     }
-    final HashMap<Address, List<Bytes32>> storageKeysByAddress = new HashMap<>();
-    warmedUpStorage.forEach(
-        transientStorageKey -> {
-          final Address address = transientStorageKey.address();
-          final Bytes32 slot = transientStorageKey.slot();
-          storageKeysByAddress.computeIfAbsent(address, _ -> new ArrayList<>()).add(slot);
-        });
-    final List<AccessListEntry> list = new ArrayList<>(storageKeysByAddress.size());
-    storageKeysByAddress.forEach(
-        (address, storageKeys) ->
-            list.add(new AccessListEntry(address, storageKeys.stream().sorted().toList())));
-    return list;
+    return List.of();
   }
 
   /**
