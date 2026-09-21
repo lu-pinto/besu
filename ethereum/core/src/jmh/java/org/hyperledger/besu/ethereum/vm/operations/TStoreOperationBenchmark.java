@@ -30,10 +30,13 @@ import org.hyperledger.besu.evm.operation.Operation;
 import org.hyperledger.besu.evm.operation.TStoreOperation;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.TearDown;
@@ -123,6 +126,7 @@ public class TStoreOperationBenchmark extends BinaryOperationNoPushBenchmark
   }
 
   @Benchmark
+  @Measurement(iterations = 5, time = 5, timeUnit = TimeUnit.SECONDS)
   public void rollback(final FilledSlots slots) {
     frame.rollback();
   }
