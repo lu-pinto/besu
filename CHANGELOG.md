@@ -15,6 +15,7 @@
   - `PluginTransactionSelectorFactory.create(final SelectorsStateManager selectorsStateManager)` is deprecated for removal
   - `PoaQueryService` and `BftQueryService` are deprecated and will be removed in a future release, with no replacement. They have no known usage
   - `MiningService` is deprecated for removal and will be removed in a future release, with no replacement. It has no known usage
+  - `BesuEvents` is deprecated and will be removed at the breaking release. Its event families are available on `BlockchainService`, `TransactionPoolService` and `SynchronizationService` through `subscribe*` methods returning a `Subscription` handle; `TTDReachedListener` has no replacement, since it never had an add method. [#11283](https://github.com/besu-eth/besu/pull/11283)
   - The plugin API is being reorganized into per-feature modules ([#10820](https://github.com/besu-eth/besu/issues/10820)). Nothing has changed for plugin authors yet: `besu-plugin-api` re-exports every module, so existing plugins compile and run unmodified. A future release will apply the breaking changes, batched into a single break with a migration guide:
     - packages are renamed to match their module, for example `org.hyperledger.besu.plugin.services.storage` becomes `org.hyperledger.besu.plugin.storage`, with contracts plugins implement moving under an `spi` sub-package
     - contracts that serve several unrelated audiences are split apart, and contracts that overlap are merged into one
@@ -28,6 +29,7 @@
 - `--rpc-tx-feecap` will treat a value of 0 as limiting fees to 0. Today it treats 0 as "do not cap fees". To achieve similar behaviour set it to a suitably large value to effectively prevent any fee capping.
 
 ### Bug fixes
+- `BesuEvents.removeBlockReorgListener` now unsubscribes the reorg listener it was given. It called `Blockchain.removeObserver`, which only searches the block-added observer list, so the plugin's reorg listener kept firing after removal and, because the two lists number their ids independently from zero, the call could instead remove an unrelated block-added observer holding the same id, including one of Besu's own. It now calls `removeChainReorgObserver`. [#11283](https://github.com/besu-eth/besu/pull/11283)
 - `eth_simulateV1` simulated blocks now inherit the parent block's `gasLimit` unchanged when no `gasLimit` override is provided, matching the execution-apis spec and the behaviour of geth and Nethermind. Previously `BlockSimulator` applied the EIP-1559 adjustment algorithm toward the node's `targetGasLimit`, causing simulated results to diverge from expected values when the parent's gas limit differed from the target (e.g. 200M on Amsterdam hive fixtures). [#11254](https://github.com/besu-eth/besu/pull/11254)
 - Reject malformed RLPx ECIES handshake payloads under 32 bytes cleanly with `InvalidCipherTextException` instead of raising an unhandled `NegativeArraySizeException`. [#11218](https://github.com/besu-eth/besu/pull/11218)
 - GraphQL `logs(filter: ...)` no longer fails when the filter's `topics` field is omitted or explicitly null, on both the top-level `logs` query and the block-scoped one. The schema declares `topics` nullable and documents "[] or nil matches any topic list", but the field was dereferenced unguarded, so a documented-valid query returned a `DataFetchingException` and `data: null`. [#11188](https://github.com/besu-eth/besu/pull/11188)
@@ -40,9 +42,12 @@
 - An EIP-7702 transaction with an empty `authorization_list` is now rejected by transaction validation rather than by RLP decoding. Over the Engine API such a transaction made the whole payload report `Failed to decode transactions from block parameter`, hiding both the rule that was broken and any other defect the transaction had. [#11193](https://github.com/besu-eth/besu/pull/11193)
 - `engine_newPayloadV4`+ now returns `-32602` for an `executionRequests` element consisting only of a type byte, as execution-apis requires, including when that type byte is one Besu does not recognize. Such an element was previously answered with an `INVALID` payload status. [#11194](https://github.com/besu-eth/besu/pull/11194)
 - A block carrying a transaction whose gas limit exceeds the block's is now rejected for that, rather than reported as an EIP-7928 block access list failure. The access list item budget is checked before the block runs, so it pre-empted the gas error. [#11195](https://github.com/besu-eth/besu/pull/11195)
+- `engine_forkchoiceUpdated` now returns an internal error instead of `INVALID` with `latestValidHash` set to the head when a valid head cannot be applied locally. [#11317](https://github.com/besu-eth/besu/pull/11317)
+- `engine_newPayload` and `engine_forkchoiceUpdated` now return `INVALID` instead of `SYNCING` for a block whose parent is a known bad block. [#11313](https://github.com/besu-eth/besu/pull/11313)
 - Fix performance regression with TLOAD/TSTORE caused by wrong backing implementation of transient storage. [#11319](https://github.com/besu-eth/besu/pull/11319)
 
 ### Additions and Improvements
+- Plugin API: the `BesuEvents` event families move onto the feature services that own them. `BlockchainService` gains `subscribeBlockPropagated`, `subscribeBlockAdded`, `subscribeBlockReorg`, `subscribeLogs` and `subscribeBadBlock`; `TransactionPoolService` gains `subscribeTransactionAdded` and `subscribeTransactionDropped`; `SynchronizationService` gains `subscribeSyncStatus` and `subscribeInitialSyncCompletion`. Each returns a `Subscription` whose `close()` unsubscribes that one listener, replacing the `long` id and paired `remove*` method, so an id can no longer be handed to the wrong family's remover, and initial sync completion becomes unsubscribable for the first time. The listener interfaces keep their signatures and move out of `BesuEvents` into an `spi` package in each module. `BesuEvents` keeps working unchanged and is deprecated. [#11283](https://github.com/besu-eth/besu/pull/11283)
 - Implement native `callTracer` execution tracing, reducing memory use for `debug_trace*`. [#11077](https://github.com/besu-eth/besu/pull/11077)
 - Implement native `4byteTracer` execution tracing, reducing memory use for `debug_trace*`. [#11271](https://github.com/besu-eth/besu/pull/11271)
 - Add `flatCallTracer` for `debug_trace*` methods, matching geth output. [#11273](https://github.com/besu-eth/besu/pull/11273)
@@ -50,6 +55,7 @@
 - Upgrade the stable reference tests to `tests@v20.0.2`, now published from the `ethereum/execution-specs` repository. [#11175](https://github.com/besu-eth/besu/pull/11175)
 - `eth_simulate` now returns EIP-7708 transfer logs for Amsterdam [#11154](https://github.com/besu-eth/besu/pull/11154)
 - Tune layered txpool for upcoming Amsterdam 200M gas limit [#11335](https://github.com/besu-eth/besu/pull/11335)
+- Schedule the Amsterdam fork on Sepolia at timestamp `1791294816` (Tue, 06 Oct 2026, 13:53:36 UTC). [#11333](https://github.com/besu-eth/besu/pull/11333)
 
 ## 26.8.1
 
