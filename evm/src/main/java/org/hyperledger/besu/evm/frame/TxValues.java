@@ -22,7 +22,7 @@ import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.VersionedHash;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
-import org.hyperledger.besu.evm.internal.TransientStorageKey;
+import org.hyperledger.besu.evm.internal.AdrressStorageSlotKey;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -45,7 +45,7 @@ public class TxValues {
   private final BlockHashLookup blockHashLookup;
   private final int maxStackSize;
   private final UndoSet<Address> warmedUpAddresses;
-  private final UndoSet<TransientStorageKey> warmedUpStorage;
+  private final UndoSet<AdrressStorageSlotKey> warmedUpStorage;
   private final Address originator;
   private final Wei gasPrice;
   private final Wei blobGasPrice;
@@ -53,7 +53,7 @@ public class TxValues {
   private final Deque<MessageFrame> messageFrameStack;
   private final Address miningBeneficiary;
   private final Optional<List<VersionedHash>> versionedHashes;
-  private final UndoMap<TransientStorageKey, Bytes32> transientStorage;
+  private final UndoMap<AdrressStorageSlotKey, Bytes32> transientStorage;
   private final UndoSet<Address> creates;
   private final UndoSet<Address> selfDestructs;
   private final UndoScalar<Long> gasRefunds;
@@ -64,7 +64,7 @@ public class TxValues {
       final BlockHashLookup blockHashLookup,
       final int maxStackSize,
       final UndoSet<Address> warmedUpAddresses,
-      final UndoSet<TransientStorageKey> warmedUpStorage,
+      final UndoSet<AdrressStorageSlotKey> warmedUpStorage,
       final Address originator,
       final Wei gasPrice,
       final Wei blobGasPrice,
@@ -72,7 +72,7 @@ public class TxValues {
       final Deque<MessageFrame> messageFrameStack,
       final Address miningBeneficiary,
       final Optional<List<VersionedHash>> versionedHashes,
-      final UndoMap<TransientStorageKey, Bytes32> transientStorage,
+      final UndoMap<AdrressStorageSlotKey, Bytes32> transientStorage,
       final UndoSet<Address> creates,
       final UndoSet<Address> selfDestructs,
       final UndoScalar<Long> gasRefunds,
@@ -193,7 +193,7 @@ public class TxValues {
    *
    * @return the warmed-up storage slots
    */
-  public UndoSet<TransientStorageKey> warmedUpStorage() {
+  public UndoSet<AdrressStorageSlotKey> warmedUpStorage() {
     return warmedUpStorage;
   }
 
@@ -265,7 +265,7 @@ public class TxValues {
    *
    * @return the transient storage
    */
-  public UndoMap<TransientStorageKey, Bytes32> transientStorage() {
+  public UndoMap<AdrressStorageSlotKey, Bytes32> transientStorage() {
     return transientStorage;
   }
 

@@ -18,7 +18,7 @@ import org.hyperledger.besu.collections.undo.UndoSet;
 import org.hyperledger.besu.datatypes.AccessListEntry;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.internal.TransientStorageKey;
+import org.hyperledger.besu.evm.internal.AdrressStorageSlotKey;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import org.apache.tuweni.bytes.Bytes32;
 /** The Access List Operation Tracer. */
 public class AccessListOperationTracer implements OperationTracer {
 
-  private UndoSet<TransientStorageKey> warmedUpStorage;
+  private UndoSet<AdrressStorageSlotKey> warmedUpStorage;
 
   /** Default constructor. */
   private AccessListOperationTracer() {

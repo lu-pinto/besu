@@ -28,7 +28,7 @@ import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
 import org.hyperledger.besu.evm.internal.MemoryEntry;
 import org.hyperledger.besu.evm.internal.OperandStack;
 import org.hyperledger.besu.evm.internal.StorageEntry;
-import org.hyperledger.besu.evm.internal.TransientStorageKey;
+import org.hyperledger.besu.evm.internal.AdrressStorageSlotKey;
 import org.hyperledger.besu.evm.internal.UnderflowException;
 import org.hyperledger.besu.evm.operation.Operation;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
@@ -1180,7 +1180,7 @@ public class MessageFrame {
    * @return true if the storage slot was already warmed up
    */
   public boolean warmUpStorage(final Address address, final Bytes32 slot) {
-    return !txValues.warmedUpStorage().add(new TransientStorageKey(address, slot));
+    return !txValues.warmedUpStorage().add(new AdrressStorageSlotKey(address, slot));
   }
 
   /**
@@ -1454,7 +1454,7 @@ public class MessageFrame {
    *
    * @return the warmed up storage
    */
-  public UndoSet<TransientStorageKey> getWarmedUpStorage() {
+  public UndoSet<AdrressStorageSlotKey> getWarmedUpStorage() {
     return txValues.warmedUpStorage();
   }
 
@@ -1484,7 +1484,7 @@ public class MessageFrame {
    * @return the data value read
    */
   public Bytes32 getTransientStorageValue(final Address accountAddress, final Bytes32 slot) {
-    Bytes32 v = txValues.transientStorage().get(new TransientStorageKey(accountAddress, slot));
+    Bytes32 v = txValues.transientStorage().get(new AdrressStorageSlotKey(accountAddress, slot));
     return v == null ? Bytes32.ZERO : v;
   }
 
@@ -1497,7 +1497,7 @@ public class MessageFrame {
    */
   public void setTransientStorageValue(
       final Address accountAddress, final Bytes32 slot, final Bytes32 value) {
-    txValues.transientStorage().put(new TransientStorageKey(accountAddress, slot), value);
+    txValues.transientStorage().put(new AdrressStorageSlotKey(accountAddress, slot), value);
   }
 
   /** Undo all the changes done by this message frame, such as when a revert is called for. */

@@ -22,7 +22,7 @@ import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
 import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.Code;
-import org.hyperledger.besu.evm.internal.TransientStorageKey;
+import org.hyperledger.besu.evm.internal.AdrressStorageSlotKey;
 import org.hyperledger.besu.evm.toy.ToyBlockValues;
 import org.hyperledger.besu.evm.toy.ToyWorld;
 
@@ -113,9 +113,9 @@ class WarmStorageHashDosTest {
 
   @Test
   void generatedTransientStorageKeysActuallyCollide() {
-    final int hash0 = new TransientStorageKey(Address.ZERO, collidingSlot(0)).hashCode();
+    final int hash0 = new AdrressStorageSlotKey(Address.ZERO, collidingSlot(0)).hashCode();
     for (int i = 1; i < 1_000; i++) {
-      assertThat(new TransientStorageKey(Address.ZERO, collidingSlot(i)).hashCode())
+      assertThat(new AdrressStorageSlotKey(Address.ZERO, collidingSlot(i)).hashCode())
           .isEqualTo(hash0);
       assertThat(collidingSlot(i)).isNotEqualTo(collidingSlot(0));
     }
@@ -168,7 +168,7 @@ class WarmStorageHashDosTest {
         });
 
     for (final Bytes32 slot : slots) {
-      assertThat(frame.getWarmedUpStorage().contains(new TransientStorageKey(Address.ZERO, slot)))
+      assertThat(frame.getWarmedUpStorage().contains(new AdrressStorageSlotKey(Address.ZERO, slot)))
           .isTrue();
     }
   }
