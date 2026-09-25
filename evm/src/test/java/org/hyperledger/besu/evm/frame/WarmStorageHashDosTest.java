@@ -72,6 +72,45 @@ class WarmStorageHashDosTest {
     }
   }
 
+  private static long[] readSeeds() throws Exception {
+    final long[] seeds = new long[7];
+    for (int i = 0; i < 7; i++) {
+      final Field f = AddressStorageSlotKey.class.getDeclaredField("SEED_" + i);
+      f.setAccessible(true);
+      seeds[i] = f.getLong(null);
+    }
+    return seeds;
+  }
+
+  /** Inverse mod 2^64 by Newton iteration; exists because the seeded multipliers are forced odd. */
+  private static long inv(final long x) {
+    long y = x;
+    for (int i = 0; i < 6; i++) {
+      y *= 2 - x * y;
+    }
+    return y;
+  }
+
+  // algo H = s0*A0 + s1*A1 + s2*A2 + s3*A3  +  a0*A4 + a1·A5 + a2*A6
+  //  hashCode = (int)(H >>> 32)
+  private static Bytes32 collidingSlot(final Address address, final int index) throws Exception {
+    final ByteBuffer addrBytes =
+        ByteBuffer.wrap(address.getBytes().toArrayUnsafe()).order(ByteOrder.LITTLE_ENDIAN);
+    final long[] seeds = readSeeds();
+    final long k =
+        addrBytes.getLong(0) * seeds[4]
+            + addrBytes.getLong(8) * seeds[5]
+            + addrBytes.getLong(12) * seeds[6];
+    final long invA1 = inv(seeds[1]);
+
+    final ByteBuffer slotBytes = ByteBuffer.wrap(new byte[32]).order(ByteOrder.LITTLE_ENDIAN);
+    // s0 is free choice
+    slotBytes.putLong(0, index);
+    // solves s1; s2 and s3 = 0
+    slotBytes.putLong(8, -invA1 * (k + index * seeds[0]));
+    return Bytes32.wrap(slotBytes.array());
+  }
+
   private static MessageFrame newFrame(final Address address) {
     return MessageFrame.builder()
         .worldUpdater(new ToyWorld())
@@ -94,64 +133,21 @@ class WarmStorageHashDosTest {
         .build();
   }
 
+  @Test
+  void generatedAddressStorageSlotKeysActuallyCollide() throws Exception {
+    for (int i = 0; i < 1_000; i++) {
+      for (int j = 0; j < 1_000; j++) {
+        if (i == j) continue;
+        assertThat(
+                new AddressStorageSlotKey(Address.ZERO, collidingSlot(Address.ZERO, i)).hashCode())
+            .isEqualTo(
+                new AddressStorageSlotKey(Address.ZERO, collidingSlot(Address.ZERO, j)).hashCode());
+        assertThat(collidingSlot(Address.ZERO, i)).isNotEqualTo(collidingSlot(Address.ZERO, j));
+      }
+    }
+  }
+
   static class TransientStorage {
-    private static long[] readSeeds() throws Exception {
-      final long[] seeds = new long[7];
-      for (int i = 0; i < 7; i++) {
-        final Field f = AddressStorageSlotKey.class.getDeclaredField("SEED_" + i);
-        f.setAccessible(true);
-        seeds[i] = f.getLong(null);
-      }
-      return seeds;
-    }
-
-    /**
-     * Inverse mod 2^64 by Newton iteration; exists because the seeded multipliers are forced odd.
-     */
-    private static long inv(final long x) {
-      long y = x;
-      for (int i = 0; i < 6; i++) {
-        y *= 2 - x * y;
-      }
-      return y;
-    }
-
-    // algo H = s0*A0 + s1*A1 + s2*A2 + s3*A3  +  a0*A4 + a1·A5 + a2*A6
-    //  hashCode = (int)(H >>> 32)
-    private static Bytes32 collidingSlot(final Address address, final int index) throws Exception {
-      final ByteBuffer addrBytes =
-          ByteBuffer.wrap(address.getBytes().toArrayUnsafe()).order(ByteOrder.LITTLE_ENDIAN);
-      final long[] seeds = readSeeds();
-      final long k =
-          addrBytes.getLong(0) * seeds[4]
-              + addrBytes.getLong(8) * seeds[5]
-              + addrBytes.getLong(12) * seeds[6];
-      final long invA1 = inv(seeds[1]);
-
-      final ByteBuffer slotBytes = ByteBuffer.wrap(new byte[32]).order(ByteOrder.LITTLE_ENDIAN);
-      // s0 is free choice
-      slotBytes.putLong(0, index);
-      // solves s1; s2 and s3 = 0
-      slotBytes.putLong(8, -invA1 * (k + index * seeds[0]));
-      return Bytes32.wrap(slotBytes.array());
-    }
-
-    @Test
-    void generatedTransientStorageKeysActuallyCollide() throws Exception {
-      for (int i = 0; i < 1_000; i++) {
-        for (int j = 0; j < 1_000; j++) {
-          if (i == j) continue;
-          assertThat(
-                  new AddressStorageSlotKey(Address.ZERO, collidingSlot(Address.ZERO, i))
-                      .hashCode())
-              .isEqualTo(
-                  new AddressStorageSlotKey(Address.ZERO, collidingSlot(Address.ZERO, j))
-                      .hashCode());
-          assertThat(collidingSlot(Address.ZERO, i)).isNotEqualTo(collidingSlot(Address.ZERO, j));
-        }
-      }
-    }
-
     @Test
     void transientStorageResistsHashCollisionFlood() throws Exception {
       final Address address = Address.fromHexString("0x1234");
@@ -176,34 +172,12 @@ class WarmStorageHashDosTest {
   }
 
   static class Eip2929Storage {
-
-    private static Bytes32 collidingSlot(final int index) {
-      final byte[] bytes = new byte[32];
-      long remaining = index;
-      for (int pair = 0; pair < 16; pair++) {
-        writeZeroSumPair(bytes, pair * 2, (int) (remaining % 3));
-        remaining /= 3;
-      }
-      return Bytes32.wrap(bytes);
-    }
-
     @Test
-    void generatedStorageKeysActuallyCollide() {
-      for (int i = 0; i < 1_000; i++) {
-        for (int j = 0; j < 1_000; j++) {
-          if (i == j) continue;
-          assertThat(collidingSlot(i).hashCode()).isEqualTo(collidingSlot(j).hashCode());
-          assertThat(collidingSlot(i)).isNotEqualTo(collidingSlot(j));
-        }
-      }
-    }
-
-    @Test
-    void warmedUpStorageResistsHashCollisionFlood() {
+    void warmedUpStorageResistsHashCollisionFlood() throws Exception {
       final MessageFrame frame = newFrame(Address.ZERO);
       final List<Bytes32> slots = new ArrayList<>(SLOT_COUNT);
       for (int i = 0; i < SLOT_COUNT; i++) {
-        slots.add(collidingSlot(i));
+        slots.add(collidingSlot(Address.ZERO, i));
       }
 
       assertTimeoutPreemptively(
@@ -215,7 +189,9 @@ class WarmStorageHashDosTest {
           });
 
       for (final Bytes32 slot : slots) {
-        assertThat(frame.getWarmedUpStorage().contains(Address.ZERO, slot)).isTrue();
+        assertThat(
+                frame.getWarmedUpStorage().contains(new AddressStorageSlotKey(Address.ZERO, slot)))
+            .isTrue();
       }
     }
   }

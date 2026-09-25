@@ -1180,7 +1180,7 @@ public class MessageFrame {
    * @return true if the storage slot was already warmed up
    */
   public boolean warmUpStorage(final Address address, final Bytes32 slot) {
-    return !txValues.warmedUpStorage().add(new AdrressStorageSlotKey(address, slot));
+    return !txValues.warmedUpStorage().add(new AddressStorageSlotKey(address, slot));
   }
 
   /**
@@ -1454,7 +1454,7 @@ public class MessageFrame {
    *
    * @return the warmed up storage
    */
-  public UndoSet<AdrressStorageSlotKey> getWarmedUpStorage() {
+  public UndoSet<AddressStorageSlotKey> getWarmedUpStorage() {
     return txValues.warmedUpStorage();
   }
 

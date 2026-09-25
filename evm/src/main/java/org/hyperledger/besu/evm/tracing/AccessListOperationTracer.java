@@ -18,19 +18,20 @@ import org.hyperledger.besu.collections.undo.UndoSet;
 import org.hyperledger.besu.datatypes.AccessListEntry;
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.internal.AdrressStorageSlotKey;
+import org.hyperledger.besu.evm.internal.AddressStorageSlotKey;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 
 /** The Access List Operation Tracer. */
 public class AccessListOperationTracer implements OperationTracer {
 
-  private UndoSet<AdrressStorageSlotKey> warmedUpStorage;
+  private UndoSet<AddressStorageSlotKey> warmedUpStorage;
 
   /** Default constructor. */
   private AccessListOperationTracer() {
@@ -54,8 +55,8 @@ public class AccessListOperationTracer implements OperationTracer {
     final HashMap<Address, List<Bytes32>> storageKeysByAddress = new HashMap<>();
     warmedUpStorage.forEach(
         transientStorageKey -> {
-          final Address address = transientStorageKey.address();
-          final Bytes32 slot = transientStorageKey.slot();
+          final Address address = Address.wrap(Bytes.wrap(transientStorageKey.address()));
+          final Bytes32 slot = Bytes32.wrap(transientStorageKey.slot());
           storageKeysByAddress.computeIfAbsent(address, _ -> new ArrayList<>()).add(slot);
         });
     final List<AccessListEntry> list = new ArrayList<>(storageKeysByAddress.size());

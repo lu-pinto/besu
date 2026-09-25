@@ -120,4 +120,22 @@ public class AddressStorageSlotKey implements Comparable<AddressStorageSlotKey> 
     int compare = Arrays.compare(address, other.address);
     return compare != 0 ? compare : Arrays.compare(slot, other.slot);
   }
+
+  /**
+   * Return the address part of this key as a byte array.
+   *
+   * @return the address
+   */
+  public byte[] address() {
+    return address;
+  }
+
+  /**
+   * Return the slot part of this key as a byte array.
+   *
+   * @return the slot
+   */
+  public byte[] slot() {
+    return slot;
+  }
 }

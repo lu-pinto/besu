@@ -45,7 +45,7 @@ public class TxValues {
   private final BlockHashLookup blockHashLookup;
   private final int maxStackSize;
   private final UndoSet<Address> warmedUpAddresses;
-  private final UndoSet<AdrressStorageSlotKey> warmedUpStorage;
+  private final UndoSet<AddressStorageSlotKey> warmedUpStorage;
   private final Address originator;
   private final Wei gasPrice;
   private final Wei blobGasPrice;
@@ -64,7 +64,7 @@ public class TxValues {
       final BlockHashLookup blockHashLookup,
       final int maxStackSize,
       final UndoSet<Address> warmedUpAddresses,
-      final UndoSet<AdrressStorageSlotKey> warmedUpStorage,
+      final UndoSet<AddressStorageSlotKey> warmedUpStorage,
       final Address originator,
       final Wei gasPrice,
       final Wei blobGasPrice,
@@ -193,7 +193,7 @@ public class TxValues {
    *
    * @return the warmed-up storage slots
    */
-  public UndoSet<AdrressStorageSlotKey> warmedUpStorage() {
+  public UndoSet<AddressStorageSlotKey> warmedUpStorage() {
     return warmedUpStorage;
   }
 
