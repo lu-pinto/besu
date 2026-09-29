@@ -207,10 +207,11 @@ class WarmStorageHashDosTest {
     @Test
     void generatedStorageKeysActuallyCollide() {
       for (int i = 0; i < 1_000; i++) {
-        for (int j = 0; j < 1_000; j++) {
-          if (i == j) continue;
-          assertThat(collidingSlot(i).hashCode()).isEqualTo(collidingSlot(j).hashCode());
-          assertThat(collidingSlot(i)).isNotEqualTo(collidingSlot(j));
+        for (int j = 0; j < i; j++) {
+          final Bytes32 slot_i = collidingSlot(i);
+          final Bytes32 slot_j = collidingSlot(j);
+          assertThat(slot_i.hashCode()).isEqualTo(slot_j.hashCode());
+          assertThat(slot_i).isNotEqualTo(slot_j);
         }
       }
     }
@@ -251,11 +252,12 @@ class WarmStorageHashDosTest {
     @Test
     void generatedAddressesActuallyCollide() {
       for (int i = 0; i < 1_000; i++) {
-        for (int j = 0; j < 1_000; j++) {
-          if (i == j) continue;
-          assertThat(collidingAddress(i).getBytes().hashCode())
-              .isEqualTo(collidingAddress(j).getBytes().hashCode());
-          assertThat(collidingAddress(i).getBytes()).isNotEqualTo(collidingAddress(j).getBytes());
+        for (int j = 0; j < i; j++) {
+          final Address address_i = collidingAddress(i);
+          final Address address_j = collidingAddress(j);
+          assertThat(address_i.getBytes().hashCode())
+              .isEqualTo(address_j.getBytes().hashCode());
+          assertThat(address_i.getBytes()).isNotEqualTo(address_j.getBytes());
         }
       }
     }
