@@ -123,9 +123,17 @@ class WarmStorageHashDosTest {
     }
 
     /**
-     * Algorithm: hash = s0*A0 + s1*A1 + s2*A2 + s3*A3 + a0*A4 + a1·A5 + a2*A6 hashCode = (int)(H
-     * >>> 32) sN - slot limbs aN - address limbs AN - seeds if hash collides then its integer
-     * shifted version (hashCode) will also collide
+     * Algorithm: hash = s0*A0 + s1*A1 + s2*A2 + s3*A3 + a0*A4 + a1·A5 + a2*A6
+     *
+     * <p>hashCode = (int)(H >>> 32)
+     *
+     * <p>sN - slot limbs
+     *
+     * <p>aN - address limbs
+     *
+     * <p>AN - seeds
+     *
+     * <p>if hash collides then its integer shifted version (hashCode) will also collide
      */
     private static Bytes32 collidingSlot(final Address address, final int index) throws Exception {
       final ByteBuffer addrBytes =
@@ -255,8 +263,7 @@ class WarmStorageHashDosTest {
         for (int j = 0; j < i; j++) {
           final Address address_i = collidingAddress(i);
           final Address address_j = collidingAddress(j);
-          assertThat(address_i.getBytes().hashCode())
-              .isEqualTo(address_j.getBytes().hashCode());
+          assertThat(address_i.getBytes().hashCode()).isEqualTo(address_j.getBytes().hashCode());
           assertThat(address_i.getBytes()).isNotEqualTo(address_j.getBytes());
         }
       }
