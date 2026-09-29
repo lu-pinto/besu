@@ -31,10 +31,16 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Regression test asserting that an attacker who grinds many {@link Address}/{@link Bytes32} keys
@@ -116,8 +122,11 @@ class WarmStorageHashDosTest {
       return y;
     }
 
-    // algo H = s0*A0 + s1*A1 + s2*A2 + s3*A3  +  a0*A4 + a1·A5 + a2*A6
-    //  hashCode = (int)(H >>> 32)
+    /**
+     * Algorithm: hash = s0*A0 + s1*A1 + s2*A2 + s3*A3 + a0*A4 + a1·A5 + a2*A6 hashCode = (int)(H
+     * >>> 32) sN - slot limbs aN - address limbs AN - seeds if hash collides then its integer
+     * shifted version (hashCode) will also collide
+     */
     private static Bytes32 collidingSlot(final Address address, final int index) throws Exception {
       final ByteBuffer addrBytes =
           ByteBuffer.wrap(address.getBytes().toArrayUnsafe()).order(ByteOrder.LITTLE_ENDIAN);
@@ -131,23 +140,31 @@ class WarmStorageHashDosTest {
       final ByteBuffer slotBytes = ByteBuffer.wrap(new byte[32]).order(ByteOrder.LITTLE_ENDIAN);
       // s0 is free choice
       slotBytes.putLong(0, index);
-      // solves s1; s2 and s3 = 0
+      // solves for s1; s2 == s3 == hash = 0
       slotBytes.putLong(8, -invA1 * (k + index * seeds[0]));
       return Bytes32.wrap(slotBytes.array());
     }
 
-    @Test
-    void generatedTransientStorageKeysActuallyCollide() throws Exception {
+    private static Stream<Arguments> addressArgs() {
+      final Random rand = new Random(234234L);
+      return Stream.concat(
+          Stream.of(Arguments.of(Address.ZERO)),
+          IntStream.range(0, 10)
+              .mapToObj(__ -> Arguments.of(Address.wrap(Bytes.random(20, rand)))));
+    }
+
+    @ParameterizedTest
+    @MethodSource("addressArgs")
+    void generatedAddressStorageSlotKeysActuallyCollide(final Address address) throws Exception {
       for (int i = 0; i < 1_000; i++) {
-        for (int j = 0; j < 1_000; j++) {
-          if (i == j) continue;
-          assertThat(
-                  new AddressStorageSlotKey(Address.ZERO, collidingSlot(Address.ZERO, i))
-                      .hashCode())
-              .isEqualTo(
-                  new AddressStorageSlotKey(Address.ZERO, collidingSlot(Address.ZERO, j))
-                      .hashCode());
-          assertThat(collidingSlot(Address.ZERO, i)).isNotEqualTo(collidingSlot(Address.ZERO, j));
+        for (int j = 0; j < i; j++) {
+          final AddressStorageSlotKey key_i =
+              new AddressStorageSlotKey(address, collidingSlot(address, i));
+          final AddressStorageSlotKey key_j =
+              new AddressStorageSlotKey(address, collidingSlot(address, j));
+
+          assertThat(key_i.hashCode()).isEqualTo(key_j.hashCode());
+          assertThat(key_i).isNotEqualTo(key_j);
         }
       }
     }

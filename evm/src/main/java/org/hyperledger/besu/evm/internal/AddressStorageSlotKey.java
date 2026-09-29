@@ -84,7 +84,9 @@ public class AddressStorageSlotKey implements Comparable<AddressStorageSlotKey> 
 
   /**
    * Dietzfelbinger based hash uses aligned byte reads as sizes are deterministic: Address is 20
-   * bytes and Slot is 32 bytes.
+   * bytes and Slot is 32 bytes. In order to read aligned bytes for Address and not go out of bounds
+   * on the array we need to re-read bytes 12-16, inclusive - this does not invalidate the hashing
+   * algorithm.
    */
   @Override
   public int hashCode() {
