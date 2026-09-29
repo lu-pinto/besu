@@ -288,8 +288,22 @@ public class BenchmarkHelper {
     }
   }
 
-  // algo H = s0*A0 + s1*A1 + s2*A2 + s3*A3  +  a0*A4 + a1·A5 + a2*A6
-  // hashCode = (int)(H >>> 32)
+  /**
+   * Algorithm:
+   *
+   * <p>hash = s0*A0 + s1*A1 + s2*A2 + s3*A3 + a0*A4 + a1·A5 + a2*A6
+   *
+   * <p>hashCode = (int)(H >>> 32)
+   *
+   * <p>sN - slot limbs
+   *
+   * <p>aN - address limbs
+   *
+   * <p>AN - seeds
+   *
+   * <p>Computes `s1` as all other limbs are made zero. `index` controls high order limbs of `hash`
+   * so there are no collisions for the whole size of the int.
+   */
   private static Bytes32 distinctHash(final Address address, final int index) throws Exception {
     final ByteBuffer addrBytes =
         ByteBuffer.wrap(address.getBytes().toArrayUnsafe()).order(ByteOrder.LITTLE_ENDIAN);
@@ -340,8 +354,11 @@ public class BenchmarkHelper {
     return y;
   }
 
-  // algo H = s0*A0 + s1*A1 + s2*A2 + s3*A3  +  a0*A4 + a1·A5 + a2*A6
-  // hashCode = (int)(H >>> 32)
+  /**
+   * See {@link
+   * org.hyperledger.besu.evm.frame.WarmStorageHashDosTest.TransientStorage#collidingSlot(Address,
+   * int)}.
+   */
   private static Bytes32 collidingHash(final Address address, final int index) throws Exception {
     final ByteBuffer addrBytes =
         ByteBuffer.wrap(address.getBytes().toArrayUnsafe()).order(ByteOrder.LITTLE_ENDIAN);
