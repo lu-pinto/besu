@@ -56,7 +56,7 @@ public class AddressStorageSlotKeyHashingTest {
 
   @ParameterizedTest
   @MethodSource("addressArgs")
-  void hasCodeKeysAreDistinct(final Address address) throws Exception {
+  void hashCodeKeysAreDistinct(final Address address) throws Exception {
     for (int i = 0; i < 1_000; i++) {
       for (int j = 0; j < i; j++) {
         final AddressStorageSlotKey key_i =
