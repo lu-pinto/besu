@@ -107,11 +107,11 @@ public abstract class PushOperationBenchmarkBaseV2 {
       pcPool[i] =
           switch (pcType) {
             case FIRST_16BYTES -> random.nextInt(16);
-            case MID -> random.nextInt(code.length - size);
+            case MID -> random.nextInt(code.length - size - 1);
             case END -> code.length - 1 - size;
             case TRUNCATED -> code.length - 1 - (size > 1 ? random.nextInt(1, size) : 0);
             case OOB -> code.length - 1;
-            default -> throw new IllegalArgumentException("unknown position " + getPc());
+            default -> throw new IllegalArgumentException("unknown position " + pcType);
           };
     }
     index = 0;
