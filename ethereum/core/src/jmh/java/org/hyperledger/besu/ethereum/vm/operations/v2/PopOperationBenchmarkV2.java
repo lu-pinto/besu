@@ -17,7 +17,7 @@ package org.hyperledger.besu.ethereum.vm.operations.v2;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.v2.operation.PopOperationV2;
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Benchmark;
@@ -47,8 +47,7 @@ public class PopOperationBenchmarkV2 {
   @Setup
   public void setUp() {
     frame = BenchmarkHelperV2.createMessageCallFrame();
-    BenchmarkHelperV2.pushUInt256(
-        frame, BenchmarkHelperV2.randomUInt256Value(ThreadLocalRandom.current()));
+    BenchmarkHelperV2.pushUInt256(frame, BenchmarkHelperV2.randomUInt256Value(new Random(435L)));
   }
 
   @Benchmark

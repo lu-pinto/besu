@@ -82,7 +82,7 @@ public abstract class PushOperationBenchmarkBase {
               case "BIG" -> LARGE_CODE_SIZE;
               default -> throw new IllegalArgumentException("unknown code size " + getCodeSize());
             }];
-    final Random random = new Random();
+    final Random random = new Random(42L);
     random.nextBytes(code);
 
     final boolean randomSize = "RANDOM".equals(getPushSize());

@@ -51,7 +51,7 @@ public class PopOperationBenchmark {
   @Setup
   public void setUp() {
     frame = BenchmarkHelper.createMessageCallFrame();
-    final Random random = new Random();
+    final Random random = new Random(543L);
     popPool = new Bytes[SAMPLE_SIZE];
     for (int i = 0; i < SAMPLE_SIZE; i++) {
       byte[] data = new byte[32];
