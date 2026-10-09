@@ -16,7 +16,6 @@ package org.hyperledger.besu.evm.v2.operation;
 
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
-import org.hyperledger.besu.evm.internal.UnderflowException;
 import org.hyperledger.besu.evm.operation.Operation.OperationResult;
 
 /** The Pop operation. */
