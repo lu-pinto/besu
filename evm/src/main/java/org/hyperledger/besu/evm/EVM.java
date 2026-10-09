@@ -14,7 +14,6 @@
  */
 package org.hyperledger.besu.evm;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static org.hyperledger.besu.evm.operation.PushOperation.PUSH_BASE;
 import static org.hyperledger.besu.evm.operation.SwapOperation.SWAP_BASE;
 
@@ -89,10 +88,13 @@ import org.hyperledger.besu.evm.operation.XorOperationOptimized;
 import org.hyperledger.besu.evm.tracing.OperationTracer;
 import org.hyperledger.besu.evm.v2.operation.AddModOperationV2;
 import org.hyperledger.besu.evm.v2.operation.AddOperationV2;
+import org.hyperledger.besu.evm.v2.operation.AndOperationV2;
 import org.hyperledger.besu.evm.v2.operation.DivOperationV2;
 import org.hyperledger.besu.evm.v2.operation.ModOperationV2;
 import org.hyperledger.besu.evm.v2.operation.MulModOperationV2;
 import org.hyperledger.besu.evm.v2.operation.MulOperationV2;
+import org.hyperledger.besu.evm.v2.operation.NotOperationV2;
+import org.hyperledger.besu.evm.v2.operation.OrOperationV2;
 import org.hyperledger.besu.evm.v2.operation.PopOperationV2;
 import org.hyperledger.besu.evm.v2.operation.PushOperationV2;
 import org.hyperledger.besu.evm.v2.operation.SDivOperationV2;
@@ -101,6 +103,7 @@ import org.hyperledger.besu.evm.v2.operation.SarOperationV2;
 import org.hyperledger.besu.evm.v2.operation.ShlOperationV2;
 import org.hyperledger.besu.evm.v2.operation.ShrOperationV2;
 import org.hyperledger.besu.evm.v2.operation.SubOperationV2;
+import org.hyperledger.besu.evm.v2.operation.XorOperationV2;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -504,6 +507,10 @@ public class EVM {
               case 0x07 -> SModOperationV2.staticOperation(frame);
               case 0x08 -> AddModOperationV2.staticOperation(frame);
               case 0x09 -> MulModOperationV2.staticOperation(frame);
+              case 0x16 -> AndOperationV2.staticOperation(frame);
+              case 0x17 -> OrOperationV2.staticOperation(frame);
+              case 0x18 -> XorOperationV2.staticOperation(frame);
+              case 0x19 -> NotOperationV2.staticOperation(frame);
               case 0x1b ->
                   enableConstantinople
                       ? ShlOperationV2.staticOperation(frame)
@@ -611,7 +618,9 @@ public class EVM {
    * @return the code instance with the cached jump destination
    */
   public Code getOrCreateCachedJumpDest(final Hash codeHash, final Bytes codeBytes) {
-    checkNotNull(codeHash);
+    if (Hash.EMPTY.getBytes().equals(codeHash.getBytes())) {
+      return Code.EMPTY_CODE;
+    }
 
     Code result = jumpDestOnlyCodeCache.getIfPresent(codeHash);
     if (result == null) {
