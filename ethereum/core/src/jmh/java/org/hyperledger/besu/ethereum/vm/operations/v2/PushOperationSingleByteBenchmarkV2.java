@@ -20,18 +20,19 @@ import org.hyperledger.besu.evm.v2.operation.PushOperationV2;
 
 import org.openjdk.jmh.annotations.Param;
 
-public class PushOperationMultiLimbV2 extends PushOperationBenchmarkBaseV2 {
-  @Param({"9", "14", "20", "32", "RANDOM"})
+public class PushOperationSingleByteBenchmarkV2 extends PushOperationBenchmarkBaseV2 {
+  @Param({"0", "1", "RANDOM"})
   protected String pushSize;
 
-  @Param protected Position pc;
+  @Param({"END", "TRUNCATED", "OOB", "RANDOM"})
+  private String pc;
 
-  @Param({"SMALL", "BIG"})
+  @Param({"SMALL"})
   private String codeSize;
 
   @Override
   protected Position getPc() {
-    return pc;
+    return Position.valueOf(pc);
   }
 
   @Override
@@ -46,12 +47,12 @@ public class PushOperationMultiLimbV2 extends PushOperationBenchmarkBaseV2 {
 
   @Override
   protected int[] getPushRandomization() {
-    return new int[] {9, 33};
+    return new int[] {0, 2};
   }
 
   @Override
   protected Operation.OperationResult invoke(
       final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
-    return PushOperationV2.MultiLimb.staticOperation(frame, code, pc, pushSize);
+    return PushOperationV2.SingleByte.staticOperation(frame, code, pc, pushSize);
   }
 }
