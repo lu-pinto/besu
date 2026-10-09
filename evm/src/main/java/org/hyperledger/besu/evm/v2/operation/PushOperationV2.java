@@ -17,7 +17,6 @@ package org.hyperledger.besu.evm.v2.operation;
 import org.hyperledger.besu.evm.UInt256;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
-import org.hyperledger.besu.evm.internal.OverflowException;
 
 /** The Push operation. */
 public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
@@ -28,6 +27,7 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
 
   /** The Push operation success result. */
   private static final OperationResult push0Success = new OperationResult(2, null);
+
   private static final OperationResult pushSuccess = new OperationResult(3, null);
 
   /**
@@ -45,36 +45,6 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
         gasCalculator,
         length == 0 ? gasCalculator.getBaseTierGasCost() : gasCalculator.getVeryLowTierGasCost());
     this.length = length;
-  }
-
-  private static void pushUInt256ToStack(final MessageFrame frame, final UInt256 pushValue) {
-    final long[] stack = frame.stackDataV2();
-    final int top = frame.stackTopV2();
-    final int offset = top << 2;
-    try {
-      stack[offset] = pushValue.u3();
-      stack[offset + 1] = pushValue.u2();
-      stack[offset + 2] = pushValue.u1();
-      stack[offset + 3] = pushValue.u0();
-    } catch (ArrayIndexOutOfBoundsException aiobe) {
-      throw new OverflowException();
-    }
-    frame.setTopV2(top + 1);
-  }
-
-  private static void pushLongToStack(final MessageFrame frame, final long u0) {
-    final long[] stack = frame.stackDataV2();
-    final int top = frame.stackTopV2();
-    final int offset = top << 2;
-    try {
-      stack[offset] = 0;
-      stack[offset + 1] = 0;
-      stack[offset + 2] = 0;
-      stack[offset + 3] = u0;
-    } catch (ArrayIndexOutOfBoundsException aiobe) {
-      throw new OverflowException();
-    }
-    frame.setTopV2(top + 1);
   }
 
   /** Optimized version of PUSH opcode for PUSH0 and PUSH1 only. */
@@ -107,13 +77,16 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
      */
     public static OperationResult staticOperation(
         final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
+      if (!frame.stackHasSpaceV2(1)) return OVERFLOW_RESPONSE;
       long u0 = 0;
       final int start = pc + 1;
       if (pushSize != 0 && start < code.length) {
         u0 = code[start] & 0xFFL;
       }
 
-      pushLongToStack(frame, u0);
+      final int top = frame.stackTopV2();
+      StackUtil.setLong(u0, frame.stackDataV2(), top);
+      frame.setTopV2(top + 1);
       frame.setPC(pc + pushSize);
       return pushSize == 0 ? push0Success : pushSuccess;
     }
@@ -149,6 +122,7 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
      */
     public static OperationResult staticOperation(
         final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
+      if (!frame.stackHasSpaceV2(1)) return OVERFLOW_RESPONSE;
       final int start = pc + 1;
       final int end = start + pushSize;
       long u0 = UInt256.getLongBE(code, start, Math.min(end, code.length));
@@ -160,7 +134,9 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
         u0 <<= shift;
       }
 
-      pushLongToStack(frame, u0);
+      final int top = frame.stackTopV2();
+      StackUtil.setLong(u0, frame.stackDataV2(), top);
+      frame.setTopV2(top + 1);
       frame.setPC(pc + pushSize);
       return pushSuccess;
     }
@@ -199,6 +175,7 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
      */
     public static OperationResult staticOperation(
         final MessageFrame frame, final byte[] code, final int pc, final int pushSize) {
+      if (!frame.stackHasSpaceV2(1)) return OVERFLOW_RESPONSE;
       final int start = pc + 1;
       final int end = start + pushSize;
       final int remainingSize = Math.min(end, code.length) - start;
@@ -209,7 +186,9 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
         pushValue = pushValue.shiftLeft((pushSize - remainingSize) * 8);
       }
 
-      pushUInt256ToStack(frame, pushValue);
+      final int top = frame.stackTopV2();
+      StackUtil.setUInt256(pushValue, frame.stackDataV2(), top);
+      frame.setTopV2(top + 1);
       frame.setPC(pc + pushSize);
       return pushSuccess;
     }

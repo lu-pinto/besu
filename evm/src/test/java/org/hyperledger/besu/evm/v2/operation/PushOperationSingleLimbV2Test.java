@@ -15,8 +15,8 @@
 package org.hyperledger.besu.evm.v2.operation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hyperledger.besu.evm.v2.operation.AbstractOperationV2.OVERFLOW_RESPONSE;
 import static org.hyperledger.besu.evm.v2.operation.PushOperationV2.SingleLimb.staticOperation;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.hyperledger.besu.datatypes.Address;
 import org.hyperledger.besu.datatypes.Hash;
@@ -24,7 +24,6 @@ import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.evm.Code;
 import org.hyperledger.besu.evm.UInt256;
 import org.hyperledger.besu.evm.frame.MessageFrame;
-import org.hyperledger.besu.evm.internal.OverflowException;
 import org.hyperledger.besu.evm.toy.ToyBlockValues;
 import org.hyperledger.besu.evm.toy.ToyWorld;
 import org.hyperledger.besu.evm.v2.testutils.TestMessageFrameBuilderV2;
@@ -197,7 +196,7 @@ public class PushOperationSingleLimbV2Test {
       frame.setTopV2(frame.stackTopV2() + 1);
     }
     final int top = frame.stackTopV2();
-    assertThrows(OverflowException.class, () -> staticOperation(frame, code, 0, 4));
+    assertThat(staticOperation(frame, code, 0, 4)).isEqualTo(OVERFLOW_RESPONSE);
     assertThat(frame.stackTopV2()).isEqualTo(top);
   }
 
