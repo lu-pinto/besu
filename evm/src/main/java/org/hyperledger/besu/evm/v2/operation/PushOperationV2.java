@@ -27,6 +27,7 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
   private final int length;
 
   /** The Push operation success result. */
+  private static final OperationResult push0Success = new OperationResult(2, null);
   private static final OperationResult pushSuccess = new OperationResult(3, null);
 
   /**
@@ -42,7 +43,7 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
         0,
         1,
         gasCalculator,
-        gasCalculator.getVeryLowTierGasCost());
+        length == 0 ? gasCalculator.getBaseTierGasCost() : gasCalculator.getVeryLowTierGasCost());
     this.length = length;
   }
 
@@ -114,7 +115,7 @@ public abstract class PushOperationV2 extends AbstractFixedCostOperationV2 {
 
       pushLongToStack(frame, u0);
       frame.setPC(pc + pushSize);
-      return pushSuccess;
+      return pushSize == 0 ? push0Success : pushSuccess;
     }
   }
 
