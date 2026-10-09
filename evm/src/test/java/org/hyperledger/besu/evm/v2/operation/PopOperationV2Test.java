@@ -15,6 +15,7 @@
 package org.hyperledger.besu.evm.v2.operation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hyperledger.besu.evm.v2.operation.AbstractOperationV2.UNDERFLOW_RESPONSE;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.hyperledger.besu.datatypes.Address;
@@ -58,7 +59,7 @@ public class PopOperationV2Test {
 
   @Test
   void popStackEmpty() {
-    assertThrows(UnderflowException.class, () -> PopOperationV2.staticOperation(frame));
+    assertThat(PopOperationV2.staticOperation(frame)).isEqualTo(UNDERFLOW_RESPONSE);
   }
 
   @Test

@@ -46,7 +46,7 @@ public class PopOperationV2 extends AbstractFixedCostOperationV2 {
    */
   public static OperationResult staticOperation(final MessageFrame frame) {
     if (!frame.stackHasItemsV2(1)) {
-      throw new UnderflowException();
+      return UNDERFLOW_RESPONSE;
     }
     frame.setTopV2(frame.stackTopV2() - 1);
     return popSuccess;
