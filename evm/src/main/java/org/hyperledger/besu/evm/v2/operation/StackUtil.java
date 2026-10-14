@@ -24,7 +24,6 @@ import java.nio.ByteOrder;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Static utility for reading/writing typed values on the flat {@code long[]} V2 operand stack. Each
@@ -112,36 +111,15 @@ final class StackUtil {
    * Writes a {@link Bytes32} value as four big-endian limbs at the given stack slot. A {@code null}
    * value is written as a zero word.
    *
-   * @param value the 32-byte value to write, or {@code null} for zero
+   * @param value the 32-byte value to write
    * @param stack the flat limb array
    * @param top the slot index to write to
    */
-  static void pushBytes32(final @Nullable Bytes32 value, final long[] stack, final int top) {
-    final int offset = top << 2;
-    if (value == null) {
-      stack[offset] = 0L;
-      stack[offset + 1] = 0L;
-      stack[offset + 2] = 0L;
-      stack[offset + 3] = 0L;
-      return;
-    }
-    final byte[] b = value.toArrayUnsafe();
-    stack[offset] = (long) LONG_BE.get(b, 0);
-    stack[offset + 1] = (long) LONG_BE.get(b, 8);
-    stack[offset + 2] = (long) LONG_BE.get(b, 16);
-    stack[offset + 3] = (long) LONG_BE.get(b, 24);
-  }
+  static void pushBytes32(final Bytes value, final long[] stack, final int top) {
+    assert value.size() == 32 : "value size must exactly be 32 bytes";
 
-  /**
-   * Writes a 32-byte hash value as four big-endian limbs at the given stack slot.
-   *
-   * @param hash the hash value to write
-   * @param stack the flat limb array
-   * @param top the slot index to write to
-   */
-  static void pushHash(final BytesHolder hash, final long[] stack, final int top) {
     final int offset = top << 2;
-    final byte[] b = hash.getBytes().toArrayUnsafe();
+    final byte[] b = value.toArrayUnsafe();
     stack[offset] = (long) LONG_BE.get(b, 0);
     stack[offset + 1] = (long) LONG_BE.get(b, 8);
     stack[offset + 2] = (long) LONG_BE.get(b, 16);

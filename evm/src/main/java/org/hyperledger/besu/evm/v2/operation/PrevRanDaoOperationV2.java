@@ -15,7 +15,9 @@
 package org.hyperledger.besu.evm.v2.operation;
 
 import static org.hyperledger.besu.evm.v2.operation.StackUtil.pushBytes32;
+import static org.hyperledger.besu.evm.v2.operation.StackUtil.pushZero;
 
+import org.apache.tuweni.bytes.Bytes;
 import org.hyperledger.besu.evm.frame.MessageFrame;
 import org.hyperledger.besu.evm.gascalculator.GasCalculator;
 import org.hyperledger.besu.evm.operation.Operation;
@@ -37,7 +39,12 @@ public class PrevRanDaoOperationV2 extends AbstractFixedCostOperationV2 {
     if (!frame.stackHasSpaceV2(1)) return OVERFLOW_RESPONSE;
     final long[] stack = frame.stackDataV2();
     final int top = frame.stackTopV2();
-    pushBytes32(frame.getBlockValues().getMixHashOrPrevRandao(), stack, top);
+    Bytes prevRanDao = frame.getBlockValues().getMixHashOrPrevRandao();
+    if (prevRanDao != null) {
+      pushBytes32(prevRanDao, stack, top);
+    } else {
+      pushZero(stack, top);
+    }
     frame.setTopV2(top + 1);
     return successResponse;
   }

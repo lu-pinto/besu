@@ -14,7 +14,7 @@
  */
 package org.hyperledger.besu.evm.v2.operation;
 
-import static org.hyperledger.besu.evm.v2.operation.StackUtil.pushHash;
+import static org.hyperledger.besu.evm.v2.operation.StackUtil.pushBytes32;
 import static org.hyperledger.besu.evm.v2.operation.StackUtil.pushZero;
 
 import org.hyperledger.besu.datatypes.Hash;
@@ -65,7 +65,7 @@ public class BlockHashOperationV2 extends AbstractOperationV2 {
       pushZero(stack, top - 1);
     } else {
       final Hash blockHash = blockHashLookup.apply(frame, soughtBlock);
-      pushHash(blockHash, stack, top - 1);
+      pushBytes32(blockHash.getBytes(), stack, top - 1);
     }
     return new OperationResult(cost, null);
   }
