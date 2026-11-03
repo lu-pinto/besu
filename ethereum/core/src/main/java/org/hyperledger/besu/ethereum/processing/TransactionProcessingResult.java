@@ -15,6 +15,7 @@
 package org.hyperledger.besu.ethereum.processing;
 
 import org.hyperledger.besu.datatypes.Log;
+import org.hyperledger.besu.datatypes.Wei;
 import org.hyperledger.besu.ethereum.mainnet.ValidationResult;
 import org.hyperledger.besu.ethereum.mainnet.block.access.list.PartialBlockAccessView;
 import org.hyperledger.besu.ethereum.transaction.TransactionInvalidReason;
@@ -60,6 +61,13 @@ public class TransactionProcessingResult
   private final Bytes output;
 
   private Optional<Boolean> isProcessedInParallel = Optional.empty();
+
+  /**
+   * The fee credited to the mining beneficiary for this transaction, zero until the transaction has
+   * been processed far enough to charge it. A caller that asked for the credit to be deferred
+   * applies it itself, from here.
+   */
+  private Wei miningBeneficiaryReward = Wei.ZERO;
 
   private final ValidationResult<TransactionInvalidReason> validationResult;
   private final Optional<Bytes> revertReason;
@@ -464,6 +472,26 @@ public class TransactionProcessingResult
    */
   public Optional<Boolean> getIsProcessedInParallel() {
     return isProcessedInParallel;
+  }
+
+  /**
+   * Sets the fee credited to the mining beneficiary for this transaction.
+   *
+   * @param miningBeneficiaryReward the fee credited to the mining beneficiary
+   */
+  public void setMiningBeneficiaryReward(final Wei miningBeneficiaryReward) {
+    this.miningBeneficiaryReward = miningBeneficiaryReward;
+  }
+
+  /**
+   * Returns the fee credited to the mining beneficiary for this transaction, zero if the
+   * transaction did not get far enough to charge one. A caller that processed the transaction with
+   * the coinbase credit deferred applies this itself.
+   *
+   * @return the fee credited to the mining beneficiary
+   */
+  public Wei getMiningBeneficiaryReward() {
+    return miningBeneficiaryReward;
   }
 
   /**

@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -166,7 +167,7 @@ class OptimisticTransactionProcessorUnitTest {
 
   private void stubSuccessfulTransaction(final Optional<PartialBlockAccessView> partialView) {
     when(transactionProcessor.processTransaction(
-            any(), any(), any(), any(), any(), any(), any(), any(), any()))
+            any(), any(), any(), any(), any(), any(), any(), any(), any(), anyBoolean()))
         .thenReturn(
             TransactionProcessingResult.successful(
                 Collections.emptyList(), 0, 0, Bytes.EMPTY, partialView, ValidationResult.valid()));
@@ -203,7 +204,9 @@ class OptimisticTransactionProcessorUnitTest {
               any(BlockHashLookup.class),
               eq(TransactionValidationParams.processingBlock()),
               eq(BLOB_GAS_PRICE),
-              eq(Optional.empty()));
+              eq(Optional.empty()),
+              // the fee is credited by getProcessingResult instead, so that it does not collide
+              eq(true));
     }
 
     @Test
@@ -226,7 +229,8 @@ class OptimisticTransactionProcessorUnitTest {
           env.maybeParentHeader());
 
       verify(transactionProcessor, times(3))
-          .processTransaction(any(), any(), any(), any(), any(), any(), any(), any(), any());
+          .processTransaction(
+              any(), any(), any(), any(), any(), any(), any(), any(), any(), anyBoolean());
     }
   }
 
@@ -257,7 +261,8 @@ class OptimisticTransactionProcessorUnitTest {
 
       verify(protocolContext, never()).getWorldStateArchive();
       verify(transactionProcessor, never())
-          .processTransaction(any(), any(), any(), any(), any(), any(), any(), any(), any());
+          .processTransaction(
+              any(), any(), any(), any(), any(), any(), any(), any(), any(), anyBoolean());
       assertTrue(
           processor
               .getProcessingResult(
@@ -289,7 +294,8 @@ class OptimisticTransactionProcessorUnitTest {
 
       verify(env.worldStateArchive(), times(1)).getWorldState(any());
       verify(transactionProcessor, never())
-          .processTransaction(any(), any(), any(), any(), any(), any(), any(), any(), any());
+          .processTransaction(
+              any(), any(), any(), any(), any(), any(), any(), any(), any(), anyBoolean());
       assertTrue(
           processor
               .getProcessingResult(
@@ -323,7 +329,8 @@ class OptimisticTransactionProcessorUnitTest {
       verify(env.worldStateArchive())
           .getWorldState(argThat((WorldStateQueryParams p) -> p.getBlockHeader() == parent));
       verify(transactionProcessor, times(1))
-          .processTransaction(any(), any(), any(), any(), any(), any(), any(), any(), any());
+          .processTransaction(
+              any(), any(), any(), any(), any(), any(), any(), any(), any(), anyBoolean());
     }
   }
 
@@ -463,7 +470,7 @@ class OptimisticTransactionProcessorUnitTest {
       final Transaction transaction = mockTransaction();
 
       when(transactionProcessor.processTransaction(
-              any(), any(), any(), any(), any(), any(), any(), any(), any()))
+              any(), any(), any(), any(), any(), any(), any(), any(), any(), anyBoolean()))
           .thenThrow(new RuntimeException("Simulated failure"));
 
       processor.runAsyncBlock(
@@ -511,7 +518,7 @@ class OptimisticTransactionProcessorUnitTest {
                       .createSignature(BigInteger.valueOf(5), BigInteger.ONE, (byte) 0))
               .build();
       when(transactionProcessor.processTransaction(
-              any(), any(), any(), any(), any(), any(), any(), any(), any()))
+              any(), any(), any(), any(), any(), any(), any(), any(), any(), anyBoolean()))
           .thenReturn(
               TransactionProcessingResult.invalid(
                   ValidationResult.invalid(TransactionInvalidReason.INVALID_SIGNATURE)));
@@ -637,7 +644,8 @@ class OptimisticTransactionProcessorUnitTest {
               any(BlockHashLookup.class),
               eq(TransactionValidationParams.processingBlock()),
               eq(BLOB_GAS_PRICE),
-              argThat(Optional::isPresent));
+              argThat(Optional::isPresent),
+              eq(true));
     }
 
     @Test

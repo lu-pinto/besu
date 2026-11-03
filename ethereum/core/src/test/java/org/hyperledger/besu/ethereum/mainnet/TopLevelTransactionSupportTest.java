@@ -244,7 +244,7 @@ class TopLevelTransactionSupportTest {
     when(worldUpdater.getOrCreate(COINBASE)).thenReturn(coinbase);
 
     TopLevelTransactionSupport.creditCoinbase(
-        worldUpdater, COINBASE, Wei.ZERO, Optional.of(tracker));
+        worldUpdater, COINBASE, Wei.ZERO, Optional.of(tracker), false);
 
     verify(worldUpdater).getOrCreate(COINBASE);
     verify(tracker).addTouchedAccount(COINBASE);
@@ -257,9 +257,26 @@ class TopLevelTransactionSupportTest {
     final MutableAccount coinbase = mock(MutableAccount.class);
     when(worldUpdater.getOrCreate(COINBASE)).thenReturn(coinbase);
 
-    TopLevelTransactionSupport.creditCoinbase(worldUpdater, COINBASE, Wei.of(21), Optional.empty());
+    TopLevelTransactionSupport.creditCoinbase(
+        worldUpdater, COINBASE, Wei.of(21), Optional.empty(), false);
 
     verify(coinbase).incrementBalance(Wei.of(21));
+  }
+
+  @Test
+  void aDeferredFeeLeavesTheCoinbaseUntouchedButStillRecordsTheAccess() {
+    final WorldUpdater worldUpdater = mock(WorldUpdater.class);
+    final AccessLocationTracker tracker = mock(AccessLocationTracker.class);
+
+    TopLevelTransactionSupport.creditCoinbase(
+        worldUpdater, COINBASE, Wei.of(21), Optional.of(tracker), true);
+
+    // reading the coinbase is what the deferral avoids: it would collide with every other
+    // transaction of the block, which all credit the same account
+    verify(worldUpdater, never()).getOrCreate(COINBASE);
+    verify(worldUpdater, never()).getAccount(COINBASE);
+    // the block access list still records it, as the fee is credited when the caller merges
+    verify(tracker).addTouchedAccount(COINBASE);
   }
 
   // chargeAccountAccess

@@ -211,6 +211,48 @@ public class MainnetTransactionProcessor {
       final TransactionValidationParams transactionValidationParams,
       final Wei blobGasPrice,
       final Optional<AccessLocationTracker> accessLocationTracker) {
+    return processTransaction(
+        worldState,
+        blockHeader,
+        transaction,
+        miningBeneficiary,
+        operationTracer,
+        blockHashLookup,
+        transactionValidationParams,
+        blobGasPrice,
+        accessLocationTracker,
+        false);
+  }
+
+  /**
+   * Applies a transaction to the current system state.
+   *
+   * @param worldState The current world state
+   * @param blockHeader The current block header
+   * @param transaction The transaction to process
+   * @param miningBeneficiary The address which is to receive the transaction fee
+   * @param operationTracer The tracer to record results of each EVM operation
+   * @param blockHashLookup The {@link BlockHashLookup} to use for BLOCKHASH operations
+   * @param transactionValidationParams Validation parameters for the transaction
+   * @param blobGasPrice The blob gas price
+   * @param accessLocationTracker The tracker that builds this transaction's block access list
+   * @param deferCoinbaseCredit When true the mining beneficiary is left untouched in the world
+   *     state, and the caller credits it itself from {@link
+   *     TransactionProcessingResult#getMiningBeneficiaryReward}. Speculative parallel execution
+   *     uses this so that the fee does not make every transaction look like it read the coinbase.
+   * @return the transaction result
+   */
+  public TransactionProcessingResult processTransaction(
+      final WorldUpdater worldState,
+      final ProcessableBlockHeader blockHeader,
+      final Transaction transaction,
+      final Address miningBeneficiary,
+      final OperationTracer operationTracer,
+      final BlockHashLookup blockHashLookup,
+      final TransactionValidationParams transactionValidationParams,
+      final Wei blobGasPrice,
+      final Optional<AccessLocationTracker> accessLocationTracker,
+      final boolean deferCoinbaseCredit) {
     try {
       final var transactionValidator = transactionValidatorFactory.get();
       LOG.trace("Starting execution of {}", transaction);
@@ -607,7 +649,11 @@ public class MainnetTransactionProcessor {
       operationTracer.traceBeforeRewardTransaction(worldUpdater, transaction, coinbaseWeiDelta);
 
       TopLevelTransactionSupport.creditCoinbase(
-          worldState, miningBeneficiary, coinbaseWeiDelta, accessLocationTracker);
+          worldState,
+          miningBeneficiary,
+          coinbaseWeiDelta,
+          accessLocationTracker,
+          deferCoinbaseCredit);
 
       // For a failed transaction all selfDestructs must have been rolled back by the frame.
       // Guard here as defense-in-depth: if any leak path (e.g. executionGasLimitExceeded) leaves
@@ -654,6 +700,7 @@ public class MainnetTransactionProcessor {
                 partialBlockAccessView,
                 validationResult);
         successResult.setExecutionGasUsedForBlock(gasResult.executionGas());
+        successResult.setMiningBeneficiaryReward(coinbaseWeiDelta);
         return successResult;
       } else {
         if (initialFrame.getExceptionalHaltReason().isPresent()) {
@@ -679,6 +726,7 @@ public class MainnetTransactionProcessor {
                 initialFrame.getExceptionalHaltReason(),
                 partialBlockAccessView);
         failedResult.setExecutionGasUsedForBlock(gasResult.executionGas());
+        failedResult.setMiningBeneficiaryReward(coinbaseWeiDelta);
         return failedResult;
       }
     } catch (final MerkleTrieException | MissingCodeException re) {

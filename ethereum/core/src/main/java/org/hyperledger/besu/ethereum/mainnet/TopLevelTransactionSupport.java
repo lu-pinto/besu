@@ -162,14 +162,25 @@ final class TopLevelTransactionSupport {
    * Credits the coinbase with its share of the transaction fee. The coinbase is touched even when
    * the fee is zero (EIP-158 & EIP-7928), so an <em>empty</em> coinbase can be deleted during state
    * clearing.
+   *
+   * <p>With {@code deferCredit} the coinbase is left untouched in the world state and the caller
+   * credits it itself, from {@link
+   * org.hyperledger.besu.ethereum.processing.TransactionProcessingResult#getMiningBeneficiaryReward}.
+   * Speculative parallel execution does this: touching the coinbase here would put it in the world
+   * state updater of every transaction and make them all look like they had read it. The block
+   * access list still records the coinbase as touched, as the fee is credited either way.
    */
   static void creditCoinbase(
       final WorldUpdater worldUpdater,
       final Address miningBeneficiary,
       final Wei coinbaseWeiDelta,
-      final Optional<AccessLocationTracker> accessLocationTracker) {
-    final MutableAccount coinbase = worldUpdater.getOrCreate(miningBeneficiary);
+      final Optional<AccessLocationTracker> accessLocationTracker,
+      final boolean deferCredit) {
     accessLocationTracker.ifPresent(t -> t.addTouchedAccount(miningBeneficiary));
+    if (deferCredit) {
+      return;
+    }
+    final MutableAccount coinbase = worldUpdater.getOrCreate(miningBeneficiary);
     if (!coinbaseWeiDelta.isZero()) {
       coinbase.incrementBalance(coinbaseWeiDelta);
     }

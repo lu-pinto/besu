@@ -31,7 +31,6 @@ import org.hyperledger.besu.evm.account.MutableAccount;
 import org.hyperledger.besu.evm.blockhash.BlockHashLookup;
 import org.hyperledger.besu.evm.tracing.OperationTracer;
 import org.hyperledger.besu.evm.worldstate.WorldUpdater;
-import org.hyperledger.besu.evm.worldstate.WorldView;
 import org.hyperledger.besu.plugin.services.metrics.Counter;
 import org.hyperledger.besu.plugin.services.worldstate.MutableWorldState;
 
@@ -107,66 +106,36 @@ public class OptimisticConcurrentTransactionProcessor extends ParallelBlockTrans
               b ->
                   BlockAccessListBuilder.createTransactionAccessLocationTracker(
                       transactionLocation));
+      /*
+       * The fee is not credited to the mining beneficiary here: that would read it into this
+       * transaction's accumulator and make every transaction look like it had touched the
+       * coinbase, which is a collision. The reward comes back on the result instead, and
+       * getProcessingResult credits it when it merges the transaction in. The coinbase then
+       * reaches the accumulator only when the transaction genuinely read or wrote it, which is a
+       * real collision, as the block has credited the coinbase for the transactions before it.
+       */
       final TransactionProcessingResult result =
           transactionProcessor.processTransaction(
               transactionUpdater,
               blockHeader,
               transaction.detachedCopy(),
               miningBeneficiary,
-              new OperationTracer() {
-                @Override
-                public boolean tracesOperations() {
-                  return false;
-                }
-
-                @Override
-                public void traceBeforeRewardTransaction(
-                    final WorldView worldView,
-                    final org.hyperledger.besu.datatypes.Transaction tx,
-                    final Wei miningReward) {
-                  /*
-                   * This part checks if the mining beneficiary's account was accessed before increasing its balance for rewards.
-                   * Indeed, if the transaction has interacted with the address to read or modify it,
-                   * it means that the value is necessary for the proper execution of the transaction and will therefore be considered in collision detection.
-                   * If this is not the case, we can ignore this address during conflict detection.
-                   */
-                  if (transactionCollisionDetector
-                      .getAddressesTouchedByTransaction(
-                          transaction, Optional.of(roundWorldStateUpdater))
-                      .contains(miningBeneficiary)) {
-                    contextBuilder.isMiningBeneficiaryTouchedPreRewardByTransaction(true);
-                  }
-                  contextBuilder.miningBeneficiaryReward(miningReward);
-                }
-              },
+              OperationTracer.NO_TRACING,
               blockHashLookup.forkForParallelWorker(),
               TransactionValidationParams.processingBlock(),
               blobGasPrice,
-              transactionLocationTracker);
+              transactionLocationTracker,
+              true);
 
       // commit the accumulator in order to apply all the modifications
       transactionUpdater.commit();
       roundWorldStateUpdater.commit();
 
-      contextBuilder
+      return contextBuilder
           .transactionAccumulator(ws.getAccumulator())
-          .transactionProcessingResult(result);
-
-      final ParallelizedTransactionContext parallelizedTransactionContext = contextBuilder.build();
-      if (!parallelizedTransactionContext.isMiningBeneficiaryTouchedPreRewardByTransaction()) {
-        /*
-         * If the address of the mining beneficiary has been touched only for adding rewards,
-         * we remove it from the accumulator to avoid a false positive collision. Its code and
-         * storage are removed too, as the merge would otherwise overwrite the block's ones while
-         * the collision detection skips it. It stays in the deleted accounts, so a deletion still
-         * collides. The balance will be increased during the sequential processing.
-         */
-        roundWorldStateUpdater.getAccountsToUpdate().remove(miningBeneficiary);
-        roundWorldStateUpdater.getCodeToUpdate().remove(miningBeneficiary);
-        roundWorldStateUpdater.getStorageToUpdate().remove(miningBeneficiary);
-        roundWorldStateUpdater.getStorageToClear().remove(miningBeneficiary);
-      }
-      return parallelizedTransactionContext;
+          .transactionProcessingResult(result)
+          .miningBeneficiaryReward(result.getMiningBeneficiaryReward())
+          .build();
     } catch (Exception ex) {
       // no op as failing to get worldstate
       return null;
@@ -227,8 +196,21 @@ public class OptimisticConcurrentTransactionProcessor extends ParallelBlockTrans
       if (transactionProcessingResult.isSuccessful()
           && !transactionCollisionDetector.hasCollision(
               transaction, miningBeneficiary, parallelizedTransactionContext, blockAccumulator)) {
+        // The speculative run left the coinbase untouched so that the fee alone would not collide,
+        // so the fee is credited here instead, in block order.
         final Wei reward = parallelizedTransactionContext.miningBeneficiaryReward();
-        if (!reward.isZero() || !transactionProcessor.getClearEmptyAccounts()) {
+        if (reward.isZero() && transactionProcessor.getClearEmptyAccounts()) {
+          /*
+           * Sequential processing touches the coinbase even for a zero fee, which clears it when it
+           * is empty (EIP-158). The speculative run no longer does, so clear it here to end in the
+           * same state.
+           */
+          final MutableAccount miningBeneficiaryAccount =
+              blockAccumulator.getAccount(miningBeneficiary);
+          if (miningBeneficiaryAccount != null && miningBeneficiaryAccount.isEmpty()) {
+            blockAccumulator.deleteAccount(miningBeneficiary);
+          }
+        } else {
           final MutableAccount miningBeneficiaryAccount =
               blockAccumulator.getOrCreate(miningBeneficiary);
           miningBeneficiaryAccount.incrementBalance(reward);
